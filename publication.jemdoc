@@ -1,0 +1,15 @@
+# jemdoc: menu{MENU}{publication.html}, nofooter  
+= Li Zeng' Publications
+
+
+== Journal Papers
+. Y. Shi, *L. Zeng*, J. Zhu, Y. Zhou, C. Jiang and K. B. Letaief, \"Satellite Federated Edge Learning: Architecture Design and Convergence Analysis,\" submitted to *IEEE Trans. Wireless Commun.*, Dec. 2023.
+\n
+. *L. Zeng*, D. Wen, G. Zhu, C. You, Q. Chen and Y. Shi, \"Federated Learning With Energy Harvesting Devices,\" *IEEE Trans. Green Commun. Netw.*, Aug. 2023. [https://ieeexplore.ieee.org/document/10236499 \[Paper\]]
+\n
+
+
+== Conference Papers
+. *L. Zeng*, D. Wen, G. Zhu, C. You, Q. Chen, and Y. Shi, \"Joint Bandwidth Allocation, Computation Control, and Device Scheduling for Federated Learning with Energy Harvesting Devices,\" in *Proc. Asilomar Conf. on Signals, Systems, and Comput.*, Pacific Grove, CA, USA, Oct. 2022, pp. 1164–1168. [https://ieeexplore.ieee.org/document/10051949 \[Paper\]]
+\n
+
