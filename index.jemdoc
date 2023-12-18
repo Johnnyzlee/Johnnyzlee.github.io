@@ -1,0 +1,41 @@
+# jemdoc: menu{MENU}{index.html}, nofooter  
+=Li Zeng 曾理
+
+~~~
+{}{img_left}{./photos/u.jpg}{alt text}{162}{210}{}
+I am currently a senior undergraduate pursuing my B.Eng. in Computer Science from [https://sist.shanghaitech.edu.cn School of Information Science and Technology (SIST)] at [https://www.shanghaitech.edu.cn ShanghaiTech University].
+
+In September 2021, I will start my graduate-level study and research at [https://sist.shanghaitech.edu.cn/sist_en/2017/0313/c3902a31615/page.htm Network Intelligence Center (NICE)], also in ShanghaiTech. My supervisor is Prof. [https://shiyuanming.github.io/ Yuanming Shi].
+
+My research interest lies in the intersection of machine learning and communication networks, in particular federated learning, mathematical optimization as well as their applications to 6G, IoT and AI.
+
+
+You can find my CV [files/cv.pdf here].
+
+*Email:* zengli@shanghaitech.edu.cn
+
+*Address:* Rm. 1C-401, SIST Building 1, 393 Middle Huaxia Road, Pudong New District, Shanghai 201210, China. \n 
+#Phone: \+86 18796981890 \n
+~~~
+
+
+== News
+
+#== Research
+#My research interests include 
+#- Convex Optimization.
+#- 5G/6G, Wireless Communication, Signal Processing, Information Theory.
+#- Machine Learning, Federated Learning, Reinforcement Learning.
+
+#[research.html Find out more].
+== Publications 
+
+None yet...
+#. E. Ghadimi, H. R. Feyzmahdavian, and M. Johansson, \"Global convergence of the heavy-ball method for convex optimization\",  In ECC'15: European Control Conference, 2015.
+#. E. Ghadimi, A. Teixeira, I. Shames, and M. Johansson \" Optimal parameter selection for the alternating direction method of
+#multipliers (ADMM): quadratic problems \", IEEE Transactions on Automatic Control, 2015. \[[http://arxiv.org/abs/1306.2454 arxiv]\]
+#. E. Ghadimi, A. Teixeira, M. Rabbat, and M. Johansson, \"The ADMM algorithm for distributed averaging: Convergence rates and optimal parameter selection\", In Proceedings of the 48th Asilomar Conference on Signals, Systems and Computers, 2014. \[[https://www.dropbox.com/s/k9izxz1m39yvvuz/admm_distributed_aveg.pdf?dl=0 pdf] \]
+#. E. Ghadimi, O. Landsiedel, P. Soldati, S. Duquennoy, and M. Johansson, \"Opportunistic Routing in Low Duty-Cycle Wireless Sensor Networks\", ACM Transactions on Senor Networks, 2014. \[[pub/oppTOSN.pdf pdf]\]
+
+#[publications.html Full list of publications].
+#\n
