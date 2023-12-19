@@ -11,8 +11,10 @@
     -- [https://www.comsoc.org/publications/best-readings/satellite-mega-constellations Satellite Mega Constellations]
     -- [https://www.comsoc.org/publications/best-readings/uav-assisted-wireless-networks UAV Assisted Wireless Networks]
 - Selected Journals and Conferences
+    -- ACM Computing Surveys [https://dl.acm.org/toc/csur/justaccepted \[Just Accepted\]]
     -- IEEE Communications Surveys & Tutorials [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=5451756 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=9739 \[Popular Articles\]]
-    -- IEEE Journal on Selected Areas in Communications [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=5594698 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=49 \[Popular Articles\]]
+    -- IEEE Journal on Selected Areas in Communications [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=5594698 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=49 \[Popular Articles\]] [https://www.comsoc.org/publications/journals/ieee-jsac/cfp \[Call for Papers\]]
+    -- IEEE Transactions on Machine Learning in Communications and Networking [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=10070384 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=9882533 \[Popular Articles\]]
     -- IEEE Transactions on Communications [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=5497975 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=26 \[Popular Articles\]]
     -- IEEE Transactions on Wireless Communications [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=4656680 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=7693 \[Popular Articles\]]
     -- IEEE/ACM Transactions on Networking [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=4359146 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=90 \[Popular Articles\]]
@@ -28,8 +30,12 @@
     -- IEEE Communications Magazine [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=7593423 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=35 \[Popular Articles\]]
     -- IEEE Network [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=7593428 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=65 \[Popular Articles\]]
     -- IEEE Wireless Communications [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=7593426 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=7742 \[Popular Articles\]]
-
+    -- Arxiv [https://arxiv.org/list/cs.DS/recent cs.DS: Data Structures and Algorithms]
+    -- Arxiv [https://arxiv.org/list/cs.LG/pastweek?skip=0&show=100 cs.LG: Machine Learning]
+    -- Arxiv [https://arxiv.org/list/cs.IT/pastweek?skip=0&show=50 cs.IT: Information Theory]
+    -- Arxiv [https://arxiv.org/list/eess.SP/pastweek?skip=0&show=50 eess.SP: Signal Processing]
 == Seminars to Check
+- [https://simons.berkeley.edu/programs Simons Institute for Theory of Computing, UC Berkeley].
 - [https://sites.google.com/view/minds-seminar/home One World Mathematics of INformation, Data, and Signals (1W-MINDS) Seminar], *weekly* on Thursdays.
 - [https://sites.google.com/view/one-world-seminar-series-flow/home Federated Learning One World (FLOW) Seminar], *weekly* on Wednesdays.
 - [https://www.oneworldml.org/upcoming-events One World Seminar Series on the Mathematics of Machine Learning], *weekly* on Wednesdays.
