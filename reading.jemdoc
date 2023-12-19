@@ -1,8 +1,9 @@
 # jemdoc: menu{MENU}{reading.html}, nofooter  
 = Li Zeng's Research Readings
 
-
-== Reading Sources to Check
+== Recommended Reading Lists
+- [http://cs-www.cs.yale.edu/homes/yry/readings/general/ A Reading List in Computer Networking], provided by [http://cs-www.cs.yale.edu/homes/yry/ Prof. Yang Richard Yang] at Yale.
+== Publication Sources to Check
 - Selected Topics from [https://www.comsoc.org/publications/best-readings Best Readings of IEEE Communications Society]
     -- [https://www.comsoc.org/publications/best-readings/green-communications Green Communications]
     -- [https://www.comsoc.org/publications/best-readings/integrated-sensing-and-communication-isac Integrated Sensing and Communication (ISAC)]
@@ -34,6 +35,7 @@
     -- Arxiv [https://arxiv.org/list/cs.LG/pastweek?skip=0&show=100 cs.LG: Machine Learning]
     -- Arxiv [https://arxiv.org/list/cs.IT/pastweek?skip=0&show=50 cs.IT: Information Theory]
     -- Arxiv [https://arxiv.org/list/eess.SP/pastweek?skip=0&show=50 eess.SP: Signal Processing]
+
 == Seminars to Check
 - [https://simons.berkeley.edu/programs Simons Institute for Theory of Computing, UC Berkeley].
 - [https://sites.google.com/view/minds-seminar/home One World Mathematics of INformation, Data, and Signals (1W-MINDS) Seminar], *weekly* on Thursdays.
