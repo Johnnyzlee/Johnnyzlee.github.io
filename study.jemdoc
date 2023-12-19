@@ -4,13 +4,14 @@
 I am excited to share some good resources and my notes in selected interesting, insightful and helpful courses here. 
 I warmly welcome discussions and collaborative learning on these topics!
 
-== Mathematics
+== On Theory and Algorithm (Closer to Mathematics)
 - Convex Optimization
 - Stochastic Process
     -- A strongly recommended course: [http://jwxk.ucas.ac.cn/course/courseplan/184926 081000M01002H: Stochastic Process (Electronics and Communications)], taught in Chinese by Prof. Hao Zhang from EE@Tsinghua, UCAS, China. 
     [https://www.bilibili.com/video/BV1py4y1G7H2/?vd_source=2631348422750cc796b499def11aa6d4 \[Video\]]
 - Information Theory
-    -- Information Theory, taught by Prof. Raymond W. Yeung, CUHK. [https://www.youtube.com/@informationtheorybyprof.ra2700/playlists \[Video\]]
+    -- IERG5154: Information Theory, taught by Prof. Raymond W. Yeung, CUHK. [https://www.youtube.com/@informationtheorybyprof.ra2700/playlists \[Video\]]
+    -- [https://web.stanford.edu/class/ee276/index.html EE276: Information Theory], taught by [https://web.stanford.edu/\~tsachy/index.html Prof. Tsachy Weissman], Stanford.
 - Network Information Theory
     -- Materials: [https://gr.xjtu.edu.cn/c/document_library/get_file?folderId=2422385&name=DLFE-128719.pdf \[Book\]], 
         [http://arxiv.org/abs/1001.3404v4/ \[Lecture Notes\]],
@@ -22,11 +23,13 @@ I warmly welcome discussions and collaborative learning on these topics!
 - Randomized Algorithms
 - Approximation Algorithms
 - Game Theory
-== Engineering
+== On System and Tool (Closer to Engineering)
 - Deep Learning
 - Reinforcement Learning
 - Graph Neural Networks
 - Wireless Communication
+    -- Materials: 
+        --- [http://stanford.edu/\~dntse/wireless_book.html Fundamentals of Wireless Communication], by David Tse and Pramod Viswanath, Cambridge University Press, 2005.
 - Computer Networks
 == Others
 === Information Sources like Websites, Channels, Article Series and so on ...
