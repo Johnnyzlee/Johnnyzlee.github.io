@@ -3,7 +3,6 @@
 
 == Recommended Reading Lists
 - [http://cs-www.cs.yale.edu/homes/yry/readings/general/ A Reading List in Computer Networking], provided by [http://cs-www.cs.yale.edu/homes/yry/ Prof. Yang Richard Yang] at Yale.
-== Publication Sources to Check
 - Selected Topics from [https://www.comsoc.org/publications/best-readings Best Readings of IEEE Communications Society]
     -- [https://www.comsoc.org/publications/best-readings/green-communications Green Communications]
     -- [https://www.comsoc.org/publications/best-readings/integrated-sensing-and-communication-isac Integrated Sensing and Communication (ISAC)]
@@ -11,7 +10,10 @@
     -- [https://www.comsoc.org/publications/best-readings/multi-tier-cellular Multi-Tier Cellular]
     -- [https://www.comsoc.org/publications/best-readings/satellite-mega-constellations Satellite Mega Constellations]
     -- [https://www.comsoc.org/publications/best-readings/uav-assisted-wireless-networks UAV Assisted Wireless Networks]
-- Selected Journals and Conferences
+== Publication Sources to Check
+- Journals
+    -- 中国科学·信息科学 [https://www.sciengine.com/SSI/home?slug=abstracts&abbreviated=scp \[Official\]] [http://scis.scichina.com/ssi-commun.html \[通信文章集锦\]]
+    -- Science China Information Sciences [https://www.sciengine.com/SCIS/home?slug=abstracts&abbreviated=scp \[Official\]] [https://www.springer.com/journal/11432 \[Springer\]] [http://scis.scichina.com/scis-commun.html \[Publications on information and communication engineering\]]
     -- ACM Computing Surveys [https://dl.acm.org/toc/csur/justaccepted \[Just Accepted\]]
     -- IEEE Communications Surveys & Tutorials [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=5451756 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=9739 \[Popular Articles\]]
     -- IEEE Journal on Selected Areas in Communications [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=5594698 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=49 \[Popular Articles\]] [https://www.comsoc.org/publications/journals/ieee-jsac/cfp \[Call for Papers\]]
@@ -22,15 +24,44 @@
     -- IEEE Transactions on Network and Service Management [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=5699970 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=4275028 \[Popular Articles\]]
     -- IEEE Transactions on Signal and Information Processing over Networks [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=7103030 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=6884276 \[Popular Articles\]]
     -- IEEE Transactions on Signal Processing [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=4359509 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=78 \[Popular Articles\]]
+    -- IEEE Journal of Selected Topics in Signal Processing [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=5418892 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=4200690 \[Popular Articles\]]
+    -- IEEE Transactions on Mobile Computing [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=4358975 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=7755 \[Popular Articles\]]
     -- IEEE Transactions on Cloud Computing [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=6562694 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=6245519 \[Popular Articles\]]
     -- IEEE Transactions on Green Communications and Networking [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=7557027 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=7511293 \[Popular Articles\]]
     -- IEEE Transactions on Cognitive Communications and Networking [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=7294639 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=6687307 \[Popular Articles\]]
     -- IEEE Internet of Things Journal [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=6702522 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=6488907 \[Popular Articles\]]
+    -- IEEE Transactions on Vehicular Technology [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=4356907 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=25 \[Popular Articles\]]
+    -- IEEE Signal Processing Letters [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=4358004 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=97 \[Popular Articles\]]
     -- IEEE Communications Letters [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=5534602 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=4234 \[Popular Articles\]]
     -- IEEE Wireless Communications Letters [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=6065724 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=5962382 \[Popular Articles\]]
-    -- IEEE Communications Magazine [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=7593423 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=35 \[Popular Articles\]]
     -- IEEE Network [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=7593428 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=65 \[Popular Articles\]]
     -- IEEE Wireless Communications [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=7593426 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=7742 \[Popular Articles\]]
+    -- IEEE Communications Magazine [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=7593423 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=35 \[Popular Articles\]]
+- Conferences (Submission \~ Acceptance \~ Final Version \~ Conference)
+    -- ACM Conference on Applications, Technologies, Architectures, and Protocols for Computer Communication *(SIGCOMM)* [https://dl.acm.org/conference/comm \[ACM\]] [https://dblp.org/db/conf/sigcomm/index.html \[DBLP\]] [https://www.youtube.com/@acmsigcomm/playlists \[YouTube\]]
+    -- ACM International Conference on Mobile Computing and Networking *(MobiCom)* [https://dl.acm.org/conference/mobicom \[ACM\]] [https://dblp.org/db/conf/mobicom/index.html \[DBLP\]]
+    -- ACM International Conference on Mobile Systems, Applications, and Services *(MobiSys)* [https://dl.acm.org/conference/mobisys \[ACM\]] [https://dblp.org/db/conf/mobisys/index.html \[DBLP\]]
+    -- ACM International Conference on Embedded Networked Sensor Systems *(SenSys)* [https://dl.acm.org/conference/sensys \[ACM\]] [https://dblp.org/db/conf/sensys/index.html \[DBLP\]]
+    -- IEEE International Conference on Computer Communications *(INFOCOM)* [https://ieeexplore.ieee.org/xpl/conhome/1000359/all-proceedings \[IEEE\]] [https://dblp.org/db/conf/infocom/index.html \[DBLP\]] (Jul. \~ Dec. \~ Jan. \~ May)
+    -- IEEE International Symposium on Information Theory *(ISIT)* [https://ieeexplore.ieee.org/xpl/conhome/1000369/all-proceedings \[IEEE\]] [https://dblp.org/db/conf/isit/index.html \[DBLP\]]
+    -- IEEE Information Theory Workshop *(ITW)* [https://ieeexplore.ieee.org/xpl/conhome/1000368/all-proceedings \[IEEE\]] [https://dblp.org/db/conf/itw/index.html \[DBLP\]]
+    -- IEEE International Workshop on Signal Processing Advances in Wireless Communications *(SPAWC)* [https://ieeexplore.ieee.org/xpl/conhome/1000667/all-proceedings \[IEEE\]] [https://dblp.org/db/conf/spawc/index.html \[DBLP\]]
+    -- IEEE International Conference on Acoustics, Speech, and Signal Processing *(ICASSP)* [https://ieeexplore.ieee.org/xpl/conhome/1000002/all-proceedings \[IEEE\]] [https://dblp.org/db/conf/icassp/index.html \[DBLP\]]
+    -- IEEE Global Communications Conference *(GLOBECOM)* [https://ieeexplore.ieee.org/xpl/conhome/1000308/all-proceedings \[IEEE\]] [https://dblp.org/db/conf/globecom/index.html \[DBLP\]] (May \~ Aug. \~ Sep. \~ Dec.)
+    -- IEEE International Conference on Communications *(ICC)* [https://ieeexplore.ieee.org/xpl/conhome/1000104/all-proceedings \[IEEE\]] [https://dblp.org/db/conf/icc/index.html \[DBLP\]] (Oct. \~ Feb. \~ Mar. \~ May)
+    -- IEEE Wireless Communications and Networking Conference *(WCNC)* [https://ieeexplore.ieee.org/xpl/conhome/1000817/all-proceedings \[IEEE\]] [https://dblp.org/db/conf/wcnc/index.html \[DBLP\]] (Sep. \~ Dec. \~ Jan. \~ Apr.)
+    -- IEEE International Symposium on Personal, Indoor and Mobile Radio Communications *(PIMRC)* [https://ieeexplore.ieee.org/xpl/conhome/1000550/all-proceedings \[IEEE\]] [https://dblp.org/db/conf/pimrc/index.html \[DBLP\]]
+- AI Community
+    -- Conference on Neural Information Processing Systems *(NeurIPS)* [https://nips.cc/ \[Official\]] [https://dblp.org/db/conf/nips/index.html \[DBLP\]]
+    -- International Conference on Machine Learning *(ICML)* [https://icml.cc/ \[Official\]] [https://dblp.org/db/conf/icml/index.html \[DBLP\]]
+    -- International Conference on Learning Representations *(ICLR)* [https://iclr.cc/ \[Official\]] [https://dblp.org/db/conf/iclr/index.html \[DBLP\]]
+    -- International Conference on Artificial Intelligence and Statistics *(AISTATS)*  [https://aistats.org/ \[Offical\]] [https://dblp.org/db/conf/aistats/index.html \[DBLP\]]
+    -- Annual Conference Computational Learning Theory *(COLT)* [https://www.learningtheory.org/ \[Official\]] [https://dblp.org/db/conf/colt/index.html \[DBLP\]]
+    -- Proceedings of Machine Learning Research *(PMLR)* [https://proceedings.mlr.press/ \[Official\]] [https://dblp.org/db/series/jmlr/index.html \[DBLP\]]
+    -- Journal of Machine Learning Research *(JMLR)* [https://www.jmlr.org/ \[Offical\]] [https://dblp.org/db/journals/jmlr/index.html \[DBLP\]]
+    -- Transactions on Machine Learning Research *(TMLR)* [https://jmlr.org/tmlr/ \[Offical\]] [https://dblp.org/db/journals/tmlr/index.html \[DBLP\]]
+    -- IEEE Transactions on Pattern Analysis and Machine Intelligence *(TPAMI)* [https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=34 \[IEEE\]] [https://dblp.org/db/journals/pami/index.html \[DBLP\]]
+- Preprints
     -- Arxiv [https://arxiv.org/list/cs.DS/recent cs.DS: Data Structures and Algorithms]
     -- Arxiv [https://arxiv.org/list/cs.LG/pastweek?skip=0&show=100 cs.LG: Machine Learning]
     -- Arxiv [https://arxiv.org/list/cs.IT/pastweek?skip=0&show=50 cs.IT: Information Theory]
