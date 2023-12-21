@@ -4,10 +4,11 @@
 == Recommended Reading
 - [http://cs-www.cs.yale.edu/homes/yry/readings/general/ A Reading List in Computer Networking], provided by [http://cs-www.cs.yale.edu/homes/yry/ Prof. Yang Richard Yang] at Yale.
 - On LLM
-    -- Zhu, Banghua, et al. "Towards Optimal Caching and Model Selection for Large Model Inference." NeurIPS, 2023. [https://openreview.net/pdf?id=gd20oaZqqF Paper] [https://github.com/Ying1123/llm-caching-multiplexing Code]
+    -- Zhu, Banghua, et al. "Towards Optimal Caching and Model Selection for Large Model Inference." NeurIPS, 2023. [https://openreview.net/pdf?id=gd20oaZqqF \[Paper\]] [https://github.com/Ying1123/llm-caching-multiplexing \[Code\]]
 - On Network Routing
-    -- []
     -- [https://www.sciencedirect.com/topics/computer-science/steiner-tree-problem Steiner Tree Problem from ScienceDirect]
+- On Satellite Networks
+    -- De Cola, Tomaso, et al. "Network and protocol architectures for future satellite systems." Foundations and Trends in Networking 12.1-2 (2017): 1-161. [files\reference_papers\decola2017.pdf \[Paper\]]
 - Selected Topics from [https://www.comsoc.org/publications/best-readings Best Readings of IEEE Communications Society]
     -- [https://www.comsoc.org/publications/best-readings/green-communications Green Communications]
     -- [https://www.comsoc.org/publications/best-readings/integrated-sensing-and-communication-isac Integrated Sensing and Communication (ISAC)]
@@ -20,6 +21,7 @@
 - Journals
     -- 中国科学·信息科学 [https://www.sciengine.com/SSI/home?slug=abstracts&abbreviated=scp \[Official\]] [http://scis.scichina.com/ssi-commun.html \[通信文章集锦\]]
     -- Science China Information Sciences [https://www.sciengine.com/SCIS/home?slug=abstracts&abbreviated=scp \[Official\]] [https://www.springer.com/journal/11432 \[Springer\]] [http://scis.scichina.com/scis-commun.html \[Publications on information and communication engineering\]]
+    -- Foundations and Trends\R in Networking [https://www.nowpublishers.com/NET \[Official\]] [https://dblp.org/db/journals/ftnet/index.html \[DBLP\]]
     -- ACM Computing Surveys [https://dl.acm.org/toc/csur/justaccepted \[Just Accepted\]]
     -- IEEE Communications Surveys & Tutorials [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=5451756 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=9739 \[Popular Articles\]]
     -- IEEE Journal on Selected Areas in Communications [https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=5594698 \[Early Access\]] [https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=49 \[Popular Articles\]] [https://www.comsoc.org/publications/journals/ieee-jsac/cfp \[Call for Papers\]]
