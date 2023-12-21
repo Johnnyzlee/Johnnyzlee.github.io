@@ -6,7 +6,8 @@
 - On LLM
     -- Zhu, Banghua, et al. "Towards Optimal Caching and Model Selection for Large Model Inference." NeurIPS, 2023. [https://openreview.net/pdf?id=gd20oaZqqF \[Paper\]] [https://github.com/Ying1123/llm-caching-multiplexing \[Code\]]
 - On Network Routing
-    -- [https://www.sciencedirect.com/topics/computer-science/steiner-tree-problem Steiner Tree Problem from ScienceDirect]
+    -- [https://www.sciencedirect.com/topics/computer-science/steiner-tree-problem Steiner Tree Problem], ScienceDirect.
+    -- Diaz, Joel Jurado, et al. "Satellite Routing for mobile users under uncertainty in High Throughput constellations." MIT System Architecture Group, IEEE Aerospace Conference, 2024. [http://systemarchitect.mit.edu/docs/jurado24a.pdf \[Paper\]]
 - On Satellite Networks
     -- De Cola, Tomaso, et al. "Network and protocol architectures for future satellite systems." Foundations and Trends in Networking 12.1-2 (2017): 1-161. [files\reference_papers\decola2017.pdf \[Paper\]]
 - Selected Topics from [https://www.comsoc.org/publications/best-readings Best Readings of IEEE Communications Society]
