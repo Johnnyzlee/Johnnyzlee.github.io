@@ -2,21 +2,34 @@
 = Li Zeng's Research Readings
 
 == Recommended Reading
-- [http://cs-www.cs.yale.edu/homes/yry/readings/general/ A Reading List in Computer Networking], provided by [http://cs-www.cs.yale.edu/homes/yry/ Prof. Yang Richard Yang] at Yale.
-- On LLM
-    -- Zhu, Banghua, et al. "Towards Optimal Caching and Model Selection for Large Model Inference." NeurIPS, 2023. [https://openreview.net/pdf?id=gd20oaZqqF \[Paper\]] [https://github.com/Ying1123/llm-caching-multiplexing \[Code\]]
-- On Network Routing
-    -- [https://www.sciencedirect.com/topics/computer-science/steiner-tree-problem Steiner Tree Problem], ScienceDirect.
-    -- Diaz, Joel Jurado, et al. "Satellite Routing for mobile users under uncertainty in High Throughput constellations." MIT System Architecture Group, IEEE Aerospace Conference, 2024. [http://systemarchitect.mit.edu/docs/jurado24a.pdf \[Paper\]]
-- On Satellite Networks
-    -- De Cola, Tomaso, et al. "Network and protocol architectures for future satellite systems." Foundations and Trends in Networking 12.1-2 (2017): 1-161. [files\reference_papers\decola2017.pdf \[Paper\]]
-- Selected Topics from [https://www.comsoc.org/publications/best-readings Best Readings of IEEE Communications Society]
-    -- [https://www.comsoc.org/publications/best-readings/green-communications Green Communications]
-    -- [https://www.comsoc.org/publications/best-readings/integrated-sensing-and-communication-isac Integrated Sensing and Communication (ISAC)]
-    -- [https://www.comsoc.org/publications/best-readings/machine-learning-communications Machine Learning in Communications]
-    -- [https://www.comsoc.org/publications/best-readings/multi-tier-cellular Multi-Tier Cellular]
-    -- [https://www.comsoc.org/publications/best-readings/satellite-mega-constellations Satellite Mega Constellations]
-    -- [https://www.comsoc.org/publications/best-readings/uav-assisted-wireless-networks UAV Assisted Wireless Networks]
+- On General Sci. & Tech. Topics
+    -- [http://scis.scichina.com/ssi-perspective.html 《中国科学·信息科学》观点与争鸣栏目文章集锦]
+        --- 徐宗本, "人工智能的10个重大数理基础问题." 2021. [https://dds.sciengine.com/cfs/files/pdfs/view/1674-7267/9DCD536951DE4553A373E52FBB20FDB0-mark.pdf \[Paper\]]
+        --- 鄢贵海, et al. "专用处理器比较分析." 2022.[https://dds.sciengine.com/cfs/files/pdfs/view/1674-7267/2462899DFA7C48C1BF4881E4AFE7BB95-mark.pdf \[Paper\]]
+- On AI
+    -- On LLM
+        --- Zhu, Banghua, et al. "Towards Optimal Caching and Model Selection for Large Model Inference." NeurIPS, 2023. [https://openreview.net/pdf?id=gd20oaZqqF \[Paper\]] [https://github.com/Ying1123/llm-caching-multiplexing \[Code\]]
+- On Comm. &  & Netw.
+    -- On 6G
+        --- [https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzAxNjgwMjA5Ng==&action=getalbum&album_id=3396223299306733570&scene=173&subscene=&sessionid=svr_b6200508875&enterid=1712405371&from_msgid=2651167951&from_itemidx=1&count=3&nolastread=1#wechat_redirect 6G专项研究进展专栏], 中国科学·信息科学（公众号）
+    -- On Computer Networks
+        -- [http://cs-www.cs.yale.edu/homes/yry/readings/general/ A Reading List in Computer Networking], provided by [http://cs-www.cs.yale.edu/homes/yry/ Prof. Yang Richard Yang] at Yale.
+    -- On Satellite Networks
+        --- De Cola, Tomaso, et al. "Network and protocol architectures for future satellite systems." Foundations and Trends in Networking 12.1-2 (2017): 1-161. [files\reference_papers\decola2017.pdf \[Paper\]]
+    -- On Computing Power Networks
+        --- [http://ictp.caict.ac.cn/CN/volumn/volumn_69.shtml《信息通信技术与政策》综合算力专题（2024年第50卷第2期）]
+        --- 郭亮, "数据中心发展综述." 信息通信技术与政策, 2023. [\[http://ictp.caict.ac.cn/CN/10.12267/j.issn.2096-5931.2023.05.001 Paper\]]
+    -- Data Center Networks
+    -- On Network Routing
+        --- [https://www.sciencedirect.com/topics/computer-science/steiner-tree-problem Steiner Tree Problem], ScienceDirect.
+        --- Diaz, Joel Jurado, et al. "Satellite Routing for mobile users under uncertainty in High Throughput constellations." MIT System Architecture Group, IEEE Aerospace Conference, 2024. [http://systemarchitect.mit.edu/docs/jurado24a.pdf \[Paper\]]
+    -- Selected Topics from [https://www.comsoc.org/publications/best-readings Best Readings of IEEE Communications Society]
+        --- [https://www.comsoc.org/publications/best-readings/green-communications Green Communications]
+        --- [https://www.comsoc.org/publications/best-readings/integrated-sensing-and-communication-isac Integrated Sensing and Communication (ISAC)]
+        --- [https://www.comsoc.org/publications/best-readings/machine-learning-communications Machine Learning in Communications]
+        --- [https://www.comsoc.org/publications/best-readings/multi-tier-cellular Multi-Tier Cellular]
+        --- [https://www.comsoc.org/publications/best-readings/satellite-mega-constellations Satellite Mega Constellations]
+        --- [https://www.comsoc.org/publications/best-readings/uav-assisted-wireless-networks UAV Assisted Wireless Networks]
 
 == Publication Sources to Check
 - Journals
