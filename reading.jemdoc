@@ -4,9 +4,12 @@
 == Recommended Reading
 - On General Sci. & Tech. Topics
     -- [http://scis.scichina.com/ssi-perspective.html 《中国科学·信息科学》观点与争鸣栏目文章集锦]
-        --- 徐宗本, "人工智能的10个重大数理基础问题." 2021. [https://dds.sciengine.com/cfs/files/pdfs/view/1674-7267/9DCD536951DE4553A373E52FBB20FDB0-mark.pdf \[Paper\]]
         --- 鄢贵海, et al. "专用处理器比较分析." 2022. [https://dds.sciengine.com/cfs/files/pdfs/view/1674-7267/2462899DFA7C48C1BF4881E4AFE7BB95-mark.pdf \[Paper\]]
+        --- 徐宗本, "人工智能的10个重大数理基础问题." 2021. [https://dds.sciengine.com/cfs/files/pdfs/view/1674-7267/9DCD536951DE4553A373E52FBB20FDB0-mark.pdf \[Paper\]]
+        --- 徐文伟, et al. "后香农时代ICT领域的十大挑战问题." 2021. [https://dds.sciengine.com/cfs/files/pdfs/view/1674-7216/8D57E2E8A89F446CA8F8E0E74FB4FE14.pdf \[Paper\]]
 - On AI
+    -- On GNN
+        --- 白铂, et al. "图神经网络." 2020. [https://dds.sciengine.com/cfs/files/pdfs/view/1674-7216/0898F2EE65774DA394D6730167B1DCFC.pdf \[Paper\]]
     -- On LLM
         --- Zhu, Banghua, et al. "Towards Optimal Caching and Model Selection for Large Model Inference." NeurIPS, 2023. [https://openreview.net/pdf?id=gd20oaZqqF \[Paper\]] [https://github.com/Ying1123/llm-caching-multiplexing \[Code\]]
 - On Comm. &  & Netw.
