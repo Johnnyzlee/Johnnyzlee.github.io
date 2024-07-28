@@ -12,7 +12,7 @@
         --- 白铂, et al. "图神经网络." 2020. [https://dds.sciengine.com/cfs/files/pdfs/view/1674-7216/0898F2EE65774DA394D6730167B1DCFC.pdf \[Paper\]]
     -- On LLM
         --- Zhu, Banghua, et al. "Towards Optimal Caching and Model Selection for Large Model Inference." NeurIPS, 2023. [https://openreview.net/pdf?id=gd20oaZqqF \[Paper\]] [https://github.com/Ying1123/llm-caching-multiplexing \[Code\]]
-- On Comm. &  & Netw.
+- On Comm. & Netw.
     -- On 6G
         --- [https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzAxNjgwMjA5Ng==&action=getalbum&album_id=3396223299306733570 6G专项研究进展专栏], 中国科学·信息科学（公众号）
     -- On Computer Networks
