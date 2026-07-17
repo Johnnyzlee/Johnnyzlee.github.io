@@ -1,0 +1,68 @@
+table#tlayout {
+  width: 100%;
+}
+
+.collapsible-section-toggle {
+  appearance: none;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-weight: inherit;
+  gap: 0.45em;
+  line-height: inherit;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+}
+
+.collapsible-section-toggle::before {
+  border-bottom: 0.28em solid transparent;
+  border-left: 0.42em solid currentColor;
+  border-top: 0.28em solid transparent;
+  content: "";
+  flex: 0 0 auto;
+  transform-origin: 0.16em 50%;
+  transition: transform 150ms ease;
+}
+
+.collapsible-section-toggle[aria-expanded="true"]::before {
+  transform: rotate(90deg);
+}
+
+.collapsible-section-toggle:hover {
+  color: #224b8d;
+}
+
+.collapsible-section-toggle:focus-visible {
+  outline: 2px solid #527bbd;
+  outline-offset: 3px;
+}
+
+.collapsible-section-content {
+  padding-top: 0.3em;
+}
+
+.collapsible-section-content[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collapsible-section-toggle::before {
+    transition: none;
+  }
+}
+
+@media print {
+  .collapsible-section-content[hidden] {
+    display: block !important;
+  }
+
+  .collapsible-section-toggle::before {
+    display: none;
+  }
+}
