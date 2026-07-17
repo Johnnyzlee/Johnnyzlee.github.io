@@ -1,0 +1,142 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../blog-note}
+= HKUST HPC Server Guide
+[../../blog.html ← Blogs] \M /updated 2026-07-17/
+
++lzengan@hpc4.ust.hk+ \M Slurm account +khaledgroup+
+
+== Access
+The MacBook Air already has the following entry in +\~\/.ssh\/config+:
+
+~~~
+{}{sh}
+Host hpc4
+    HostName hpc4.ust.hk
+    User lzengan
+~~~
+
+*On campus* (wired network or eduroam):
+
+~~~
+{}{sh}
+ssh hpc4
+~~~
+
+*Off campus:* connect [https://itso.hkust.edu.hk/services/cyber-security/vpn HKUST VPN], then run +ssh hpc4+. Complete the Duo prompt when requested.
+
+== File transfer
+Run these commands on the MacBook Air.
+
+Upload a project:
+
+~~~
+{}{sh}
+rsync -avP ./my-project/ hpc4:~/my-project/
+~~~
+
+Download results:
+
+~~~
+{}{sh}
+rsync -avP hpc4:~/my-project/results/ ./results/
+~~~
+
+Storage layout:
+
+- +\~\/+ — code, environments, and small files.
+- +\/project\/khaledgroup\/+ — shared group data.
+- +\/scratch\/lzengan\/+ — temporary run data; never the only copy of an important result.
+
+== Slurm
+Check the current account associations, available partitions, and queue state:
+
+~~~
+{}{sh}
+sacctmgr -nP show assoc where user=lzengan account=khaledgroup \
+  format=Account,Partition,QOS,DefaultQOS
+sinfo -o "%P %a %l %D %G"
+squeue -p gpu-a30,gpu-l20,gpu-rtx5880
+~~~
+
+Use an +Account+\/+Partition+ pair allowed for +khaledgroup+. If the +Partition+ field is empty or unclear, verify a candidate with a short +debug+ job or contact HPC4 support instead of guessing.
+
+=== Partition guide
+Limits below were checked on 2026-07-17 and may change.
+
+~~~
+{}{table}{partition-guide}
+*Partition* | *Use when* | *Node hardware* | *Current limits* ||
++amd+ | Default CPU choice: Python\/NumPy, simulations, job arrays, multithreaded code, and MPI. | AMD EPYC 9754; 256 cores and 768 GB RAM per node. | 3,072 cores\/user; 12 nodes\/job; 120 h; 120 running; 130 running\/submitted combined. ||
++intel+ | CPU-model-sensitive work, Intel environment reproduction, or Intel-specific benchmarks. | Intel Xeon Platinum 8592\+; 128 cores and 512 GB RAM per node. | 256 cores\/user; 2 nodes\/job; 120 h; 10 running; 15 running\/submitted combined. ||
++gpu-a30+ | General CUDA\/PyTorch work when 24 GB VRAM per GPU is sufficient; also suitable for sharded multi-GPU jobs. | 4 × NVIDIA A30 per node; 24 GB HBM2 ECC per GPU. | 16 GPUs\/user; 4 nodes\/job; 72 h; 8 running; 10 running\/submitted combined. ||
++gpu-l20+ | A single GPU needs 48 GB VRAM, or the workload specifically targets L20. Avoid it when A30 is sufficient. | 4 × NVIDIA L20 per node; 48 GB GDDR6 ECC per GPU. | 8 GPUs\/user; 2 nodes\/job; 72 h; 2 running; 4 running\/submitted combined. ||
++gpu-rtx5880+ | 48 GB VRAM and\/or up to 6 GPUs in one node; larger training, data analytics, simulation, or high-resolution visualization. | 6 × NVIDIA RTX 5880 Ada per node; 48 GB GDDR6 ECC per GPU. | 12 GPUs\/user; 2 nodes\/job; 72 h; 8 running; 10 running\/submitted combined. ||
++gpu-rtx4090d+ | Use only when both +sacctmgr+ and +sinfo+ show access. | 6 × NVIDIA RTX 4090D per node; 24 GB GDDR6X per GPU. | Not listed on the current official Partition\/QoS limit page.
+~~~
+
+For a 48 GB single-GPU job, both +gpu-l20+ and +gpu-rtx5880+ are valid. Check +sinfo+\/+squeue+ and run a short benchmark rather than assuming one is always faster.
+
+The hardware column describes a full node. Memory is allocated proportionally with the requested CPU\/GPU resources; requesting 4 CPU cores does not allocate the full node memory.
+
++gpu-rtx4090d+ appears in the hardware page and Handbook but not in the current official limit table. Do not hard-code its wall time or concurrency limits.
+
+=== Debug QoS
++debug+ is a QoS, not a partition. Select the partition normally, then add:
+
+~~~
+{}{sh}
+#SBATCH --qos=debug
+~~~
+
+Use it for short interactive checks, environment setup, and script debugging. The current limit is 4 hours, up to 2 nodes or 2 GPUs per job, and only 1 running\/submitted job combined. Do not use +debug+ for production training or simulations.
+
+=== Batch template
+The default CPU template uses +amd+:
+
+~~~
+{}{sh}
+#!/bin/bash
+#SBATCH --job-name=test
+#SBATCH --output=logs/%x-%j.out
+#SBATCH --time=00:30:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --account=khaledgroup
+#SBATCH --partition=amd
+
+set -euo pipefail
+module purge
+# module load YOUR_MODULE
+
+hostname
+python main.py
+~~~
+
+Submit and monitor:
+
+~~~
+{}{sh}
+mkdir -p logs
+sbatch run.slurm
+squeue --me
+sacct -j JOB_ID --format=JobID,State,Elapsed,ExitCode
+tail -F logs/test-JOB_ID.out
+~~~
+
+Cancel with +scancel JOB_ID+.
+
+For a GPU job, replace +amd+ with an authorized GPU partition and add:
+
+~~~
+{}{sh}
+#SBATCH --gpus-per-node=1
+~~~
+
+== Notes
+- Run computation through Slurm, never on the login node.
+- Start with a short wall time and small resource request.
+- Do not set +\--mem+ or +\--mem-per-cpu+ manually; HPC4 allocates memory with the requested CPU\/GPU resources.
+- +\/scratch+ is temporary storage, not a backup.
+- Jobs longer than the partition wall-time limit need checkpoints.
+
+Official documentation: [https://itso.hkust.edu.hk/services/academic-teaching-support/high-performance-computing/hpc4/login Login] · [https://itso.hkust.edu.hk/services/academic-teaching-support/high-performance-computing/hpc4/partition-qos Partitions] · [https://itso.hkust.edu.hk/services/academic-teaching-support/high-performance-computing/hpc4\#hardware-specification Hardware] · [https://itso.hkust.edu.hk/services/academic-teaching-support/high-performance-computing/hpc4/slurm Slurm] · [https://itso.hkust.edu.hk/services/academic-teaching-support/high-performance-computing/hpc4/fileandstorage Storage] · [https://hkust-hpc-docs.readthedocs.io/latest/quick-start/index.html Quick Start].

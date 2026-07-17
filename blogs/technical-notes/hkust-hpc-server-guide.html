@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../blog-note.css" type="text/css" />
+<title>HKUST HPC Server Guide</title>
+</head>
+<body>
+<div id="layout-content">
+<div id="toptitle">
+<h1>HKUST HPC Server Guide</h1>
+<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>updated 2026-07-17</i></div>
+</div>
+<p><tt>lzengan@hpc4.ust.hk</tt> &middot; Slurm account <tt>khaledgroup</tt></p>
+<h2>Access</h2>
+<p>The MacBook Air already has the following entry in <tt>~/.ssh/config</tt>:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+Host hpc4
+    HostName hpc4.ust.hk
+    User lzengan
+</pre></div></div>
+<p><b>On campus</b> (wired network or eduroam):</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="builtin">ssh</span> hpc4
+</pre></div></div>
+<p><b>Off campus:</b> connect <a href="https://itso.hkust.edu.hk/services/cyber-security/vpn">HKUST VPN</a>, then run <tt>ssh hpc4</tt>. Complete the Duo prompt when requested.</p>
+<h2>File transfer</h2>
+<p>Run these commands on the MacBook Air.</p>
+<p>Upload a project:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+rsync -avP ./my-project/ hpc4:~/my-project/
+</pre></div></div>
+<p>Download results:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+rsync -avP hpc4:~/my-project/results/ ./results/
+</pre></div></div>
+<p>Storage layout:</p>
+<ul>
+<li><p><tt>~/</tt> — code, environments, and small files.</p>
+</li>
+<li><p><tt>/project/khaledgroup/</tt> — shared group data.</p>
+</li>
+<li><p><tt>/scratch/lzengan/</tt> — temporary run data; never the only copy of an important result.</p>
+</li>
+</ul>
+<h2>Slurm</h2>
+<p>Check the current account associations, available partitions, and queue state:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+sacctmgr -nP show assoc where user=lzengan account=khaledgroup <span class="operator">\</span>
+  format=Account,Partition,QOS,DefaultQOS
+sinfo -o <span class="string">"%P %a %l %D %G"</span>
+squeue -p gpu-a30,gpu-l20,gpu-rtx5880
+</pre></div></div>
+<p>Use an <tt>Account</tt>/<tt>Partition</tt> pair allowed for <tt>khaledgroup</tt>. If the <tt>Partition</tt> field is empty or unclear, verify a candidate with a short <tt>debug</tt> job or contact HPC4 support instead of guessing.</p>
+<h3>Partition guide</h3>
+<p>Limits below were checked on 2026-07-17 and may change.</p>
+<table id="partition-guide">
+<tr class="r1"><td class="c1"><b>Partition</b> </td><td class="c2"> <b>Use when</b> </td><td class="c3"> <b>Node hardware</b> </td><td class="c4"> <b>Current limits</b> </td></tr>
+<tr class="r2"><td class="c1"><tt>amd</tt> </td><td class="c2"> Default CPU choice: Python/NumPy, simulations, job arrays, multithreaded code, and MPI. </td><td class="c3"> AMD EPYC 9754; 256 cores and 768 GB RAM per node. </td><td class="c4"> 3,072 cores/user; 12 nodes/job; 120 h; 120 running; 130 running/submitted combined. </td></tr>
+<tr class="r3"><td class="c1"><tt>intel</tt> </td><td class="c2"> CPU-model-sensitive work, Intel environment reproduction, or Intel-specific benchmarks. </td><td class="c3"> Intel Xeon Platinum 8592+; 128 cores and 512 GB RAM per node. </td><td class="c4"> 256 cores/user; 2 nodes/job; 120 h; 10 running; 15 running/submitted combined. </td></tr>
+<tr class="r4"><td class="c1"><tt>gpu-a30</tt> </td><td class="c2"> General CUDA/PyTorch work when 24 GB VRAM per GPU is sufficient; also suitable for sharded multi-GPU jobs. </td><td class="c3"> 4 × NVIDIA A30 per node; 24 GB HBM2 ECC per GPU. </td><td class="c4"> 16 GPUs/user; 4 nodes/job; 72 h; 8 running; 10 running/submitted combined. </td></tr>
+<tr class="r5"><td class="c1"><tt>gpu-l20</tt> </td><td class="c2"> A single GPU needs 48 GB VRAM, or the workload specifically targets L20. Avoid it when A30 is sufficient. </td><td class="c3"> 4 × NVIDIA L20 per node; 48 GB GDDR6 ECC per GPU. </td><td class="c4"> 8 GPUs/user; 2 nodes/job; 72 h; 2 running; 4 running/submitted combined. </td></tr>
+<tr class="r6"><td class="c1"><tt>gpu-rtx5880</tt> </td><td class="c2"> 48 GB VRAM and/or up to 6 GPUs in one node; larger training, data analytics, simulation, or high-resolution visualization. </td><td class="c3"> 6 × NVIDIA RTX 5880 Ada per node; 48 GB GDDR6 ECC per GPU. </td><td class="c4"> 12 GPUs/user; 2 nodes/job; 72 h; 8 running; 10 running/submitted combined. </td></tr>
+<tr class="r7"><td class="c1"><tt>gpu-rtx4090d</tt> </td><td class="c2"> Use only when both <tt>sacctmgr</tt> and <tt>sinfo</tt> show access. </td><td class="c3"> 6 × NVIDIA RTX 4090D per node; 24 GB GDDR6X per GPU. </td><td class="c4"> Not listed on the current official Partition/QoS limit page.
+</td></tr></table>
+<p>For a 48 GB single-GPU job, both <tt>gpu-l20</tt> and <tt>gpu-rtx5880</tt> are valid. Check <tt>sinfo</tt>/<tt>squeue</tt> and run a short benchmark rather than assuming one is always faster.</p>
+<p>The hardware column describes a full node. Memory is allocated proportionally with the requested CPU/GPU resources; requesting 4 CPU cores does not allocate the full node memory.</p>
+<p><tt>gpu-rtx4090d</tt> appears in the hardware page and Handbook but not in the current official limit table. Do not hard-code its wall time or concurrency limits.</p>
+<h3>Debug QoS</h3>
+<p><tt>debug</tt> is a QoS, not a partition. Select the partition normally, then add:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="comment">#SBATCH --qos=debug</span>
+</pre></div></div>
+<p>Use it for short interactive checks, environment setup, and script debugging. The current limit is 4 hours, up to 2 nodes or 2 GPUs per job, and only 1 running/submitted job combined. Do not use <tt>debug</tt> for production training or simulations.</p>
+<h3>Batch template</h3>
+<p>The default CPU template uses <tt>amd</tt>:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="comment">#!/bin/bash</span>
+<span class="comment">#SBATCH --job-name=test</span>
+<span class="comment">#SBATCH --output=logs/%x-%j.out</span>
+<span class="comment">#SBATCH --time=00:30:00</span>
+<span class="comment">#SBATCH --nodes=1</span>
+<span class="comment">#SBATCH --ntasks=1</span>
+<span class="comment">#SBATCH --cpus-per-task=4</span>
+<span class="comment">#SBATCH --account=khaledgroup</span>
+<span class="comment">#SBATCH --partition=amd</span>
+
+set -euo pipefail
+module purge
+<span class="comment"># module load YOUR_MODULE</span>
+
+hostname
+<span class="builtin">python</span> main.py
+</pre></div></div>
+<p>Submit and monitor:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+mkdir -p logs
+sbatch run.slurm
+squeue --me
+sacct -j JOB_ID --format=JobID,State,Elapsed,ExitCode
+tail -F logs/test-JOB_ID.out
+</pre></div></div>
+<p>Cancel with <tt>scancel JOB_ID</tt>.</p>
+<p>For a GPU job, replace <tt>amd</tt> with an authorized GPU partition and add:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="comment">#SBATCH --gpus-per-node=1</span>
+</pre></div></div>
+<h2>Notes</h2>
+<ul>
+<li><p>Run computation through Slurm, never on the login node.</p>
+</li>
+<li><p>Start with a short wall time and small resource request.</p>
+</li>
+<li><p>Do not set <tt>--mem</tt> or <tt>--mem-per-cpu</tt> manually; HPC4 allocates memory with the requested CPU/GPU resources.</p>
+</li>
+<li><p><tt>/scratch</tt> is temporary storage, not a backup.</p>
+</li>
+<li><p>Jobs longer than the partition wall-time limit need checkpoints.</p>
+</li>
+</ul>
+<p>Official documentation: <a href="https://itso.hkust.edu.hk/services/academic-teaching-support/high-performance-computing/hpc4/login">Login</a> · <a href="https://itso.hkust.edu.hk/services/academic-teaching-support/high-performance-computing/hpc4/partition-qos">Partitions</a> · <a href="https://itso.hkust.edu.hk/services/academic-teaching-support/high-performance-computing/hpc4#hardware-specification">Hardware</a> · <a href="https://itso.hkust.edu.hk/services/academic-teaching-support/high-performance-computing/hpc4/slurm">Slurm</a> · <a href="https://itso.hkust.edu.hk/services/academic-teaching-support/high-performance-computing/hpc4/fileandstorage">Storage</a> · <a href="https://hkust-hpc-docs.readthedocs.io/latest/quick-start/index.html">Quick Start</a>.</p>
+</div>
+</body>
+</html>

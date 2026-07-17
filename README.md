@@ -40,11 +40,14 @@ jemdoc.css / collapsible-sections.* / photos/ / files/ ──> 由 HTML 直接�
 | `teaching.jemdoc` / `teaching.html` | 教学经历 | 修改 jemdoc，再生成 HTML |
 | `reading.jemdoc` / `reading.html` | 阅读资料与学术资源 | 修改 jemdoc，再生成 HTML |
 | `study.jemdoc` / `study.html` | 学习笔记与参考书目 | 修改 jemdoc，再生成 HTML |
-| `blog.jemdoc` / `blog.html` | 博客入口 | 修改 jemdoc，再生成 HTML |
+| `blog.jemdoc` / `blog.html` | 按栏目组织的博客入口 | 修改 jemdoc，再生成 HTML |
+| `blogs/` | 独立 Blog 笔记，按栏目目录保存 jemdoc/HTML 配对文件 | 按 `blogs/README.md` 维护，并从仓库根目录生成 |
 | `random.jemdoc` / `random.html` | 随笔与链接收藏 | 修改 jemdoc，再生成 HTML |
 | `MENU` | 所有 jemdoc 页面的共享侧边栏 | 修改后重新生成全部 jemdoc 页面 |
 | `jemdoc.css` | 全站公共样式 | 直接修改，不需要重新生成 HTML |
 | `collapsible-sections.css` / `collapsible-sections.js` | Study 页顶层章节及 Reading 页推荐主题的展开/收起增强 | 由 `study.jemdoc`、`reading.jemdoc` 通过 `addcss` / `addjs` 加载 |
+| `blogs/blog-note.css` | 独立 Blog 笔记的共享页面样式 | 由各 Blog 笔记通过相对路径加载 |
+| `blogs/blog.conf` | Blog 笔记的 jemdoc 生成配置，包含移动端 viewport | 生成 Blog 笔记时通过 `-c` 指定 |
 | `jemdoc.py` | 随仓库保存的 jemdoc 0.7.3 生成器 | 一般不要修改 |
 | `photos/` | 头像等图片资源 | 保持被引用文件名与路径一致 |
 | `files/` | CV、论文与参考资料 PDF | 保持被引用文件名与路径一致 |
