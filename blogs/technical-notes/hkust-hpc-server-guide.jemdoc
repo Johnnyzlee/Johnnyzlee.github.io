@@ -1,17 +1,51 @@
 # jemdoc: nofooter, nodefaultcss, addcss{../blog-note}
 = HKUST HPC Server Guide
-[../../blog.html ← Blogs] \M /updated 2026-07-17/
+[../../blog.html ← Blogs] \M /updated 2026-07-18/
 
 +lzengan@hpc4.ust.hk+ \M Slurm account +khaledgroup+
 
+This guide is used from both my MacBook Air M1 and my Mac mini M4. Each Mac keeps its own private SSH key; never copy a private key between machines.
+
 == Access
-The MacBook Air already has the following entry in +\~\/.ssh\/config+:
+Both Macs use the +hpc4+ alias, but their local +\~\/.ssh\/config+ entries are different.
+
+=== My MacBook Air M1
+My MacBook Air M1 keeps its original entry:
 
 ~~~
 {}{sh}
 Host hpc4
     HostName hpc4.ust.hk
     User lzengan
+~~~
+
+=== My Mac mini M4
+My Mac mini M4 uses its own authorized ED25519 key and additional macOS client settings:
+
+~~~
+{}{sh}
+Host hpc4
+    HostName hpc4.ust.hk
+    User lzengan
+    # Explicitly use this Mac mini M4's ED25519 private key.
+    IdentityFile ~/.ssh/id_ed25519
+    # Do not try unrelated keys from the SSH agent.
+    IdentitiesOnly yes
+    # Add the unlocked key to the macOS SSH agent.
+    AddKeysToAgent yes
+    # Read and store the key passphrase in macOS Keychain.
+    UseKeychain yes
+    # Send a keepalive probe every 60 seconds.
+    ServerAliveInterval 60
+    # Disconnect after three unanswered probes.
+    ServerAliveCountMax 3
+~~~
+
+Check the Mac mini M4's effective client settings without connecting:
+
+~~~
+{}{sh}
+ssh -G hpc4 | grep -E '^(hostname|user|identityfile) '
 ~~~
 
 *On campus* (wired network or eduroam):
@@ -21,10 +55,21 @@ Host hpc4
 ssh hpc4
 ~~~
 
-*Off campus:* connect [https://itso.hkust.edu.hk/services/cyber-security/vpn HKUST VPN], then run +ssh hpc4+. Complete the Duo prompt when requested.
+If Clash TUN mode is enabled, keep HKUST traffic on the campus route. Place these rules before broader proxy and catch-all rules:
+
+~~~
+{}{sh}
+- DOMAIN,hpc4.ust.hk,DIRECT
+- DOMAIN-SUFFIX,ust.hk,DIRECT
+- IP-CIDR,143.89.0.0/16,DIRECT,no-resolve
+~~~
+
+The Mac mini M4's current Clash profile has these rules. If +ssh hpc4+ times out before showing a login banner, disable TUN to confirm the cause. A subscription refresh may overwrite locally edited rules, so add them to the provider's custom-rule or override feature when available.
+
+*Off campus:* disable Clash TUN, connect [https://itso.hkust.edu.hk/services/cyber-security/vpn HKUST VPN], then run +ssh hpc4+. Complete the Duo prompt when requested. Avoid running two TUN-based clients at the same time unless their routes have been verified.
 
 == File transfer
-Run these commands on the MacBook Air.
+Run these commands on either Mac.
 
 Upload a project:
 

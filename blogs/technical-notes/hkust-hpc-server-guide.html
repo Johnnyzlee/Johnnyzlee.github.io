@@ -12,25 +12,61 @@
 <div id="layout-content">
 <div id="toptitle">
 <h1>HKUST HPC Server Guide</h1>
-<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>updated 2026-07-17</i></div>
+<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>updated 2026-07-18</i></div>
 </div>
 <p><tt>lzengan@hpc4.ust.hk</tt> &middot; Slurm account <tt>khaledgroup</tt></p>
+<p>This guide is used from both my MacBook Air M1 and my Mac mini M4. Each Mac keeps its own private SSH key; never copy a private key between machines.</p>
 <h2>Access</h2>
-<p>The MacBook Air already has the following entry in <tt>~/.ssh/config</tt>:</p>
+<p>Both Macs use the <tt>hpc4</tt> alias, but their local <tt>~/.ssh/config</tt> entries are different.</p>
+<h3>My MacBook Air M1</h3>
+<p>My MacBook Air M1 keeps its original entry:</p>
 <div class="codeblock">
 <div class="blockcontent"><pre>
 Host hpc4
     HostName hpc4.ust.hk
     User lzengan
 </pre></div></div>
+<h3>My Mac mini M4</h3>
+<p>My Mac mini M4 uses its own authorized ED25519 key and additional macOS client settings:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+Host hpc4
+    HostName hpc4.ust.hk
+    User lzengan
+    <span class="comment"># Explicitly use this Mac mini M4's ED25519 private key.</span>
+    IdentityFile ~/.<span class="builtin">ssh</span>/id_ed25519
+    <span class="comment"># Do not try unrelated keys from the SSH agent.</span>
+    IdentitiesOnly yes
+    <span class="comment"># Add the unlocked key to the macOS SSH agent.</span>
+    AddKeysToAgent yes
+    <span class="comment"># Read and store the key passphrase <span class="statement">in</span> macOS Keychain.</span>
+    UseKeychain yes
+    <span class="comment"># Send a keepalive probe every 60 seconds.</span>
+    ServerAliveInterval 60
+    <span class="comment"># Disconnect after three unanswered probes.</span>
+    ServerAliveCountMax 3
+</pre></div></div>
+<p>Check the Mac mini M4's effective client settings without connecting:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="builtin">ssh</span> -G hpc4 <span class="operator">|</span> <span class="builtin">grep</span> -E <span class="string">'^(hostname<span class="operator">|</span>user<span class="operator">|</span>identityfile) '</span>
+</pre></div></div>
 <p><b>On campus</b> (wired network or eduroam):</p>
 <div class="codeblock">
 <div class="blockcontent"><pre>
 <span class="builtin">ssh</span> hpc4
 </pre></div></div>
-<p><b>Off campus:</b> connect <a href="https://itso.hkust.edu.hk/services/cyber-security/vpn">HKUST VPN</a>, then run <tt>ssh hpc4</tt>. Complete the Duo prompt when requested.</p>
+<p>If Clash TUN mode is enabled, keep HKUST traffic on the campus route. Place these rules before broader proxy and catch-all rules:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+- DOMAIN,hpc4.ust.hk,DIRECT
+- DOMAIN-SUFFIX,ust.hk,DIRECT
+- IP-CIDR,143.89.0.0/16,DIRECT,no-resolve
+</pre></div></div>
+<p>The Mac mini M4's current Clash profile has these rules. If <tt>ssh hpc4</tt> times out before showing a login banner, disable TUN to confirm the cause. A subscription refresh may overwrite locally edited rules, so add them to the provider's custom-rule or override feature when available.</p>
+<p><b>Off campus:</b> disable Clash TUN, connect <a href="https://itso.hkust.edu.hk/services/cyber-security/vpn">HKUST VPN</a>, then run <tt>ssh hpc4</tt>. Complete the Duo prompt when requested. Avoid running two TUN-based clients at the same time unless their routes have been verified.</p>
 <h2>File transfer</h2>
-<p>Run these commands on the MacBook Air.</p>
+<p>Run these commands on either Mac.</p>
 <p>Upload a project:</p>
 <div class="codeblock">
 <div class="blockcontent"><pre>
