@@ -9,6 +9,9 @@ blogs/
 ├── README.md
 ├── blog.conf
 ├── blog-note.css
+├── mathematical-problems-and-puzzles/
+│   ├── brainteasers.jemdoc
+│   └── brainteasers.html
 └── technical-notes/
     ├── hkust-hpc-server-guide.jemdoc
     └── hkust-hpc-server-guide.html
@@ -18,6 +21,7 @@ blogs/
 
 | Directory | Public category | Intended content |
 | --- | --- | --- |
+| `mathematical-problems-and-puzzles/` | Mathematical Problems & Puzzles | Mathematical notes and numbered brainteasers with hidden answers |
 | `technical-notes/` | Technical Notes | Short operational guides, command references, and infrastructure notes |
 
 Add future categories as lowercase, kebab-case sibling directories. Keep every article's `.jemdoc` source and generated `.html` file together in its category directory.

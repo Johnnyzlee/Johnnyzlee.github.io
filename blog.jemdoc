@@ -1,5 +1,8 @@
 # jemdoc: menu{MENU}{blog.html}, nofooter  
 = Li Zeng's Blogs
 
+== Mathematical Problems & Puzzles
+- [blogs/mathematical-problems-and-puzzles/brainteasers.html Brainteasers]
+
 == Technical Notes
 - [blogs/technical-notes/hkust-hpc-server-guide.html HKUST HPC Server Guide]

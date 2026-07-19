@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../blog-note.css" type="text/css" />
+<title>Brainteasers</title>
+</head>
+<body>
+<div id="layout-content">
+<div id="toptitle">
+<h1>Brainteasers</h1>
+<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>updated 2026-07-19</i></div>
+</div>
+<p>A growing collection of numbered brainteasers. Open the answer only when you are ready.</p>
+<h2>Problem 1</h2>
+<p>You have three non-uniform ropes. Each rope takes exactly eight minutes to burn completely from one end, but it does not burn at a uniform rate. How can you measure exactly seven minutes?</p>
+<details class="answer">
+<summary>Show answer</summary>
+<div class="answer-content">
+<ol>
+<li>At time 0, light Rope 1 at both ends. Light Ropes 2 and 3 at one end each.</li>
+<li>Rope 1 burns out after 4 minutes. At that moment, light the other end of Rope 2.</li>
+<li>Rope 2 now burns from both ends and burns out 2 minutes later, at the 6-minute mark. Then light the other end of Rope 3.</li>
+<li>Rope 3 has 2 minutes of one-ended burning time left at that point. Burning it from both ends makes it finish in 1 more minute.</li>
+</ol>
+<p>Therefore, Rope 3 burns out exactly 7 minutes after the start.</p>
+</div>
+</details>
+<h2>Problem 2 ★</h2>
+<p>Alice and Bob play two rounds of rock-paper-scissors. Alice is not allowed to play scissors. If Bob plays rock or paper in the first round, he must play scissors in the second round. In each round, the loser pays the winner $1. Both players are perfectly rational and use optimal mixed strategies. What is Alice's expected total payoff?</p>
+<details class="answer">
+<summary>Show answer</summary>
+<div class="answer-content">
+<p>Work backward from the second round.</p>
+<ul>
+<li>If Bob plays rock or paper in Round 1, he is forced to play scissors in Round 2. Alice responds with rock and earns 1 in the second round.</li>
+<li>If Bob plays scissors in Round 1, his Round 2 move is unrestricted. In that one-round game, Alice optimally plays rock with probability 1/3 and paper with probability 2/3. The value to Alice is -1/3.</li>
+</ul>
+<p>Including these continuation values, Alice's total-payoff matrix for Round 1 is:</p>
+<div class="table-scroll">
+<table class="payoff-matrix">
+<thead>
+<tr><th></th><th>Bob: Rock</th><th>Bob: Paper</th><th>Bob: Scissors</th></tr>
+</thead>
+<tbody>
+<tr><th>Alice: Rock</th><td>1</td><td>0</td><td>2/3</td></tr>
+<tr><th>Alice: Paper</th><td>2</td><td>1</td><td>-4/3</td></tr>
+</tbody>
+</table>
+</div>
+<p>Let <i>p</i> be the probability that Alice plays rock in Round 1. Bob's rock column is never better for him than his paper column, so the two relevant expected payoffs are 1 - <i>p</i> against paper and 2<i>p</i> - 4/3 against scissors.</p>
+<p>Alice maximizes the smaller of these two quantities by making them equal:</p>
+<p class="equation-line">1 - <i>p</i> = 2<i>p</i> - 4/3, &nbsp; so &nbsp; <i>p</i> = 7/9.</p>
+<p>The resulting game value is 1 - 7/9 = 2/9. Therefore, <strong>Alice's expected total payoff is +2/9</strong>.</p>
+<p>At equilibrium, Alice plays rock with probability 7/9 in Round 1, while Bob plays paper with probability 2/3 and scissors with probability 1/3.</p>
+</div>
+</details>
+<h2>Problem 3</h2>
+<p>A fair coin is tossed repeatedly. Stop as soon as either two tails occur consecutively or the total number of heads is two greater than the total number of tails. What is the expected number of tosses?</p>
+<details class="answer">
+<summary>Show answer</summary>
+<div class="answer-content">
+<p>Let the following variables denote the expected number of additional tosses from each non-terminal state:</p>
+<ul>
+<li><i>A</i>: heads minus tails is 0, and the previous toss is not a tail (this includes the initial state).</li>
+<li><i>B</i>: heads minus tails is 1, and the previous toss is a head.</li>
+<li><i>C</i>: heads minus tails is -1, and the previous toss is a tail.</li>
+<li><i>D</i>: heads minus tails is 0, and the previous toss is a tail.</li>
+</ul>
+<p>A first-step analysis gives:</p>
+<p class="equation-line"><i>A</i> = 1 + (<i>B</i> + <i>C</i>)/2,</p>
+<p class="equation-line"><i>B</i> = 1 + <i>D</i>/2,</p>
+<p class="equation-line"><i>C</i> = 1 + <i>A</i>/2,</p>
+<p class="equation-line"><i>D</i> = 1 + <i>B</i>/2.</p>
+<p>In the equations for <i>B</i>, <i>C</i>, and <i>D</i>, the omitted half-probability transition is a stopping event and therefore contributes no additional tosses.</p>
+<p>The middle pair gives <i>B</i> = <i>D</i> = 2. Substituting <i>C</i> = 1 + <i>A</i>/2 into the first equation gives:</p>
+<p class="equation-line"><i>A</i> = 1 + (2 + 1 + <i>A</i>/2)/2 = 5/2 + <i>A</i>/4.</p>
+<p>Therefore, <strong><i>A</i> = 10/3</strong>. The expected number of tosses is 10/3, or approximately 3.33.</p>
+</div>
+</details>
+<h2>Problem 4 ★</h2>
+<p>A stick is cut into <i>n</i> pieces by choosing <i>n</i> - 1 cut points independently and uniformly along its length. What is the probability that the pieces can form a non-degenerate <i>n</i>-gon? Assume <i>n</i> is at least 3.</p>
+<details class="answer">
+<summary>Show answer</summary>
+<div class="answer-content">
+<p>Normalize the total length to 1, and let the piece lengths be <i>X</i><sub>1</sub>, ..., <i>X</i><sub>n</sub>. The pieces form a non-degenerate polygon if and only if the longest piece is shorter than the sum of all the others:</p>
+<p class="equation-line">max(<i>X</i><sub>1</sub>, ..., <i>X</i><sub>n</sub>) &lt; 1/2.</p>
+<p>The random length vector is uniformly distributed on the simplex <i>X</i><sub>1</sub> + ... + <i>X</i><sub>n</sub> = 1. For any fixed piece <i>i</i>, the region <i>X</i><sub>i</sub> &gt;= 1/2 is a copy of the original simplex scaled by 1/2 in each of its <i>n</i> - 1 dimensions. Hence:</p>
+<p class="equation-line">P(<i>X</i><sub>i</sub> &gt;= 1/2) = (1/2)<sup><i>n</i> - 1</sup>.</p>
+<p>Two different pieces cannot both be longer than 1/2. Boundary cases have probability zero, so these <i>n</i> failure events are disjoint almost surely. Therefore:</p>
+<p class="equation-line">P(failure) = <i>n</i>/2<sup><i>n</i> - 1</sup>.</p>
+<p>Thus, the required probability is <strong>1 - <i>n</i>/2<sup><i>n</i> - 1</sup></strong>.</p>
+<p>For example, when <i>n</i> = 3, this gives 1 - 3/4 = 1/4, the classical broken-stick result.</p>
+</div>
+</details>
+</div>
+</body>
+</html>
