@@ -123,6 +123,20 @@
 <p>Therefore, the required probability is <strong>1/315</strong>.</p>
 </div>
 </details>
+<h2>Problem 7 ★</h2>
+<p>The integers 1 through 8 are arranged in a uniformly random order. What is the probability that every entry after the first is either greater than all preceding entries or smaller than all preceding entries?</p>
+<details class="answer">
+<summary>Show answer</summary>
+<div class="answer-content">
+<p>Consider the last entry of a valid permutation. Because it must be outside the range of all seven preceding entries, it must be either the smallest number, 1, or the largest number, 8.</p>
+<p>After removing that last entry, the remaining order must satisfy the same condition on seven numbers. Conversely, either the new minimum or the new maximum can be appended to any valid permutation of the other numbers.</p>
+<p>Thus, if <i>f</i>(<i>n</i>) is the number of valid permutations of 1 through <i>n</i>, then:</p>
+<p class="equation-line"><i>f</i>(<i>n</i>) = 2<i>f</i>(<i>n</i> - 1), &nbsp; with &nbsp; <i>f</i>(1) = 1.</p>
+<p>Therefore, <i>f</i>(8) = 2<sup>7</sup> = 128. Since all 8! permutations are equally likely:</p>
+<p class="equation-line">P = 2<sup>7</sup>/8! = 128/40320 = 1/315.</p>
+<p>The required probability is <strong>1/315</strong>.</p>
+</div>
+</details>
 </div>
 </body>
 </html>
