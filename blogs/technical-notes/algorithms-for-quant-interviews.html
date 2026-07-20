@@ -1,0 +1,518 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head>
+<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../blog-note.css" type="text/css" />
+<script src="../math-render.js" type="text/javascript"></script>
+<title>量化研究面试算法复习笔记</title>
+</head>
+<body>
+<div id="layout-content">
+<div id="toptitle">
+<h1>量化研究面试算法复习笔记</h1>
+<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>更新于 2026-07-20</i></div>
+</div>
+<div class="language-switch" role="navigation" aria-label="语言选择"><span class="active" aria-current="page">中文</span><a href="algorithms-for-quant-interviews-en.html" hreflang="en">English</a></div>
+<div class="page-lead"><strong>中文精编版：</strong>把算法题按可复用模式组织，适合量化研究编程面试前快速复习。每道题的完整答案应包含正确性理由、时间复杂度、空间复杂度和边界情形；English 页面保留更完整的扩展模板。</div>
+<p><b>优先级：</b> P0 = 必须能默写；P1 = 常见扩展；P2 = 专题技巧。数位归约和区间合并均列为 P0。</p>
+<h2>0. 面试作答流程</h2>
+<ol>
+<li><p><b>澄清：</b> 输入输出、规模、是否有序、重复值、能否修改输入、内存限制、精确或近似答案。</p>
+</li>
+<li><p><b>举例：</b> 手算一个正常例子和一个边界例子。</p>
+</li>
+<li><p><b>基线：</b> 先说明暴力解及复杂度，再谈优化。</p>
+</li>
+<li><p><b>识别模式：</b> 哈希、排序、双指针、滑窗、栈、堆、图、贪心或动态规划。</p>
+</li>
+<li><p><b>不变量/状态：</b> 解释每轮后什么始终成立，或 <tt>dp[state]</tt> 的含义。</p>
+</li>
+<li><p><b>编码：</b> 逻辑与 I/O 分开；短变量名只用于标准下标。</p>
+</li>
+<li><p><b>验证：</b> 空输入、单元素、重复、负数、全相等、正序/逆序、精度和溢出。</p>
+</li>
+<li><p><b>收尾：</b> 报告时间、辅助空间、递归栈与输出存储。</p>
+</li>
+</ol>
+<h2>1. 复杂度与正确性 [P0]</h2>
+<h3>1.1 常见增长率</h3>
+<ul>
+<li><p>$O(1)$：平均哈希查找、数组索引。</p>
+</li>
+<li><p>$O(log n)$：二分查找、平衡树操作、堆的推入/弹出。</p>
+</li>
+<li><p>$O(n)$：单次扫描、哈希计数。</p>
+</li>
+<li><p>$O(nlog n)$：比较排序、许多堆与扫描线算法。</p>
+</li>
+<li><p>$O(n^2)$：枚举所有二元组；$n$ 到 $10^4$ 左右通常已经过慢。</p>
+</li>
+<li><p>$O(2^n)$ 与 $O(n!)$：子集/排列搜索，往往只适合很小的 n。</p>
+</li>
+</ul>
+<p>常数只在渐近分析中忽略；Python 的对象分配、哈希与解释器循环成本可能让排序胜过理论上为线性、但分配很重的方案。</p>
+<h3>1.2 均摊、期望与证明方式</h3>
+<ul>
+<li><p>列表 <tt>append</tt> 为均摊 $O(1)$，并非每一次最坏都为 $O(1)$。</p>
+</li>
+<li><p>字典/集合平均 $O(1)$，病态最坏可达 $O(n)$。</p>
+</li>
+<li><p><tt>heapq</tt> 推入/弹出 $O(log n)$；<tt>deque</tt> 两端操作 $O(1)$。</p>
+</li>
+<li><p>循环不变量：初始化、保持、终止。</p>
+</li>
+<li><p>归纳法：递归和 DP 常用。</p>
+</li>
+<li><p>交换论证：贪心算法常用。</p>
+</li>
+<li><p>割/领先论证：区间调度、最小生成树常用。</p>
+</li>
+</ul>
+<h2>2. 数组与字符串 [P0]</h2>
+<h3>2.1 前缀和与哈希</h3>
+<p>区间和等于前缀和之差。若数组含任意正负数，用哈希表记录此前前缀和频数。</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> count_subarrays_sum_k(values, k):
+    counts = {0: 1}
+    prefix = 0
+    answer = 0
+    <span class="statement">for</span> x <span class="builtin">in</span> values:
+        prefix += x
+        answer += counts.get(prefix - k, 0)
+        counts[prefix] = counts.get(prefix, 0) + 1
+    <span class="statement">return</span> answer
+</pre></div></div>
+<p>不变量：<tt>counts</tt> 只包含当前位置之前的前缀和。期望时间 $O(n)$，空间 $O(n)$。</p>
+<h3>2.2 双指针与滑动窗口</h3>
+<p>单调移动能够排除一整批可能性时使用双指针；连续区间的状态能随端点增删而快速更新时使用滑动窗口。</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> two_sum_sorted(a, target):
+    left, right = 0, len(a) - 1
+    <span class="statement">while</span> left &lt; right:
+        total = a[left] + a[right]
+        <span class="statement">if</span> total == target:
+            <span class="statement">return</span> left, right
+        <span class="statement">if</span> total &lt; target:
+            left += 1
+        <span class="statement">else</span>:
+            right -= 1
+    <span class="statement">return</span> None
+</pre></div></div>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> longest_at_most_k_distinct(values, k):
+    counts = {}
+    left = 0
+    best = 0
+    <span class="statement">for</span> right, x <span class="builtin">in</span> <span class="builtin">enumerate</span>(values):
+        counts[x] = counts.get(x, 0) + 1
+        <span class="statement">while</span> len(counts) &gt; k:
+            y = values[left]
+            counts[y] -= 1
+            <span class="statement">if</span> counts[y] == 0:
+                <span class="statement">del</span> counts[y]
+            left += 1
+        best = max(best, right - left + 1)
+    <span class="statement">return</span> best
+</pre></div></div>
+<p>可变窗口需要“可行性随端点单调变化”。任意负数往往会破坏简单的和约束滑窗。</p>
+<h3>2.3 最大子数组与字符串模式</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> max_subarray(values):
+    <span class="statement">if</span> <span class="builtin">not</span> values:
+        <span class="statement">raise</span> <span class="error">ValueError</span>(<span class="string">"nonempty input required"</span>)
+    ending = best = values[0]
+    <span class="statement">for</span> x <span class="builtin">in</span> values[1:]:
+        ending = max(x, ending + x)
+        best = max(best, ending)
+    <span class="statement">return</span> best
+</pre></div></div>
+<p><tt>ending</tt> 表示“必须在当前位置结束”的最佳非空子数组。用首元素初始化，才能正确处理全负数组。</p>
+<ul>
+<li><p>字符计数/异位词：<tt>Counter</tt> 或固定长度计数数组。</p>
+</li>
+<li><p>回文：双指针；最长回文子串可从中心扩展，时间 $O(n^2)$。</p>
+</li>
+<li><p>子串搜索：朴素 $O(nm)$；KMP/Z 算法 [P1] 为 $O(n+m)$。</p>
+</li>
+<li><p>Trie [P1] 适合前缀，但 Python 中内存开销较大。</p>
+</li>
+</ul>
+<h2>3. 排序、二分与区间 [P0]</h2>
+<h3>3.1 二分查找</h3>
+<p>先明确搜索区间是闭区间还是半开区间，以及哪一侧满足单调条件。</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> binary_search(a, target):
+    lo, hi = 0, len(a)          <span class="comment"># [lo, hi)</span>
+    <span class="statement">while</span> lo &lt; hi:
+        mid = (lo + hi) // 2
+        <span class="statement">if</span> a[mid] &lt; target:
+            lo = mid + 1
+        <span class="statement">else</span>:
+            hi = mid
+    <span class="statement">return</span> lo <span class="statement">if</span> lo &lt; len(a) <span class="builtin">and</span> a[lo] == target <span class="statement">else</span> -1
+</pre></div></div>
+<p>答案二分 [P1] 的前提是 <tt>can(x)</tt> 单调。编码前写清“左侧可行”还是“右侧可行”，避免边界死循环。</p>
+<h3>3.2 合并区间 [P0]</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> merge_intervals(intervals):
+    <span class="statement">if</span> <span class="builtin">not</span> intervals:
+        <span class="statement">return</span> []
+    intervals = sorted(intervals)
+    merged = [list(intervals[0])]
+    <span class="statement">for</span> start, end <span class="builtin">in</span> intervals[1:]:
+        <span class="statement">if</span> start &lt;= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        <span class="statement">else</span>:
+            merged.append([start, end])
+    <span class="statement">return</span> merged
+</pre></div></div>
+<p>排序后，不变量是 <tt>merged</tt> 已正确合并所有已处理区间，最后一个区间是唯一可能与当前区间重叠者。时间 $O(nlog n)$，排序外空间视实现而定。</p>
+<h3>3.3 扫描线</h3>
+<p>把区间转成“开始 +1、结束 −1”的事件并排序。必须先定义端点是否闭合，以及同一时刻开始和结束事件的顺序；这决定接触的区间是否算重叠。</p>
+<h2>4. 哈希、栈与队列 [P0]</h2>
+<ul>
+<li><p>哈希表常见用途：频数、first-seen 索引、前缀状态、去重、缓存。</p>
+</li>
+<li><p>栈常见用途：括号匹配、表达式、DFS、单调栈。</p>
+</li>
+<li><p>队列用于 BFS；滑窗最大值可用单调 <tt>deque</tt>，每个元素最多进出一次，时间 $O(n)$。</p>
+</li>
+</ul>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> valid_parentheses(text):
+    match = {<span class="string">")"</span>: <span class="string">"("</span>, <span class="string">"]"</span>: <span class="string">"["</span>, <span class="string">"}"</span>: <span class="string">"{"</span>}
+    stack = []
+    <span class="statement">for</span> ch <span class="builtin">in</span> text:
+        <span class="statement">if</span> ch <span class="builtin">in</span> <span class="string">"([{"</span>:
+            stack.append(ch)
+        <span class="statement">elif</span> ch <span class="builtin">in</span> match:
+            <span class="statement">if</span> <span class="builtin">not</span> stack <span class="builtin">or</span> stack.pop() != match[ch]:
+                <span class="statement">return</span> <span class="builtin">False</span>
+    <span class="statement">return</span> <span class="builtin">not</span> stack
+</pre></div></div>
+<p>单调栈的关键问题：栈中保存值还是索引？单调递增还是递减？相等值弹不弹？答案由“寻找严格更大”还是“不小于”决定。</p>
+<h2>5. 链表 [P1]</h2>
+<h3>5.1 反转与快慢指针</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> reverse_list(head):
+    prev = None
+    current = head
+    <span class="statement">while</span> current <span class="builtin">is</span> <span class="builtin">not</span> None:
+        nxt = current.next
+        current.next = prev
+        prev, current = current, nxt
+    <span class="statement">return</span> prev
+</pre></div></div>
+<p>快慢指针可找中点、检测环和求倒数第 k 个节点。修改指针前先保存 <tt>next</tt>；明确函数是否允许修改原链表。</p>
+<h2>6. 树、堆与并查集 [P0/P1]</h2>
+<h3>6.1 二叉树遍历</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> collections <span class="statement">import</span> deque
+
+<span class="statement">def</span> level_order(root):
+    <span class="statement">if</span> root <span class="builtin">is</span> None:
+        <span class="statement">return</span> []
+    q = deque([root])
+    levels = []
+    <span class="statement">while</span> q:
+        level = []
+        <span class="statement">for</span> _ <span class="builtin">in</span> <span class="builtin">range</span>(len(q)):
+            node = q.popleft()
+            level.append(node.<span class="special">value</span>)
+            <span class="statement">if</span> node.left:
+                q.append(node.left)
+            <span class="statement">if</span> node.right:
+                q.append(node.right)
+        levels.append(level)
+    <span class="statement">return</span> levels
+</pre></div></div>
+<p>DFS 的递归栈最坏为树高 $O(h)$；极深树在 Python 中可能超过递归限制，此时用显式栈。</p>
+<h3>6.2 堆与 top-k</h3>
+<ul>
+<li><p>动态最小/最大值、合并有序流、Dijkstra、top-k 都常用堆。</p>
+</li>
+<li><p><tt>heapq</tt> 是最小堆；最大堆通常存负值。</p>
+</li>
+<li><p>维护 k 个最佳元素的时间是 $O(nlog k)$，空间 $O(k)$。</p>
+</li>
+</ul>
+<h3>6.3 并查集 [P1]</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">class</span> DSU:
+    <span class="statement">def</span> __init__(self, n):
+        self.parent = list(<span class="builtin">range</span>(n))
+        self.size = [1] * n
+
+    <span class="statement">def</span> find(self, x):
+        <span class="statement">while</span> x != self.parent[x]:
+            self.parent[x] = self.parent[self.parent[x]]
+            x = self.parent[x]
+        <span class="statement">return</span> x
+
+    <span class="statement">def</span> union(self, a, b):
+        ra, rb = self.find(a), self.find(b)
+        <span class="statement">if</span> ra == rb:
+            <span class="statement">return</span> <span class="builtin">False</span>
+        <span class="statement">if</span> self.size[ra] &lt; self.size[rb]:
+            ra, rb = rb, ra
+        self.parent[rb] = ra
+        self.size[ra] += self.size[rb]
+        <span class="statement">return</span> <span class="builtin">True</span>
+</pre></div></div>
+<p>路径压缩加按大小合并后，均摊复杂度近似常数 $O(alpha(n))$。</p>
+<h2>7. 图算法 [P0/P1]</h2>
+<h3>7.1 BFS 与 DFS</h3>
+<p>邻接表空间为 $O(V+E)$。BFS 求无权最短路；DFS 用于连通分量、环检测、拓扑思想和回溯。</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> bfs(graph, start):
+    <span class="statement">from</span> collections <span class="statement">import</span> deque
+    q = deque([start])
+    distance = {start: 0}
+    <span class="statement">while</span> q:
+        node = q.popleft()
+        <span class="statement">for</span> nxt <span class="builtin">in</span> graph[node]:
+            <span class="statement">if</span> nxt <span class="builtin">not</span> <span class="builtin">in</span> distance:
+                distance[nxt] = distance[node] + 1
+                q.append(nxt)
+    <span class="statement">return</span> distance
+</pre></div></div>
+<p>标记 visited 的时机很重要：BFS 通常在入队时标记，避免同一节点重复入队。</p>
+<h3>7.2 拓扑排序 [P1]</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> topological_order(graph, indegree):
+    <span class="statement">from</span> collections <span class="statement">import</span> deque
+    q = deque(i <span class="statement">for</span> i, deg <span class="builtin">in</span> <span class="builtin">enumerate</span>(indegree) <span class="statement">if</span> deg == 0)
+    order = []
+    <span class="statement">while</span> q:
+        node = q.popleft()
+        order.append(node)
+        <span class="statement">for</span> nxt <span class="builtin">in</span> graph[node]:
+            indegree[nxt] -= 1
+            <span class="statement">if</span> indegree[nxt] == 0:
+                q.append(nxt)
+    <span class="statement">return</span> order <span class="statement">if</span> len(order) == len(graph) <span class="statement">else</span> None
+</pre></div></div>
+<p>输出节点数少于 $V$ 表示有环。</p>
+<h3>7.3 最短路与最小生成树 [P1]</h3>
+<ul>
+<li><p>BFS：边权全为 1。</p>
+</li>
+<li><p>0–1 BFS：边权为 0 或 1，使用 <tt>deque</tt>。</p>
+</li>
+<li><p>Dijkstra：边权非负，二叉堆复杂度 $O((V+E)log V)$。</p>
+</li>
+<li><p>Bellman–Ford：允许负边并可检测负环，复杂度 $O(VE)$。</p>
+</li>
+<li><p>Kruskal：边排序加并查集；Prim：逐步扩展割边。</p>
+</li>
+</ul>
+<h2>8. 递归与回溯 [P0/P1]</h2>
+<p>回溯模板由四部分组成：状态、候选、合法性/剪枝、撤销选择。先说明输出规模；若所有解本身就有指数个，指数时间不可避免。</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> subsets(values):
+    answer = []
+    path = []
+
+    <span class="statement">def</span> dfs(index):
+        <span class="statement">if</span> index == len(values):
+            answer.append(path.copy())
+            <span class="statement">return</span>
+        dfs(index + 1)
+        path.append(values[index])
+        dfs(index + 1)
+        path.pop()
+
+    dfs(0)
+    <span class="statement">return</span> answer
+</pre></div></div>
+<p>有重复元素时先排序，并在同一递归层跳过相等候选；不要误删不同层合法的重复选择。</p>
+<h2>9. 贪心算法 [P0/P1]</h2>
+<h3>9.1 区间调度</h3>
+<p>选择最多不重叠区间：按结束时间升序，每次选当前最早结束且与已选集合兼容的区间。交换论证：任何最优解的第一个区间都可替换成最早结束者，不会减少后续可选空间。</p>
+<h3>9.2 何时不要贪心</h3>
+<p>“看起来局部最好”不是证明。若决策会改变未来候选且无法通过交换保持最优，尝试 DP、最短路或反例。面试中必须说出交换、领先或割性质之一。</p>
+<h2>10. 动态规划 [P0]</h2>
+<h3>10.1 编码前五问</h3>
+<ol>
+<li><p>状态表示什么？</p>
+</li>
+<li><p>转移从哪些较小状态而来？</p>
+</li>
+<li><p>初始值与不可能状态是什么？</p>
+</li>
+<li><p>计算顺序是否保证依赖已完成？</p>
+</li>
+<li><p>最终答案在哪个状态，能否压缩空间？</p>
+</li>
+</ol>
+<h3>10.2 一维 DP</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> max_non_adjacent(values):
+    take = float(<span class="string">"-inf"</span>)
+    skip = 0
+    <span class="statement">for</span> x <span class="builtin">in</span> values:
+        take, skip = skip + x, max(skip, take)
+    <span class="statement">return</span> max(skip, take)
+</pre></div></div>
+<p>更新多个压缩状态时必须使用旧值，通常用并行赋值。</p>
+<h3>10.3 0/1 背包</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> knapsack(weights, values, capacity):
+    dp = [0] * (capacity + 1)
+    <span class="statement">for</span> weight, <span class="special">value</span> <span class="builtin">in</span> <span class="builtin">zip</span>(weights, values):
+        <span class="statement">for</span> cap <span class="builtin">in</span> <span class="builtin">range</span>(capacity, weight - 1, -1):
+            dp[cap] = max(dp[cap], dp[cap - weight] + <span class="special">value</span>)
+    <span class="statement">return</span> dp[capacity]
+</pre></div></div>
+<p>0/1 背包容量必须倒序，避免同一物品被重复使用；完全背包则通常正序。</p>
+<h3>10.4 序列与状态机</h3>
+<ul>
+<li><p>最长递增子序列：朴素 DP $O(n^2)$；tails + 二分为 $O(nlog n)$。</p>
+</li>
+<li><p>最长公共子序列：二维 DP $O(nm)$。</p>
+</li>
+<li><p>股票买卖类：状态通常为天数 × 持仓 × 已用交易次数。</p>
+</li>
+<li><p>若状态是“集合”，可用 bitmask DP [P2]，但复杂度常为 $O(n2^n)$。</p>
+</li>
+</ul>
+<h2>11. 位运算与数值算法 [P1]</h2>
+<h3>11.1 位运算</h3>
+<ul>
+<li><p><tt>x &amp; (x - 1)</tt> 清除最低位的 1。</p>
+</li>
+<li><p><tt>x &amp; -x</tt> 取最低位的 1。</p>
+</li>
+<li><p>异或满足自消：<tt>a ^ a = 0</tt>，适合“其余均出现偶数次”的唯一元素题。</p>
+</li>
+<li><p>Python 整数无固定字长；涉及补码或位宽时必须显式加掩码。</p>
+</li>
+</ul>
+<h3>11.2 最大公约数与快速幂</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> gcd(a, b):
+    <span class="statement">while</span> b:
+        a, b = b, a % b
+    <span class="statement">return</span> abs(a)
+
+<span class="statement">def</span> power_mod(base, exponent, mod):
+    result = 1
+    base %= mod
+    <span class="statement">while</span> exponent:
+        <span class="statement">if</span> exponent &amp; 1:
+            result = result * base % mod
+        base = base * base % mod
+        exponent &gt;&gt;= 1
+    <span class="statement">return</span> result
+</pre></div></div>
+<p>欧几里得算法为 $O(log min(a,b))$；快速幂为 $O(log n)$。</p>
+<h3>11.3 数位根 [P0]</h3>
+<p>十进制正整数的反复数位和满足</p>
+<p>$$
+operatorname{dr}(n)=1+((n-1)bmod 9),qquad n&gt;0.
+$$</p>
+<p>$n=0$ 时数位根为 0。若题目要求展示过程，应写循环；若只求最终值，可用同余公式，并解释为什么模 9 不变量成立。</p>
+<h3>11.4 数值求根 [P1]</h3>
+<p>二分法只需连续函数和异号区间，稳健但线性收敛；牛顿法局部收敛快，但需导数、较好初值，并防止导数接近 0。浮点终止条件同时考虑区间宽度、函数值和最大迭代数。</p>
+<h2>12. 随机化与流式算法 [P1]</h2>
+<h3>12.1 Fisher–Yates 洗牌</h3>
+<p>从后向前，对位置 i 均匀选择 $jin{0,ldots,i}$ 并交换。每个排列概率均为 $1/n!$；若 j 的范围写错，洗牌会有偏。</p>
+<h3>12.2 蓄水池抽样</h3>
+<p>未知长度流中均匀保留一个样本：第 i 个元素以概率 $1<i>i$ 替换当前样本。保留 k 个样本时，前 k 个入池，之后第 i 个元素以概率 $k</i>i$ 入池并均匀替换。</p>
+<h3>12.3 在线统计</h3>
+<p>均值和方差使用 Welford 更新；分位数若不能保留全量数据，需要明确是精确算法还是近似 sketch，并报告误差保证。</p>
+<h2>13. 模式识别速查</h2>
+<ul>
+<li><p>连续子数组和：前缀和；含任意正负数时配哈希。</p>
+</li>
+<li><p>有序两数关系：双指针。</p>
+</li>
+<li><p>最长/最短连续可行区间：滑动窗口。</p>
+</li>
+<li><p>next greater/smaller：单调栈。</p>
+</li>
+<li><p>动态 top-k：堆。</p>
+</li>
+<li><p>无权最短路：BFS；非负权最短路：Dijkstra。</p>
+</li>
+<li><p>依赖顺序：拓扑排序。</p>
+</li>
+<li><p>动态连通性：并查集。</p>
+</li>
+<li><p>“方案数/最佳值”且有重叠子问题：DP。</p>
+</li>
+<li><p>枚举所有组合：回溯并剪枝。</p>
+</li>
+</ul>
+<h2>14. 必练题组</h2>
+<ol>
+<li><p>合并区间、插入区间、会议室数量。</p>
+</li>
+<li><p>两数之和、三数之和、最长无重复子串。</p>
+</li>
+<li><p>子数组和等于 k、最大子数组、滑窗最大值。</p>
+</li>
+<li><p>二分边界、旋转数组、答案二分。</p>
+</li>
+<li><p>有效括号、最小栈、单调栈。</p>
+</li>
+<li><p>树的层序/前中后序、最近公共祖先。</p>
+</li>
+<li><p>岛屿数量、拓扑排序、Dijkstra。</p>
+</li>
+<li><p>0/1 背包、网格路径、最长递增子序列。</p>
+</li>
+<li><p>数位根、最大公约数、快速幂。</p>
+</li>
+<li><p>洗牌、蓄水池抽样、在线均值方差。</p>
+</li>
+</ol>
+<h2>15. 错题日志模板</h2>
+<ul>
+<li><p>题目与来源：</p>
+</li>
+<li><p>我误判的模式：</p>
+</li>
+<li><p>错误发生在假设、证明、实现还是边界：</p>
+</li>
+<li><p>正确的不变量/状态：</p>
+</li>
+<li><p>时间与空间复杂度：</p>
+</li>
+<li><p>一个最小反例：</p>
+</li>
+<li><p>1 天、3 天、7 天后的重做结果：</p>
+</li>
+</ul>
+<h2>16. 参考资料</h2>
+<ul>
+<li><p><a href="https://docs.python.org/3/library/collections.html">Python collections</a>、<a href="https://docs.python.org/3/library/heapq.html">heapq</a> 与 <a href="https://docs.python.org/3/library/bisect.html">bisect</a> 官方文档。</p>
+</li>
+<li><p><a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/">MIT 6.006 Introduction to Algorithms</a>。</p>
+</li>
+<li><p>Thomas H. Cormen 等，<i>Introduction to Algorithms</i>；Steven Skiena，<i>The Algorithm Design Manual</i>。</p>
+</li>
+</ul>
+<p><b>面试提醒：</b> 能写出代码只是下限。真正区分度来自：迅速识别模式、给出可检查的不变量、主动说出边界，并用清楚的复杂度结束答案。</p>
+</div>
+</body>
+</html>

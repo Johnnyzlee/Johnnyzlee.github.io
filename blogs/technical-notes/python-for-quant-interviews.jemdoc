@@ -1,0 +1,360 @@
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}
+= 量化研究面试 Python 复习笔记
+[../../blog.html ← Blogs] \M /更新于 2026-07-20/
+
+~~~
+{}{raw}
+<div class="language-switch" role="navigation" aria-label="语言选择"><span class="active" aria-current="page">中文</span><a href="python-for-quant-interviews-en.html" hreflang="en">English</a></div>
+<div class="page-lead"><strong>中文精编版：</strong>面向闭卷量化研究编程面试，集中复习最常用的 Python、NumPy、pandas、scikit-learn 与时间序列模板。代码和 API 名称保留英文；English 页面提供更完整的逐项参考。</div>
+~~~
+
+*优先级：* P0 = 必须能默写；P1 = 看见后能改；P2 = 允许查文档时再用。重点不是背下所有 API，而是清楚形状、索引、复杂度、数据类型与时间对齐。
+
+== 0. 闭卷自检清单
+
+- □ 能写输入解析、循环、+enumerate+、+zip+、推导式、函数和异常处理。
+- □ 能解释 +list/tuple/set/dict+ 的可变性、可哈希性与平均复杂度。
+- □ 熟练使用 +Counter+、+defaultdict+、+deque+、+heapq+、+bisect+。
+- □ 能写排序键、top-k、双指针、滑动窗口与前缀和。
+- □ 理解 NumPy 的 +shape+、+axis+、广播、视图/复制和 NaN。
+- □ 会用 pandas 的 +loc/iloc+、+groupby+、+merge+、+pivot+、+shift+、+rolling+。
+- □ 能搭建无泄漏的 sklearn +Pipeline+，并按时间切分数据。
+- □ 能构造未来收益、滚动特征、截面排名和 IC，不偷看未来。
+- □ 写代码前先说时间与空间复杂度，最后测试空输入、重复值和全相等情形。
+
+== 1. Python 核心语法 \[P0\]
+
+=== 1.1 标量、比较与浮点数
+
+- +int+ 为任意精度整数；+float+ 是二进制浮点数；+bool+ 是 +int+ 的子类。
+- +None+ 是单例，应写 +x is None+，不要写 +x == None+。
+- +//+ 向负无穷取整，+%+ 为模，+**+ 为幂。
+- 布尔运算会短路，且返回某个操作数，不一定返回 +bool+。
+- 浮点近似比较用 +math.isclose+ 或 +np.isclose+。
+
+~~~
+{}{python}
+x = 7
+q, r = divmod(x, 3)             # (2, 1)
+safe = value if condition else fallback
+if x is None:
+    ...
+~~~
+
+*数值直觉：* +0.1 + 0.2+ 并不精确等于 +0.3+。避免直接比较浮点数、两个巨大近似数相减，以及 +exp/log+ 溢出；必要时用 +log1p+、+expm1+ 与 log-sum-exp。
+
+=== 1.2 字符串、循环与格式化
+
+~~~
+{}{python}
+s = "quant research"
+tokens = s.strip().lower().split()
+text = ",".join(tokens)
+
+for i, value in enumerate(values):
+    pass
+
+for left, right in zip(xs, ys):
+    pass
+
+label, score = "factor", 0.81234
+report = f"{label}: {score:.3f}"
+~~~
+
+字符串不可变；切片 +s\[start:stop:step\]+ 不包含 +stop+。循环中反复拼接字符串可能退化为二次复杂度，应先收集片段，再用 +"".join(parts)+。
+
+=== 1.3 函数、参数与作用域
+
+~~~
+{}{python}
+def score(x, weight=1.0, *, clip=None):
+    out = weight * x
+    if clip is not None:
+        out = max(-clip, min(clip, out))
+    return out
+
+def append_value(x, out=None):
+    if out is None:              # 避免可变默认参数
+        out = []
+    out.append(x)
+    return out
+~~~
+
+默认参数只在函数定义时求值一次。Python 传递的是对象引用：局部变量重新绑定不会改变调用者对象，但修改传入的列表会。名字查找遵循 LEGB；闭包捕获名字而不是冻结值，因此循环中的 lambda 常写成 +lambda x, i=i: ...+。
+
+=== 1.4 异常与资源管理
+
+~~~
+{}{python}
+try:
+    value = mapping[key]
+except KeyError:
+    value = 0
+else:
+    process(value)
+
+with open(path, "r", encoding="utf-8") as f:
+    text = f.read()
+~~~
+
+只捕获预期的窄异常；不要用 +except Exception: pass+ 吞掉错误。文件、锁和连接优先交给上下文管理器关闭。
+
+== 2. 内置容器与标准库 \[P0\]
+
+=== 2.1 选择正确容器
+
+- +list+：有序可变数组；索引、尾部追加和尾部弹出均摊 $O(1)$，头部插删为 $O(n)$。
+- +tuple+：有序不可变；元素都可哈希时可作字典键。
+- +dict+：保持插入顺序的映射；查找、插入、删除平均 $O(1)$。
+- +set+：唯一可哈希元素；成员检查平均 $O(1)$。
+- 去重且保序可写 +list(dict.fromkeys(values))+；空集合必须写 +set()+。
+
+~~~
+{}{python}
+counts = {}
+for x in values:
+    counts[x] = counts.get(x, 0) + 1
+
+matrix = [[0] * m for _ in range(n)]
+# 不要写 [[0] * m] * n：各行会引用同一个列表。
+~~~
+
+=== 2.2 面试常用标准库
+
+~~~
+{}{python}
+from collections import Counter, defaultdict, deque
+from bisect import bisect_left, insort
+import heapq
+
+freq = Counter(values)
+groups = defaultdict(list)
+queue = deque([start])
+
+top_k = heapq.nlargest(k, values)
+position = bisect_left(sorted_values, target)
+~~~
+
+- +deque+ 两端操作为 $O(1)$；+list.pop(0)+ 为 $O(n)$。
+- +heapq+ 是最小堆；推入和弹出为 $O(\log n)$，查看堆顶为 $O(1)$。
+- 维护最大的 k 个元素时可保留大小为 k 的最小堆，总复杂度 $O(n\log k)$。
+- +bisect+ 查找位置为 $O(\log n)$，但列表插入仍为 $O(n)$。
+
+== 3. 排序、输入与测试 \[P0\]
+
+Python 排序稳定。用元组键表达多级规则；不要依赖集合或哈希表的偶然顺序。
+
+~~~
+{}{python}
+records.sort(key=lambda row: (row["date"], -row["score"], row["id"]))
+order = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)
+~~~
+
+*边界测试：* 空输入、单元素、重复值、全相等、负数、已排序/逆序、超大值、NaN、错误数据类型。若结果依赖随机数，固定种子并报告随机误差。
+
+== 4. NumPy \[P0\]
+
+=== 4.1 心智模型：数据缓冲区 + dtype + shape + strides
+
+~~~
+{}{python}
+import numpy as np
+
+x = np.asarray(values, dtype=float)
+row = x.reshape(1, -1)          # (1, n)
+col = x.reshape(-1, 1)          # (n, 1)
+flat = x.ravel()
+~~~
+
+一维数组的形状是 +(n,)+，不是列向量。每次矩阵运算前先写出形状；不要用 +np.matrix+。+reshape+ 可能返回视图，也可能复制，取决于内存布局。
+
+=== 4.2 索引、视图与广播
+
+- 基础切片通常返回视图；整数数组/布尔数组高级索引通常返回复制。
+- 广播从最右侧维度比较：维度相等，或其中一个为 1，才兼容。
+- 显式写 +keepdims=True+ 常能防止无意形状变化。
+
+~~~
+{}{python}
+X = np.arange(12).reshape(3, 4)
+row_mean = X.mean(axis=1, keepdims=True)
+centered = X - row_mean
+
+mask = np.isfinite(X)
+safe = np.where(mask, X, 0.0)
+~~~
+
+=== 4.3 归约、排序与线性代数
+
+~~~
+{}{python}
+mean_by_col = X.mean(axis=0)
+order = np.argsort(scores)
+largest_idx = np.argpartition(scores, -k)[-k:]
+
+beta, *_ = np.linalg.lstsq(X, y, rcond=None)
+solution = np.linalg.solve(A, b)   # 优先于 inv(A) @ b
+u, s, vt = np.linalg.svd(X, full_matrices=False)
+eigvals, eigvecs = np.linalg.eigh(symmetric_A)
+~~~
+
+不要为求解线性方程显式计算逆矩阵。对称矩阵用 +eigh+。涉及 NaN 时先决定是传播、忽略还是删除，不能让默认行为替你做统计假设。
+
+=== 4.4 随机数与可复现性
+
+~~~
+{}{python}
+rng = np.random.default_rng(42)
+sample = rng.normal(size=(1000, 3))
+choice = rng.choice(len(values), size=100, replace=True)
+~~~
+
+使用局部 +Generator+，不要让全局随机状态渗入测试。记录种子、库版本、数据切分和预处理参数。
+
+== 5. pandas \[P0\]
+
+=== 5.1 选择、分组与连接
+
+~~~
+{}{python}
+df = df.sort_values(["date", "asset"])
+subset = df.loc[df["volume"].gt(0), ["date", "asset", "ret"]]
+
+summary = (
+    df.groupby("sector", observed=True)["ret"]
+      .agg(["count", "mean", "std"])
+)
+df["sector_mean"] = df.groupby(["date", "sector"])["signal"].transform("mean")
+
+panel = prices.merge(
+    metadata,
+    on="asset",
+    how="left",
+    validate="many_to_one",
+)
+~~~
+
+- +loc+ 按标签，+iloc+ 按位置；链式赋值不可靠，显式使用 +loc+。
+- +agg+ 缩减每组，+transform+ 返回与原行数相同的结果，+apply+ 最灵活但最慢也最难审计。
+- 连接前先说清键的唯一性与预期行数；使用 +validate=+ 让错误的多对多连接尽早失败。
+
+=== 5.2 缺失值、整形与时间序列
+
+~~~
+{}{python}
+df = df.drop_duplicates(["date", "asset"], keep="last")
+wide = df.pivot(index="date", columns="asset", values="ret")
+long = wide.stack(dropna=False).rename("ret").reset_index()
+
+g = df.groupby("asset", group_keys=False)
+df["ret_1d"] = g["price"].pct_change(fill_method=None)
+df["lag_signal"] = g["signal"].shift(1)
+df["vol_20"] = g["ret_1d"].transform(lambda s: s.rolling(20).std())
+~~~
+
+时间序列必须先按 +asset,date+ 排序。滚动特征一般还需 +shift(1)+，确保时点 t 的预测只使用 t 之前可获得的信息。
+
+== 6. scikit-learn 与防泄漏 \[P0/P1\]
+
+=== 6.1 Pipeline 与时间切分
+
+~~~
+{}{python}
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import Ridge
+from sklearn.model_selection import TimeSeriesSplit
+
+model = Pipeline([
+    ("imputer", SimpleImputer(strategy="median")),
+    ("scale", StandardScaler()),
+    ("model", Ridge(alpha=1.0)),
+])
+
+cv = TimeSeriesSplit(n_splits=5)
+for train_idx, test_idx in cv.split(X):
+    model.fit(X[train_idx], y[train_idx])
+    pred = model.predict(X[test_idx])
+~~~
+
+所有从数据中学习的操作——缺失值填充、标准化、特征筛选、降维——都必须只在训练折上 +fit+。随机切分通常不适合有时间顺序的数据；若标签区间重叠，还要考虑 purge/embargo。
+
+=== 6.2 指标选择
+
+- 回归：MAE 易解释且较稳健；MSE/RMSE 更惩罚大误差；$R^2$ 必须与合适基准比较。
+- 分类：类别不均衡时不要只看 accuracy；同时报告 precision、recall、F1、ROC-AUC 或 PR-AUC。
+- 排序/量化：关注 rank IC、top-bottom spread、换手率、交易成本与时序稳定性。
+- 调参报告均值与离散度，不只报告最好的一次；保留最终未触碰的测试集。
+
+== 7. 量化编码模板 \[P0\]
+
+=== 7.1 未来收益与严格对齐
+
+~~~
+{}{python}
+df = df.sort_values(["asset", "date"])
+g = df.groupby("asset", group_keys=False)
+
+horizon = 5
+df["fwd_ret"] = g["price"].transform(
+    lambda s: s.shift(-horizon).div(s).sub(1.0)
+)
+df["signal_lag1"] = g["signal"].shift(1)
+~~~
+
+逐行人工核对至少五个时点：特征的发布日期、可交易时间、目标区间和复权方式必须一致。
+
+=== 7.2 截面排名与 IC
+
+~~~
+{}{python}
+df["signal_rank"] = df.groupby("date")["signal"].rank(pct=True)
+
+def spearman_ic(group):
+    valid = group[["signal", "fwd_ret"]].dropna()
+    if len(valid) < 3:
+        return np.nan
+    return valid["signal"].corr(valid["fwd_ret"], method="spearman")
+
+daily_ic = df.groupby("date").apply(spearman_ic)
+~~~
+
+明确 universe、缺失值规则与并列排名方法。报告 IC 时间序列的均值、标准差、命中率与不同市场阶段的稳定性。
+
+=== 7.3 在线均值与方差
+
+~~~
+{}{python}
+n = 0
+mean = 0.0
+m2 = 0.0
+for x in stream:
+    n += 1
+    delta = x - mean
+    mean += delta / n
+    m2 += delta * (x - mean)
+
+sample_variance = m2 / (n - 1) if n > 1 else np.nan
+~~~
+
+Welford 更新比“平方均值减均值平方”更稳定，且只需 $O(1)$ 额外空间。
+
+== 8. 七天复习安排
+
+. 第 1 天：核心语法和容器；不用 IDE 写 10 个小函数。
+. 第 2 天：+collections/heapq/bisect+；双指针、滑窗和区间题。
+. 第 3 天：NumPy 形状、广播、索引、归约和线性代数；重写 OLS。
+. 第 4 天：pandas 选择、分组、连接、整形和缺失值。
+. 第 5 天：时间序列；构造滞后特征与未来目标，逐行审计。
+. 第 6 天：sklearn Pipeline、时间交叉验证、指标与完整表格模型。
+. 第 7 天：90 分钟模拟：概率模拟、pandas 题和两道算法题；整理错题日志。
+
+== 9. 官方参考
+
+- [https://docs.python.org/3/tutorial/ The Python Tutorial]：语法、数据结构、模块、I/O 与异常。
+- [https://numpy.org/doc/stable/user/basics.html NumPy Fundamentals] 与 [https://numpy.org/doc/stable/user/basics.indexing.html NumPy Indexing]：广播、dtype、索引、视图与复制。
+- [https://pandas.pydata.org/docs/user_guide/ pandas User Guide]：索引、缺失值、连接、分组、窗口与时间序列。
+- [https://scikit-learn.org/stable/user_guide.html scikit-learn User Guide]：模型选择、Pipeline、预处理、指标与常见陷阱。
+
+*版本提醒：* 面试平台可能固定较旧的 Python 或库版本。除非环境明确，不要依赖最新才出现的便捷 API。

@@ -1,0 +1,980 @@
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}
+= Python for Quantitative Research Interviews
+[../../blog.html ← Blogs] \M /updated 2026-07-20/
+
+~~~
+{}{raw}
+<div class="language-switch" role="navigation" aria-label="Language"><a href="python-for-quant-interviews.html" hreflang="zh-CN">中文</a><span class="active" aria-current="page">English</span></div>
+~~~
+
+This is a closed-book coding review for quantitative-research interviews. The goal is to write correct, readable Python without autocomplete, then use NumPy, pandas, and scikit-learn without leakage. Memorize the small templates; understand shapes, dtypes, indexes, complexity, and time alignment.
+
+*Priority:* P0 = type from memory; P1 = recognize and adapt; P2 = look up when allowed. Unless an assessment specifies versions, prefer stable core APIs and avoid new\/version-specific shortcuts.
+
+== 0. Closed-book readiness checklist
+
+- □ Parse input; loop\/enumerate\/zip; comprehensions; functions; exceptions.
+- □ Choose list\/tuple\/set\/dict; explain mutability, hashing and average complexity.
+- □ Use +Counter+, +defaultdict+, +deque+, +heapq+, +bisect+ and +itertools+.
+- □ Sort by a key; maintain top-k; two pointers; sliding window; prefix sums.
+- □ Create NumPy arrays; reason about shape, axis, broadcasting, indexing, copies and NaN.
+- □ Use pandas +loc\/iloc+, boolean filters, +groupby+, +agg\/transform+, +merge+, +pivot+, +shift+, +rolling+.
+- □ Build a leakage-safe sklearn +Pipeline+; split time-aware data; choose metrics.
+- □ Create forward returns, rolling features, ranks and IC without using future data.
+- □ State time and space complexity before coding; test empty, singleton, duplicate and all-equal cases.
+
+== 1. Core Python syntax \[P0\]
+
+=== 1.1 Variables, scalar types and operators
+
+- +int+ has arbitrary precision; +float+ is binary floating point; +bool+ is a subclass of +int+.
+- +None+ is a singleton: test with +is None+, not +== None+.
+- Arithmetic: +\/\/+ floor division, +\%+ modulo, +\*\*+ power. For negative values, +\/\/+ rounds toward negative infinity.
+- Comparison chains work: +0 <= x < 1+. Boolean operators short-circuit and return an operand, not necessarily +bool+.
+- Use +math.isclose+ or +np.isclose+ for approximate floating comparison.
+
+~~~
+{}{python}
+x = 7
+q, r = divmod(x, 3)            # (2, 1)
+safe = value if condition else fallback
+if x is None:
+    ...
+~~~
+
+*Floating-point reflex:* 0.1\+0.2 is not exactly 0.3; avoid equality checks, subtracting nearly equal large numbers, and exp\/log overflow. Use +log1p+, +expm1+, and log-sum-exp patterns where needed.
+
+=== 1.2 Strings and formatting
+
+~~~
+{}{python}
+s = "quant research"
+s.lower(); s.upper(); s.strip()
+s.split()                       # whitespace tokens
+",".join(["a", "b"])
+s.startswith("quant")
+s.replace("research", "trading")
+name, score = "Li", 0.81234
+text = f"{name}: {score:.3f}"
+~~~
+
+Strings are immutable. Slicing is +s\[start:stop:step\]+ with stop excluded. Repeated string concatenation in a loop can be quadratic; append pieces and +\'\'.join(parts)+.
+
+=== 1.3 Control flow and loops
+
+~~~
+{}{python}
+for i in range(n):              # 0,...,n-1
+    pass
+
+for i, value in enumerate(values):
+    pass
+
+for a, b in zip(xs, ys):        # stops at shorter iterable
+    pass
+
+for key in sorted(mapping):
+    value = mapping[key]
+
+while left < right:
+    ...
+~~~
+
+- +break+ exits the nearest loop; +continue+ skips to its next iteration.
+- A loop's +else+ runs only if the loop finishes without +break+.
+- Do not modify a list\/dict's size while iterating over it; iterate over a copy or build a result.
+
+=== 1.4 Functions and arguments
+
+~~~
+{}{python}
+def score(x, weight=1.0, *, clip=None):
+    # clip must be passed by keyword.
+    out = weight * x
+    if clip is not None:
+        out = max(-clip, min(clip, out))
+    return out
+
+def summarize(*values, **options):
+    return values, options
+
+args = (3,)
+kwargs = {"weight": 2.0, "clip": 5.0}
+score(*args, **kwargs)
+~~~
+
+*Mutable-default trap:*
+
+~~~
+{}{python}
+def append_value(x, out=None):
+    if out is None:
+        out = []
+    out.append(x)
+    return out
+~~~
+
+Default arguments are evaluated once at function definition. Python passes object references by assignment: rebinding a local name does not mutate the caller's object, but mutating a passed list does.
+
+=== 1.5 Scope, closures and lambda
+
+- Name lookup follows LEGB: Local, Enclosing, Global, Builtins.
+- Assignment makes a name local unless declared +global+ or +nonlocal+.
+- A closure captures names (late binding), not frozen values. Bind a current loop value with a default argument when needed.
+
+~~~
+{}{python}
+funcs = [lambda x, i=i: x + i for i in range(3)]
+key = lambda item: (item[1], item[0])
+~~~
+
+Use +lambda+ only for short expressions, mainly sorting\/grouping keys.
+
+=== 1.6 Exceptions and resource handling
+
+~~~
+{}{python}
+try:
+    value = mapping[key]
+except KeyError:
+    value = 0
+else:
+    process(value)
+finally:
+    cleanup()
+
+if n < 0:
+    raise ValueError("n must be nonnegative")
+
+with open(path, "r", encoding="utf-8") as f:
+    text = f.read()
+~~~
+
+Catch the narrow exception you expect; do not silently use +except Exception: pass+. Context managers guarantee cleanup.
+
+== 2. Built-in data structures \[P0\]
+
+=== 2.1 List
+
+Ordered, mutable dynamic array. Index\/append\/pop-last are O(1) amortized; inserting\/deleting near the front is O(n); membership is O(n).
+
+~~~
+{}{python}
+a = [3, 1, 2]
+a.append(4)
+x = a.pop()
+a.extend([5, 6])
+b = a[::-1]                     # reversed copy
+c = sorted(a)                   # new list
+a.sort(key=lambda x: -x)        # in place, returns None
+squares = [x * x for x in a if x >= 0]
+matrix = [[0] * m for _ in range(n)]
+~~~
+
+*Aliasing trap:* +\[\[0\] \* m\] \* n+ repeats references to the same inner list. Use the comprehension above.
+
+=== 2.2 Tuple
+
+Ordered and immutable; usable as a dict key if all elements are hashable. Packing\/unpacking is pervasive.
+
+~~~
+{}{python}
+point = (2, 5)
+x, y = point
+first, *middle, last = range(6)
+single = (1,)                    # comma makes the tuple
+~~~
+
+=== 2.3 Dictionary
+
+Insertion-ordered mapping in modern Python. Average lookup\/insert\/delete O(1); keys must be hashable.
+
+~~~
+{}{python}
+d = {"a": 1}
+d["b"] = d.get("b", 0) + 1
+for k, v in d.items():
+    pass
+keys = set(d)
+value = d.pop("a", None)
+merged = d1 | d2                 # later mapping wins (modern Python)
+~~~
+
+Avoid +if k in d.keys()+; use +if k in d+. Accessing a missing +d\[k\]+ raises +KeyError+.
+
+=== 2.4 Set
+
+Unordered unique hashable values. Average membership\/add\/remove O(1).
+
+~~~
+{}{python}
+s = set(values)
+s.add(x); s.discard(x)           # discard does not raise if missing
+union = a | b
+inter = a & b
+diff = a - b
+sym = a ^ b
+~~~
+
+Use a set for membership\/deduplication, but preserve order with +list(dict.fromkeys(values))+. An empty set is +set()+; +{}+ is a dict.
+
+=== 2.5 Copying and identity
+
+~~~
+{}{python}
+import copy
+b = a                            # same object
+b = a.copy()                     # shallow copy
+b = copy.deepcopy(a)             # recursive copy
+~~~
+
++is+ tests identity; +==+ tests value equality. Shallow copies still share nested mutable objects.
+
+== 3. Comprehensions, iterators and generators \[P0\/P1\]
+
+~~~
+{}{python}
+evens = [x for x in values if x % 2 == 0]
+lookup = {x: x * x for x in values}
+unique = {normalize(x) for x in values}
+total = sum(x * x for x in values)       # generator expression
+
+def running_total(values):
+    total = 0
+    for x in values:
+        total += x
+        yield total
+~~~
+
+- Iterable: can produce an iterator. Iterator: has +__next__+ and is consumed.
+- Generators are lazy and memory-efficient; once consumed, recreate them.
+- +any+ and +all+ short-circuit. +min\/max+ accept a +key+.
+
+== 4. Standard-library tools to memorize \[P0\]
+
+=== 4.1 collections
+
+~~~
+{}{python}
+from collections import Counter, defaultdict, deque
+
+counts = Counter(values)
+counts.most_common(3)
+
+groups = defaultdict(list)
+for key, value in rows:
+    groups[key].append(value)
+
+q = deque([start])
+q.append(x); q.appendleft(y)
+q.popleft(); q.pop()
+~~~
+
++deque+ provides O(1) operations at both ends and is the correct BFS queue.
+
+=== 4.2 heapq and top-k
+
+Python's heap is a min-heap.
+
+~~~
+{}{python}
+import heapq
+
+heap = []
+heapq.heappush(heap, value)
+smallest = heapq.heappop(heap)
+
+# Keep k largest values in O(n log k)
+heap = []
+for x in values:
+    if len(heap) < k:
+        heapq.heappush(heap, x)
+    elif x > heap[0]:
+        heapq.heapreplace(heap, x)
+~~~
+
+For a max-heap in interview-compatible code, store negative numeric priorities: +(-priority, tie_breaker, item)+.
+
+=== 4.3 bisect
+
+~~~
+{}{python}
+from bisect import bisect_left, bisect_right, insort
+
+i = bisect_left(a, x)            # first index with value >= x
+j = bisect_right(a, x)           # first index with value > x
+count_x = j - i
+insort(a, x)                     # search O(log n), insertion O(n)
+~~~
+
+=== 4.4 itertools and functools
+
+~~~
+{}{python}
+from itertools import accumulate, combinations, permutations, product
+from functools import lru_cache
+
+prefix = list(accumulate(values))
+for pair in combinations(values, 2):
+    pass
+for state in product(range(3), repeat=n):
+    pass
+
+@lru_cache(None)
+def dp(state):
+    ...
+~~~
+
+Know that combinatorial iterators can still generate exponentially\/factorially many results.
+
+== 5. Sorting, parsing and interview hygiene \[P0\]
+
+=== 5.1 Sorting
+
+Python sorting is stable and O(n log n). Composite keys are lexicographic.
+
+~~~
+{}{python}
+rows.sort(key=lambda row: (row[0], -row[1]))
+ranked = sorted(enumerate(scores), key=lambda p: p[1], reverse=True)
+~~~
+
+Stability lets you sort by a secondary key first, then by primary key.
+
+=== 5.2 Input\/output template
+
+~~~
+{}{python}
+import sys
+
+def solve():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+    n = int(next(it))
+    values = [int(next(it)) for _ in range(n)]
+    answer = sum(values)
+    print(answer)
+
+if __name__ == "__main__":
+    solve()
+~~~
+
+For interactive interviews, favor clarity over micro-optimized parsing. Never shadow builtins such as +list+, +sum+, +max+, +str+.
+
+=== 5.3 Testing checklist
+
+. Restate inputs, outputs, constraints and whether data are sorted\/unique.
+. Work a tiny example before coding.
+. State invariant and complexity.
+. Test empty input, one item, duplicates, negative values, all equal, already sorted, reverse sorted, and very large values.
+. For random\/numeric code, fix a seed only for reproducibility; do not mistake it for statistical independence.
+
+== 6. NumPy \[P0\]
+
+=== 6.1 Mental model: ndarray = data buffer \+ dtype \+ shape \+ strides
+
+~~~
+{}{python}
+import numpy as np
+
+a = np.array([1, 2, 3], dtype=float)
+z = np.zeros((3, 4))
+o = np.ones_like(z)
+I = np.eye(3)
+x = np.arange(0, 10, 2)
+grid = np.linspace(0.0, 1.0, 6)
+
+a.shape; a.ndim; a.size; a.dtype
+a.astype(np.float64, copy=False)
+~~~
+
+- One array has one dtype; mixing numbers and strings may coerce unexpectedly.
+- Shape +(n,)+ is a 1-D vector, not a row or column. Use +(n,1)+ or +(1,n)+ explicitly.
+- +axis+ is the dimension being reduced: for a 2-D array, +axis=0+ reduces rows and returns one value per column; +axis=1+ reduces columns and returns one per row.
+
+=== 6.2 Shape operations
+
+~~~
+{}{python}
+x = np.arange(12).reshape(3, 4)
+x.T
+x.reshape(-1, 1)
+x.ravel()                        # view when possible
+x.flatten()                      # copy
+np.squeeze(x)
+np.expand_dims(a, axis=1)
+
+np.concatenate([a, b], axis=0)  # existing axis
+np.stack([a, b], axis=0)        # new axis
+np.vstack([a, b])
+np.column_stack([a, b])
+~~~
+
+Always predict the output shape before running code.
+
+=== 6.3 Indexing: view versus copy
+
+~~~
+{}{python}
+x[1, 2]
+x[:, 1:3]                        # basic slice, usually a view
+x[[0, 2], :]                     # advanced indexing, copy
+x[x[:, 0] > 0]                  # boolean indexing, copy
+x[np.ix_([0, 2], [1, 3])]       # Cartesian submatrix
+~~~
+
+Basic slicing returns a view when possible; advanced integer\/boolean indexing returns a copy. If you need independence, call +.copy()+ explicitly.
+
+=== 6.4 Broadcasting
+
+Compare shapes from the right. Dimensions are compatible when equal or one is 1.
+
+~~~
+{}{python}
+X = np.arange(12).reshape(3, 4)
+row_centered = X - X.mean(axis=1, keepdims=True)  # (3,4)-(3,1)
+col_scaled = X / X.std(axis=0, keepdims=True)     # (3,4)-(1,4)
+pairwise = a[:, None] - b[None, :]                # (len(a),len(b))
+~~~
+
+Broadcasting avoids explicit loops but may materialize a huge result. A shape that broadcasts successfully can still represent the wrong calculation.
+
+=== 6.5 Vectorization, reductions and conditionals
+
+~~~
+{}{python}
+X.sum(axis=0)
+X.mean(axis=0)
+X.std(axis=0, ddof=1)            # sample standard deviation
+X.min(); X.argmin()
+np.quantile(X, [0.25, 0.5, 0.75], axis=0)
+np.cumsum(a); np.cumprod(a)
+np.diff(a)
+
+mask = np.isfinite(X) & (X > 0)
+clean = np.where(mask, X, np.nan)
+clipped = np.clip(X, -3, 3)
+~~~
+
+Use elementwise +&+, +|+, +\~+ with parentheses; Python +and\/or+ do not work elementwise on arrays.
+
+=== 6.6 NaN and missing numeric data
+
+~~~
+{}{python}
+np.isnan(X)
+np.nanmean(X, axis=0)
+np.nanstd(X, axis=0, ddof=1)
+np.nanquantile(X, 0.5, axis=0)
+~~~
+
++NaN != NaN+; test with +np.isnan+. Integer arrays cannot represent NaN without dtype conversion or a masked\/nullable representation.
+
+=== 6.7 Sorting, ranking and selection
+
+~~~
+{}{python}
+np.sort(a)
+order = np.argsort(a, kind="stable")
+top_k_idx = np.argpartition(a, -k)[-k:]   # unsorted top-k, average O(n)
+values, counts = np.unique(a, return_counts=True)
+~~~
+
+Use +argpartition+ when only top-k membership matters; sort the selected subset if order is required.
+
+=== 6.8 Linear algebra
+
+~~~
+{}{python}
+y = A @ x
+C = A @ B
+solution = np.linalg.solve(A, b)          # square nonsingular
+coef, residuals, rank, s = np.linalg.lstsq(X, y, rcond=None)
+eigvals, eigvecs = np.linalg.eigh(S)      # symmetric/Hermitian
+U, singular, Vt = np.linalg.svd(X, full_matrices=False)
+L = np.linalg.cholesky(cov)
+norm = np.linalg.norm(x)
+~~~
+
+Do not write +np.linalg.inv(A) @ b+; use +solve+. For symmetric matrices use +eigh+, which returns real ordered eigenvalues and exploits structure.
+
+=== 6.9 Random numbers and simulation
+
+~~~
+{}{python}
+rng = np.random.default_rng(20260720)
+u = rng.random(1000)
+z = rng.normal(loc=0.0, scale=1.0, size=(1000, 3))
+idx = rng.choice(n, size=k, replace=False)
+perm = rng.permutation(n)
+~~~
+
+Prefer an explicit +Generator+ over global state. Simulation is a verification tool, not a substitute for an analytic answer when one is requested.
+
+== 7. pandas \[P0\]
+
+=== 7.1 Series, DataFrame and inspection
+
+~~~
+{}{python}
+import pandas as pd
+
+df = pd.read_csv("prices.csv", parse_dates=["date"])
+df.head(); df.tail()
+df.shape; df.columns; df.dtypes
+df.info()
+df.describe(include="all")
+df["symbol"].value_counts(dropna=False)
+df.nunique(dropna=False)
+~~~
+
+- +Series+ is one labeled vector; +DataFrame+ is a 2-D labeled table.
+- pandas aligns arithmetic by index labels, not row position. This is powerful and a frequent silent-bug source.
+- Keep keys such as +date,symbol+ explicit; assert uniqueness when the data model requires it.
+
+~~~
+{}{python}
+assert not df.duplicated(["date", "symbol"]).any()
+df = df.sort_values(["symbol", "date"]).reset_index(drop=True)
+~~~
+
+=== 7.2 Selection: loc versus iloc
+
+~~~
+{}{python}
+df["close"]                       # Series
+df[["date", "symbol", "close"]] # DataFrame
+df.loc[df["volume"] > 0, ["symbol", "close"]]
+df.iloc[:10, :3]
+df.at[row_label, "close"]
+df.iat[0, 2]
+~~~
+
+- +loc+ is label-based; label slices include the stop label.
+- +iloc+ is integer-position-based; slices exclude the stop position.
+- Combine masks with +&+ and +|+, parenthesizing each condition.
+
+~~~
+{}{python}
+mask = (
+    df["symbol"].isin(["A", "B"])
+    & df["close"].notna()
+    & df["date"].between("2025-01-01", "2025-12-31")
+)
+subset = df.loc[mask].copy()
+~~~
+
+Avoid chained assignment such as +df\[df.x>0\]\[\"y\"\] = 1+. Use one +loc+ assignment. With evolving copy-on-write semantics, explicit +.copy()+ at ownership boundaries remains clearest.
+
+=== 7.3 Create, rename, sort and type columns
+
+~~~
+{}{python}
+df = df.assign(
+    dollar_volume=lambda x: x["close"] * x["volume"],
+    log_price=lambda x: np.log(x["close"]),
+)
+df = df.rename(columns={"ticker": "symbol"})
+df = df.sort_values(["date", "score"], ascending=[True, False])
+df["date"] = pd.to_datetime(df["date"], errors="coerce")
+df["symbol"] = df["symbol"].astype("string")
+~~~
+
+=== 7.4 Missing values and duplicates
+
+~~~
+{}{python}
+df.isna().sum()
+df = df.dropna(subset=["date", "symbol", "close"])
+df["sector"] = df["sector"].fillna("Unknown")
+df["value"] = df.groupby("symbol")["value"].ffill()
+df = df.drop_duplicates(["date", "symbol"], keep="last")
+~~~
+
+Missingness can be informative. Never forward-fill across symbols or across unavailable history. Specify why a duplicate exists before choosing first\/last.
+
+=== 7.5 groupby: agg, transform, filter, apply
+
+~~~
+{}{python}
+summary = (
+    df.groupby("symbol", as_index=False)
+      .agg(mean_ret=("ret", "mean"),
+           vol=("ret", "std"),
+           n=("ret", "size"))
+)
+
+# Same length/index as input: cross-sectional z-score by date
+g = df.groupby("date")["signal"]
+df["signal_z"] = (df["signal"] - g.transform("mean")) / g.transform("std")
+
+large = df.groupby("symbol").filter(lambda x: len(x) >= 252)
+~~~
+
+- +agg+ reduces each group.
+- +transform+ returns something aligned to every original row.
+- +filter+ keeps\/drops whole groups.
+- +apply+ is flexible but often slower and can produce complex indexes; prefer vectorized built-ins, +agg+, or +transform+.
+
+=== 7.6 Merge, join and concatenate
+
+~~~
+{}{python}
+out = left.merge(
+    right,
+    on=["date", "symbol"],
+    how="left",
+    validate="many_to_one",
+    indicator=True,
+)
+assert (out["_merge"] != "left_only").all()
+out = out.drop(columns="_merge")
+
+rows = pd.concat([jan, feb, mar], ignore_index=True)
+wide = pd.concat([features_a, features_b], axis=1)
+~~~
+
+Know +inner\/left\/right\/outer+. Estimate expected row counts before merging. Use +validate+ (+one_to_one+, +one_to_many+, +many_to_one+) to catch accidental many-to-many explosions.
+
+For point-in-time\/as-of joins:
+
+~~~
+{}{python}
+left = left.sort_values(["date", "symbol"])
+right = right.sort_values(["effective_date", "symbol"])
+out = pd.merge_asof(
+    left,
+    right,
+    left_on="date",
+    right_on="effective_date",
+    by="symbol",
+    direction="backward",
+)
+~~~
+
+Ensure the sort order required by the installed pandas version and verify that +effective_date <= date+ for every match.
+
+=== 7.7 Reshaping
+
+~~~
+{}{python}
+panel = df.pivot(index="date", columns="symbol", values="ret")
+panel = df.pivot_table(
+    index="date", columns="symbol", values="ret", aggfunc="mean"
+)
+long = panel.reset_index().melt(
+    id_vars="date", var_name="symbol", value_name="ret"
+)
+stacked = panel.stack(dropna=False)
+~~~
+
++pivot+ requires unique keys; +pivot_table+ aggregates duplicates. Do not hide unexpected duplicates by choosing an arbitrary aggregation.
+
+=== 7.8 Time series, shift and windows
+
+~~~
+{}{python}
+df = df.sort_values(["symbol", "date"])
+g = df.groupby("symbol", group_keys=False)
+
+df["ret_1d"] = g["close"].pct_change(fill_method=None)
+df["log_ret_1d"] = g["close"].transform(lambda s: np.log(s).diff())
+df["target_fwd_1d"] = g["ret_1d"].shift(-1)
+df["lag_ret_1d"] = g["ret_1d"].shift(1)
+
+df["mean_20"] = g["ret_1d"].transform(
+    lambda s: s.rolling(20, min_periods=20).mean()
+)
+df["vol_20"] = g["ret_1d"].transform(
+    lambda s: s.rolling(20, min_periods=20).std()
+)
+df["ewm_mean"] = g["ret_1d"].transform(
+    lambda s: s.ewm(span=20, adjust=False).mean()
+)
+~~~
+
+*Leakage rule:* decide whether today's close is available at signal time. If not, shift features by one more period. A negative shift creates a future target and must never be used as a feature.
+
+=== 7.9 Rank, quantiles and cross-sectional operations
+
+~~~
+{}{python}
+df["rank_pct"] = df.groupby("date")["signal"].rank(
+    pct=True, method="average"
+)
+df["decile"] = df.groupby("date")["signal"].transform(
+    lambda s: pd.qcut(s, 10, labels=False, duplicates="drop")
+)
+
+ic = df.groupby("date").apply(
+    lambda x: x["signal"].corr(x["target_fwd_1d"], method="spearman")
+)
+~~~
+
++qcut+ may drop bins when values tie. For performance-sensitive code, avoid Python-level +groupby.apply+ after correctness is established.
+
+=== 7.10 pandas performance and correctness
+
+- Prefer vectorized operations and grouped built-ins over +iterrows+ and row-wise +apply(axis=1)+.
+- Avoid unnecessary +object+ dtype; use numeric, datetime, categorical\/string types intentionally.
+- Read only needed columns; use Parquet for typed columnar storage when available.
+- Sort explicitly before +shift+, +rolling+, +merge_asof+, or cumulative calculations.
+- Check shape, keys, missingness, date range and a few hand-calculated rows after every major transformation.
+
+== 8. scikit-learn \[P0\/P1\]
+
+=== 8.1 Estimator API
+
+~~~
+{}{python}
+model.fit(X_train, y_train)
+pred = model.predict(X_test)
+proba = model.predict_proba(X_test)[:, 1]
+X_new = transformer.fit_transform(X_train)
+X_test_new = transformer.transform(X_test)
+~~~
+
+- Estimators learn in +fit+; transformers expose +transform+; predictors expose +predict+.
+- Learned attributes usually end with underscore, e.g. +coef_+, +classes_+, +feature_importances_+.
+- Never call +fit_transform+ on validation\/test data.
+
+=== 8.2 Split and baseline
+
+~~~
+{}{python}
+from sklearn.model_selection import train_test_split
+from sklearn.dummy import DummyRegressor, DummyClassifier
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+~~~
+
+For classification with enough observations in every class, add +stratify=y+; do not pass a continuous regression target to +stratify+. Use random splits only for exchangeable samples. For time series, sort by time and use a chronological holdout or +TimeSeriesSplit+. Grouped entities may need +GroupKFold+.
+
+=== 8.3 Leakage-safe pipeline
+
+~~~
+{}{python}
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import Ridge
+
+pipe = Pipeline([
+    ("impute", SimpleImputer(strategy="median", add_indicator=True)),
+    ("scale", StandardScaler()),
+    ("model", Ridge(alpha=1.0)),
+])
+pipe.fit(X_train, y_train)
+pred = pipe.predict(X_test)
+~~~
+
+Everything data-dependent belongs inside the pipeline: imputation, scaling, encoding, PCA, feature selection and the estimator.
+
+=== 8.4 Mixed numeric\/categorical columns
+
+~~~
+{}{python}
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+
+preprocess = ColumnTransformer([
+    ("num", Pipeline([
+        ("impute", SimpleImputer(strategy="median")),
+        ("scale", StandardScaler()),
+    ]), numeric_cols),
+    ("cat", Pipeline([
+        ("impute", SimpleImputer(strategy="most_frequent")),
+        ("onehot", OneHotEncoder(handle_unknown="ignore")),
+    ]), categorical_cols),
+])
+
+model = Pipeline([
+    ("preprocess", preprocess),
+    ("model", Ridge(alpha=1.0)),
+])
+~~~
+
+=== 8.5 Cross-validation and tuning
+
+~~~
+{}{python}
+from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
+
+cv = TimeSeriesSplit(n_splits=5)
+search = GridSearchCV(
+    pipe,
+    param_grid={"model__alpha": [0.01, 0.1, 1.0, 10.0]},
+    scoring="neg_mean_squared_error",
+    cv=cv,
+    n_jobs=-1,
+)
+search.fit(X_train, y_train)
+best_model = search.best_estimator_
+~~~
+
+The double underscore addresses a nested parameter. Keep a final untouched test set; nested CV is needed when an unbiased estimate after extensive tuning matters.
+
+=== 8.6 Metrics to memorize
+
+~~~
+{}{python}
+from sklearn.metrics import (
+    mean_absolute_error, mean_squared_error, r2_score,
+    accuracy_score, precision_score, recall_score, f1_score,
+    roc_auc_score, average_precision_score, log_loss,
+    confusion_matrix,
+)
+
+rmse = mean_squared_error(y_true, pred) ** 0.5
+mae = mean_absolute_error(y_true, pred)
+r2 = r2_score(y_true, pred)
+auc = roc_auc_score(y_true, proba)
+pr_auc = average_precision_score(y_true, proba)
+~~~
+
+- MSE\/RMSE heavily weight large errors; MAE is more robust.
+- Accuracy can be useless under imbalance.
+- AUC evaluates ranking; log loss\/Brier evaluate probabilities; threshold metrics depend on the operating point.
+- Scikit-learn's +neg_\*+ scorers are negated because higher score is always considered better.
+
+=== 8.7 Model quick map
+
+- +LinearRegression+: unregularized OLS; inspect rank\/conditioning.
+- +Ridge+, +Lasso+, +ElasticNet+: scaled linear features and regularization.
+- +LogisticRegression+: classification; tune +C+ (inverse regularization strength) and penalty\/solver compatibility.
+- +DecisionTree\*+: interpretable nonlinear splits, high variance without control.
+- +RandomForest\*+, +ExtraTrees\*+: bagged randomized trees.
+- +HistGradientBoosting\*+: strong tabular boosting baseline.
+- +SVC+: scale features; +probability=True+ adds cost and calibration behavior.
+- +KNeighbors\*+: scale, dimension-sensitive, prediction can be expensive.
+- +KMeans+, +PCA+: unsupervised; fit on training data only.
+
+=== 8.8 Reproducibility
+
+- Set +random_state+ on every stochastic component; record library versions and feature definitions.
+- Fixed seeds reproduce one random stream; they do not remove sampling uncertainty.
+- Parallel floating-point reductions may vary slightly; compare with tolerance.
+- Persist the entire fitted pipeline, not a model detached from preprocessing.
+
+== 9. Quant coding templates \[P0\]
+
+=== 9.1 Numerically stable online mean and variance
+
+~~~
+{}{python}
+def online_mean_variance(values):
+    n = 0
+    mean = 0.0
+    m2 = 0.0
+    for x in values:
+        n += 1
+        delta = x - mean
+        mean += delta / n
+        m2 += delta * (x - mean)
+    variance = m2 / (n - 1) if n > 1 else float("nan")
+    return mean, variance
+~~~
+
+Welford's update is one-pass and more stable than +mean(x²)-mean(x)²+.
+
+=== 9.2 Stable softmax and log-sum-exp
+
+~~~
+{}{python}
+def softmax(z):
+    z = np.asarray(z, dtype=float)
+    shifted = z - np.max(z, axis=-1, keepdims=True)
+    exp_z = np.exp(shifted)
+    return exp_z / exp_z.sum(axis=-1, keepdims=True)
+
+def logsumexp(z):
+    m = np.max(z)
+    return m + np.log(np.exp(z - m).sum())
+~~~
+
+=== 9.3 Forward-return target without accidental alignment
+
+~~~
+{}{python}
+df = df.sort_values(["symbol", "date"])
+next_close = df.groupby("symbol")["close"].shift(-1)
+df["fwd_ret_1d"] = next_close / df["close"] - 1
+
+# Feature known strictly before day t close
+df["feature_lagged"] = df.groupby("symbol")["raw_feature"].shift(1)
+~~~
+
+Write down the information timestamp and execution price; +shift+ direction alone does not prove correctness.
+
+=== 9.4 Cross-sectional neutralization by least squares
+
+~~~
+{}{python}
+def neutralize_one_date(group, feature, exposures):
+    cols = [feature] + exposures
+    clean = group.dropna(subset=cols).copy()
+    X = clean[exposures].to_numpy(float)
+    X = np.column_stack([np.ones(len(X)), X])
+    y = clean[feature].to_numpy(float)
+    beta, *_ = np.linalg.lstsq(X, y, rcond=None)
+    clean[feature + "_neutral"] = y - X @ beta
+    return clean
+~~~
+
+In production, preserve all rows\/indexes, handle categorical sectors, weights, small groups and collinearity explicitly.
+
+=== 9.5 Monte Carlo estimate with uncertainty
+
+~~~
+{}{python}
+rng = np.random.default_rng(42)
+n = 200_000
+x = rng.random(n)
+y = rng.random(n)
+indicator = (x * x + y * y <= 1.0)
+p_hat = indicator.mean()
+se = np.sqrt(p_hat * (1 - p_hat) / n)
+pi_hat = 4 * p_hat
+pi_se = 4 * se
+~~~
+
+Report Monte Carlo standard error, not only the point estimate.
+
+== 10. What to memorize versus derive
+
+*Memorize cold:*
+
+- Built-in container operations and complexity.
+- +enumerate+, +zip+, sorting keys, +Counter\/defaultdict\/deque\/heapq\/bisect+.
+- NumPy +shape\/axis+, +reshape+, indexing, broadcasting, reductions, +argsort+, +lstsq\/solve\/svd\/eigh+.
+- pandas +loc\/iloc+, +groupby.agg\/transform+, +merge(validate=...)+, +pivot\/melt+, +shift\/rolling+.
+- sklearn pipeline, split, fit\/predict, common metrics and +model__parameter+ tuning syntax.
+
+*Derive from principles:*
+
+- Rare API signatures, complex indexing tricks and version-specific behavior.
+- Shape of every vectorized expression.
+- Statistical assumptions, target timing and validation scheme.
+- Whether a merge\/window\/shift leaks future information.
+
+== 11. Seven-day coding reset
+
+. Day 1: core Python, containers, 10 small functions without IDE.
+. Day 2: +collections\/heapq\/bisect+; two-pointer, sliding-window and interval problems.
+. Day 3: NumPy shapes, broadcasting, indexing, reductions and linear algebra; reimplement OLS.
+. Day 4: pandas selection, groupby, merge, reshape and missing data on a toy price panel.
+. Day 5: pandas time series; build lagged features\/forward targets and manually audit five rows.
+. Day 6: sklearn pipelines, time-aware CV, metrics and a complete tabular model.
+. Day 7: 90-minute mock: one probability simulation, one pandas task and two algorithm problems; then write an error log.
+
+== 12. Primary references
+
+- [https://docs.python.org/3/tutorial/ The Python Tutorial] — official syntax, data structures, modules, I\/O, exceptions and classes.
+- [https://numpy.org/doc/stable/user/basics.html NumPy Fundamentals] and [https://numpy.org/doc/stable/user/basics.indexing.html NumPy Indexing] — official broadcasting, dtype, indexing, copies and views.
+- [https://pandas.pydata.org/docs/user_guide/ pandas User Guide] — official indexing, missing data, merge, groupby, windowing and time series.
+- [https://scikit-learn.org/stable/user_guide.html scikit-learn User Guide] — official model selection, pipelines, preprocessing, metrics and pitfalls.
+- [https://cs229.stanford.edu/syllabus-fall2020.html Stanford CS229 materials] — official Python\/NumPy review and ML derivations.
+
+*Version note:* documentation pages evolve. Interview platforms may pin older Python\/library versions, so avoid relying on the newest convenience API unless the environment is stated.

@@ -1,0 +1,855 @@
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}
+= Algorithms for Quantitative Research Interviews
+[../../blog.html ← Blogs] \M /updated 2026-07-20/
+
+~~~
+{}{raw}
+<div class="language-switch" role="navigation" aria-label="Language"><a href="algorithms-for-quant-interviews.html" hreflang="zh-CN">中文</a><span class="active" aria-current="page">English</span></div>
+~~~
+
+This note is a pattern checklist for writing algorithms in plain Python under interview conditions. Quant-research coding rounds often mix ordinary data structures\/algorithms with probability simulation and tabular data. Your answer is not complete until you state correctness, time complexity, space complexity, and boundary cases.
+
+*Priority:* P0 = implement from memory; P1 = common extension; P2 = specialized. Digit reduction and interval merging are both P0.
+
+== 0. Interview protocol
+
+. *Clarify:* input\/output, constraints, sortedness, duplicates, mutability, memory limit, exact versus approximate answer.
+. *Example:* work one normal and one edge case by hand.
+. *Baseline:* state brute force and its complexity before optimizing.
+. *Pattern:* name the structure: hash, sort, two pointers, window, stack, heap, graph, greedy or DP.
+. *Invariant\/state:* say what remains true after every iteration or what +dp\[state\]+ means.
+. *Code:* short names only for standard indices; separate logic from I\/O.
+. *Verify:* empty, singleton, duplicates, negatives, all equal, sorted\/reverse, overflow\/precision.
+. *Conclude:* time and auxiliary space, including recursion stack\/output storage.
+
+== 1. Complexity and lower-level reasoning \[P0\]
+
+=== 1.1 Growth rates
+
+- O(1): hash lookup average, array index.
+- O(log n): binary search, balanced-tree operation, heap push\/pop.
+- O(n): one pass, hash counting.
+- O(n log n): comparison sorting, many heap\/sweep-line algorithms.
+- O(n²): all pairs; often too slow above roughly 10^4.
+- O(2^n), O(n!): subset\/permutation search; usually n <= 20 or n <= 10 respectively.
+
+Ignore constants only asymptotically; in Python, vectorization, allocation and hashing constants matter. Sorting can beat a theoretically linear but allocation-heavy approach for moderate input.
+
+=== 1.2 Amortized and expected complexity
+
+- List append is O(1) amortized, not worst-case per append.
+- Dict\/set operations are O(1) average, O(n) pathological worst case.
+- +heapq+ push\/pop is O(log n); peek is O(1).
+- +deque+ operations at ends are O(1); +list.pop(0)+ is O(n).
+
+=== 1.3 Correctness proof styles
+
+- *Loop invariant:* initialization, maintenance, termination.
+- *Induction:* common for recursion\/DP.
+- *Exchange argument:* replace the first differing choice in an optimum; common for greedy.
+- *Cut\/stay-ahead argument:* common for interval scheduling\/MST.
+- *Contradiction\/extremal argument:* assume better solution and derive conflict.
+
+== 2. Arrays and strings \[P0\]
+
+=== 2.1 Prefix sums
+
+Use for many range-sum queries or converting a subarray condition into a prefix-difference condition.
+
+~~~
+{}{python}
+prefix = [0]
+for x in values:
+    prefix.append(prefix[-1] + x)
+
+def range_sum(left, right):      # inclusive
+    return prefix[right + 1] - prefix[left]
+~~~
+
+Subarray sum equals k with arbitrary signs:
+
+~~~
+{}{python}
+def count_subarrays_sum_k(values, k):
+    counts = {0: 1}
+    prefix = 0
+    answer = 0
+    for x in values:
+        prefix += x
+        answer += counts.get(prefix - k, 0)
+        counts[prefix] = counts.get(prefix, 0) + 1
+    return answer
+~~~
+
+Invariant: +counts+ stores frequencies of prefix sums strictly before the current position. O(n) expected time, O(n) space.
+
+=== 2.2 Difference arrays
+
+For many range increments on a static array:
+
+~~~
+{}{python}
+diff = [0] * (n + 1)
+for left, right, delta in updates:
+    diff[left] += delta
+    if right + 1 < n:
+        diff[right + 1] -= delta
+
+current = 0
+result = []
+for i in range(n):
+    current += diff[i]
+    result.append(current)
+~~~
+
+=== 2.3 Two pointers
+
+Use when a monotone move can discard possibilities: sorted pair sum, deduplication, partition, merging sequences.
+
+~~~
+{}{python}
+def two_sum_sorted(a, target):
+    left, right = 0, len(a) - 1
+    while left < right:
+        total = a[left] + a[right]
+        if total == target:
+            return left, right
+        if total < target:
+            left += 1
+        else:
+            right -= 1
+    return None
+~~~
+
+Proof: if the current sum is too small, pairing +a\[left\]+ with any smaller right endpoint cannot help, so +left+ can be discarded.
+
+=== 2.4 Sliding window
+
+Use for contiguous ranges when adding\/removing endpoints updates the condition cheaply. Variable-size windows require a monotone feasibility condition; arbitrary negative values often break the simple template.
+
+~~~
+{}{python}
+def longest_at_most_k_distinct(values, k):
+    if k < 0:
+        raise ValueError("k must be nonnegative")
+    counts = {}
+    left = 0
+    best = 0
+    for right, x in enumerate(values):
+        counts[x] = counts.get(x, 0) + 1
+        while len(counts) > k:
+            y = values[left]
+            counts[y] -= 1
+            if counts[y] == 0:
+                del counts[y]
+            left += 1
+        best = max(best, right - left + 1)
+    return best
+~~~
+
+=== 2.5 Kadane: maximum subarray
+
+~~~
+{}{python}
+def max_subarray(values):
+    if not values:
+        raise ValueError("nonempty input required")
+    ending = best = values[0]
+    for x in values[1:]:
+        ending = max(x, ending + x)
+        best = max(best, ending)
+    return best
+~~~
+
++ending+ is the best nonempty subarray ending at the current item. Initialize from the first value so all-negative arrays work.
+
+=== 2.6 String essentials
+
+- Character counts\/anagrams: +Counter+ or fixed-size count array.
+- Palindrome: two pointers; longest palindromic substring can expand around centers O(n²).
+- Substring search: know naive O(nm); KMP\/Z algorithm \[P1\] for O(n+m).
+- Trie \[P1\]: prefixes\/autocomplete; O(length) operations but memory-heavy in Python.
+- Rolling hash \[P2\]: collision-aware, verify matches when correctness must be exact.
+
+== 3. Sorting, searching and intervals \[P0\]
+
+=== 3.1 Sorting patterns
+
+- Sort events by (time, type) for sweep line; define tie order deliberately.
+- Sort intervals by start to merge; by end to maximize non-overlapping count.
+- Sort pairs by one coordinate and reason about the other.
+- Stable sorting preserves prior ordering among equal keys.
+
+=== 3.2 Binary search
+
+Exact search with half-open interval \[lo,hi):
+
+~~~
+{}{python}
+def binary_search(a, target):
+    lo, hi = 0, len(a)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if a[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid
+    if lo < len(a) and a[lo] == target:
+        return lo
+    return -1
+~~~
+
+Binary search on answer \[P1\]: if feasibility +can(x)+ is monotone, find the first\/last feasible x. Write which side is feasible before coding.
+
+~~~
+{}{python}
+def first_true(lo, hi, can):     # inclusive candidate range; assumes a true exists
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if can(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+~~~
+
+=== 3.3 Merge intervals \[P0\]
+
+~~~
+{}{python}
+def merge_intervals(intervals):
+    if not intervals:
+        return []
+    intervals = sorted(intervals, key=lambda x: x[0])
+    merged = [list(intervals[0])]
+    for start, end in intervals[1:]:
+        if start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    return merged
+~~~
+
+Invariant: +merged+ is the correct disjoint merge of processed intervals. Complexity O(n log n) time, O(n) output. Ask whether touching intervals \[1,2\] and \[2,3\] should merge; this decides +<=+ versus +<+.
+
+=== 3.4 Sweep line \[P1\]
+
+Maximum simultaneous intervals:
+
+~~~
+{}{python}
+events = []
+for start, end in intervals:
+    events.append((start, 1))
+    events.append((end, -1))
+
+# End before start at equal time for half-open [start,end)
+events.sort(key=lambda event: (event[0], event[1]))
+current = best = 0
+for _, delta in events:
+    current += delta
+    best = max(best, current)
+~~~
+
+== 4. Hashing, stacks and queues \[P0\]
+
+=== 4.1 Hash-map patterns
+
+- Frequency counting and grouping.
+- Value -> index for two-sum.
+- Prefix state -> earliest index\/frequency.
+- Memoization state -> answer.
+- Deduplicate while preserving order with dict keys.
+
+~~~
+{}{python}
+def two_sum(values, target):
+    seen = {}
+    for i, x in enumerate(values):
+        need = target - x
+        if need in seen:
+            return seen[need], i
+        seen[x] = i
+    return None
+~~~
+
+=== 4.2 Stack and parentheses
+
+~~~
+{}{python}
+def valid_parentheses(s):
+    match = {")": "(", "]": "[", "}": "{"}
+    stack = []
+    for ch in s:
+        if ch in "([{":
+            stack.append(ch)
+        elif ch in match:
+            if not stack or stack.pop() != match[ch]:
+                return False
+    return not stack
+~~~
+
+Stack patterns: nested syntax, undo, expression evaluation, DFS, monotonic stack.
+
+=== 4.3 Monotonic stack \[P1\]
+
+Index of the next greater element to the right:
+
+~~~
+{}{python}
+def next_greater_index(values):
+    answer = [-1] * len(values)
+    stack = []                    # indices with decreasing values
+    for i, x in enumerate(values):
+        while stack and values[stack[-1]] < x:
+            answer[stack.pop()] = i
+        stack.append(i)
+    return answer
+~~~
+
+The function returns an index, or -1 when no greater value exists. Each index is pushed\/popped once: O(n). Variants: daily temperatures, stock span, largest rectangle.
+
+=== 4.4 Queue and deque
+
+Use +deque+ for BFS and fixed-window candidates. Monotonic deque gives sliding maximum in O(n) \[P1\].
+
+~~~
+{}{python}
+from collections import deque
+
+def sliding_max(values, k):
+    if not 1 <= k <= len(values):
+        raise ValueError("require 1 <= k <= len(values)")
+    q = deque()                   # decreasing values by index
+    out = []
+    for i, x in enumerate(values):
+        while q and q[0] <= i - k:
+            q.popleft()
+        while q and values[q[-1]] <= x:
+            q.pop()
+        q.append(i)
+        if i >= k - 1:
+            out.append(values[q[0]])
+    return out
+~~~
+
+== 5. Linked lists \[P1\]
+
+Know pointer reassignment even if quant interviews emphasize arrays more.
+
+~~~
+{}{python}
+def reverse_list(head):
+    prev = None
+    current = head
+    while current is not None:
+        nxt = current.next
+        current.next = prev
+        prev = current
+        current = nxt
+    return prev
+~~~
+
+- Dummy head simplifies insertion\/deletion at the front.
+- Slow\/fast pointers: middle, cycle detection, kth from end.
+- Reversal invariant: +prev+ is the reversed processed prefix, +current+ starts the untouched suffix.
+
+== 6. Trees, heaps and union-find \[P0\/P1\]
+
+=== 6.1 Binary-tree traversal
+
+~~~
+{}{python}
+def preorder(root):
+    if root is None:
+        return []
+    out = []
+    stack = [root]
+    while stack:
+        node = stack.pop()
+        out.append(node.val)
+        if node.right is not None:
+            stack.append(node.right)
+        if node.left is not None:
+            stack.append(node.left)
+    return out
+~~~
+
+- Preorder: process, left, right.
+- Inorder: left, process, right; sorted order for a BST.
+- Postorder: left, right, process; subtree DP\/deletion.
+- Level order: BFS with +deque+.
+- Balanced tree height is O(log n); skewed tree height is O(n), affecting recursion depth.
+
+=== 6.2 Binary search tree
+
+BST invariant: all keys in left subtree are smaller and right are larger under the chosen duplicate policy. Search\/insert O(height), not automatically O(log n).
+
+=== 6.3 Heap patterns
+
+- Top-k: heap size k, O(n log k).
+- Merge k sorted streams: heap of current heads, O(N log k).
+- Running median: max-heap lower half \+ min-heap upper half \[P1\].
+- Dijkstra: min-heap of tentative distances.
+
+=== 6.4 Union-find \/ disjoint-set union \[P1\]
+
+~~~
+{}{python}
+class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.size = [1] * n
+
+    def find(self, x):
+        while x != self.parent[x]:
+            self.parent[x] = self.parent[self.parent[x]]
+            x = self.parent[x]
+        return x
+
+    def union(self, a, b):
+        ra, rb = self.find(a), self.find(b)
+        if ra == rb:
+            return False
+        if self.size[ra] < self.size[rb]:
+            ra, rb = rb, ra
+        self.parent[rb] = ra
+        self.size[ra] += self.size[rb]
+        return True
+~~~
+
+Path compression \+ union by size\/rank yields nearly constant amortized operations. Uses: connectivity, Kruskal MST, redundant edge detection.
+
+== 7. Graphs \[P0\/P1\]
+
+=== 7.1 Representations
+
+- Adjacency list: O(V\+E) storage, default for sparse graphs.
+- Adjacency matrix: O(V²), O(1) edge lookup, useful for dense\/small graphs or matrix powers.
+- Edge list: convenient for Kruskal\/Bellman-Ford.
+- Decide directed\/undirected, weighted\/unweighted, multiedges\/self-loops.
+
+=== 7.2 BFS \[P0\]
+
+Shortest number of edges in an unweighted graph.
+
+~~~
+{}{python}
+from collections import deque
+
+def bfs(graph, start):
+    distance = {start: 0}
+    q = deque([start])
+    while q:
+        node = q.popleft()
+        for nxt in graph[node]:
+            if nxt not in distance:
+                distance[nxt] = distance[node] + 1
+                q.append(nxt)
+    return distance
+~~~
+
+Mark visited when enqueuing, not when dequeuing, to prevent duplicates.
+
+=== 7.3 DFS \[P0\]
+
+~~~
+{}{python}
+def dfs(graph, start):
+    seen = set()
+    stack = [start]
+    while stack:
+        node = stack.pop()
+        if node in seen:
+            continue
+        seen.add(node)
+        for nxt in graph[node]:
+            if nxt not in seen:
+                stack.append(nxt)
+    return seen
+~~~
+
+Uses: connected components, cycle detection, topological sorting, backtracking. Iterative DFS avoids Python recursion limits.
+
+=== 7.4 Topological sort \[P1\]
+
+~~~
+{}{python}
+from collections import deque
+
+def topological_order(graph, indegree):
+    q = deque(i for i, deg in enumerate(indegree) if deg == 0)
+    order = []
+    while q:
+        node = q.popleft()
+        order.append(node)
+        for nxt in graph[node]:
+            indegree[nxt] -= 1
+            if indegree[nxt] == 0:
+                q.append(nxt)
+    return order if len(order) == len(indegree) else None
+~~~
+
+An order exists iff the directed graph is acyclic. Copy +indegree+ if the caller needs it unchanged.
+
+=== 7.5 Shortest paths \[P1\]
+
+- BFS: unweighted\/equal weights, O(V\+E).
+- Dijkstra: nonnegative weights, O((V\+E)log V) with heap.
+- Bellman-Ford: negative edges and negative-cycle detection, O(VE).
+- DAG shortest path: topological order, O(V\+E), negative edges allowed.
+- Floyd-Warshall: all pairs, O(V³), small dense graphs.
+
+~~~
+{}{python}
+import heapq
+
+def dijkstra(graph, start):
+    inf = float("inf")
+    dist = {node: inf for node in graph}
+    dist[start] = 0
+    heap = [(0, start)]
+    while heap:
+        d, node = heapq.heappop(heap)
+        if d != dist[node]:       # stale entry
+            continue
+        for nxt, weight in graph[node]:
+            nd = d + weight
+            if nd < dist[nxt]:
+                dist[nxt] = nd
+                heapq.heappush(heap, (nd, nxt))
+    return dist
+~~~
+
+Dijkstra is invalid with negative edges.
+
+=== 7.6 Minimum spanning tree \[P1\]
+
+- Kruskal: sort edges, add if DSU says endpoints differ. O(E log E).
+- Prim: grow from a start with min crossing-edge heap. O(E log V).
+- MST minimizes total connection cost; it is not a shortest-path tree.
+
+== 8. Recursion and backtracking \[P0\/P1\]
+
+Backtracking template:
+
+~~~
+{}{python}
+def backtrack(state, choices):
+    if complete(state):
+        output.append(state.copy())
+        return
+    for choice in choices(state):
+        if not valid(state, choice):
+            continue
+        apply(state, choice)
+        backtrack(state, choices)
+        undo(state, choice)
+~~~
+
+- State must contain everything needed for future decisions.
+- Choose\/apply\/recurse\/undo symmetrically.
+- Prune only with a proof that no completion can succeed or improve the best.
+- Copy a mutable state when storing it.
+- Complexity is often proportional to the search tree\/output size; say so rather than writing merely O(n).
+
+Common problems: subsets, permutations, combinations, N-queens, word search, constraint satisfaction.
+
+== 9. Greedy algorithms \[P0\/P1\]
+
+Greedy is not "take the locally largest" by instinct. You need greedy-choice property plus optimal substructure, usually proved by exchange or staying ahead.
+
+=== 9.1 Interval scheduling \[P0\]
+
+Maximum number of non-overlapping half-open intervals: sort by finishing time and repeatedly take the first compatible interval.
+
+~~~
+{}{python}
+def max_nonoverlapping(intervals):
+    intervals = sorted(intervals, key=lambda x: x[1])
+    count = 0
+    last_end = float("-inf")
+    for start, end in intervals:
+        if start >= last_end:
+            count += 1
+            last_end = end
+    return count
+~~~
+
+Exchange proof: replace the first interval of any optimum with the earliest-finishing compatible interval; this cannot reduce room for later choices.
+
+=== 9.2 Common greedy structures
+
+- Sort then sweep: interval scheduling, meeting rooms, merge intervals.
+- Heap: choose smallest\/largest currently available; scheduling with deadlines.
+- DSU \+ sorted edges: Kruskal.
+- Huffman coding: repeatedly merge two smallest weights \[P1\].
+- Fractional knapsack is greedy; 0\/1 knapsack is not.
+
+== 10. Dynamic programming \[P0\]
+
+=== 10.1 Five questions before coding
+
+. What is the state, in one precise sentence?
+. What recurrence maps smaller states to it?
+. What are the base cases?
+. In what order are dependencies already computed?
+. Where is the final answer, and can space be compressed?
+
+Memoization solves only reached states; tabulation avoids recursion overhead and exposes order.
+
+=== 10.2 One-dimensional DP
+
+Climbing stairs\/tiling: +dp\[i\]=dp\[i-1\]\+dp\[i-2\]+.
+
+House robber:
+
+~~~
+{}{python}
+def max_nonadjacent_sum(values):
+    take_prev = 0
+    skip_prev = 0
+    for x in values:
+        take = skip_prev + x
+        skip = max(skip_prev, take_prev)
+        take_prev, skip_prev = take, skip
+    return max(take_prev, skip_prev)
+~~~
+
+State meaning: best value through the processed prefix when the latest item is taken\/skipped.
+
+=== 10.3 Knapsack \[P0\/P1\]
+
+0\/1 feasibility with capacity C:
+
+~~~
+{}{python}
+possible = [False] * (C + 1)
+possible[0] = True
+for weight in weights:
+    for c in range(C, weight - 1, -1):
+        possible[c] = possible[c] or possible[c - weight]
+~~~
+
+Descending capacity prevents using the same item multiple times. Ascending capacity implements unbounded reuse.
+
+=== 10.4 Grid DP
+
+~~~
+{}{python}
+def min_path_sum(grid):
+    rows, cols = len(grid), len(grid[0])
+    dp = [float("inf")] * cols
+    dp[0] = 0
+    for r in range(rows):
+        for c in range(cols):
+            from_up = dp[c]
+            from_left = dp[c - 1] if c > 0 else float("inf")
+            dp[c] = grid[r][c] + min(from_up, from_left)
+    return dp[-1]
+~~~
+
+Be explicit about allowed moves, obstacles and whether cell costs include start\/end.
+
+=== 10.5 Sequence DP \[P1\]
+
+- Longest common subsequence: 2-D DP, O(nm).
+- Edit distance: insert\/delete\/replace, O(nm).
+- Longest increasing subsequence: O(n²) DP or O(n log n) patience\/binary-search method.
+- Stock trading variants: state by day, holding\/not holding, transaction count, cooldown\/fee.
+
+=== 10.6 State-machine DP \[P0\/P1\]
+
+For repeated coin\/die patterns or constrained walks, state should be the smallest suffix\/location affecting the future. The triangle-walk interview problem has three vertex states or a reduced two-state symmetry. Write the transition matrix or recurrence; test n=0,1,2.
+
+=== 10.7 Bitmask DP \[P2\]
+
+When n <= about 20, represent a subset by an integer mask. Common states: +dp\[mask\]+ or +dp\[mask\]\[last\]+ for assignment, traveling-salesperson and subset transitions. Complexity often O(n2^n) or O(n²2^n).
+
+== 11. Bit manipulation \[P1\]
+
+~~~
+{}{python}
+is_set = (mask >> i) & 1
+mask |= 1 << i                   # set
+mask &= ~(1 << i)                # clear
+mask ^= 1 << i                   # toggle
+lowest = mask & -mask
+count = mask.bit_count()
+
+sub = mask
+while sub:
+    # process nonempty submask
+    sub = (sub - 1) & mask
+~~~
+
+XOR facts: +x^x=0+, +x^0=x+; useful for one unpaired value. Do not force bit tricks when a clear hash solution is expected.
+
+== 12. Mathematical and numeric algorithms \[P0\/P1\]
+
+=== 12.1 GCD, primes and modular arithmetic
+
+~~~
+{}{python}
+from math import gcd
+
+def gcd_manual(a, b):
+    while b:
+        a, b = b, a % b
+    return abs(a)
+
+def is_prime(n):
+    if n < 2:
+        return False
+    d = 2
+    while d * d <= n:
+        if n % d == 0:
+            return False
+        d += 1
+    return True
+
+pow(base, exponent, modulus)      # fast modular exponentiation
+~~~
+
+Sieve of Eratosthenes lists primes up to n in O(n log log n) time and O(n) space \[P1\].
+
+=== 12.2 Digit root \[P0\]
+
+Repeatedly sum decimal digits until one digit remains.
+
+~~~
+{}{python}
+def digit_root_simulation(n):
+    n = abs(n)
+    while n >= 10:
+        total = 0
+        while n:
+            n, digit = divmod(n, 10)
+            total += digit
+        n = total
+    return n
+
+def digit_root(n):
+    n = abs(n)
+    return 0 if n == 0 else 1 + (n - 1) % 9
+~~~
+
+Why: 10 ≡ 1 (mod 9), so a number is congruent to its digit sum modulo 9. The positive one-digit representative is 1,...,9; handle zero separately. If input is an extremely long decimal string, sum characters once and apply the same rule without converting the whole integer.
+
+=== 12.3 Numerical root finding \[P1\]
+
+- Bisection: guaranteed for a continuous sign change; linear convergence.
+- Newton: +x <- x-f(x)\/f\'(x)+; locally fast but needs derivative\/good initialization and can diverge.
+- Binary search integer answers when predicate is monotone.
+- Always set tolerance and iteration cap; compare residual as well as step size.
+
+== 13. Randomized and streaming algorithms \[P1\]
+
+=== 13.1 Fisher-Yates shuffle
+
+For i from n-1 down to 1, choose j uniformly in \[0,i\] and swap. Every permutation then has probability 1\/n!. Use +random.shuffle+ in practice; know the proof by induction.
+
+=== 13.2 Reservoir sampling
+
+Choose one uniformly from a stream of unknown length:
+
+~~~
+{}{python}
+import random
+
+def reservoir_one(stream):
+    chosen = None
+    for i, item in enumerate(stream, start=1):
+        if random.randrange(i) == 0:
+            chosen = item
+    return chosen
+~~~
+
+At item i, replace with probability 1\/i. An earlier item survives through n with (1\/i)×∏_{j=i+1}^n(1-1\/j)=1\/n.
+
+=== 13.3 Online statistics
+
+- Welford mean\/variance: O(1) memory and numerical stability.
+- Heap top-k: O(k) memory.
+- Count-Min Sketch\/Bloom filter \[P2\]: approximate frequency\/membership with controlled one-sided error.
+
+== 14. Pattern recognition map
+
+- "pair\/duplicate\/frequency" -> hash map\/set.
+- "sorted pair\/triplet" -> sort \+ two pointers.
+- "contiguous longest\/shortest" -> sliding window if monotone; otherwise prefix \+ hash\/deque\/DP.
+- "many range sums" -> prefix sums; "many range updates" -> difference array.
+- "next greater\/smaller" -> monotonic stack.
+- "top k\/continuous minimum" -> heap.
+- "overlapping intervals" -> sort \+ merge; "max concurrent" -> sweep\/heap.
+- "minimum steps in unweighted graph" -> BFS.
+- "dependencies\/prerequisites" -> topological sort.
+- "nonnegative weighted shortest path" -> Dijkstra.
+- "connect all at minimum cost" -> MST, not shortest path.
+- "all combinations" -> backtracking; add pruning.
+- "best answer from repeated subproblems" -> DP; define state before recurrence.
+- "minimum feasible capacity\/time" -> binary search on a monotone answer.
+- "random stream\/unknown n" -> reservoir\/online algorithm.
+
+== 15. Must-solve practice set
+
+Do not memorize platform numbers; search by title. Solve in plain Python and write an error log.
+
+*P0 first 25:*
+
+. Two Sum; Valid Parentheses; Best Time to Buy and Sell Stock.
+. Contains Duplicate; Valid Anagram; Group Anagrams.
+. Binary Search; Search in Rotated Sorted Array.
+. Merge Intervals; Insert Interval; Meeting Rooms \/ Meeting Rooms II.
+. Maximum Subarray; Product of Array Except Self.
+. Longest Substring Without Repeating Characters.
+. Top K Frequent Elements; Kth Largest Element.
+. Reverse Linked List; Linked List Cycle.
+. Maximum Depth of Binary Tree; Binary Tree Level Order Traversal.
+. Number of Islands; Clone Graph; Course Schedule.
+. Climbing Stairs; House Robber; Coin Change.
+. Longest Increasing Subsequence.
+
+*P1 next 20:*
+
+. Subarray Sum Equals K; Minimum Size Subarray Sum.
+. Sliding Window Maximum; Largest Rectangle in Histogram.
+. Merge k Sorted Lists; Find Median from Data Stream.
+. Validate Binary Search Tree; Lowest Common Ancestor.
+. Accounts Merge \/ Redundant Connection (DSU).
+. Network Delay Time (Dijkstra); Cheapest Flights with K Stops.
+. Combination Sum; Permutations; N-Queens.
+. Partition Equal Subset Sum; Longest Common Subsequence; Edit Distance.
+. Word Break; Decode Ways.
+. Random Pick \/ Reservoir Sampling.
+
+*Quant-flavored exercises:*
+
+. Merge trade intervals; compute maximum simultaneous positions.
+. One-pass mean\/variance; rolling maximum; top-k signals.
+. Join price and factor records by key\/time without future leakage.
+. Compute forward returns, cross-sectional ranks, IC and turnover.
+. Simulate a probability puzzle and attach a Monte Carlo standard error.
+. Implement OLS using normal equations conceptually, then with stable least squares.
+. Implement digit root both by simulation and modulo-9 reasoning.
+. Triangle walk: recurrence, DP and adjacency-matrix solutions.
+
+== 16. Error-log template
+
+For every miss, record:
+
+- *Trigger:* what wording should reveal the pattern?
+- *Bad attempt:* what assumption\/invariant failed?
+- *Correct invariant\/state:* one sentence.
+- *Complexity:* before and after.
+- *Boundary case:* the smallest counterexample to the bad attempt.
+- *Re-test:* 1, 3, 7 and 14 days.
+
+== 17. Primary references
+
+- [https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/pages/syllabus/ MIT 6.006 Introduction to Algorithms] — official coverage of arrays, heaps, balanced trees, hashing, sorting, graph search and dynamic programming.
+- [https://docs.python.org/3/tutorial/datastructures.html Python Data Structures] — official list, tuple, set, dict, comprehensions and looping semantics.
+- Cormen, Leiserson, Rivest and Stein, /Introduction to Algorithms/ (CLRS) — rigorous reference for proof and complexity.
+- LeetCode\/Nowcoder — use timed practice and your error log; do not confuse accepted code with a clear interview explanation.
+
+*Stopping rule:* when you can solve every P0 problem from a blank editor, explain correctness, and pass two 90-minute mocks without syntax help, shift time from rereading notes to timed mixed practice.

@@ -1,0 +1,935 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../blog-note.css" type="text/css" />
+<script src="../math-render.js" type="text/javascript"></script>
+<title>Python for Quantitative Research Interviews</title>
+</head>
+<body>
+<div id="layout-content">
+<div id="toptitle">
+<h1>Python for Quantitative Research Interviews</h1>
+<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>updated 2026-07-20</i></div>
+</div>
+<div class="language-switch" role="navigation" aria-label="Language"><a href="python-for-quant-interviews.html" hreflang="zh-CN">中文</a><span class="active" aria-current="page">English</span></div>
+<p>This is a closed-book coding review for quantitative-research interviews. The goal is to write correct, readable Python without autocomplete, then use NumPy, pandas, and scikit-learn without leakage. Memorize the small templates; understand shapes, dtypes, indexes, complexity, and time alignment.</p>
+<p><b>Priority:</b> P0 = type from memory; P1 = recognize and adapt; P2 = look up when allowed. Unless an assessment specifies versions, prefer stable core APIs and avoid new/version-specific shortcuts.</p>
+<h2>0. Closed-book readiness checklist</h2>
+<ul>
+<li><p>□ Parse input; loop/enumerate/zip; comprehensions; functions; exceptions.</p>
+</li>
+<li><p>□ Choose list/tuple/set/dict; explain mutability, hashing and average complexity.</p>
+</li>
+<li><p>□ Use <tt>Counter</tt>, <tt>defaultdict</tt>, <tt>deque</tt>, <tt>heapq</tt>, <tt>bisect</tt> and <tt>itertools</tt>.</p>
+</li>
+<li><p>□ Sort by a key; maintain top-k; two pointers; sliding window; prefix sums.</p>
+</li>
+<li><p>□ Create NumPy arrays; reason about shape, axis, broadcasting, indexing, copies and NaN.</p>
+</li>
+<li><p>□ Use pandas <tt>loc/iloc</tt>, boolean filters, <tt>groupby</tt>, <tt>agg/transform</tt>, <tt>merge</tt>, <tt>pivot</tt>, <tt>shift</tt>, <tt>rolling</tt>.</p>
+</li>
+<li><p>□ Build a leakage-safe sklearn <tt>Pipeline</tt>; split time-aware data; choose metrics.</p>
+</li>
+<li><p>□ Create forward returns, rolling features, ranks and IC without using future data.</p>
+</li>
+<li><p>□ State time and space complexity before coding; test empty, singleton, duplicate and all-equal cases.</p>
+</li>
+</ul>
+<h2>1. Core Python syntax [P0]</h2>
+<h3>1.1 Variables, scalar types and operators</h3>
+<ul>
+<li><p><tt>int</tt> has arbitrary precision; <tt>float</tt> is binary floating point; <tt>bool</tt> is a subclass of <tt>int</tt>.</p>
+</li>
+<li><p><tt>None</tt> is a singleton: test with <tt>is None</tt>, not <tt>== None</tt>.</p>
+</li>
+<li><p>Arithmetic: <tt>//</tt> floor division, <tt>%</tt> modulo, <tt>**</tt> power. For negative values, <tt>//</tt> rounds toward negative infinity.</p>
+</li>
+<li><p>Comparison chains work: <tt>0 &lt;= x &lt; 1</tt>. Boolean operators short-circuit and return an operand, not necessarily <tt>bool</tt>.</p>
+</li>
+<li><p>Use <tt>math.isclose</tt> or <tt>np.isclose</tt> for approximate floating comparison.</p>
+</li>
+</ul>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+x = 7
+q, r = divmod(x, 3)            <span class="comment"># (2, 1)</span>
+safe = <span class="special">value</span> <span class="statement">if</span> condition <span class="statement">else</span> fallback
+<span class="statement">if</span> x <span class="builtin">is</span> None:
+    ...
+</pre></div></div>
+<p><b>Floating-point reflex:</b> 0.1+0.2 is not exactly 0.3; avoid equality checks, subtracting nearly equal large numbers, and exp/log overflow. Use <tt>log1p</tt>, <tt>expm1</tt>, and log-sum-exp patterns where needed.</p>
+<h3>1.2 Strings and formatting</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+s = <span class="string">"quant research"</span>
+s.lower(); s.upper(); s.strip()
+s.split()                       <span class="comment"># whitespace tokens</span>
+<span class="string">","</span>.join([<span class="string">"a"</span>, <span class="string">"b"</span>])
+s.startswith(<span class="string">"quant"</span>)
+s.replace(<span class="string">"research"</span>, <span class="string">"trading"</span>)
+name, score = <span class="string">"Li"</span>, 0.81234
+text = f<span class="string">"{name}: {score:.3f}"</span>
+</pre></div></div>
+<p>Strings are immutable. Slicing is <tt>s[start:stop:step]</tt> with stop excluded. Repeated string concatenation in a loop can be quadratic; append pieces and <tt>''.join(parts)</tt>.</p>
+<h3>1.3 Control flow and loops</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">for</span> i <span class="builtin">in</span> <span class="builtin">range</span>(n):              <span class="comment"># 0,...,n-1</span>
+    <span class="statement">pass</span>
+
+<span class="statement">for</span> i, <span class="special">value</span> <span class="builtin">in</span> <span class="builtin">enumerate</span>(values):
+    <span class="statement">pass</span>
+
+<span class="statement">for</span> a, b <span class="builtin">in</span> <span class="builtin">zip</span>(xs, ys):        <span class="comment"># stops at shorter iterable</span>
+    <span class="statement">pass</span>
+
+<span class="statement">for</span> key <span class="builtin">in</span> sorted(mapping):
+    <span class="special">value</span> = mapping[key]
+
+<span class="statement">while</span> left &lt; right:
+    ...
+</pre></div></div>
+<ul>
+<li><p><tt>break</tt> exits the nearest loop; <tt>continue</tt> skips to its next iteration.</p>
+</li>
+<li><p>A loop's <tt>else</tt> runs only if the loop finishes without <tt>break</tt>.</p>
+</li>
+<li><p>Do not modify a list/dict's size while iterating over it; iterate over a copy or build a result.</p>
+</li>
+</ul>
+<h3>1.4 Functions and arguments</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> score(x, weight=1.0, *, clip=None):
+    <span class="comment"># clip must be passed by keyword.</span>
+    out = weight * x
+    <span class="statement">if</span> clip <span class="builtin">is</span> <span class="builtin">not</span> None:
+        out = max(-clip, min(clip, out))
+    <span class="statement">return</span> out
+
+<span class="statement">def</span> summarize(*values, **options):
+    <span class="statement">return</span> values, options
+
+args = (3,)
+kwargs = {<span class="string">"weight"</span>: 2.0, <span class="string">"clip"</span>: 5.0}
+score(*args, **kwargs)
+</pre></div></div>
+<p><b>Mutable-default trap:</b></p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> append_value(x, out=None):
+    <span class="statement">if</span> out <span class="builtin">is</span> None:
+        out = []
+    out.append(x)
+    <span class="statement">return</span> out
+</pre></div></div>
+<p>Default arguments are evaluated once at function definition. Python passes object references by assignment: rebinding a local name does not mutate the caller's object, but mutating a passed list does.</p>
+<h3>1.5 Scope, closures and lambda</h3>
+<ul>
+<li><p>Name lookup follows LEGB: Local, Enclosing, Global, Builtins.</p>
+</li>
+<li><p>Assignment makes a name local unless declared <tt>global</tt> or <tt>nonlocal</tt>.</p>
+</li>
+<li><p>A closure captures names (late binding), not frozen values. Bind a current loop value with a default argument when needed.</p>
+</li>
+</ul>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+funcs = [<span class="statement">lambda</span> x, i=i: x + i <span class="statement">for</span> i <span class="builtin">in</span> <span class="builtin">range</span>(3)]
+key = <span class="statement">lambda</span> item: (item[1], item[0])
+</pre></div></div>
+<p>Use <tt>lambda</tt> only for short expressions, mainly sorting/grouping keys.</p>
+<h3>1.6 Exceptions and resource handling</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">try</span>:
+    <span class="special">value</span> = mapping[key]
+<span class="statement">except</span> <span class="error">KeyError</span>:
+    <span class="special">value</span> = 0
+<span class="statement">else</span>:
+    process(<span class="special">value</span>)
+<span class="statement">finally</span>:
+    cleanup()
+
+<span class="statement">if</span> n &lt; 0:
+    <span class="statement">raise</span> <span class="error">ValueError</span>(<span class="string">"n must be nonnegative"</span>)
+
+<span class="statement">with</span> <span class="builtin">open</span>(path, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="statement">as</span> f:
+    text = f.read()
+</pre></div></div>
+<p>Catch the narrow exception you expect; do not silently use <tt>except Exception: pass</tt>. Context managers guarantee cleanup.</p>
+<h2>2. Built-in data structures [P0]</h2>
+<h3>2.1 List</h3>
+<p>Ordered, mutable dynamic array. Index/append/pop-last are O(1) amortized; inserting/deleting near the front is O(n); membership is O(n).</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+a = [3, 1, 2]
+a.append(4)
+x = a.pop()
+a.extend([5, 6])
+b = a[::-1]                     <span class="comment"># reversed copy</span>
+c = sorted(a)                   <span class="comment"># new list</span>
+a.sort(key=<span class="statement">lambda</span> x: -x)        <span class="comment"># <span class="builtin">in</span> place, returns None</span>
+squares = [x * x <span class="statement">for</span> x <span class="builtin">in</span> a <span class="statement">if</span> x &gt;= 0]
+<span class="special">matrix</span> = [[0] * m <span class="statement">for</span> _ <span class="builtin">in</span> <span class="builtin">range</span>(n)]
+</pre></div></div>
+<p><b>Aliasing trap:</b> <tt>[[0] * m] * n</tt> repeats references to the same inner list. Use the comprehension above.</p>
+<h3>2.2 Tuple</h3>
+<p>Ordered and immutable; usable as a dict key if all elements are hashable. Packing/unpacking is pervasive.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+point = (2, 5)
+x, y = point
+first, *middle, last = <span class="builtin">range</span>(6)
+single = (1,)                    <span class="comment"># comma makes the tuple</span>
+</pre></div></div>
+<h3>2.3 Dictionary</h3>
+<p>Insertion-ordered mapping in modern Python. Average lookup/insert/delete O(1); keys must be hashable.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+d = {<span class="string">"a"</span>: 1}
+d[<span class="string">"b"</span>] = d.get(<span class="string">"b"</span>, 0) + 1
+<span class="statement">for</span> k, v <span class="builtin">in</span> d.items():
+    <span class="statement">pass</span>
+keys = <span class="builtin">set</span>(d)
+<span class="special">value</span> = d.pop(<span class="string">"a"</span>, None)
+merged = d1 | d2                 <span class="comment"># later mapping wins (modern Python)</span>
+</pre></div></div>
+<p>Avoid <tt>if k in d.keys()</tt>; use <tt>if k in d</tt>. Accessing a missing <tt>d[k]</tt> raises <tt>KeyError</tt>.</p>
+<h3>2.4 Set</h3>
+<p>Unordered unique hashable values. Average membership/add/remove O(1).</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+s = <span class="builtin">set</span>(values)
+s.add(x); s.discard(x)           <span class="comment"># discard does <span class="builtin">not</span> <span class="statement">raise</span> <span class="statement">if</span> missing</span>
+union = a | b
+inter = a &amp; b
+diff = a - b
+sym = a ^ b
+</pre></div></div>
+<p>Use a set for membership/deduplication, but preserve order with <tt>list(dict.fromkeys(values))</tt>. An empty set is <tt>set()</tt>; <tt>{}</tt> is a dict.</p>
+<h3>2.5 Copying and identity</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">import</span> copy
+b = a                            <span class="comment"># same <span class="builtin">object</span></span>
+b = a.copy()                     <span class="comment"># shallow copy</span>
+b = copy.deepcopy(a)             <span class="comment"># recursive copy</span>
+</pre></div></div>
+<p><tt>is</tt> tests identity; <tt>==</tt> tests value equality. Shallow copies still share nested mutable objects.</p>
+<h2>3. Comprehensions, iterators and generators [P0/P1]</h2>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+evens = [x <span class="statement">for</span> x <span class="builtin">in</span> values <span class="statement">if</span> x % 2 == 0]
+lookup = {x: x * x <span class="statement">for</span> x <span class="builtin">in</span> values}
+unique = {normalize(x) <span class="statement">for</span> x <span class="builtin">in</span> values}
+total = sum(x * x <span class="statement">for</span> x <span class="builtin">in</span> values)       <span class="comment"># generator expression</span>
+
+<span class="statement">def</span> running_total(values):
+    total = 0
+    <span class="statement">for</span> x <span class="builtin">in</span> values:
+        total += x
+        <span class="statement">yield</span> total
+</pre></div></div>
+<ul>
+<li><p>Iterable: can produce an iterator. Iterator: has <tt>__next__</tt> and is consumed.</p>
+</li>
+<li><p>Generators are lazy and memory-efficient; once consumed, recreate them.</p>
+</li>
+<li><p><tt>any</tt> and <tt>all</tt> short-circuit. <tt>min/max</tt> accept a <tt>key</tt>.</p>
+</li>
+</ul>
+<h2>4. Standard-library tools to memorize [P0]</h2>
+<h3>4.1 collections</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> collections <span class="statement">import</span> Counter, defaultdict, deque
+
+counts = Counter(values)
+counts.most_common(3)
+
+groups = defaultdict(list)
+<span class="statement">for</span> key, <span class="special">value</span> <span class="builtin">in</span> <span class="special">rows</span>:
+    groups[key].append(<span class="special">value</span>)
+
+q = deque([start])
+q.append(x); q.appendleft(y)
+q.popleft(); q.pop()
+</pre></div></div>
+<p><tt>deque</tt> provides O(1) operations at both ends and is the correct BFS queue.</p>
+<h3>4.2 heapq and top-k</h3>
+<p>Python's heap is a min-heap.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">import</span> heapq
+
+heap = []
+heapq.heappush(heap, <span class="special">value</span>)
+smallest = heapq.heappop(heap)
+
+<span class="comment"># Keep k largest values <span class="builtin">in</span> O(n log k)</span>
+heap = []
+<span class="statement">for</span> x <span class="builtin">in</span> values:
+    <span class="statement">if</span> len(heap) &lt; k:
+        heapq.heappush(heap, x)
+    <span class="statement">elif</span> x &gt; heap[0]:
+        heapq.heapreplace(heap, x)
+</pre></div></div>
+<p>For a max-heap in interview-compatible code, store negative numeric priorities: <tt>(-priority, tie_breaker, item)</tt>.</p>
+<h3>4.3 bisect</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> bisect <span class="statement">import</span> bisect_left, bisect_right, insort
+
+i = bisect_left(a, x)            <span class="comment"># first index <span class="statement">with</span> <span class="special">value</span> &gt;= x</span>
+j = bisect_right(a, x)           <span class="comment"># first index <span class="statement">with</span> <span class="special">value</span> &gt; x</span>
+count_x = j - i
+insort(a, x)                     <span class="comment"># search O(log n), insertion O(n)</span>
+</pre></div></div>
+<h3>4.4 itertools and functools</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> itertools <span class="statement">import</span> accumulate, combinations, permutations, product
+<span class="statement">from</span> functools <span class="statement">import</span> lru_cache
+
+prefix = list(accumulate(values))
+<span class="statement">for</span> pair <span class="builtin">in</span> combinations(values, 2):
+    <span class="statement">pass</span>
+<span class="statement">for</span> state <span class="builtin">in</span> product(<span class="builtin">range</span>(3), repeat=n):
+    <span class="statement">pass</span>
+
+@lru_cache(None)
+<span class="statement">def</span> dp(state):
+    ...
+</pre></div></div>
+<p>Know that combinatorial iterators can still generate exponentially/factorially many results.</p>
+<h2>5. Sorting, parsing and interview hygiene [P0]</h2>
+<h3>5.1 Sorting</h3>
+<p>Python sorting is stable and O(n log n). Composite keys are lexicographic.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="special">rows</span>.sort(key=<span class="statement">lambda</span> row: (row[0], -row[1]))
+ranked = sorted(<span class="builtin">enumerate</span>(scores), key=<span class="statement">lambda</span> p: p[1], reverse=<span class="builtin">True</span>)
+</pre></div></div>
+<p>Stability lets you sort by a secondary key first, then by primary key.</p>
+<h3>5.2 Input/output template</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">import</span> sys
+
+<span class="statement">def</span> solve():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+    n = int(next(it))
+    values = [int(next(it)) <span class="statement">for</span> _ <span class="builtin">in</span> <span class="builtin">range</span>(n)]
+    answer = sum(values)
+    <span class="statement">print</span>(answer)
+
+<span class="statement">if</span> __name__ == <span class="string">"__main__"</span>:
+    solve()
+</pre></div></div>
+<p>For interactive interviews, favor clarity over micro-optimized parsing. Never shadow builtins such as <tt>list</tt>, <tt>sum</tt>, <tt>max</tt>, <tt>str</tt>.</p>
+<h3>5.3 Testing checklist</h3>
+<ol>
+<li><p>Restate inputs, outputs, constraints and whether data are sorted/unique.</p>
+</li>
+<li><p>Work a tiny example before coding.</p>
+</li>
+<li><p>State invariant and complexity.</p>
+</li>
+<li><p>Test empty input, one item, duplicates, negative values, all equal, already sorted, reverse sorted, and very large values.</p>
+</li>
+<li><p>For random/numeric code, fix a seed only for reproducibility; do not mistake it for statistical independence.</p>
+</li>
+</ol>
+<h2>6. NumPy [P0]</h2>
+<h3>6.1 Mental model: ndarray = data buffer + dtype + shape + strides</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">import</span> numpy <span class="statement">as</span> np
+
+a = np.array([1, 2, 3], dtype=float)
+z = np.zeros((3, 4))
+o = np.ones_like(z)
+I = np.eye(3)
+x = np.arange(0, 10, 2)
+grid = np.linspace(0.0, 1.0, 6)
+
+a.shape; a.ndim; a.size; a.dtype
+a.astype(np.float64, copy=<span class="builtin">False</span>)
+</pre></div></div>
+<ul>
+<li><p>One array has one dtype; mixing numbers and strings may coerce unexpectedly.</p>
+</li>
+<li><p>Shape <tt>(n,)</tt> is a 1-D vector, not a row or column. Use <tt>(n,1)</tt> or <tt>(1,n)</tt> explicitly.</p>
+</li>
+<li><p><tt>axis</tt> is the dimension being reduced: for a 2-D array, <tt>axis=0</tt> reduces rows and returns one value per column; <tt>axis=1</tt> reduces columns and returns one per row.</p>
+</li>
+</ul>
+<h3>6.2 Shape operations</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+x = np.arange(12).reshape(3, 4)
+x.T
+x.reshape(-1, 1)
+x.ravel()                        <span class="comment"># view when possible</span>
+x.flatten()                      <span class="comment"># copy</span>
+np.squeeze(x)
+np.expand_dims(a, axis=1)
+
+np.concatenate([a, b], axis=0)  <span class="comment"># existing axis</span>
+np.stack([a, b], axis=0)        <span class="comment"># new axis</span>
+np.vstack([a, b])
+np.column_stack([a, b])
+</pre></div></div>
+<p>Always predict the output shape before running code.</p>
+<h3>6.3 Indexing: view versus copy</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+x[1, 2]
+x[:, 1:3]                        <span class="comment"># basic slice, usually a view</span>
+x[[0, 2], :]                     <span class="comment"># advanced indexing, copy</span>
+x[x[:, 0] &gt; 0]                  <span class="comment"># boolean indexing, copy</span>
+x[np.ix_([0, 2], [1, 3])]       <span class="comment"># Cartesian submatrix</span>
+</pre></div></div>
+<p>Basic slicing returns a view when possible; advanced integer/boolean indexing returns a copy. If you need independence, call <tt>.copy()</tt> explicitly.</p>
+<h3>6.4 Broadcasting</h3>
+<p>Compare shapes from the right. Dimensions are compatible when equal or one is 1.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+X = np.arange(12).reshape(3, 4)
+row_centered = X - X.mean(axis=1, keepdims=<span class="builtin">True</span>)  <span class="comment"># (3,4)-(3,1)</span>
+col_scaled = X / X.std(axis=0, keepdims=<span class="builtin">True</span>)     <span class="comment"># (3,4)-(1,4)</span>
+pairwise = a[:, None] - b[None, :]                <span class="comment"># (len(a),len(b))</span>
+</pre></div></div>
+<p>Broadcasting avoids explicit loops but may materialize a huge result. A shape that broadcasts successfully can still represent the wrong calculation.</p>
+<h3>6.5 Vectorization, reductions and conditionals</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+X.sum(axis=0)
+X.mean(axis=0)
+X.std(axis=0, ddof=1)            <span class="comment"># sample standard deviation</span>
+X.min(); X.argmin()
+np.quantile(X, [0.25, 0.5, 0.75], axis=0)
+np.cumsum(a); np.cumprod(a)
+np.diff(a)
+
+mask = np.isfinite(X) &amp; (X &gt; 0)
+clean = np.where(mask, X, np.nan)
+clipped = np.clip(X, -3, 3)
+</pre></div></div>
+<p>Use elementwise <tt>&amp;</tt>, <tt>|</tt>, <tt>~</tt> with parentheses; Python <tt>and/or</tt> do not work elementwise on arrays.</p>
+<h3>6.6 NaN and missing numeric data</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+np.isnan(X)
+np.nanmean(X, axis=0)
+np.nanstd(X, axis=0, ddof=1)
+np.nanquantile(X, 0.5, axis=0)
+</pre></div></div>
+<p><tt>NaN != NaN</tt>; test with <tt>np.isnan</tt>. Integer arrays cannot represent NaN without dtype conversion or a masked/nullable representation.</p>
+<h3>6.7 Sorting, ranking and selection</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+np.sort(a)
+order = np.argsort(a, kind=<span class="string">"stable"</span>)
+top_k_idx = np.argpartition(a, -k)[-k:]   <span class="comment"># unsorted top-k, average O(n)</span>
+values, counts = np.unique(a, return_counts=<span class="builtin">True</span>)
+</pre></div></div>
+<p>Use <tt>argpartition</tt> when only top-k membership matters; sort the selected subset if order is required.</p>
+<h3>6.8 Linear algebra</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+y = A @ x
+C = A @ B
+solution = np.linalg.solve(A, b)          <span class="comment"># square nonsingular</span>
+coef, residuals, rank, s = np.linalg.lstsq(X, y, rcond=None)
+eigvals, eigvecs = np.linalg.eigh(S)      <span class="comment"># symmetric/Hermitian</span>
+U, singular, Vt = np.linalg.svd(X, full_matrices=<span class="builtin">False</span>)
+L = np.linalg.cholesky(cov)
+norm = np.linalg.norm(x)
+</pre></div></div>
+<p>Do not write <tt>np.linalg.inv(A) @ b</tt>; use <tt>solve</tt>. For symmetric matrices use <tt>eigh</tt>, which returns real ordered eigenvalues and exploits structure.</p>
+<h3>6.9 Random numbers and simulation</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+rng = np.random.default_rng(20260720)
+u = rng.random(1000)
+z = rng.normal(loc=0.0, scale=1.0, size=(1000, 3))
+idx = rng.choice(n, size=k, replace=<span class="builtin">False</span>)
+perm = rng.permutation(n)
+</pre></div></div>
+<p>Prefer an explicit <tt>Generator</tt> over global state. Simulation is a verification tool, not a substitute for an analytic answer when one is requested.</p>
+<h2>7. pandas [P0]</h2>
+<h3>7.1 Series, DataFrame and inspection</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">import</span> pandas <span class="statement">as</span> pd
+
+df = pd.read_csv(<span class="string">"prices.csv"</span>, parse_dates=[<span class="string">"date"</span>])
+df.head(); df.tail()
+df.shape; df.columns; df.dtypes
+df.info()
+df.describe(include=<span class="string">"all"</span>)
+df[<span class="string">"symbol"</span>].value_counts(dropna=<span class="builtin">False</span>)
+df.nunique(dropna=<span class="builtin">False</span>)
+</pre></div></div>
+<ul>
+<li><p><tt>Series</tt> is one labeled vector; <tt>DataFrame</tt> is a 2-D labeled table.</p>
+</li>
+<li><p>pandas aligns arithmetic by index labels, not row position. This is powerful and a frequent silent-bug source.</p>
+</li>
+<li><p>Keep keys such as <tt>date,symbol</tt> explicit; assert uniqueness when the data model requires it.</p>
+</li>
+</ul>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">assert</span> <span class="builtin">not</span> df.duplicated([<span class="string">"date"</span>, <span class="string">"symbol"</span>]).any()
+df = df.sort_values([<span class="string">"symbol"</span>, <span class="string">"date"</span>]).reset_index(drop=<span class="builtin">True</span>)
+</pre></div></div>
+<h3>7.2 Selection: loc versus iloc</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+df[<span class="string">"close"</span>]                       <span class="comment"># Series</span>
+df[[<span class="string">"date"</span>, <span class="string">"symbol"</span>, <span class="string">"close"</span>]] <span class="comment"># DataFrame</span>
+df.loc[df[<span class="string">"volume"</span>] &gt; 0, [<span class="string">"symbol"</span>, <span class="string">"close"</span>]]
+df.iloc[:10, :3]
+df.at[row_label, <span class="string">"close"</span>]
+df.iat[0, 2]
+</pre></div></div>
+<ul>
+<li><p><tt>loc</tt> is label-based; label slices include the stop label.</p>
+</li>
+<li><p><tt>iloc</tt> is integer-position-based; slices exclude the stop position.</p>
+</li>
+<li><p>Combine masks with <tt>&amp;</tt> and <tt>|</tt>, parenthesizing each condition.</p>
+</li>
+</ul>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+mask = (
+    df[<span class="string">"symbol"</span>].isin([<span class="string">"A"</span>, <span class="string">"B"</span>])
+    &amp; df[<span class="string">"close"</span>].notna()
+    &amp; df[<span class="string">"date"</span>].between(<span class="string">"2025-01-01"</span>, <span class="string">"2025-12-31"</span>)
+)
+subset = df.loc[mask].copy()
+</pre></div></div>
+<p>Avoid chained assignment such as <tt>df[df.x&gt;0]["y"] = 1</tt>. Use one <tt>loc</tt> assignment. With evolving copy-on-write semantics, explicit <tt>.copy()</tt> at ownership boundaries remains clearest.</p>
+<h3>7.3 Create, rename, sort and type columns</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+df = df.assign(
+    dollar_volume=<span class="statement">lambda</span> x: x[<span class="string">"close"</span>] * x[<span class="string">"volume"</span>],
+    log_price=<span class="statement">lambda</span> x: np.log(x[<span class="string">"close"</span>]),
+)
+df = df.rename(columns={<span class="string">"ticker"</span>: <span class="string">"symbol"</span>})
+df = df.sort_values([<span class="string">"date"</span>, <span class="string">"score"</span>], ascending=[<span class="builtin">True</span>, <span class="builtin">False</span>])
+df[<span class="string">"date"</span>] = pd.to_datetime(df[<span class="string">"date"</span>], errors=<span class="string">"coerce"</span>)
+df[<span class="string">"symbol"</span>] = df[<span class="string">"symbol"</span>].astype(<span class="string">"string"</span>)
+</pre></div></div>
+<h3>7.4 Missing values and duplicates</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+df.isna().sum()
+df = df.dropna(subset=[<span class="string">"date"</span>, <span class="string">"symbol"</span>, <span class="string">"close"</span>])
+df[<span class="string">"sector"</span>] = df[<span class="string">"sector"</span>].fillna(<span class="string">"Unknown"</span>)
+df[<span class="string">"<span class="special">value</span>"</span>] = df.groupby(<span class="string">"symbol"</span>)[<span class="string">"<span class="special">value</span>"</span>].ffill()
+df = df.drop_duplicates([<span class="string">"date"</span>, <span class="string">"symbol"</span>], keep=<span class="string">"last"</span>)
+</pre></div></div>
+<p>Missingness can be informative. Never forward-fill across symbols or across unavailable history. Specify why a duplicate exists before choosing first/last.</p>
+<h3>7.5 groupby: agg, transform, filter, apply</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+summary = (
+    df.groupby(<span class="string">"symbol"</span>, as_index=<span class="builtin">False</span>)
+      .agg(mean_ret=(<span class="string">"ret"</span>, <span class="string">"mean"</span>),
+           vol=(<span class="string">"ret"</span>, <span class="string">"std"</span>),
+           n=(<span class="string">"ret"</span>, <span class="string">"size"</span>))
+)
+
+<span class="comment"># Same length/index <span class="statement">as</span> input: cross-sectional z-score by date</span>
+g = df.groupby(<span class="string">"date"</span>)[<span class="string">"signal"</span>]
+df[<span class="string">"signal_z"</span>] = (df[<span class="string">"signal"</span>] - g.transform(<span class="string">"mean"</span>)) / g.transform(<span class="string">"std"</span>)
+
+large = df.groupby(<span class="string">"symbol"</span>).<span class="builtin">filter</span>(<span class="statement">lambda</span> x: len(x) &gt;= 252)
+</pre></div></div>
+<ul>
+<li><p><tt>agg</tt> reduces each group.</p>
+</li>
+<li><p><tt>transform</tt> returns something aligned to every original row.</p>
+</li>
+<li><p><tt>filter</tt> keeps/drops whole groups.</p>
+</li>
+<li><p><tt>apply</tt> is flexible but often slower and can produce complex indexes; prefer vectorized built-ins, <tt>agg</tt>, or <tt>transform</tt>.</p>
+</li>
+</ul>
+<h3>7.6 Merge, join and concatenate</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+out = left.merge(
+    right,
+    on=[<span class="string">"date"</span>, <span class="string">"symbol"</span>],
+    how=<span class="string">"left"</span>,
+    validate=<span class="string">"many_to_one"</span>,
+    indicator=<span class="builtin">True</span>,
+)
+<span class="statement">assert</span> (out[<span class="string">"_merge"</span>] != <span class="string">"left_only"</span>).all()
+out = out.drop(columns=<span class="string">"_merge"</span>)
+
+<span class="special">rows</span> = pd.concat([jan, feb, mar], ignore_index=<span class="builtin">True</span>)
+wide = pd.concat([features_a, features_b], axis=1)
+</pre></div></div>
+<p>Know <tt>inner/left/right/outer</tt>. Estimate expected row counts before merging. Use <tt>validate</tt> (<tt>one_to_one</tt>, <tt>one_to_many</tt>, <tt>many_to_one</tt>) to catch accidental many-to-many explosions.</p>
+<p>For point-in-time/as-of joins:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+left = left.sort_values([<span class="string">"date"</span>, <span class="string">"symbol"</span>])
+right = right.sort_values([<span class="string">"effective_date"</span>, <span class="string">"symbol"</span>])
+out = pd.merge_asof(
+    left,
+    right,
+    left_on=<span class="string">"date"</span>,
+    right_on=<span class="string">"effective_date"</span>,
+    by=<span class="string">"symbol"</span>,
+    direction=<span class="string">"backward"</span>,
+)
+</pre></div></div>
+<p>Ensure the sort order required by the installed pandas version and verify that <tt>effective_date &lt;= date</tt> for every match.</p>
+<h3>7.7 Reshaping</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+panel = df.pivot(index=<span class="string">"date"</span>, columns=<span class="string">"symbol"</span>, values=<span class="string">"ret"</span>)
+panel = df.pivot_table(
+    index=<span class="string">"date"</span>, columns=<span class="string">"symbol"</span>, values=<span class="string">"ret"</span>, aggfunc=<span class="string">"mean"</span>
+)
+long = panel.reset_index().melt(
+    id_vars=<span class="string">"date"</span>, var_name=<span class="string">"symbol"</span>, value_name=<span class="string">"ret"</span>
+)
+stacked = panel.stack(dropna=<span class="builtin">False</span>)
+</pre></div></div>
+<p><tt>pivot</tt> requires unique keys; <tt>pivot_table</tt> aggregates duplicates. Do not hide unexpected duplicates by choosing an arbitrary aggregation.</p>
+<h3>7.8 Time series, shift and windows</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+df = df.sort_values([<span class="string">"symbol"</span>, <span class="string">"date"</span>])
+g = df.groupby(<span class="string">"symbol"</span>, group_keys=<span class="builtin">False</span>)
+
+df[<span class="string">"ret_1d"</span>] = g[<span class="string">"close"</span>].pct_change(fill_method=None)
+df[<span class="string">"log_ret_1d"</span>] = g[<span class="string">"close"</span>].transform(<span class="statement">lambda</span> s: np.log(s).diff())
+df[<span class="string">"target_fwd_1d"</span>] = g[<span class="string">"ret_1d"</span>].shift(-1)
+df[<span class="string">"lag_ret_1d"</span>] = g[<span class="string">"ret_1d"</span>].shift(1)
+
+df[<span class="string">"mean_20"</span>] = g[<span class="string">"ret_1d"</span>].transform(
+    <span class="statement">lambda</span> s: s.rolling(20, min_periods=20).mean()
+)
+df[<span class="string">"vol_20"</span>] = g[<span class="string">"ret_1d"</span>].transform(
+    <span class="statement">lambda</span> s: s.rolling(20, min_periods=20).std()
+)
+df[<span class="string">"ewm_mean"</span>] = g[<span class="string">"ret_1d"</span>].transform(
+    <span class="statement">lambda</span> s: s.ewm(span=20, adjust=<span class="builtin">False</span>).mean()
+)
+</pre></div></div>
+<p><b>Leakage rule:</b> decide whether today's close is available at signal time. If not, shift features by one more period. A negative shift creates a future target and must never be used as a feature.</p>
+<h3>7.9 Rank, quantiles and cross-sectional operations</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+df[<span class="string">"rank_pct"</span>] = df.groupby(<span class="string">"date"</span>)[<span class="string">"signal"</span>].rank(
+    pct=<span class="builtin">True</span>, method=<span class="string">"average"</span>
+)
+df[<span class="string">"decile"</span>] = df.groupby(<span class="string">"date"</span>)[<span class="string">"signal"</span>].transform(
+    <span class="statement">lambda</span> s: pd.qcut(s, 10, labels=<span class="builtin">False</span>, duplicates=<span class="string">"drop"</span>)
+)
+
+ic = df.groupby(<span class="string">"date"</span>).apply(
+    <span class="statement">lambda</span> x: x[<span class="string">"signal"</span>].corr(x[<span class="string">"target_fwd_1d"</span>], method=<span class="string">"spearman"</span>)
+)
+</pre></div></div>
+<p><tt>qcut</tt> may drop bins when values tie. For performance-sensitive code, avoid Python-level <tt>groupby.apply</tt> after correctness is established.</p>
+<h3>7.10 pandas performance and correctness</h3>
+<ul>
+<li><p>Prefer vectorized operations and grouped built-ins over <tt>iterrows</tt> and row-wise <tt>apply(axis=1)</tt>.</p>
+</li>
+<li><p>Avoid unnecessary <tt>object</tt> dtype; use numeric, datetime, categorical/string types intentionally.</p>
+</li>
+<li><p>Read only needed columns; use Parquet for typed columnar storage when available.</p>
+</li>
+<li><p>Sort explicitly before <tt>shift</tt>, <tt>rolling</tt>, <tt>merge_asof</tt>, or cumulative calculations.</p>
+</li>
+<li><p>Check shape, keys, missingness, date range and a few hand-calculated rows after every major transformation.</p>
+</li>
+</ul>
+<h2>8. scikit-learn [P0/P1]</h2>
+<h3>8.1 Estimator API</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+model.fit(X_train, y_train)
+pred = model.predict(X_test)
+proba = model.predict_proba(X_test)[:, 1]
+X_new = transformer.fit_transform(X_train)
+X_test_new = transformer.transform(X_test)
+</pre></div></div>
+<ul>
+<li><p>Estimators learn in <tt>fit</tt>; transformers expose <tt>transform</tt>; predictors expose <tt>predict</tt>.</p>
+</li>
+<li><p>Learned attributes usually end with underscore, e.g. <tt>coef_</tt>, <tt>classes_</tt>, <tt>feature_importances_</tt>.</p>
+</li>
+<li><p>Never call <tt>fit_transform</tt> on validation/test data.</p>
+</li>
+</ul>
+<h3>8.2 Split and baseline</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.model_selection <span class="statement">import</span> train_test_split
+<span class="statement">from</span> sklearn.dummy <span class="statement">import</span> DummyRegressor, DummyClassifier
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+</pre></div></div>
+<p>For classification with enough observations in every class, add <tt>stratify=y</tt>; do not pass a continuous regression target to <tt>stratify</tt>. Use random splits only for exchangeable samples. For time series, sort by time and use a chronological holdout or <tt>TimeSeriesSplit</tt>. Grouped entities may need <tt>GroupKFold</tt>.</p>
+<h3>8.3 Leakage-safe pipeline</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.pipeline <span class="statement">import</span> Pipeline
+<span class="statement">from</span> sklearn.impute <span class="statement">import</span> SimpleImputer
+<span class="statement">from</span> sklearn.preprocessing <span class="statement">import</span> StandardScaler
+<span class="statement">from</span> sklearn.linear_model <span class="statement">import</span> Ridge
+
+pipe = Pipeline([
+    (<span class="string">"impute"</span>, SimpleImputer(strategy=<span class="string">"median"</span>, add_indicator=<span class="builtin">True</span>)),
+    (<span class="string">"scale"</span>, StandardScaler()),
+    (<span class="string">"model"</span>, Ridge(alpha=1.0)),
+])
+pipe.fit(X_train, y_train)
+pred = pipe.predict(X_test)
+</pre></div></div>
+<p>Everything data-dependent belongs inside the pipeline: imputation, scaling, encoding, PCA, feature selection and the estimator.</p>
+<h3>8.4 Mixed numeric/categorical columns</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.compose <span class="statement">import</span> ColumnTransformer
+<span class="statement">from</span> sklearn.preprocessing <span class="statement">import</span> OneHotEncoder
+
+preprocess = ColumnTransformer([
+    (<span class="string">"num"</span>, Pipeline([
+        (<span class="string">"impute"</span>, SimpleImputer(strategy=<span class="string">"median"</span>)),
+        (<span class="string">"scale"</span>, StandardScaler()),
+    ]), numeric_cols),
+    (<span class="string">"cat"</span>, Pipeline([
+        (<span class="string">"impute"</span>, SimpleImputer(strategy=<span class="string">"most_frequent"</span>)),
+        (<span class="string">"onehot"</span>, OneHotEncoder(handle_unknown=<span class="string">"ignore"</span>)),
+    ]), categorical_cols),
+])
+
+model = Pipeline([
+    (<span class="string">"preprocess"</span>, preprocess),
+    (<span class="string">"model"</span>, Ridge(alpha=1.0)),
+])
+</pre></div></div>
+<h3>8.5 Cross-validation and tuning</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.model_selection <span class="statement">import</span> GridSearchCV, TimeSeriesSplit
+
+cv = TimeSeriesSplit(n_splits=5)
+search = GridSearchCV(
+    pipe,
+    param_grid={<span class="string">"model__alpha"</span>: [0.01, 0.1, 1.0, 10.0]},
+    scoring=<span class="string">"neg_mean_squared_error"</span>,
+    cv=cv,
+    n_jobs=-1,
+)
+search.fit(X_train, y_train)
+best_model = search.best_estimator_
+</pre></div></div>
+<p>The double underscore addresses a nested parameter. Keep a final untouched test set; nested CV is needed when an unbiased estimate after extensive tuning matters.</p>
+<h3>8.6 Metrics to memorize</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.metrics <span class="statement">import</span> (
+    mean_absolute_error, mean_squared_error, r2_score,
+    accuracy_score, precision_score, recall_score, f1_score,
+    roc_auc_score, average_precision_score, log_loss,
+    confusion_matrix,
+)
+
+rmse = mean_squared_error(y_true, pred) ** 0.5
+mae = mean_absolute_error(y_true, pred)
+r2 = r2_score(y_true, pred)
+auc = roc_auc_score(y_true, proba)
+pr_auc = average_precision_score(y_true, proba)
+</pre></div></div>
+<ul>
+<li><p>MSE/RMSE heavily weight large errors; MAE is more robust.</p>
+</li>
+<li><p>Accuracy can be useless under imbalance.</p>
+</li>
+<li><p>AUC evaluates ranking; log loss/Brier evaluate probabilities; threshold metrics depend on the operating point.</p>
+</li>
+<li><p>Scikit-learn's <tt>neg_*</tt> scorers are negated because higher score is always considered better.</p>
+</li>
+</ul>
+<h3>8.7 Model quick map</h3>
+<ul>
+<li><p><tt>LinearRegression</tt>: unregularized OLS; inspect rank/conditioning.</p>
+</li>
+<li><p><tt>Ridge</tt>, <tt>Lasso</tt>, <tt>ElasticNet</tt>: scaled linear features and regularization.</p>
+</li>
+<li><p><tt>LogisticRegression</tt>: classification; tune <tt>C</tt> (inverse regularization strength) and penalty/solver compatibility.</p>
+</li>
+<li><p><tt>DecisionTree*</tt>: interpretable nonlinear splits, high variance without control.</p>
+</li>
+<li><p><tt>RandomForest*</tt>, <tt>ExtraTrees*</tt>: bagged randomized trees.</p>
+</li>
+<li><p><tt>HistGradientBoosting*</tt>: strong tabular boosting baseline.</p>
+</li>
+<li><p><tt>SVC</tt>: scale features; <tt>probability=True</tt> adds cost and calibration behavior.</p>
+</li>
+<li><p><tt>KNeighbors*</tt>: scale, dimension-sensitive, prediction can be expensive.</p>
+</li>
+<li><p><tt>KMeans</tt>, <tt>PCA</tt>: unsupervised; fit on training data only.</p>
+</li>
+</ul>
+<h3>8.8 Reproducibility</h3>
+<ul>
+<li><p>Set <tt>random_state</tt> on every stochastic component; record library versions and feature definitions.</p>
+</li>
+<li><p>Fixed seeds reproduce one random stream; they do not remove sampling uncertainty.</p>
+</li>
+<li><p>Parallel floating-point reductions may vary slightly; compare with tolerance.</p>
+</li>
+<li><p>Persist the entire fitted pipeline, not a model detached from preprocessing.</p>
+</li>
+</ul>
+<h2>9. Quant coding templates [P0]</h2>
+<h3>9.1 Numerically stable online mean and variance</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> online_mean_variance(values):
+    n = 0
+    mean = 0.0
+    m2 = 0.0
+    <span class="statement">for</span> x <span class="builtin">in</span> values:
+        n += 1
+        delta = x - mean
+        mean += delta / n
+        m2 += delta * (x - mean)
+    variance = m2 / (n - 1) <span class="statement">if</span> n &gt; 1 <span class="statement">else</span> float(<span class="string">"nan"</span>)
+    <span class="statement">return</span> mean, variance
+</pre></div></div>
+<p>Welford's update is one-pass and more stable than <tt>mean(x²)-mean(x)²</tt>.</p>
+<h3>9.2 Stable softmax and log-sum-exp</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> softmax(z):
+    z = np.asarray(z, dtype=float)
+    shifted = z - np.max(z, axis=-1, keepdims=<span class="builtin">True</span>)
+    exp_z = np.exp(shifted)
+    <span class="statement">return</span> exp_z / exp_z.sum(axis=-1, keepdims=<span class="builtin">True</span>)
+
+<span class="statement">def</span> logsumexp(z):
+    m = np.max(z)
+    <span class="statement">return</span> m + np.log(np.exp(z - m).sum())
+</pre></div></div>
+<h3>9.3 Forward-return target without accidental alignment</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+df = df.sort_values([<span class="string">"symbol"</span>, <span class="string">"date"</span>])
+next_close = df.groupby(<span class="string">"symbol"</span>)[<span class="string">"close"</span>].shift(-1)
+df[<span class="string">"fwd_ret_1d"</span>] = next_close / df[<span class="string">"close"</span>] - 1
+
+<span class="comment"># Feature known strictly before day t close</span>
+df[<span class="string">"feature_lagged"</span>] = df.groupby(<span class="string">"symbol"</span>)[<span class="string">"raw_feature"</span>].shift(1)
+</pre></div></div>
+<p>Write down the information timestamp and execution price; <tt>shift</tt> direction alone does not prove correctness.</p>
+<h3>9.4 Cross-sectional neutralization by least squares</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> neutralize_one_date(group, feature, exposures):
+    <span class="special">cols</span> = [feature] + exposures
+    clean = group.dropna(subset=<span class="special">cols</span>).copy()
+    X = clean[exposures].to_numpy(float)
+    X = np.column_stack([np.ones(len(X)), X])
+    y = clean[feature].to_numpy(float)
+    beta, *_ = np.linalg.lstsq(X, y, rcond=None)
+    clean[feature + <span class="string">"_neutral"</span>] = y - X @ beta
+    <span class="statement">return</span> clean
+</pre></div></div>
+<p>In production, preserve all rows/indexes, handle categorical sectors, weights, small groups and collinearity explicitly.</p>
+<h3>9.5 Monte Carlo estimate with uncertainty</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+rng = np.random.default_rng(42)
+n = 200_000
+x = rng.random(n)
+y = rng.random(n)
+indicator = (x * x + y * y &lt;= 1.0)
+p_hat = indicator.mean()
+se = np.sqrt(p_hat * (1 - p_hat) / n)
+pi_hat = 4 * p_hat
+pi_se = 4 * se
+</pre></div></div>
+<p>Report Monte Carlo standard error, not only the point estimate.</p>
+<h2>10. What to memorize versus derive</h2>
+<p><b>Memorize cold:</b></p>
+<ul>
+<li><p>Built-in container operations and complexity.</p>
+</li>
+<li><p><tt>enumerate</tt>, <tt>zip</tt>, sorting keys, <tt>Counter/defaultdict/deque/heapq/bisect</tt>.</p>
+</li>
+<li><p>NumPy <tt>shape/axis</tt>, <tt>reshape</tt>, indexing, broadcasting, reductions, <tt>argsort</tt>, <tt>lstsq/solve/svd/eigh</tt>.</p>
+</li>
+<li><p>pandas <tt>loc/iloc</tt>, <tt>groupby.agg/transform</tt>, <tt>merge(validate=&hellip;)</tt>, <tt>pivot/melt</tt>, <tt>shift/rolling</tt>.</p>
+</li>
+<li><p>sklearn pipeline, split, fit/predict, common metrics and <tt>model__parameter</tt> tuning syntax.</p>
+</li>
+</ul>
+<p><b>Derive from principles:</b></p>
+<ul>
+<li><p>Rare API signatures, complex indexing tricks and version-specific behavior.</p>
+</li>
+<li><p>Shape of every vectorized expression.</p>
+</li>
+<li><p>Statistical assumptions, target timing and validation scheme.</p>
+</li>
+<li><p>Whether a merge/window/shift leaks future information.</p>
+</li>
+</ul>
+<h2>11. Seven-day coding reset</h2>
+<ol>
+<li><p>Day 1: core Python, containers, 10 small functions without IDE.</p>
+</li>
+<li><p>Day 2: <tt>collections/heapq/bisect</tt>; two-pointer, sliding-window and interval problems.</p>
+</li>
+<li><p>Day 3: NumPy shapes, broadcasting, indexing, reductions and linear algebra; reimplement OLS.</p>
+</li>
+<li><p>Day 4: pandas selection, groupby, merge, reshape and missing data on a toy price panel.</p>
+</li>
+<li><p>Day 5: pandas time series; build lagged features/forward targets and manually audit five rows.</p>
+</li>
+<li><p>Day 6: sklearn pipelines, time-aware CV, metrics and a complete tabular model.</p>
+</li>
+<li><p>Day 7: 90-minute mock: one probability simulation, one pandas task and two algorithm problems; then write an error log.</p>
+</li>
+</ol>
+<h2>12. Primary references</h2>
+<ul>
+<li><p><a href="https://docs.python.org/3/tutorial/">The Python Tutorial</a> — official syntax, data structures, modules, I/O, exceptions and classes.</p>
+</li>
+<li><p><a href="https://numpy.org/doc/stable/user/basics.html">NumPy Fundamentals</a> and <a href="https://numpy.org/doc/stable/user/basics.indexing.html">NumPy Indexing</a> — official broadcasting, dtype, indexing, copies and views.</p>
+</li>
+<li><p><a href="https://pandas.pydata.org/docs/user_guide/">pandas User Guide</a> — official indexing, missing data, merge, groupby, windowing and time series.</p>
+</li>
+<li><p><a href="https://scikit-learn.org/stable/user_guide.html">scikit-learn User Guide</a> — official model selection, pipelines, preprocessing, metrics and pitfalls.</p>
+</li>
+<li><p><a href="https://cs229.stanford.edu/syllabus-fall2020.html">Stanford CS229 materials</a> — official Python/NumPy review and ML derivations.</p>
+</li>
+</ul>
+<p><b>Version note:</b> documentation pages evolve. Interview platforms may pin older Python/library versions, so avoid relying on the newest convenience API unless the environment is stated.</p>
+</div>
+</body>
+</html>

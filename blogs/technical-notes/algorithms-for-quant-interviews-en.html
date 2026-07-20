@@ -1,0 +1,891 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../blog-note.css" type="text/css" />
+<script src="../math-render.js" type="text/javascript"></script>
+<title>Algorithms for Quantitative Research Interviews</title>
+</head>
+<body>
+<div id="layout-content">
+<div id="toptitle">
+<h1>Algorithms for Quantitative Research Interviews</h1>
+<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>updated 2026-07-20</i></div>
+</div>
+<div class="language-switch" role="navigation" aria-label="Language"><a href="algorithms-for-quant-interviews.html" hreflang="zh-CN">中文</a><span class="active" aria-current="page">English</span></div>
+<p>This note is a pattern checklist for writing algorithms in plain Python under interview conditions. Quant-research coding rounds often mix ordinary data structures/algorithms with probability simulation and tabular data. Your answer is not complete until you state correctness, time complexity, space complexity, and boundary cases.</p>
+<p><b>Priority:</b> P0 = implement from memory; P1 = common extension; P2 = specialized. Digit reduction and interval merging are both P0.</p>
+<h2>0. Interview protocol</h2>
+<ol>
+<li><p><b>Clarify:</b> input/output, constraints, sortedness, duplicates, mutability, memory limit, exact versus approximate answer.</p>
+</li>
+<li><p><b>Example:</b> work one normal and one edge case by hand.</p>
+</li>
+<li><p><b>Baseline:</b> state brute force and its complexity before optimizing.</p>
+</li>
+<li><p><b>Pattern:</b> name the structure: hash, sort, two pointers, window, stack, heap, graph, greedy or DP.</p>
+</li>
+<li><p><b>Invariant/state:</b> say what remains true after every iteration or what <tt>dp[state]</tt> means.</p>
+</li>
+<li><p><b>Code:</b> short names only for standard indices; separate logic from I/O.</p>
+</li>
+<li><p><b>Verify:</b> empty, singleton, duplicates, negatives, all equal, sorted/reverse, overflow/precision.</p>
+</li>
+<li><p><b>Conclude:</b> time and auxiliary space, including recursion stack/output storage.</p>
+</li>
+</ol>
+<h2>1. Complexity and lower-level reasoning [P0]</h2>
+<h3>1.1 Growth rates</h3>
+<ul>
+<li><p>O(1): hash lookup average, array index.</p>
+</li>
+<li><p>O(log n): binary search, balanced-tree operation, heap push/pop.</p>
+</li>
+<li><p>O(n): one pass, hash counting.</p>
+</li>
+<li><p>O(n log n): comparison sorting, many heap/sweep-line algorithms.</p>
+</li>
+<li><p>O(n²): all pairs; often too slow above roughly 10^4.</p>
+</li>
+<li><p>O(2^n), O(n!): subset/permutation search; usually n &lt;= 20 or n &lt;= 10 respectively.</p>
+</li>
+</ul>
+<p>Ignore constants only asymptotically; in Python, vectorization, allocation and hashing constants matter. Sorting can beat a theoretically linear but allocation-heavy approach for moderate input.</p>
+<h3>1.2 Amortized and expected complexity</h3>
+<ul>
+<li><p>List append is O(1) amortized, not worst-case per append.</p>
+</li>
+<li><p>Dict/set operations are O(1) average, O(n) pathological worst case.</p>
+</li>
+<li><p><tt>heapq</tt> push/pop is O(log n); peek is O(1).</p>
+</li>
+<li><p><tt>deque</tt> operations at ends are O(1); <tt>list.pop(0)</tt> is O(n).</p>
+</li>
+</ul>
+<h3>1.3 Correctness proof styles</h3>
+<ul>
+<li><p><b>Loop invariant:</b> initialization, maintenance, termination.</p>
+</li>
+<li><p><b>Induction:</b> common for recursion/DP.</p>
+</li>
+<li><p><b>Exchange argument:</b> replace the first differing choice in an optimum; common for greedy.</p>
+</li>
+<li><p><b>Cut/stay-ahead argument:</b> common for interval scheduling/MST.</p>
+</li>
+<li><p><b>Contradiction/extremal argument:</b> assume better solution and derive conflict.</p>
+</li>
+</ul>
+<h2>2. Arrays and strings [P0]</h2>
+<h3>2.1 Prefix sums</h3>
+<p>Use for many range-sum queries or converting a subarray condition into a prefix-difference condition.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+prefix = [0]
+<span class="statement">for</span> x <span class="builtin">in</span> values:
+    prefix.append(prefix[-1] + x)
+
+<span class="statement">def</span> range_sum(left, right):      <span class="comment"># inclusive</span>
+    <span class="statement">return</span> prefix[right + 1] - prefix[left]
+</pre></div></div>
+<p>Subarray sum equals k with arbitrary signs:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> count_subarrays_sum_k(values, k):
+    counts = {0: 1}
+    prefix = 0
+    answer = 0
+    <span class="statement">for</span> x <span class="builtin">in</span> values:
+        prefix += x
+        answer += counts.get(prefix - k, 0)
+        counts[prefix] = counts.get(prefix, 0) + 1
+    <span class="statement">return</span> answer
+</pre></div></div>
+<p>Invariant: <tt>counts</tt> stores frequencies of prefix sums strictly before the current position. O(n) expected time, O(n) space.</p>
+<h3>2.2 Difference arrays</h3>
+<p>For many range increments on a static array:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+diff = [0] * (n + 1)
+<span class="statement">for</span> left, right, delta <span class="builtin">in</span> updates:
+    diff[left] += delta
+    <span class="statement">if</span> right + 1 &lt; n:
+        diff[right + 1] -= delta
+
+current = 0
+result = []
+<span class="statement">for</span> i <span class="builtin">in</span> <span class="builtin">range</span>(n):
+    current += diff[i]
+    result.append(current)
+</pre></div></div>
+<h3>2.3 Two pointers</h3>
+<p>Use when a monotone move can discard possibilities: sorted pair sum, deduplication, partition, merging sequences.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> two_sum_sorted(a, target):
+    left, right = 0, len(a) - 1
+    <span class="statement">while</span> left &lt; right:
+        total = a[left] + a[right]
+        <span class="statement">if</span> total == target:
+            <span class="statement">return</span> left, right
+        <span class="statement">if</span> total &lt; target:
+            left += 1
+        <span class="statement">else</span>:
+            right -= 1
+    <span class="statement">return</span> None
+</pre></div></div>
+<p>Proof: if the current sum is too small, pairing <tt>a[left]</tt> with any smaller right endpoint cannot help, so <tt>left</tt> can be discarded.</p>
+<h3>2.4 Sliding window</h3>
+<p>Use for contiguous ranges when adding/removing endpoints updates the condition cheaply. Variable-size windows require a monotone feasibility condition; arbitrary negative values often break the simple template.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> longest_at_most_k_distinct(values, k):
+    <span class="statement">if</span> k &lt; 0:
+        <span class="statement">raise</span> <span class="error">ValueError</span>(<span class="string">"k must be nonnegative"</span>)
+    counts = {}
+    left = 0
+    best = 0
+    <span class="statement">for</span> right, x <span class="builtin">in</span> <span class="builtin">enumerate</span>(values):
+        counts[x] = counts.get(x, 0) + 1
+        <span class="statement">while</span> len(counts) &gt; k:
+            y = values[left]
+            counts[y] -= 1
+            <span class="statement">if</span> counts[y] == 0:
+                <span class="statement">del</span> counts[y]
+            left += 1
+        best = max(best, right - left + 1)
+    <span class="statement">return</span> best
+</pre></div></div>
+<h3>2.5 Kadane: maximum subarray</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> max_subarray(values):
+    <span class="statement">if</span> <span class="builtin">not</span> values:
+        <span class="statement">raise</span> <span class="error">ValueError</span>(<span class="string">"nonempty input required"</span>)
+    ending = best = values[0]
+    <span class="statement">for</span> x <span class="builtin">in</span> values[1:]:
+        ending = max(x, ending + x)
+        best = max(best, ending)
+    <span class="statement">return</span> best
+</pre></div></div>
+<p><tt>ending</tt> is the best nonempty subarray ending at the current item. Initialize from the first value so all-negative arrays work.</p>
+<h3>2.6 String essentials</h3>
+<ul>
+<li><p>Character counts/anagrams: <tt>Counter</tt> or fixed-size count array.</p>
+</li>
+<li><p>Palindrome: two pointers; longest palindromic substring can expand around centers O(n²).</p>
+</li>
+<li><p>Substring search: know naive O(nm); KMP/Z algorithm [P1] for O(n+m).</p>
+</li>
+<li><p>Trie [P1]: prefixes/autocomplete; O(length) operations but memory-heavy in Python.</p>
+</li>
+<li><p>Rolling hash [P2]: collision-aware, verify matches when correctness must be exact.</p>
+</li>
+</ul>
+<h2>3. Sorting, searching and intervals [P0]</h2>
+<h3>3.1 Sorting patterns</h3>
+<ul>
+<li><p>Sort events by (time, type) for sweep line; define tie order deliberately.</p>
+</li>
+<li><p>Sort intervals by start to merge; by end to maximize non-overlapping count.</p>
+</li>
+<li><p>Sort pairs by one coordinate and reason about the other.</p>
+</li>
+<li><p>Stable sorting preserves prior ordering among equal keys.</p>
+</li>
+</ul>
+<h3>3.2 Binary search</h3>
+<p>Exact search with half-open interval [lo,hi):</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> binary_search(a, target):
+    lo, hi = 0, len(a)
+    <span class="statement">while</span> lo &lt; hi:
+        mid = (lo + hi) // 2
+        <span class="statement">if</span> a[mid] &lt; target:
+            lo = mid + 1
+        <span class="statement">else</span>:
+            hi = mid
+    <span class="statement">if</span> lo &lt; len(a) <span class="builtin">and</span> a[lo] == target:
+        <span class="statement">return</span> lo
+    <span class="statement">return</span> -1
+</pre></div></div>
+<p>Binary search on answer [P1]: if feasibility <tt>can(x)</tt> is monotone, find the first/last feasible x. Write which side is feasible before coding.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> first_true(lo, hi, can):     <span class="comment"># inclusive candidate <span class="builtin">range</span>; assumes a true exists</span>
+    <span class="statement">while</span> lo &lt; hi:
+        mid = (lo + hi) // 2
+        <span class="statement">if</span> can(mid):
+            hi = mid
+        <span class="statement">else</span>:
+            lo = mid + 1
+    <span class="statement">return</span> lo
+</pre></div></div>
+<h3>3.3 Merge intervals [P0]</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> merge_intervals(intervals):
+    <span class="statement">if</span> <span class="builtin">not</span> intervals:
+        <span class="statement">return</span> []
+    intervals = sorted(intervals, key=<span class="statement">lambda</span> x: x[0])
+    merged = [list(intervals[0])]
+    <span class="statement">for</span> start, end <span class="builtin">in</span> intervals[1:]:
+        <span class="statement">if</span> start &lt;= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        <span class="statement">else</span>:
+            merged.append([start, end])
+    <span class="statement">return</span> merged
+</pre></div></div>
+<p>Invariant: <tt>merged</tt> is the correct disjoint merge of processed intervals. Complexity O(n log n) time, O(n) output. Ask whether touching intervals [1,2] and [2,3] should merge; this decides <tt>&lt;=</tt> versus <tt>&lt;</tt>.</p>
+<h3>3.4 Sweep line [P1]</h3>
+<p>Maximum simultaneous intervals:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+events = []
+<span class="statement">for</span> start, end <span class="builtin">in</span> intervals:
+    events.append((start, 1))
+    events.append((end, -1))
+
+<span class="comment"># End before start at equal time <span class="statement">for</span> half-<span class="builtin">open</span> [start,end)</span>
+events.sort(key=<span class="statement">lambda</span> event: (event[0], event[1]))
+current = best = 0
+<span class="statement">for</span> _, delta <span class="builtin">in</span> events:
+    current += delta
+    best = max(best, current)
+</pre></div></div>
+<h2>4. Hashing, stacks and queues [P0]</h2>
+<h3>4.1 Hash-map patterns</h3>
+<ul>
+<li><p>Frequency counting and grouping.</p>
+</li>
+<li><p>Value -&gt; index for two-sum.</p>
+</li>
+<li><p>Prefix state -&gt; earliest index/frequency.</p>
+</li>
+<li><p>Memoization state -&gt; answer.</p>
+</li>
+<li><p>Deduplicate while preserving order with dict keys.</p>
+</li>
+</ul>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> two_sum(values, target):
+    seen = {}
+    <span class="statement">for</span> i, x <span class="builtin">in</span> <span class="builtin">enumerate</span>(values):
+        need = target - x
+        <span class="statement">if</span> need <span class="builtin">in</span> seen:
+            <span class="statement">return</span> seen[need], i
+        seen[x] = i
+    <span class="statement">return</span> None
+</pre></div></div>
+<h3>4.2 Stack and parentheses</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> valid_parentheses(s):
+    match = {<span class="string">")"</span>: <span class="string">"("</span>, <span class="string">"]"</span>: <span class="string">"["</span>, <span class="string">"}"</span>: <span class="string">"{"</span>}
+    stack = []
+    <span class="statement">for</span> ch <span class="builtin">in</span> s:
+        <span class="statement">if</span> ch <span class="builtin">in</span> <span class="string">"([{"</span>:
+            stack.append(ch)
+        <span class="statement">elif</span> ch <span class="builtin">in</span> match:
+            <span class="statement">if</span> <span class="builtin">not</span> stack <span class="builtin">or</span> stack.pop() != match[ch]:
+                <span class="statement">return</span> <span class="builtin">False</span>
+    <span class="statement">return</span> <span class="builtin">not</span> stack
+</pre></div></div>
+<p>Stack patterns: nested syntax, undo, expression evaluation, DFS, monotonic stack.</p>
+<h3>4.3 Monotonic stack [P1]</h3>
+<p>Index of the next greater element to the right:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> next_greater_index(values):
+    answer = [-1] * len(values)
+    stack = []                    <span class="comment"># indices <span class="statement">with</span> decreasing values</span>
+    <span class="statement">for</span> i, x <span class="builtin">in</span> <span class="builtin">enumerate</span>(values):
+        <span class="statement">while</span> stack <span class="builtin">and</span> values[stack[-1]] &lt; x:
+            answer[stack.pop()] = i
+        stack.append(i)
+    <span class="statement">return</span> answer
+</pre></div></div>
+<p>The function returns an index, or -1 when no greater value exists. Each index is pushed/popped once: O(n). Variants: daily temperatures, stock span, largest rectangle.</p>
+<h3>4.4 Queue and deque</h3>
+<p>Use <tt>deque</tt> for BFS and fixed-window candidates. Monotonic deque gives sliding maximum in O(n) [P1].</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> collections <span class="statement">import</span> deque
+
+<span class="statement">def</span> sliding_max(values, k):
+    <span class="statement">if</span> <span class="builtin">not</span> 1 &lt;= k &lt;= len(values):
+        <span class="statement">raise</span> <span class="error">ValueError</span>(<span class="string">"require 1 &lt;= k &lt;= len(values)"</span>)
+    q = deque()                   <span class="comment"># decreasing values by index</span>
+    out = []
+    <span class="statement">for</span> i, x <span class="builtin">in</span> <span class="builtin">enumerate</span>(values):
+        <span class="statement">while</span> q <span class="builtin">and</span> q[0] &lt;= i - k:
+            q.popleft()
+        <span class="statement">while</span> q <span class="builtin">and</span> values[q[-1]] &lt;= x:
+            q.pop()
+        q.append(i)
+        <span class="statement">if</span> i &gt;= k - 1:
+            out.append(values[q[0]])
+    <span class="statement">return</span> out
+</pre></div></div>
+<h2>5. Linked lists [P1]</h2>
+<p>Know pointer reassignment even if quant interviews emphasize arrays more.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> reverse_list(head):
+    prev = None
+    current = head
+    <span class="statement">while</span> current <span class="builtin">is</span> <span class="builtin">not</span> None:
+        nxt = current.next
+        current.next = prev
+        prev = current
+        current = nxt
+    <span class="statement">return</span> prev
+</pre></div></div>
+<ul>
+<li><p>Dummy head simplifies insertion/deletion at the front.</p>
+</li>
+<li><p>Slow/fast pointers: middle, cycle detection, kth from end.</p>
+</li>
+<li><p>Reversal invariant: <tt>prev</tt> is the reversed processed prefix, <tt>current</tt> starts the untouched suffix.</p>
+</li>
+</ul>
+<h2>6. Trees, heaps and union-find [P0/P1]</h2>
+<h3>6.1 Binary-tree traversal</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> preorder(root):
+    <span class="statement">if</span> root <span class="builtin">is</span> None:
+        <span class="statement">return</span> []
+    out = []
+    stack = [root]
+    <span class="statement">while</span> stack:
+        node = stack.pop()
+        out.append(node.val)
+        <span class="statement">if</span> node.right <span class="builtin">is</span> <span class="builtin">not</span> None:
+            stack.append(node.right)
+        <span class="statement">if</span> node.left <span class="builtin">is</span> <span class="builtin">not</span> None:
+            stack.append(node.left)
+    <span class="statement">return</span> out
+</pre></div></div>
+<ul>
+<li><p>Preorder: process, left, right.</p>
+</li>
+<li><p>Inorder: left, process, right; sorted order for a BST.</p>
+</li>
+<li><p>Postorder: left, right, process; subtree DP/deletion.</p>
+</li>
+<li><p>Level order: BFS with <tt>deque</tt>.</p>
+</li>
+<li><p>Balanced tree height is O(log n); skewed tree height is O(n), affecting recursion depth.</p>
+</li>
+</ul>
+<h3>6.2 Binary search tree</h3>
+<p>BST invariant: all keys in left subtree are smaller and right are larger under the chosen duplicate policy. Search/insert O(height), not automatically O(log n).</p>
+<h3>6.3 Heap patterns</h3>
+<ul>
+<li><p>Top-k: heap size k, O(n log k).</p>
+</li>
+<li><p>Merge k sorted streams: heap of current heads, O(N log k).</p>
+</li>
+<li><p>Running median: max-heap lower half + min-heap upper half [P1].</p>
+</li>
+<li><p>Dijkstra: min-heap of tentative distances.</p>
+</li>
+</ul>
+<h3>6.4 Union-find / disjoint-set union [P1]</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">class</span> DSU:
+    <span class="statement">def</span> __init__(self, n):
+        self.parent = list(<span class="builtin">range</span>(n))
+        self.size = [1] * n
+
+    <span class="statement">def</span> find(self, x):
+        <span class="statement">while</span> x != self.parent[x]:
+            self.parent[x] = self.parent[self.parent[x]]
+            x = self.parent[x]
+        <span class="statement">return</span> x
+
+    <span class="statement">def</span> union(self, a, b):
+        ra, rb = self.find(a), self.find(b)
+        <span class="statement">if</span> ra == rb:
+            <span class="statement">return</span> <span class="builtin">False</span>
+        <span class="statement">if</span> self.size[ra] &lt; self.size[rb]:
+            ra, rb = rb, ra
+        self.parent[rb] = ra
+        self.size[ra] += self.size[rb]
+        <span class="statement">return</span> <span class="builtin">True</span>
+</pre></div></div>
+<p>Path compression + union by size/rank yields nearly constant amortized operations. Uses: connectivity, Kruskal MST, redundant edge detection.</p>
+<h2>7. Graphs [P0/P1]</h2>
+<h3>7.1 Representations</h3>
+<ul>
+<li><p>Adjacency list: O(V+E) storage, default for sparse graphs.</p>
+</li>
+<li><p>Adjacency matrix: O(V²), O(1) edge lookup, useful for dense/small graphs or matrix powers.</p>
+</li>
+<li><p>Edge list: convenient for Kruskal/Bellman-Ford.</p>
+</li>
+<li><p>Decide directed/undirected, weighted/unweighted, multiedges/self-loops.</p>
+</li>
+</ul>
+<h3>7.2 BFS [P0]</h3>
+<p>Shortest number of edges in an unweighted graph.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> collections <span class="statement">import</span> deque
+
+<span class="statement">def</span> bfs(graph, start):
+    distance = {start: 0}
+    q = deque([start])
+    <span class="statement">while</span> q:
+        node = q.popleft()
+        <span class="statement">for</span> nxt <span class="builtin">in</span> graph[node]:
+            <span class="statement">if</span> nxt <span class="builtin">not</span> <span class="builtin">in</span> distance:
+                distance[nxt] = distance[node] + 1
+                q.append(nxt)
+    <span class="statement">return</span> distance
+</pre></div></div>
+<p>Mark visited when enqueuing, not when dequeuing, to prevent duplicates.</p>
+<h3>7.3 DFS [P0]</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> dfs(graph, start):
+    seen = <span class="builtin">set</span>()
+    stack = [start]
+    <span class="statement">while</span> stack:
+        node = stack.pop()
+        <span class="statement">if</span> node <span class="builtin">in</span> seen:
+            <span class="statement">continue</span>
+        seen.add(node)
+        <span class="statement">for</span> nxt <span class="builtin">in</span> graph[node]:
+            <span class="statement">if</span> nxt <span class="builtin">not</span> <span class="builtin">in</span> seen:
+                stack.append(nxt)
+    <span class="statement">return</span> seen
+</pre></div></div>
+<p>Uses: connected components, cycle detection, topological sorting, backtracking. Iterative DFS avoids Python recursion limits.</p>
+<h3>7.4 Topological sort [P1]</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> collections <span class="statement">import</span> deque
+
+<span class="statement">def</span> topological_order(graph, indegree):
+    q = deque(i <span class="statement">for</span> i, deg <span class="builtin">in</span> <span class="builtin">enumerate</span>(indegree) <span class="statement">if</span> deg == 0)
+    order = []
+    <span class="statement">while</span> q:
+        node = q.popleft()
+        order.append(node)
+        <span class="statement">for</span> nxt <span class="builtin">in</span> graph[node]:
+            indegree[nxt] -= 1
+            <span class="statement">if</span> indegree[nxt] == 0:
+                q.append(nxt)
+    <span class="statement">return</span> order <span class="statement">if</span> len(order) == len(indegree) <span class="statement">else</span> None
+</pre></div></div>
+<p>An order exists iff the directed graph is acyclic. Copy <tt>indegree</tt> if the caller needs it unchanged.</p>
+<h3>7.5 Shortest paths [P1]</h3>
+<ul>
+<li><p>BFS: unweighted/equal weights, O(V+E).</p>
+</li>
+<li><p>Dijkstra: nonnegative weights, O((V+E)log V) with heap.</p>
+</li>
+<li><p>Bellman-Ford: negative edges and negative-cycle detection, O(VE).</p>
+</li>
+<li><p>DAG shortest path: topological order, O(V+E), negative edges allowed.</p>
+</li>
+<li><p>Floyd-Warshall: all pairs, O(V³), small dense graphs.</p>
+</li>
+</ul>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">import</span> heapq
+
+<span class="statement">def</span> dijkstra(graph, start):
+    inf = float(<span class="string">"inf"</span>)
+    dist = {node: inf <span class="statement">for</span> node <span class="builtin">in</span> graph}
+    dist[start] = 0
+    heap = [(0, start)]
+    <span class="statement">while</span> heap:
+        d, node = heapq.heappop(heap)
+        <span class="statement">if</span> d != dist[node]:       <span class="comment"># stale entry</span>
+            <span class="statement">continue</span>
+        <span class="statement">for</span> nxt, weight <span class="builtin">in</span> graph[node]:
+            nd = d + weight
+            <span class="statement">if</span> nd &lt; dist[nxt]:
+                dist[nxt] = nd
+                heapq.heappush(heap, (nd, nxt))
+    <span class="statement">return</span> dist
+</pre></div></div>
+<p>Dijkstra is invalid with negative edges.</p>
+<h3>7.6 Minimum spanning tree [P1]</h3>
+<ul>
+<li><p>Kruskal: sort edges, add if DSU says endpoints differ. O(E log E).</p>
+</li>
+<li><p>Prim: grow from a start with min crossing-edge heap. O(E log V).</p>
+</li>
+<li><p>MST minimizes total connection cost; it is not a shortest-path tree.</p>
+</li>
+</ul>
+<h2>8. Recursion and backtracking [P0/P1]</h2>
+<p>Backtracking template:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> backtrack(state, choices):
+    <span class="statement">if</span> complete(state):
+        output.append(state.copy())
+        <span class="statement">return</span>
+    <span class="statement">for</span> choice <span class="builtin">in</span> choices(state):
+        <span class="statement">if</span> <span class="builtin">not</span> valid(state, choice):
+            <span class="statement">continue</span>
+        apply(state, choice)
+        backtrack(state, choices)
+        undo(state, choice)
+</pre></div></div>
+<ul>
+<li><p>State must contain everything needed for future decisions.</p>
+</li>
+<li><p>Choose/apply/recurse/undo symmetrically.</p>
+</li>
+<li><p>Prune only with a proof that no completion can succeed or improve the best.</p>
+</li>
+<li><p>Copy a mutable state when storing it.</p>
+</li>
+<li><p>Complexity is often proportional to the search tree/output size; say so rather than writing merely O(n).</p>
+</li>
+</ul>
+<p>Common problems: subsets, permutations, combinations, N-queens, word search, constraint satisfaction.</p>
+<h2>9. Greedy algorithms [P0/P1]</h2>
+<p>Greedy is not &ldquo;take the locally largest&rdquo; by instinct. You need greedy-choice property plus optimal substructure, usually proved by exchange or staying ahead.</p>
+<h3>9.1 Interval scheduling [P0]</h3>
+<p>Maximum number of non-overlapping half-open intervals: sort by finishing time and repeatedly take the first compatible interval.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> max_nonoverlapping(intervals):
+    intervals = sorted(intervals, key=<span class="statement">lambda</span> x: x[1])
+    count = 0
+    last_end = float(<span class="string">"-inf"</span>)
+    <span class="statement">for</span> start, end <span class="builtin">in</span> intervals:
+        <span class="statement">if</span> start &gt;= last_end:
+            count += 1
+            last_end = end
+    <span class="statement">return</span> count
+</pre></div></div>
+<p>Exchange proof: replace the first interval of any optimum with the earliest-finishing compatible interval; this cannot reduce room for later choices.</p>
+<h3>9.2 Common greedy structures</h3>
+<ul>
+<li><p>Sort then sweep: interval scheduling, meeting rooms, merge intervals.</p>
+</li>
+<li><p>Heap: choose smallest/largest currently available; scheduling with deadlines.</p>
+</li>
+<li><p>DSU + sorted edges: Kruskal.</p>
+</li>
+<li><p>Huffman coding: repeatedly merge two smallest weights [P1].</p>
+</li>
+<li><p>Fractional knapsack is greedy; 0/1 knapsack is not.</p>
+</li>
+</ul>
+<h2>10. Dynamic programming [P0]</h2>
+<h3>10.1 Five questions before coding</h3>
+<ol>
+<li><p>What is the state, in one precise sentence?</p>
+</li>
+<li><p>What recurrence maps smaller states to it?</p>
+</li>
+<li><p>What are the base cases?</p>
+</li>
+<li><p>In what order are dependencies already computed?</p>
+</li>
+<li><p>Where is the final answer, and can space be compressed?</p>
+</li>
+</ol>
+<p>Memoization solves only reached states; tabulation avoids recursion overhead and exposes order.</p>
+<h3>10.2 One-dimensional DP</h3>
+<p>Climbing stairs/tiling: <tt>dp[i]=dp[i-1]+dp[i-2]</tt>.</p>
+<p>House robber:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> max_nonadjacent_sum(values):
+    take_prev = 0
+    skip_prev = 0
+    <span class="statement">for</span> x <span class="builtin">in</span> values:
+        take = skip_prev + x
+        skip = max(skip_prev, take_prev)
+        take_prev, skip_prev = take, skip
+    <span class="statement">return</span> max(take_prev, skip_prev)
+</pre></div></div>
+<p>State meaning: best value through the processed prefix when the latest item is taken/skipped.</p>
+<h3>10.3 Knapsack [P0/P1]</h3>
+<p>0/1 feasibility with capacity C:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+possible = [<span class="builtin">False</span>] * (C + 1)
+possible[0] = <span class="builtin">True</span>
+<span class="statement">for</span> weight <span class="builtin">in</span> weights:
+    <span class="statement">for</span> c <span class="builtin">in</span> <span class="builtin">range</span>(C, weight - 1, -1):
+        possible[c] = possible[c] <span class="builtin">or</span> possible[c - weight]
+</pre></div></div>
+<p>Descending capacity prevents using the same item multiple times. Ascending capacity implements unbounded reuse.</p>
+<h3>10.4 Grid DP</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> min_path_sum(grid):
+    <span class="special">rows</span>, <span class="special">cols</span> = len(grid), len(grid[0])
+    dp = [float(<span class="string">"inf"</span>)] * <span class="special">cols</span>
+    dp[0] = 0
+    <span class="statement">for</span> r <span class="builtin">in</span> <span class="builtin">range</span>(<span class="special">rows</span>):
+        <span class="statement">for</span> c <span class="builtin">in</span> <span class="builtin">range</span>(<span class="special">cols</span>):
+            from_up = dp[c]
+            from_left = dp[c - 1] <span class="statement">if</span> c &gt; 0 <span class="statement">else</span> float(<span class="string">"inf"</span>)
+            dp[c] = grid[r][c] + min(from_up, from_left)
+    <span class="statement">return</span> dp[-1]
+</pre></div></div>
+<p>Be explicit about allowed moves, obstacles and whether cell costs include start/end.</p>
+<h3>10.5 Sequence DP [P1]</h3>
+<ul>
+<li><p>Longest common subsequence: 2-D DP, O(nm).</p>
+</li>
+<li><p>Edit distance: insert/delete/replace, O(nm).</p>
+</li>
+<li><p>Longest increasing subsequence: O(n²) DP or O(n log n) patience/binary-search method.</p>
+</li>
+<li><p>Stock trading variants: state by day, holding/not holding, transaction count, cooldown/fee.</p>
+</li>
+</ul>
+<h3>10.6 State-machine DP [P0/P1]</h3>
+<p>For repeated coin/die patterns or constrained walks, state should be the smallest suffix/location affecting the future. The triangle-walk interview problem has three vertex states or a reduced two-state symmetry. Write the transition matrix or recurrence; test n=0,1,2.</p>
+<h3>10.7 Bitmask DP [P2]</h3>
+<p>When n &lt;= about 20, represent a subset by an integer mask. Common states: <tt>dp[mask]</tt> or <tt>dp[mask][last]</tt> for assignment, traveling-salesperson and subset transitions. Complexity often O(n2^n) or O(n²2^n).</p>
+<h2>11. Bit manipulation [P1]</h2>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+is_set = (mask &gt;&gt; i) &amp; 1
+mask |= 1 &lt;&lt; i                   <span class="comment"># <span class="builtin">set</span></span>
+mask &amp;= ~(1 &lt;&lt; i)                <span class="comment"># clear</span>
+mask ^= 1 &lt;&lt; i                   <span class="comment"># toggle</span>
+lowest = mask &amp; -mask
+count = mask.bit_count()
+
+sub = mask
+<span class="statement">while</span> sub:
+    <span class="comment"># process nonempty submask</span>
+    sub = (sub - 1) &amp; mask
+</pre></div></div>
+<p>XOR facts: <tt>x^x=0</tt>, <tt>x^0=x</tt>; useful for one unpaired value. Do not force bit tricks when a clear hash solution is expected.</p>
+<h2>12. Mathematical and numeric algorithms [P0/P1]</h2>
+<h3>12.1 GCD, primes and modular arithmetic</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> math <span class="statement">import</span> gcd
+
+<span class="statement">def</span> gcd_manual(a, b):
+    <span class="statement">while</span> b:
+        a, b = b, a % b
+    <span class="statement">return</span> abs(a)
+
+<span class="statement">def</span> is_prime(n):
+    <span class="statement">if</span> n &lt; 2:
+        <span class="statement">return</span> <span class="builtin">False</span>
+    d = 2
+    <span class="statement">while</span> d * d &lt;= n:
+        <span class="statement">if</span> n % d == 0:
+            <span class="statement">return</span> <span class="builtin">False</span>
+        d += 1
+    <span class="statement">return</span> <span class="builtin">True</span>
+
+pow(base, exponent, modulus)      <span class="comment"># fast modular exponentiation</span>
+</pre></div></div>
+<p>Sieve of Eratosthenes lists primes up to n in O(n log log n) time and O(n) space [P1].</p>
+<h3>12.2 Digit root [P0]</h3>
+<p>Repeatedly sum decimal digits until one digit remains.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">def</span> digit_root_simulation(n):
+    n = abs(n)
+    <span class="statement">while</span> n &gt;= 10:
+        total = 0
+        <span class="statement">while</span> n:
+            n, digit = divmod(n, 10)
+            total += digit
+        n = total
+    <span class="statement">return</span> n
+
+<span class="statement">def</span> digit_root(n):
+    n = abs(n)
+    <span class="statement">return</span> 0 <span class="statement">if</span> n == 0 <span class="statement">else</span> 1 + (n - 1) % 9
+</pre></div></div>
+<p>Why: 10 ≡ 1 (mod 9), so a number is congruent to its digit sum modulo 9. The positive one-digit representative is 1,&hellip;,9; handle zero separately. If input is an extremely long decimal string, sum characters once and apply the same rule without converting the whole integer.</p>
+<h3>12.3 Numerical root finding [P1]</h3>
+<ul>
+<li><p>Bisection: guaranteed for a continuous sign change; linear convergence.</p>
+</li>
+<li><p>Newton: <tt>x &lt;- x-f(x)/f'(x)</tt>; locally fast but needs derivative/good initialization and can diverge.</p>
+</li>
+<li><p>Binary search integer answers when predicate is monotone.</p>
+</li>
+<li><p>Always set tolerance and iteration cap; compare residual as well as step size.</p>
+</li>
+</ul>
+<h2>13. Randomized and streaming algorithms [P1]</h2>
+<h3>13.1 Fisher-Yates shuffle</h3>
+<p>For i from n-1 down to 1, choose j uniformly in [0,i] and swap. Every permutation then has probability 1/n!. Use <tt>random.shuffle</tt> in practice; know the proof by induction.</p>
+<h3>13.2 Reservoir sampling</h3>
+<p>Choose one uniformly from a stream of unknown length:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">import</span> random
+
+<span class="statement">def</span> reservoir_one(stream):
+    chosen = None
+    <span class="statement">for</span> i, item <span class="builtin">in</span> <span class="builtin">enumerate</span>(stream, start=1):
+        <span class="statement">if</span> random.randrange(i) == 0:
+            chosen = item
+    <span class="statement">return</span> chosen
+</pre></div></div>
+<p>At item i, replace with probability 1/i. An earlier item survives through n with (1/i)×∏_{j=i+1}^n(1-1/j)=1/n.</p>
+<h3>13.3 Online statistics</h3>
+<ul>
+<li><p>Welford mean/variance: O(1) memory and numerical stability.</p>
+</li>
+<li><p>Heap top-k: O(k) memory.</p>
+</li>
+<li><p>Count-Min Sketch/Bloom filter [P2]: approximate frequency/membership with controlled one-sided error.</p>
+</li>
+</ul>
+<h2>14. Pattern recognition map</h2>
+<ul>
+<li><p>&ldquo;pair/duplicate/frequency&rdquo; -&gt; hash map/set.</p>
+</li>
+<li><p>&ldquo;sorted pair/triplet&rdquo; -&gt; sort + two pointers.</p>
+</li>
+<li><p>&ldquo;contiguous longest/shortest&rdquo; -&gt; sliding window if monotone; otherwise prefix + hash/deque/DP.</p>
+</li>
+<li><p>&ldquo;many range sums&rdquo; -&gt; prefix sums; &ldquo;many range updates&rdquo; -&gt; difference array.</p>
+</li>
+<li><p>&ldquo;next greater/smaller&rdquo; -&gt; monotonic stack.</p>
+</li>
+<li><p>&ldquo;top k/continuous minimum&rdquo; -&gt; heap.</p>
+</li>
+<li><p>&ldquo;overlapping intervals&rdquo; -&gt; sort + merge; &ldquo;max concurrent&rdquo; -&gt; sweep/heap.</p>
+</li>
+<li><p>&ldquo;minimum steps in unweighted graph&rdquo; -&gt; BFS.</p>
+</li>
+<li><p>&ldquo;dependencies/prerequisites&rdquo; -&gt; topological sort.</p>
+</li>
+<li><p>&ldquo;nonnegative weighted shortest path&rdquo; -&gt; Dijkstra.</p>
+</li>
+<li><p>&ldquo;connect all at minimum cost&rdquo; -&gt; MST, not shortest path.</p>
+</li>
+<li><p>&ldquo;all combinations&rdquo; -&gt; backtracking; add pruning.</p>
+</li>
+<li><p>&ldquo;best answer from repeated subproblems&rdquo; -&gt; DP; define state before recurrence.</p>
+</li>
+<li><p>&ldquo;minimum feasible capacity/time&rdquo; -&gt; binary search on a monotone answer.</p>
+</li>
+<li><p>&ldquo;random stream/unknown n&rdquo; -&gt; reservoir/online algorithm.</p>
+</li>
+</ul>
+<h2>15. Must-solve practice set</h2>
+<p>Do not memorize platform numbers; search by title. Solve in plain Python and write an error log.</p>
+<p><b>P0 first 25:</b></p>
+<ol>
+<li><p>Two Sum; Valid Parentheses; Best Time to Buy and Sell Stock.</p>
+</li>
+<li><p>Contains Duplicate; Valid Anagram; Group Anagrams.</p>
+</li>
+<li><p>Binary Search; Search in Rotated Sorted Array.</p>
+</li>
+<li><p>Merge Intervals; Insert Interval; Meeting Rooms / Meeting Rooms II.</p>
+</li>
+<li><p>Maximum Subarray; Product of Array Except Self.</p>
+</li>
+<li><p>Longest Substring Without Repeating Characters.</p>
+</li>
+<li><p>Top K Frequent Elements; Kth Largest Element.</p>
+</li>
+<li><p>Reverse Linked List; Linked List Cycle.</p>
+</li>
+<li><p>Maximum Depth of Binary Tree; Binary Tree Level Order Traversal.</p>
+</li>
+<li><p>Number of Islands; Clone Graph; Course Schedule.</p>
+</li>
+<li><p>Climbing Stairs; House Robber; Coin Change.</p>
+</li>
+<li><p>Longest Increasing Subsequence.</p>
+</li>
+</ol>
+<p><b>P1 next 20:</b></p>
+<ol>
+<li><p>Subarray Sum Equals K; Minimum Size Subarray Sum.</p>
+</li>
+<li><p>Sliding Window Maximum; Largest Rectangle in Histogram.</p>
+</li>
+<li><p>Merge k Sorted Lists; Find Median from Data Stream.</p>
+</li>
+<li><p>Validate Binary Search Tree; Lowest Common Ancestor.</p>
+</li>
+<li><p>Accounts Merge / Redundant Connection (DSU).</p>
+</li>
+<li><p>Network Delay Time (Dijkstra); Cheapest Flights with K Stops.</p>
+</li>
+<li><p>Combination Sum; Permutations; N-Queens.</p>
+</li>
+<li><p>Partition Equal Subset Sum; Longest Common Subsequence; Edit Distance.</p>
+</li>
+<li><p>Word Break; Decode Ways.</p>
+</li>
+<li><p>Random Pick / Reservoir Sampling.</p>
+</li>
+</ol>
+<p><b>Quant-flavored exercises:</b></p>
+<ol>
+<li><p>Merge trade intervals; compute maximum simultaneous positions.</p>
+</li>
+<li><p>One-pass mean/variance; rolling maximum; top-k signals.</p>
+</li>
+<li><p>Join price and factor records by key/time without future leakage.</p>
+</li>
+<li><p>Compute forward returns, cross-sectional ranks, IC and turnover.</p>
+</li>
+<li><p>Simulate a probability puzzle and attach a Monte Carlo standard error.</p>
+</li>
+<li><p>Implement OLS using normal equations conceptually, then with stable least squares.</p>
+</li>
+<li><p>Implement digit root both by simulation and modulo-9 reasoning.</p>
+</li>
+<li><p>Triangle walk: recurrence, DP and adjacency-matrix solutions.</p>
+</li>
+</ol>
+<h2>16. Error-log template</h2>
+<p>For every miss, record:</p>
+<ul>
+<li><p><b>Trigger:</b> what wording should reveal the pattern?</p>
+</li>
+<li><p><b>Bad attempt:</b> what assumption/invariant failed?</p>
+</li>
+<li><p><b>Correct invariant/state:</b> one sentence.</p>
+</li>
+<li><p><b>Complexity:</b> before and after.</p>
+</li>
+<li><p><b>Boundary case:</b> the smallest counterexample to the bad attempt.</p>
+</li>
+<li><p><b>Re-test:</b> 1, 3, 7 and 14 days.</p>
+</li>
+</ul>
+<h2>17. Primary references</h2>
+<ul>
+<li><p><a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/pages/syllabus/">MIT 6.006 Introduction to Algorithms</a> — official coverage of arrays, heaps, balanced trees, hashing, sorting, graph search and dynamic programming.</p>
+</li>
+<li><p><a href="https://docs.python.org/3/tutorial/datastructures.html">Python Data Structures</a> — official list, tuple, set, dict, comprehensions and looping semantics.</p>
+</li>
+<li><p>Cormen, Leiserson, Rivest and Stein, <i>Introduction to Algorithms</i> (CLRS) — rigorous reference for proof and complexity.</p>
+</li>
+<li><p>LeetCode/Nowcoder — use timed practice and your error log; do not confuse accepted code with a clear interview explanation.</p>
+</li>
+</ul>
+<p><b>Stopping rule:</b> when you can solve every P0 problem from a blank editor, explain correctness, and pass two 90-minute mocks without syntax help, shift time from rereading notes to timed mixed practice.</p>
+</div>
+</body>
+</html>

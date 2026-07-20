@@ -1,0 +1,477 @@
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}
+= 量化研究面试数学复习笔记
+[../../blog.html ← Blogs] \M /更新于 2026-07-20/
+
+~~~
+{}{raw}
+<div class="language-switch" role="navigation" aria-label="语言"><span class="active" aria-current="page">中文</span><a href="quant-math-review-en.html" hreflang="en">English</a></div>
+<div class="page-lead"><p>这是一份面向量化研究笔试与面试的高覆盖复习清单。它用于快速检查知识缺口，不替代系统教材。每个知识点至少要做到：能定义、能写假设、能推导核心公式、能算一个小例子、能指出一个失效场景。</p></div>
+~~~
+
+*优先级：* P0 = 必须脱稿推导并使用；P1 = 高频考点；P2 = 岗位相关加分项。标准英文术语保留在括号中，便于直接应对英文面试。
+
+== 0. 高频复习顺序
+
+建议按以下顺序复习：
+
+. *P0 回归：* 推导 OLS；诊断多重共线性；比较删变量、PCA、SVD、Ridge、Lasso；解释异方差与数据泄漏。
+. *P0 概率统计：* 条件概率、期望、方差与协方差、常见分布、估计、置信区间、假设检验。
+. *P0 机器学习：* 偏差—方差、正则化、验证、线性与逻辑回归、树模型、集成学习、PCA、评估指标。
+. *P0 组合与算法：* 排列组合、递推、状态设计、动态规划、图上的游走。
+. *P0 线性代数：* 秩、投影、特征值、SVD、半正定协方差矩阵、条件数。
+. *P1 时间序列与量化研究：* 收益率、平稳性、自相关、滚动特征、时间感知验证、交易成本、多重检验。
+
+== 1. 概率论
+
+=== 1.1 样本空间、事件与计数 \[P0\]
+
+- □ 样本空间、事件、补集、并、交；德摩根律。
+- □ 概率公理、单调性、有限与可列可加性。
+- □ 加法公式：$P(A\\cup B)=P(A)\\mathplus{}P(B)-P(A\\cap B)$。
+- □ 乘法原理、排列、组合、多项式系数；区分有序与无序、可区分与不可区分。
+- □ 有放回与无放回抽样；圆排列；容斥原理；抽屉原理；隔板法。
+- □ “等可能”必须落实到正确的原子结果；两枚骰子的点数和并不等可能。
+
+*检查：* 能否不用背公式，直接数出生日碰撞、错排、固定点、逆序对和盒子占用问题？
+
+=== 1.2 条件概率、独立性与 Bayes \[P0\]
+
+- □ 条件概率：$P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}$，其中 $P(B)>0$。
+- □ 乘法公式：$P(A\\cap B)=P(A\\mid B)P(B)$。
+- □ 全概率公式：若 $\{B_i\}$ 构成划分，则 $P(A)=\\sum_i P(A\\mid B_i)P(B_i)$。
+- □ Bayes 公式：
+
+~~~
+{}{raw}
+<div class="math-display">$$
+P(B_j\mid A)=\frac{P(A\mid B_j)P(B_j)}{\sum_i P(A\mid B_i)P(B_i)}.
+$$</div>
+~~~
+
+- □ 两两独立不等于相互独立；独立也不等于互斥。
+- □ 条件独立与边际独立可以彼此不成立。
+- □ 基准率忽视、检察官谬误、Monty Hall、假阳性率。
+
+*检查：* 患病率 $1\%$、灵敏度 $99\%$、特异度 $95\%$ 时，阳性者真正患病的概率是否能在一分钟内算出？
+
+=== 1.3 随机变量与常见分布 \[P0\]
+
+- □ PMF、PDF、CDF、生存函数；离散变量与连续变量。
+- □ 变量变换；一维 Jacobian；和、最小值、最大值的分布。
+- □ 联合分布、边际分布、条件分布；支持集决定积分区域。
+- □ Bernoulli$(p)$：$\\mathbb E X=p$，$\\operatorname{Var}(X)=p(1-p)$。
+- □ Binomial$(n,p)$：$\\mathbb E X=np$，$\\operatorname{Var}(X)=np(1-p)$。
+- □ Geometric 与 Negative Binomial：必须说明计数从 $0$ 还是 $1$ 开始。
+- □ Hypergeometric：无放回抽样与有限总体修正。
+- □ Poisson$(\\lambda)$：$\\mathbb E X=\\operatorname{Var}(X)=\\lambda$；独立 Poisson 可加；稀有事件近似。
+- □ Uniform$(a,b)$：几何概率、位置—尺度变换。
+- □ Exponential$(\\lambda)$：无记忆性；独立指数变量最小值。
+- □ Gamma、Erlang、Beta、Dirichlet：等待时间、比例参数、共轭先验。
+- □ Normal 与多元正态：仿射变换、标准化、条件正态；联合正态下零协方差才推出独立。
+- □ Lognormal、Pareto 与重尾分布：高阶矩可能不存在，不能机械套用高斯直觉。
+- □ $\\chi^2$、Student $t$、$F$：经典方差估计与检验的抽样分布。
+
+=== 1.4 期望、方差与协方差 \[P0\]
+
+- □ 期望线性性不需要独立：$\\mathbb E(aX\\mathplus{}bY\\mathplus{}c)=a\\mathbb E X\\mathplus{}b\\mathbb E Y\\mathplus{}c$。
+- □ 指示变量法：$\\mathbb E(\\sum_i I_i)=\\sum_i P(I_i=1)$。
+- □ 尾和公式：非负整数变量满足 $\\mathbb E X=\\sum_{k=1}^{\\infty}P(X\\ge k)$。
+- □ $\\operatorname{Var}(X)=\\mathbb E(X^2)-(\\mathbb E X)^2$。
+- □ 协方差与相关系数；零相关通常不意味着独立。
+- □ 和的方差：
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\operatorname{Var}\!\left(\sum_i X_i\right)=\sum_i\operatorname{Var}(X_i)
++2\sum_{i&lt;j}\operatorname{Cov}(X_i,X_j).
+$$</div>
+~~~
+
+- □ 全期望：$\\mathbb E X=\\mathbb E(\\mathbb E(X\\mid Y))$。
+- □ 全方差：
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\operatorname{Var}(X)=\mathbb E\!\left[\operatorname{Var}(X\mid Y)\right]
++\operatorname{Var}\!\left(\mathbb E(X\mid Y)\right).
+$$</div>
+~~~
+
+- □ Jensen、Cauchy–Schwarz、Markov、Chebyshev；知道等号条件与使用场景。
+
+=== 1.5 次序统计量与几何概率 \[P1\]
+
+- □ 最小值、最大值：先写 CDF；例如 $P(\\max_i X_i\\le x)=F(x)^n$。
+- □ 连续分布第 $k$ 个次序统计量密度。
+- □ 若 $U_{(k)}$ 来自 $n$ 个 Uniform$(0,1)$，则 $\\mathbb E U_{(k)}=\\frac{k}{n\\mathplus{}1}$。
+- □ 区间长度、断棍、单纯形、二维面积比。
+- □ 生日问题与 Poisson 近似；极值与尾部直觉。
+
+=== 1.6 大数、中心极限定理与集中不等式 \[P1\]
+
+- □ 弱大数与强大数：样本均值为何收敛，分别是哪种收敛。
+- □ CLT：
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\frac{\sqrt n(\bar X_n-\mu)}{\sigma}
+\xrightarrow{d}N(0,1).
+$$</div>
+~~~
+
+- □ 标准误通常按 $1\\mathord/\\sqrt n$ 缩放；依赖、重尾和非平稳会破坏朴素使用。
+- □ Slutsky、Delta method、连续映射定理的使用直觉。
+- □ Hoeffding 与 Chernoff 界 \[P2\]；理解“指数尾界”而非只背形式。
+
+=== 1.7 随机过程 \[P1；衍生品岗位为 P0\]
+
+- □ 离散时间 Markov 链、转移矩阵、Chapman–Kolmogorov。
+- □ 平稳分布 $\\pi^{\\mathsf T}=\\pi^{\\mathsf T}P$；不可约、非周期与收敛。
+- □ 随机游走、赌徒破产、反射原理、首达时间。
+- □ Poisson 过程：独立平稳增量、稀释、叠加、到达间隔。
+- □ 鞅、停时与可选停时的条件；警惕加倍下注反例。
+- □ Brownian motion、二次变差与 Itô 直觉 \[P2\]。
+
+== 2. 统计学与计量基础
+
+=== 2.1 样本、估计量与抽样分布 \[P0\]
+
+- □ 总体、样本、参数、统计量；i.i.d. 假设具体意味着什么。
+- □ 无偏性、一致性、效率、充分性；$\\operatorname{MSE}=\\operatorname{Var}\\mathplus{}\\operatorname{Bias}^2$。
+- □ 样本均值、样本方差、样本协方差；为何样本方差除以 $n-1$。
+- □ 正态样本下均值与样本方差独立；$t$ 与 $\\chi^2$ 分布来源。
+- □ Bootstrap、Block Bootstrap、Jackknife、Permutation test。
+- □ 稳健统计：Median、MAD、Trimmed mean、Winsorization。
+
+=== 2.2 MLE、MAP 与 Bayesian 更新 \[P0\]
+
+- □ Likelihood 与 probability 的区别；log-likelihood、score、Hessian。
+- □ MLE：写支持集、取对数、求导、检查边界、验证极值。
+- □ Fisher information 与 Cramér–Rao 下界；MLE 渐近正态。
+- □ MAP：
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\hat\theta_{\mathrm{MAP}}=\arg\max_\theta\{\log p(D\mid\theta)+\log p(\theta)\}.
+$$</div>
+~~~
+
+- □ Beta–Binomial、Gamma–Poisson、Normal–Normal 共轭。
+- □ 后验预测分布、credible interval 与 confidence interval 的区别。
+
+=== 2.3 置信区间与假设检验 \[P0\]
+
+- □ 频率学置信区间是“构造程序的长期覆盖率”，不是固定参数的后验概率。
+- □ $H_0$、$H_1$、检验统计量、拒绝域、p-value、显著性水平。
+- □ Type I 与 Type II error、power、样本量权衡。
+- □ 单样本与双样本 $z$、$t$ 检验；配对检验；Welch 检验。
+- □ $\\chi^2$ 拟合优度与独立性检验；$F$ 检验；ANOVA 假设。
+- □ 多重检验：Bonferroni、Holm、Benjamini–Hochberg；区分 FWER 与 FDR。
+- □ 统计显著不等于经济显著；报告效应量与不确定性。
+
+=== 2.4 线性回归 \[P0\]
+
+~~~
+{}{raw}
+<p>模型为 $y=X\beta+\varepsilon$。OLS 解下面的优化问题：</p>
+~~~
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\hat\beta=\arg\min_\beta\lVert y-X\beta\rVert_2^2,
+\qquad
+X^{\mathsf T}X\hat\beta=X^{\mathsf T}y.
+$$</div>
+~~~
+
+若 $X$ 满列秩，则
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\hat\beta=(X^{\mathsf T}X)^{-1}X^{\mathsf T}y.
+$$</div>
+~~~
+
+数值计算应使用 QR、SVD 或 least-squares solver，不要显式求逆。
+
+- □ 几何解释：$X\\hat\\beta$ 是 $y$ 在 $\\operatorname{Col}(X)$ 上的正交投影，残差与每列正交。
+- □ Gauss–Markov 假设与 BLUE；正态误差主要用于小样本精确推断。
+- □ 异方差：系数可能仍无偏或一致，但经典标准误失效；使用 robust sandwich SE。
+- □ 自相关、clustered dependence、HAC 与 Newey–West。
+- □ 内生性、遗漏变量偏差、测量误差；相关性不识别因果。
+- □ 杠杆值、影响点、残差诊断；不要机械删除金融极端值。
+
+*多重共线性：* $X$ 的列精确或近似线性相关。预测可能尚可，但单个系数方差变大、符号不稳定。诊断相关结构、VIF、小奇异值和大条件数。处理方式必须服从目标：
+
+- 合并或删除确实冗余的变量；
+- PCA、SVD 或其他降维；
+- Ridge 稳定稠密系数；Lasso 或 Elastic Net 做稀疏化；
+- 收集更有辨识力的数据；报告系数不确定性。
+
+=== 2.5 正则化与模型选择 \[P0\]
+
+- □ Ridge：$\\min_\\beta \\mathrm{SSE}\\mathplus{}\\lambda\\lVert\\beta\\rVert_2^2$；对应 Gaussian prior。
+- □ Lasso：$\\min_\\beta \\mathrm{SSE}\\mathplus{}\\lambda\\lVert\\beta\\rVert_1$；对应 Laplace prior，可产生零系数。
+- □ Elastic Net 结合 L1 与 L2，适合高度相关的特征组。
+- □ 特征缩放；截距通常不惩罚；$\\lambda$ 必须在训练折内选择。
+- □ 训练误差、验证误差、测试误差；交叉验证、nested CV、one-standard-error rule。
+- □ AIC、BIC、交叉验证目标不同，不能混为一谈。
+
+=== 2.6 时间序列与金融数据 \[P0／P1\]
+
+- □ 简单收益 $r_t=\\frac{P_t}{P_{t-1}}-1$；对数收益 $g_t=\\log(P_t)-\\log(P_{t-1})$，可跨期相加。
+- □ 平稳性、趋势、季节性、单位根、差分、协整。
+- □ 自协方差、ACF、PACF；white noise 与 martingale difference。
+- □ AR、MA、ARMA、ARIMA 的假设、平稳性、可逆性与预测直觉。
+- □ Volatility clustering、ARCH、GARCH 直觉。
+- □ 年化 Sharpe 的平方根法则依赖稳定方差与弱相关假设。
+- □ Look-ahead bias、survivorship bias、data snooping、transaction cost、turnover、capacity。
+
+== 3. 线性代数
+
+=== 3.1 向量空间、秩与线性方程组 \[P0\]
+
+- □ 向量加法、数乘、线性组合、span、basis、dimension。
+- □ Column space、row space、null space；四个基本子空间。
+- □ Rank–nullity：$\\operatorname{rank}(A)\\mathplus{}\\operatorname{nullity}(A)=n$。
+- □ $Ax=b$ 无解、唯一解、无穷多解的判别；一致当且仅当 $b\\in\\operatorname{Col}(A)$。
+- □ L1、L2、L∞ 范数；内积、夹角、cosine similarity。
+
+=== 3.2 正交、投影与最小二乘 \[P0\]
+
+- □ 正交与标准正交；若 $Q^{\\mathsf T}Q=I$，则长度、角度、距离不变。
+- □ 投影到非零向量 $u$：
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\operatorname{proj}_u(v)=\frac{u^{\mathsf T}v}{u^{\mathsf T}u}u.
+$$</div>
+~~~
+
+- □ 满列秩矩阵的投影矩阵：$P=X(X^{\\mathsf T}X)^{-1}X^{\\mathsf T}$。
+- □ $P^2=P$、$P^{\\mathsf T}=P$，特征值只能为 $0$ 或 $1$。
+- □ Gram–Schmidt、QR、normal equations 的几何意义。
+
+=== 3.3 特征值、半正定矩阵与动态 \[P0\]
+
+- □ 特征方程 $Av=\\lambda v$；特征空间、代数重数、几何重数。
+- □ $\\operatorname{tr}(A)=\\sum_i\\lambda_i$，$\\det(A)=\\prod_i\\lambda_i$。
+- □ 对角化 $A=V\\Lambda V^{-1}$；对称矩阵可写 $A=Q\\Lambda Q^{\\mathsf T}$。
+- □ PSD：$x^{\\mathsf T}Ax\\ge0$；协方差矩阵必为对称 PSD。
+- □ Rayleigh quotient、最大与最小特征值。
+- □ 矩阵幂、Markov 链与线性动态系统的长期行为。
+
+=== 3.4 矩阵分解 \[P0／P1\]
+
+- □ LU：消元与重复求解。
+- □ QR：正交基、稳定 least squares。
+- □ SVD：$A=U\\Sigma V^{\\mathsf T}$；rank、null space、pseudoinverse、conditioning。
+- □ PCA：中心化数据的右奇异向量是主方向，解释方差为 $\\sigma_j^2/(n-1)$。
+- □ Eckart–Young：截断 SVD 给出 Frobenius 范数下最佳低秩近似。
+- □ Cholesky：正定矩阵 $A=LL^{\\mathsf T}$；模拟相关 Gaussian。
+
+=== 3.5 矩阵微积分与优化前置 \[P0\]
+
+- □ 梯度、Jacobian、Hessian；形状检查。
+- □ $\\nabla_x(a^{\\mathsf T}x)=a$。
+- □ $\\nabla_x(x^{\\mathsf T}Ax)=(A\\mathplus{}A^{\\mathsf T})x$。
+- □ 链式法则、log-sum-exp、softmax Jacobian、backpropagation。
+- □ Convex set、convex function、first-order condition；强凸与唯一解。
+- □ Lagrangian、KKT 的可行性、互补松弛和对偶直觉 \[P1\]。
+
+=== 3.6 数值线性代数 \[P1\]
+
+- □ Condition number 衡量输入误差放大；接近秩亏会导致不稳定。
+- □ 形成 $X^{\\mathsf T}X$ 会平方二范数条件数。
+- □ 避免为求解 $Ax=b$ 显式求逆。
+- □ 浮点精度、cancellation、overflow、underflow、log-sum-exp。
+- □ 稀疏矩阵、power iteration、conjugate gradient 直觉 \[P2\]。
+
+== 4. 组合数学与离散推理
+
+=== 4.1 计数工具箱 \[P0\]
+
+- □ 加法与乘法原理；排列、组合、多项式系数。
+- □ 二项式定理与 Pascal 恒等式：$\\binom nk=\\binom{n-1}{k}\\mathplus{}\\binom{n-1}{k-1}$。
+- □ 隔板法及上下界修正；容斥；错排；抽屉原理。
+- □ 圆排列；按旋转或镜像取商。
+- □ Catalan 数、合法括号、格路径与递推 \[P1\]。
+
+=== 4.2 递推、生成函数与动态规划 \[P0／P1\]
+
+- □ 从最小状态开始写 base case、transition、answer location。
+- □ Memoization 与 tabulation；时间、空间复杂度；滚动数组。
+- □ 一维 DP、背包、区间 DP、序列 DP、状态机 DP、bitmask DP。
+- □ 线性递推与矩阵快速幂；特征根法。
+- □ 生成函数编码计数问题 \[P1\]。
+
+*三角形游走：* 若每步从一个顶点走向另外两个顶点之一，令 $a_n$ 为第 $n$ 步回到起点的路径数，则
+
+~~~
+{}{raw}
+<div class="math-display">$$
+a_n=\frac{2^n+2(-1)^n}{3},
+\qquad a_6=22.
+$$</div>
+~~~
+
+题目若改成三角格点、沿边连续运动或记录方向，状态空间会完全不同，必须先澄清。
+
+=== 4.3 图、概率方法与不变量 \[P1\]
+
+- □ 图的顶点、边、度、路径、连通性、树、环。
+- □ 邻接矩阵幂计算固定长度 walk 数。
+- □ Handshaking lemma、树有 $n-1$ 条边、生成树。
+- □ 期望存在性证明：若随机对象的期望小于阈值，则至少存在一个对象达到该阈值。
+- □ Invariant、monovariant、extremal principle、symmetry。
+
+== 5. 机器学习数学
+
+=== 5.1 问题设定与泛化 \[P0\]
+
+- □ Supervised、unsupervised；regression、classification、ranking。
+- □ Empirical risk minimization；损失函数与期望风险。
+- □ Train、validation、test 的职责；test 不能参与超参数选择。
+- □ Underfitting、overfitting、bias–variance trade-off、double descent 直觉。
+- □ 数据泄漏、distribution shift、concept drift、class imbalance。
+
+平方损失下，点 $x$ 的期望测试误差为
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\mathbb E\!\left[(Y-\hat f(x))^2\right]=\sigma^2
++\left(\mathbb E\hat f(x)-f(x)\right)^2
++\operatorname{Var}(\hat f(x)).
+$$</div>
+~~~
+
+=== 5.2 线性模型与 GLM \[P0\]
+
+- □ Linear regression、weighted least squares、Ridge、Lasso、Elastic Net。
+- □ Logistic regression：$p_i=\\sigma(x_i^{\\mathsf T}\\beta)$，$\\log\\frac{p_i}{1-p_i}=x_i^{\\mathsf T}\\beta$。
+- □ Binary cross-entropy 与 Bernoulli likelihood。
+- □ Logistic 负对数似然梯度：$\\nabla L=X^{\\mathsf T}(p-y)$。
+- □ Multiclass softmax、cross-entropy、identifiability。
+- □ Poisson regression 与 log link；count data 的 overdispersion。
+
+=== 5.3 树与集成学习 \[P0\]
+
+- □ Regression tree 与 classification tree；greedy split。
+- □ Entropy：$-\\sum_k p_k\\log p_k$；Gini：$1-\\sum_k p_k^2$。
+- □ Depth、min leaf、pruning 对偏差与方差的影响。
+- □ Bagging、Random Forest：bootstrap 与特征子采样主要降低方差。
+- □ Boosting：顺序拟合残差或负梯度；学习率与树数的权衡。
+- □ OOB estimate、feature importance 偏差、相关特征替代效应。
+
+=== 5.4 SVM、Kernel 与近邻 \[P1\]
+
+- □ Hinge loss、margin、soft margin；$C$ 控制违例惩罚。
+- □ Primal、dual、support vector；kernel trick 与 PSD Gram matrix。
+- □ k-NN 的 scaling、distance concentration、bias–variance。
+
+=== 5.5 概率模型与无监督学习 \[P1\]
+
+- □ k-means 最小化簇内平方距离；初始化、尺度、异常值、非球形簇。
+- □ GMM 与 EM；E-step responsibility，M-step weighted MLE；只能保证似然不下降。
+- □ PCA 的方差最大化、重构误差最小化与 SVD 等价性。
+- □ Naive Bayes 的条件独立假设；LDA 与 QDA 的协方差假设。
+
+=== 5.6 神经网络 \[P1；AI 量化岗位为 P0\]
+
+- □ Affine layer、activation、depth、width、universal approximation 直觉。
+- □ ReLU、sigmoid、tanh；饱和、梯度消失、梯度爆炸。
+- □ Backpropagation、initialization、normalization、residual connection、gradient clipping。
+- □ Batch normalization 的训练统计与推理 running statistics。
+- □ Dropout 的训练与推理差异。
+- □ CNN、RNN、LSTM、GRU、Transformer 的核心归纳偏置。
+
+=== 5.7 指标与验证 \[P0\]
+
+- □ Regression：MSE、RMSE、MAE、Huber、$R^2$。
+- □ Classification：accuracy、precision、recall、specificity、F1、confusion matrix。
+- □ ROC-AUC 与 PR-AUC；严重不平衡时 PR 更直接反映 false-positive burden。
+- □ Log loss、Brier score、calibration curve；ranking 与 calibration 分开评价。
+- □ 时间序列使用 expanding 或 rolling walk-forward；标签重叠时考虑 purge 与 embargo。
+- □ Grouped data 使用 GroupKFold；所有 preprocessing 必须在训练折内 fit。
+
+=== 5.8 量化研究判断 \[P0\]
+
+- □ Cross-sectional IC、Rank IC、time-series predictive metric 的差异。
+- □ Signal 到 portfolio 再到 execution：turnover、cost、liquidity、capacity、constraints。
+- □ Feature timestamp、label horizon、execution time 必须明确对齐。
+- □ Neutralization、exposure control、universe selection、missing-data semantics。
+- □ 多因子与多超参数产生 selection bias；保留真正 untouched holdout。
+- □ 报告 uncertainty、regime stability、economic rationale，而不只报告最高 Sharpe。
+
+== 6. 一页公式速查
+
+~~~
+{}{raw}
+<div class="math-display">$$
+P(A\mid B)=\frac{P(B\mid A)P(A)}{P(B)},
+\qquad
+\operatorname{Var}(X)=\mathbb E(X^2)-(\mathbb E X)^2.
+$$</div>
+~~~
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\operatorname{Var}(X)=\mathbb E\!\left[\operatorname{Var}(X\mid Y)\right]
++\operatorname{Var}\!\left(\mathbb E(X\mid Y)\right).
+$$</div>
+~~~
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\hat\beta_{\mathrm{OLS}}=(X^{\mathsf T}X)^{-1}X^{\mathsf T}y,
+\qquad
+\hat\beta_{\mathrm{ridge}}=(X^{\mathsf T}X+\lambda I)^{-1}X^{\mathsf T}y.
+$$</div>
+~~~
+
+~~~
+{}{raw}
+<div class="math-display">$$
+P=X(X^{\mathsf T}X)^{-1}X^{\mathsf T},
+\qquad
+A=U\Sigma V^{\mathsf T}.
+$$</div>
+~~~
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\nabla L_{\mathrm{logistic}}=X^{\mathsf T}(p-y),
+\qquad
+\operatorname{Sharpe}=\frac{\mathbb E(R-R_f)}{\sqrt{\operatorname{Var}(R-R_f)}}.
+$$</div>
+~~~
+
+== 7. 如何完成知识检查
+
+. *第一遍：* 每个方框标为绿（能推导与解释）、黄（只认得）、红（不会）。
+. *第二遍：* 脱稿推导 Bayes、全方差、OLS、Ridge、Logistic gradient、PCA 与 SVD、一个 DP recurrence。
+. *第三遍：* 每个 P0 点口头回答“定义—假设—推导—例子—失效模式”。
+. *第四遍：* 用 Python 模拟一个概率结果，实现 OLS 或 logistic loss、区间合并和一个 DP。
+. *第五遍：* 计时刷题；错题按知识点归档，一周后重新独立完成。
+
+== 8. 主要资料来源
+
+- [https://www.janestreet.com/static/pdfs/trading-interview.pdf Jane Street Probability & Markets Guide] — 计数、概率、独立性、期望、条件概率与面试思考方式。
+- [https://www.janestreet.com/probability-playing-cards/ Jane Street Probability Playing Cards] — 分级概率练习。
+- [https://stat110.hsites.harvard.edu/strategic-practice-problems Harvard Stat 110 Strategic Practice] — 按主题组织且附解答的概率练习。
+- [https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/ MIT 18.06 Linear Algebra] — 线性方程组、子空间、最小二乘、特征值、PSD 与 SVD。
+- [https://cs229.stanford.edu/2023_index.html Stanford CS229] 与 [https://www.statlearning.com/ An Introduction to Statistical Learning] — 机器学习模型、验证与理论材料。
+- Xinfeng Zhou, /A Practical Guide to Quantitative Finance Interviews/；Timothy Crack, /Heard on the Street/；Frederick Mosteller, /Fifty Challenging Problems in Probability/。请使用合法版本并坚持先做后看。
+
+*范围说明：* 衍生品定价、随机微积分、C++ 系统与市场微观结构可能在特定岗位中占主导；本笔记按你的目标重点覆盖概率统计、线性代数、组合数学、机器学习和量化研究判断。岗位描述明确要求时再加专项模块。

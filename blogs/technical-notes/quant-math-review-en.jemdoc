@@ -1,0 +1,453 @@
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}
+= Quantitative Research Interview Mathematics Review
+[../../blog.html ← Blogs] \M /updated 2026-07-20/
+
+~~~
+{}{raw}
+<div class="language-switch" role="navigation" aria-label="Language"><a href="quant-math-review.html" hreflang="zh-CN">中文</a><span class="active" aria-current="page">English</span></div>
+~~~
+
+This is a high-coverage mathematics checklist for quantitative research written tests and interviews. It is designed for rapid recall, not as a first textbook. Standard terms are kept explicit because interviews often expect them directly.
+
+*Priority:* P0 = must be able to derive and use without notes; P1 = commonly tested; P2 = role-dependent bonus. For every checkbox, require yourself to: define it, state the assumptions, derive the key formula, solve one small example, and explain one failure mode.
+
+== 0. High-priority review order
+
+Review in this order:
+
+. *P0 regression:* derive OLS; diagnose multicollinearity; compare deletion, PCA\/SVD, ridge and lasso; explain heteroskedasticity and leakage.
+. *P0 probability\/statistics:* conditional probability, expectation, variance\/covariance, common distributions, estimation, confidence intervals and hypothesis tests.
+. *P0 ML:* bias-variance, regularization, validation, linear\/logistic models, trees and ensembles, PCA, evaluation metrics.
+. *P0 counting:* permutations\/combinations, recurrence, state design and dynamic programming.
+. *P0 linear algebra:* rank, projections, eigenvalues, SVD, positive semidefinite covariance matrices and conditioning.
+. *P1 time series and quant research:* returns, stationarity, autocorrelation, rolling features, time-aware validation, transaction costs and multiple testing.
+
+== 1. Probability
+
+=== 1.1 Events, counting and probability rules \[P0\]
+
+- □ Sample space, event, complement, union, intersection, mutually exclusive events.
+- □ Axioms: $P(A)\\ge0$, $P(\\Omega)=1$, and additivity for disjoint events.
+- □ Complement and inclusion-exclusion: $P(A\\cup B)=P(A)\\mathplus{}P(B)-P(A\\cap B)$.
+- □ Equally likely outcomes require counting the correct atomic outcomes; sums of two dice are not equally likely.
+- □ Multiplication rule, permutations, combinations and multinomial coefficients.
+- □ Sampling with\/without replacement; ordered\/unordered; distinguishability; circular arrangements.
+- □ Inclusion-exclusion, stars and bars, pigeonhole principle, symmetry and complementary counting.
+
+*Interview reflex:* before calculating, say what one outcome is and why outcomes are equally likely. Most counting errors come from changing the sample space halfway through.
+
+=== 1.2 Conditional probability, independence and Bayes \[P0\]
+
+- □ Conditional probability: $P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}$, for $P(B)>0$.
+- □ Product rule: $P(A\\cap B)=P(A\\mid B)P(B)$.
+- □ Law of total probability over a partition {B_i}.
+- □ Bayes rule: posterior is proportional to likelihood times prior.
+- □ Pairwise independence is weaker than mutual independence.
+- □ Conditional independence can hold when marginal independence does not, and vice versa.
+- □ Base-rate neglect, prosecutor's fallacy, Monty Hall and false-positive calculations.
+
+*Quick check:* if a disease prevalence is 1\%, sensitivity is 99\%, and specificity is 95\%, can you compute P(disease | positive) without confusing P(A | B) with P(B | A)?
+
+=== 1.3 Random variables and distributions \[P0\]
+
+- □ PMF, PDF, CDF, survival function; discrete versus continuous variables.
+- □ Joint, marginal and conditional distributions; independence via factorization.
+- □ Transformation of variables; Jacobian for continuous variables; convolution for sums.
+- □ LOTUS: compute E\[g(X)\] from the distribution of X without first finding the distribution of g(X).
+- □ Quantiles, median, mode, skewness, kurtosis and why moments may not exist.
+
+*Discrete families:*
+
+- □ $\\operatorname{Bernoulli}(p)$: mean $p$, variance $p(1-p)$.
+- □ $\\operatorname{Binomial}(n,p)$: independent Bernoulli count; mean $np$, variance $np(1-p)$.
+- □ Geometric(p): waiting time, memoryless; be explicit whether support starts at 0 or 1.
+- □ Negative binomial: trials\/failures before the r-th success; state the convention.
+- □ Hypergeometric: sampling without replacement; finite-population correction.
+- □ $\\operatorname{Poisson}(\\lambda)$: count in a fixed interval; sum of independent Poissons; binomial rare-event approximation.
+- □ Multinomial and occupancy problems.
+
+*Continuous families:*
+
+- □ Uniform(a,b): location-scale and geometric probability.
+- □ $\\operatorname{Exponential}(\\lambda)$: waiting time and memorylessness; minimum of independent exponentials.
+- □ Gamma\/Erlang: waiting time to multiple Poisson events; beta-gamma relationships.
+- □ Normal and standard normal: affine transformations, sums, standardization.
+- □ Multivariate normal: mean vector, covariance matrix, conditional Gaussian, zero covariance implies independence only in special families such as jointly Gaussian variables.
+- □ Lognormal: positive multiplicative quantities; arithmetic versus geometric return.
+- □ Beta and Dirichlet: probabilities\/proportions and conjugate priors.
+- □ Chi-square, Student t and F: sampling distributions behind variance estimates and classical tests.
+- □ Pareto\/heavy tails: tail risk, unstable high moments and why Gaussian intuition can fail for returns.
+
+=== 1.4 Expectation, variance and covariance \[P0\]
+
+- □ Linearity: $\\mathbb E(aX\\mathplus{}bY\\mathplus{}c)=a\\mathbb E X\\mathplus{}b\\mathbb E Y\\mathplus{}c$, with no independence assumption.
+- □ Indicator method: $\\mathbb E(\\sum_i I_i)=\\sum_iP(I_i=1)$; use it for matches, collisions, inversions and occupancy.
+- □ Tail-sum formula for nonnegative integer $X$: $\\mathbb E X=\\sum_{k=1}^{\\infty}P(X\\ge k)$.
+- □ $\\operatorname{Var}(X)=\\mathbb E(X^2)-(\\mathbb E X)^2$; $\\operatorname{Var}(aX\\mathplus{}b)=a^2\\operatorname{Var}(X)$.
+- □ $\\operatorname{Cov}(X,Y)=\\mathbb E(XY)-\\mathbb E X\\,\\mathbb E Y$; correlation is scale-free but not a measure of general dependence.
+- □ $\\operatorname{Var}(\\sum_iX_i)=\\sum_i\\operatorname{Var}(X_i)\\mathplus{}2\\sum_{i<j}\\operatorname{Cov}(X_i,X_j)$.
+- □ Independence implies zero covariance when moments exist; the converse is false in general.
+- □ Law of total expectation: $\\mathbb E X=\\mathbb E(\\mathbb E(X\\mid Y))$.
+- □ Law of total variance: $\\operatorname{Var}(X)=\\mathbb E(\\operatorname{Var}(X\\mid Y))\\mathplus{}\\operatorname{Var}(\\mathbb E(X\\mid Y))$.
+- □ Conditional covariance and covariance matrices.
+
+*Interview reflex:* try indicators, symmetry, conditioning, recursion, or a state equation before brute-force enumeration.
+
+=== 1.5 Order statistics and geometric probability \[P1\]
+
+- □ For i.i.d. samples with CDF $F$, $P(\\max_iX_i\\le x)=F(x)^n$ and $P(\\min_iX_i>x)=(1-F(x))^n$.
+- □ Density of the $k$-th order statistic and $\\mathbb E U_{(k)}=\\frac{k}{n\\mathplus{}1}$ for uniform order statistics.
+- □ Range, spacings and broken-stick\/simplex arguments.
+- □ Random points in intervals, rectangles, circles and triangles; draw the feasible region before integrating.
+- □ Exchangeability and symmetry shortcuts.
+
+=== 1.6 Limits, inequalities and approximations \[P1\]
+
+- □ Markov, Chebyshev, Jensen, union bound and Cauchy-Schwarz.
+- □ Weak\/strong law of large numbers: sample average convergence and assumptions.
+- □ Central limit theorem; standard error scales as $1\\mathord/\\sqrt n$; know when dependence\/heavy tails break naive use.
+- □ Normal, Poisson and continuity-corrected approximations to binomial probabilities.
+- □ Delta method, Slutsky's theorem and continuous mapping theorem at an interview-level intuition.
+- □ Chernoff\/Hoeffding concentration bounds \[P2\].
+
+=== 1.7 Stochastic processes \[P1\/P2\]
+
+- □ Discrete-time Markov chains: transition matrix, n-step transitions, communicating classes, recurrence, absorption and stationary distribution.
+- □ First-step analysis for hitting probabilities and expected hitting times.
+- □ Random walks, gambler's ruin and reflection\/symmetry arguments.
+- □ Poisson process: independent stationary increments, exponential interarrival times, thinning and superposition.
+- □ Martingale definition, fair-game intuition and when optional stopping is invalid.
+- □ Brownian motion, quadratic variation and Ito intuition \[P2, mainly derivatives\/systematic macro roles\].
+
+== 2. Statistics
+
+=== 2.1 Samples, estimators and sampling distributions \[P0\]
+
+- □ Population versus sample; statistic versus parameter; i.i.d. assumptions.
+- □ Sample mean, unbiased sample variance, covariance and correlation.
+- □ Bias, variance, MSE = variance \+ bias², consistency, efficiency and sufficiency.
+- □ Standard error is the standard deviation of an estimator, not the sample standard deviation.
+- □ Bootstrap: resample observations\/blocks and know when dependence requires block bootstrap.
+- □ Jackknife and permutation\/randomization tests at a conceptual level.
+- □ Robust summaries: median, MAD, trimmed\/winsorized mean; sensitivity to outliers.
+
+=== 2.2 Estimation: MLE, MAP and Bayesian updating \[P0\]
+
+- □ Write likelihood and log-likelihood; differentiate; verify boundary and second-order conditions.
+- □ MLE invariance, asymptotic normality and Fisher information.
+- □ Method of moments and comparison with MLE.
+- □ MAP = likelihood plus log-prior; distinguish MAP from posterior mean.
+- □ Conjugate pairs: beta-binomial, gamma-Poisson\/exponential, normal-normal.
+- □ L2 regularization corresponds to a Gaussian prior; L1 corresponds to a Laplace prior under the usual MAP interpretation.
+
+=== 2.3 Confidence intervals and hypothesis tests \[P0\]
+
+- □ A 95\% frequentist confidence interval is a procedure with 95\% long-run coverage, not a 95\% posterior probability statement about a fixed parameter.
+- □ Null\/alternative, test statistic, rejection region, p-value, significance level.
+- □ Type I\/II errors, power and sample-size trade-offs.
+- □ One\/two-sample z and t tests; paired tests; equal versus unequal variance (Welch).
+- □ Chi-square goodness-of-fit\/independence; F tests and ANOVA assumptions.
+- □ One-sided versus two-sided tests; pre-specification matters.
+- □ Multiple testing: Bonferroni, family-wise error, Benjamini-Hochberg FDR, data snooping.
+- □ Statistical significance versus economic significance; effect size and confidence interval.
+
+=== 2.4 Linear regression \[P0\]
+
+~~~
+{}{raw}
+<p>Model: $y=X\beta+\varepsilon$. If $X$ has full column rank, OLS minimizes $\lVert y-X\beta\rVert_2^2$ and solves $X^{\mathsf T}X\hat\beta=X^{\mathsf T}y$, giving</p>
+~~~
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\hat\beta=(X^{\mathsf T}X)^{-1}X^{\mathsf T}y.
+$$</div>
+~~~
+
+Numerically, prefer QR\/SVD to explicitly computing an inverse.
+
+- □ Derive OLS by gradient and by orthogonal projection.
+- □ Interpret coefficients conditionally; distinguish prediction from causal interpretation.
+- □ Gauss-Markov assumptions and BLUE; normal errors are needed for exact small-sample t\/F inference, not for the OLS point estimate.
+- □ Residuals, fitted values, leverage, hat matrix $H=X(X^{\\mathsf T}X)^{-1}X^{\\mathsf T}$, influence and Cook's distance.
+- □ R² versus adjusted R²; training R² never decreases when adding features.
+- □ Heteroskedasticity: coefficients may remain unbiased under exogeneity, but classical standard errors fail; use robust\/sandwich SE where appropriate.
+- □ Autocorrelation and clustered dependence; HAC\/Newey-West or clustered SE conceptually.
+- □ Endogeneity\/omitted variables and why correlation does not identify causality.
+
+*Multicollinearity:* predictors are nearly linearly dependent. OLS predictions can remain reasonable while individual coefficients become unstable and standard errors inflate. Diagnose with correlation structure, small singular values\/large condition number, or VIF. Remedies depend on the goal:
+
+- remove\/merge redundant features using domain knowledge;
+- PCA\/SVD or other dimension reduction;
+- ridge for stable dense coefficients; lasso\/elastic net for sparsity and selection;
+- collect more informative data;
+- never claim that adding interaction terms generally fixes collinearity—they can increase it unless motivated and centered.
+
+=== 2.5 Regularization and model selection \[P0\]
+
+- □ Ridge: minimize $\\mathrm{SSE}\\mathplus{}\\lambda\\lVert\\beta\\rVert_2^2$; shrinks correlated coefficients, rarely exactly to zero.
+- □ Lasso: minimize $\\mathrm{SSE}\\mathplus{}\\lambda\\lVert\\beta\\rVert_1$; creates sparsity but is unstable among strongly correlated predictors.
+- □ Elastic net combines L1\/L2; useful for groups of correlated features.
+- □ Standardize features before scale-sensitive penalties; usually do not penalize the intercept.
+- □ Choose λ using validation within a leakage-safe pipeline.
+- □ AIC\/BIC, likelihood penalties and cross-validation; know their different goals and assumptions.
+
+=== 2.6 Time series and financial data \[P0\/P1\]
+
+- □ Simple return $r_t=\\frac{P_t}{P_{t-1}}-1$; log return $g_t=\\log P_t-\\log P_{t-1}$; log returns add across time.
+- □ Arithmetic mean return, geometric growth and volatility drag.
+- □ Stationarity, trend, seasonality, structural breaks and regime change.
+- □ Autocovariance, ACF\/PACF; white noise versus martingale difference.
+- □ AR, MA, ARMA\/ARIMA: assumptions, stationarity\/invertibility and forecasting intuition.
+- □ Unit roots, spurious regression, differencing and cointegration \[P1\].
+- □ Volatility clustering, ARCH\/GARCH intuition \[P1\].
+- □ Cross-sectional versus time-series dependence; panel\/fixed-effects intuition.
+- □ Sharpe ratio and annualization assumptions; serial correlation invalidates naive sqrt(time) scaling.
+- □ Drawdown, turnover, capacity, slippage, transaction cost and look-ahead\/survivorship bias.
+
+== 3. Linear algebra
+
+=== 3.1 Vectors, spaces, rank and systems \[P0\]
+
+- □ Vector norms L1\/L2\/L-infinity; inner product, angle and cosine similarity.
+- □ Linear combination, span, independence, basis and dimension.
+- □ Column space, row space, null space and left null space; rank-nullity.
+- □ Solve Ax=b by elimination; zero\/one\/infinite solutions; consistency means b is in Col(A).
+- □ Rank properties: $\\operatorname{rank}(AB)\\le\\min(\\operatorname{rank}(A),\\operatorname{rank}(B))$ and $\\operatorname{rank}(A)=\\operatorname{rank}(A^{\\mathsf T})$.
+- □ Invertibility equivalences for a square matrix: full rank, trivial null space, nonzero determinant, no zero eigenvalue.
+- □ Determinant as signed volume scaling; effects of row operations; $\\det(AB)=\\det(A)\\det(B)$.
+
+=== 3.2 Orthogonality, projection and least squares \[P0\]
+
+- □ Orthogonal\/orthonormal vectors; orthogonal matrix $Q$ has $Q^{\\mathsf T}Q=I$ and preserves lengths.
+- □ Projection onto $\\operatorname{span}(A)$: $P=A(A^{\\mathsf T}A)^{-1}A^{\\mathsf T}$ when columns are independent.
+- □ Least-squares residual is orthogonal to $\\operatorname{Col}(A)$: $A^{\\mathsf T}(y-A\\hat\\beta)=0$.
+- □ Gram-Schmidt and QR; QR solves least squares more stably than normal equations.
+- □ Moore-Penrose pseudoinverse and minimum-norm solutions.
+
+=== 3.3 Eigenvalues, PSD matrices and dynamics \[P0\]
+
+- □ $Av=\\lambda v$; trace is the sum and determinant is the product of eigenvalues, with multiplicity.
+- □ Diagonalization $A=V\\Lambda V^{-1}$; powers and linear recurrences.
+- □ Real symmetric matrices have real eigenvalues and orthonormal eigenvectors: $A=Q\\Lambda Q^{\\mathsf T}$.
+- □ Positive semidefinite (PSD): $x^{\\mathsf T}Ax\\ge0$; covariance and Gram matrices are PSD.
+- □ Positive definite tests: positive eigenvalues, Cholesky factorization, leading principal minors (for symmetric matrices).
+- □ Rayleigh quotient and largest\/smallest eigenvalues.
+- □ Markov transition matrices and stationary eigenvectors; be explicit about row- versus column-stochastic convention.
+
+=== 3.4 Matrix decompositions \[P0\/P1\]
+
+- □ LU: elimination and repeated solves.
+- □ QR: orthogonalization and least squares.
+- □ Eigendecomposition: square diagonalizable operators.
+- □ SVD: $A=U\\Sigma V^{\\mathsf T}$; works for any rectangular matrix; rank, pseudoinverse, best low-rank approximation and condition number.
+- □ PCA: center X, eigendecompose covariance or use SVD; directions maximize variance; scores versus loadings; scaling matters.
+- □ Cholesky: fast factorization of symmetric positive definite matrices; Gaussian simulation and covariance solves.
+
+=== 3.5 Matrix calculus and optimization prerequisites \[P0\]
+
+- □ Shapes first: scalar-by-vector gradient, Jacobian and Hessian.
+- □ $\\nabla_x(a^{\\mathsf T}x)=a$ and $\\nabla_x(x^{\\mathsf T}Ax)=(A\\mathplus{}A^{\\mathsf T})x$; for symmetric $A$ this is $2Ax$.
+- □ $\\nabla_x\\lVert Ax-b\\rVert_2^2=2A^{\\mathsf T}(Ax-b)$.
+- □ ∇_X tr(A'X)=A; cyclic trace trick; d log det X = tr(X^(-1)dX).
+- □ Chain rule\/backpropagation through vector functions.
+- □ Gradient, Hessian, critical point, convexity and strong convexity.
+- □ Lagrange multipliers and KKT conditions (feasibility, stationarity, complementary slackness).
+- □ Gradient descent convergence intuition; learning rate; SGD noise; momentum and adaptive methods.
+
+=== 3.6 Numerical linear algebra \[P1\]
+
+- □ Never compute an inverse merely to solve Ax=b; use a solve\/factorization.
+- □ Condition number measures sensitivity; X'X squares the condition number of X.
+- □ Floating-point precision, cancellation, overflow\/underflow and log-sum-exp.
+- □ Sherman-Morrison and Woodbury identities for low-rank updates \[P2\].
+- □ Sparse matrices and iterative methods; power iteration\/conjugate gradient intuition \[P2\].
+
+== 4. Combinatorics and discrete problem solving
+
+=== 4.1 Counting toolkit \[P0\]
+
+- □ Sum\/product rules; permutations, combinations, multinomial coefficients.
+- □ Ordered versus unordered selections; repetition allowed or not.
+- □ Binomial theorem and identities such as $\\binom nk=\\binom{n-1}{k}\\mathplus{}\\binom{n-1}{k-1}$.
+- □ Stars and bars with upper\/lower-bound corrections.
+- □ Inclusion-exclusion and derangements.
+- □ Pigeonhole principle, double counting and bijective proofs.
+- □ Circular permutations and quotienting by rotations\/reflections.
+
+=== 4.2 Recurrences, generating functions and DP \[P0\/P1\]
+
+- □ Define a state that contains exactly the information needed for the future.
+- □ Base cases, transition, evaluation order and final aggregation.
+- □ Memoization versus tabulation; time\/space complexity; rolling-array optimization.
+- □ Linear recurrences, characteristic equations and matrix exponentiation.
+- □ Ordinary generating functions as algebraic encodings of sequences \[P1\].
+- □ Catalan structures: balanced parentheses, binary trees and noncrossing matchings \[P1\].
+- □ Stirling numbers and Bell numbers for partitions \[P2\].
+
+=== 4.3 Graphs, invariants and constructive reasoning \[P1\]
+
+- □ Graph, degree, path, cycle, connected component, tree and bipartite graph.
+- □ Handshaking lemma; tree has n-1 edges; unique path characterization.
+- □ Euler trails versus Hamiltonian paths; do not confuse their criteria.
+- □ Coloring, matching and shortest paths at a conceptual level.
+- □ Invariants, monovariants, parity, extremal principle and symmetry.
+- □ Probabilistic method: prove existence by showing positive probability \[P2\].
+
+*Triangle-walk pattern:* encode the current vertex\/direction or use adjacency-matrix powers. Ask whether the walk is on three vertices, a triangular lattice, or a continuous geometric triangle—the wording changes the state space completely.
+
+== 5. Machine-learning mathematics
+
+=== 5.1 Problem setup and generalization \[P0\]
+
+- □ Supervised\/unsupervised learning; regression\/classification\/ranking.
+- □ Empirical risk minimization: average loss plus regularization.
+- □ Train\/validation\/test roles; hyperparameters must not be chosen on test data.
+- □ Bias-variance trade-off; irreducible noise; underfit versus overfit diagnostics.
+- □ Parametric versus nonparametric; generative versus discriminative.
+- □ Curse of dimensionality and why distance concentration hurts nearest-neighbor methods.
+- □ Data leakage, selection bias, distribution shift and nonstationarity.
+
+=== 5.2 Linear and generalized linear models \[P0\]
+
+- □ Linear regression, weighted least squares, ridge\/lasso\/elastic net.
+- □ Logistic regression: sigmoid, log-odds, Bernoulli likelihood, cross-entropy and gradient.
+- □ Softmax regression and numerical stabilization.
+- □ GLM components: random component, linear predictor and link function.
+- □ Interactions and nonlinear basis expansion; regularize and validate.
+- □ Calibration versus discrimination.
+
+=== 5.3 Trees and ensembles \[P0\]
+
+- □ Regression\/classification trees; greedy split; MSE, entropy and Gini impurity.
+- □ Depth\/min-leaf\/pruning and the bias-variance effect.
+- □ Bagging and random forests: bootstrap plus feature subsampling reduces correlation\/variance.
+- □ Boosting: sequentially fit residuals\/negative gradients; learning rate and number of trees trade off.
+- □ Feature importance pitfalls: impurity importance bias and correlated predictors; use permutation importance carefully.
+
+=== 5.4 SVM, kernels and nearest neighbors \[P1\]
+
+- □ Maximum-margin classifier; soft margin and slack; role of C.
+- □ Hinge loss; support vectors; primal\/dual intuition.
+- □ Kernel trick and valid PSD kernels; RBF bandwidth.
+- □ k-NN bias\/variance, scaling and distance metrics.
+
+=== 5.5 Probabilistic and unsupervised models \[P1\]
+
+- □ Naive Bayes and conditional-independence assumption; Laplace smoothing.
+- □ Gaussian discriminant analysis: LDA versus QDA covariance assumptions.
+- □ k-means objective, Lloyd iterations, initialization and local minima.
+- □ GMM and EM: E-step responsibilities, M-step weighted MLE; likelihood is nondecreasing but local optimum\/singularity issues remain.
+- □ PCA versus factor models versus ICA; reconstruction and interpretation.
+- □ Anomaly detection and density-estimation basics.
+
+=== 5.6 Neural networks \[P1; P0 for AI-quant roles\]
+
+- □ Affine layer, activation, depth\/width and universal approximation intuition.
+- □ Backpropagation as repeated chain rule; derive gradients for a two-layer network.
+- □ ReLU, sigmoid, tanh; saturation and vanishing\/exploding gradients.
+- □ Initialization, normalization, dropout, weight decay and early stopping.
+- □ CNN: locality and weight sharing; RNN\/LSTM\/GRU: recurrence and gating; Transformer: scaled dot-product attention and positional information.
+- □ Batch normalization training versus inference behavior.
+- □ Why a larger model can generalize: optimization\/implicit regularization intuition, not simply parameter count.
+
+=== 5.7 Metrics and validation \[P0\]
+
+- □ Regression: MSE\/RMSE, MAE, Huber, R²; sensitivity to scale\/outliers.
+- □ Classification: confusion matrix, precision, recall, specificity, F1, ROC-AUC and PR-AUC.
+- □ Log loss\/Brier score and probability calibration.
+- □ Class imbalance, threshold choice and cost-sensitive evaluation.
+- □ k-fold, stratified and grouped CV; nested CV for honest tuning.
+- □ Time series: expanding\/rolling walk-forward splits, embargo\/purging where labels overlap; never randomly shuffle future into past.
+- □ Fit preprocessing only on each training fold; use a pipeline.
+
+=== 5.8 Quant-research-specific model judgment \[P0\]
+
+- □ Define the target at prediction time and prove every feature is available then.
+- □ Cross-sectional IC\/rank IC versus time-series prediction metrics.
+- □ Neutralization\/exposure control, universe selection and missing-data semantics.
+- □ Backtest net of fees, spread, slippage, market impact and turnover.
+- □ Survivorship, look-ahead, stale prices, corporate actions and delisting bias.
+- □ Multiple factors\/hyperparameters create multiple-testing and selection bias; keep a true holdout and report uncertainty.
+- □ Regime stability, rolling diagnostics and stress tests matter more than one aggregate score.
+- □ A model with higher offline R² can have worse PnL because ranking, tails, capacity and costs differ.
+
+== 6. One-page formula recall
+
+~~~
+{}{raw}
+<div class="math-display">$$
+P(A\mid B)=\frac{P(B\mid A)P(A)}{P(B)},
+\qquad
+\operatorname{Var}(X)=\mathbb E(X^2)-(\mathbb E X)^2.
+$$</div>
+~~~
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\operatorname{Var}(X)=\mathbb E(\operatorname{Var}(X\mid Y))
++\operatorname{Var}(\mathbb E(X\mid Y)).
+$$</div>
+~~~
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\hat\beta_{\mathrm{OLS}}=(X^{\mathsf T}X)^{-1}X^{\mathsf T}y,
+\qquad
+\hat\beta_{\mathrm{ridge}}=(X^{\mathsf T}X+\lambda I)^{-1}X^{\mathsf T}y.
+$$</div>
+~~~
+
+~~~
+{}{raw}
+<div class="math-display">$$
+P=A(A^{\mathsf T}A)^{-1}A^{\mathsf T},
+\qquad
+A=U\Sigma V^{\mathsf T}.
+$$</div>
+~~~
+
+~~~
+{}{raw}
+<div class="math-display">$$
+p=\frac{1}{1+\exp(-x^{\mathsf T}\beta)},
+\qquad
+\nabla L=X^{\mathsf T}(p-y).
+$$</div>
+~~~
+
+~~~
+{}{raw}
+<div class="math-display">$$
+\operatorname{Precision}=\frac{TP}{TP+FP},
+\quad
+\operatorname{Recall}=\frac{TP}{TP+FN},
+\quad
+F_1=\frac{2PR}{P+R}.
+$$</div>
+~~~
+
+== 7. How to perform the knowledge check
+
+. *Closed-book pass:* mark every checkbox Green (derive\/explain), Yellow (recognize only), or Red (cannot recall).
+. *Derivation pass:* without notes, derive Bayes, total variance, OLS, ridge, logistic gradient, PCA\/SVD connection and one DP recurrence.
+. *Oral pass:* explain each P0 item in 60–90 seconds with assumptions and one counterexample.
+. *Problem pass:* solve 10 probability, 5 statistics, 5 linear algebra, 5 combinatorics and 5 ML questions under time pressure.
+. *Coding pass:* simulate one probability result, implement OLS\/logistic loss, merge intervals and one DP problem in plain Python.
+. *Error log:* record the trigger you missed, the wrong assumption, the correct pattern and a re-test date.
+
+== 8. Sources and next reading
+
+This checklist synthesizes recurring interview themes rather than reproducing proprietary tests. Start with these sources:
+
+- [https://www.janestreet.com/static/pdfs/trading-interview.pdf Jane Street Probability & Markets Guide] — official probability, expectation, conditional probability and interview-solving primer.
+- [https://www.janestreet.com/probability-playing-cards/ Jane Street Probability Playing Cards] — official graded probability practice; Jane Street recommends the early clubs\/diamonds for interview preparation.
+- [https://stat110.hsites.harvard.edu/strategic-practice-problems Harvard Stat 110 Strategic Practice] — topic-organized probability problems with solutions.
+- [https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/ MIT 18.06 Linear Algebra] — systems, subspaces, least squares, eigenvalues, PSD matrices and SVD.
+- [https://cs229.stanford.edu/2023_index.html Stanford CS229] and [https://www.statlearning.com/ An Introduction to Statistical Learning] — ML theory, models, validation and freely available official materials.
+- Xinfeng Zhou, /A Practical Guide to Quantitative Finance Interviews/ (the Green Book); Timothy Crack, /Heard on the Street/; Frederick Mosteller, /Fifty Challenging Problems in Probability/ — use legitimate copies and solve actively rather than memorizing wording.
+
+*Scope note:* derivatives pricing, stochastic calculus, C\+\+ systems and market microstructure can dominate some specialized roles, but the requested focus here is quantitative research probability\/statistics, linear algebra, combinatorics and ML. Add those modules when a job description explicitly requires them.
