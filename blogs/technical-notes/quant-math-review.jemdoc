@@ -1,11 +1,11 @@
 # jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}, addjs{../blog-sidebar}
 = Quantitative Research Interview Mathematics Review
-[../../blog.html ← Blogs] \M /更新于 2026-07-20/
+[../../blog.html ← Blogs] \M /更新于 2026-07-21/
 
 ~~~
 {}{raw}
 <div class="language-switch" role="navigation" aria-label="语言"><span class="active" aria-current="page">中文</span><a href="quant-math-review-en.html" hreflang="en">English</a></div>
-<div class="page-lead"><p>这是一份面向量化研究笔试与面试的高覆盖复习清单。它用于快速检查知识缺口，不替代系统教材。每个知识点至少要做到：能定义、能写假设、能推导核心公式、能算一个小例子、能指出一个失效场景。</p></div>
+<div class="page-lead"><p>这是一份面向量化研究笔试与面试的高覆盖复习清单。它用于快速检查知识缺口，不替代系统教材。每个知识点至少要做到：能定义、能写假设、能推导核心公式、能算一个小例子、能指出一个失效场景。带有“点击展开”的知识点附有详细讲解，默认收起以保持提纲清晰。</p></div>
 ~~~
 
 *优先级：* P0 = 必须脱稿推导并使用；P1 = 高频考点；P2 = 岗位相关加分项。标准英文术语保留在括号中，便于直接应对英文面试。
@@ -29,7 +29,54 @@
 - □ 概率公理、单调性、有限与可列可加性。
 - □ 加法公式：$P(A\\cup B)=P(A)\\mathplus{}P(B)-P(A\\cap B)$。
 - □ 乘法原理、排列、组合、多项式系数；区分有序与无序、可区分与不可区分。
-- □ 有放回与无放回抽样；圆排列；容斥原理；抽屉原理；隔板法。
+- □ 有放回与无放回抽样；圆排列；抽屉原理；隔板法。
+
+~~~
+{}{raw}
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-inclusion-exclusion">
+<summary><span class="concept-label">□ 容斥原理（Inclusion–Exclusion Principle）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 它解决什么问题？</h4>
+<p>当若干集合彼此重叠时，直接把各集合大小相加会重复计数。容斥原理通过“加单个、减两两交集、加三重交集……”把每个属于并集的对象最终恰好计算一次。对有限集合 $A_1,\ldots,A_n$，</p>
+<div class="math-display">$$
+\left|\bigcup_{i=1}^n A_i\right|
+=\sum_i|A_i|-\sum_{i&lt;j}|A_i\cap A_j|
++\sum_{i&lt;j&lt;k}|A_i\cap A_j\cap A_k|-\cdots
++(-1)^{n+1}\left|\bigcap_{i=1}^n A_i\right|.
+$$</div>
+<p>把集合大小换成概率就得到概率版本。特别地，</p>
+<div class="math-display">$$
+P(A\cup B\cup C)=P(A)+P(B)+P(C)
+-P(A\cap B)-P(A\cap C)-P(B\cap C)+P(A\cap B\cap C).
+$$</div>
+<h4>2. 为什么交替加减？</h4>
+<p>设某个结果同时属于恰好 $r$ 个集合。第一轮单集合求和把它算了 $\binom r1$ 次，第二轮减去 $\binom r2$ 次，依次交替。它最终的系数是</p>
+<div class="math-display">$$
+\binom r1-\binom r2+\binom r3-\cdots+(-1)^{r+1}\binom rr=1,
+$$</div>
+<p>因为 $(1-1)^r=0$。所以并集中的每个结果都只留下一个副本，不在并集中的结果始终计数为零。</p>
+<h4>3. 面试中的标准使用步骤</h4>
+<ol>
+<li>先定义“坏事件” $A_i$，通常目标是计算一个坏事件都不发生的数量或概率。</li>
+<li>计算任意指定交集 $A_{i_1}\cap\cdots\cap A_{i_j}$。若问题有对称性，同一阶交集通常大小相同。</li>
+<li>按交集阶数交替加减；若求“一个都没有”，再用总数减去并集。</li>
+<li>用小规模例子检查符号、边界和结果是否落在合理范围内。</li>
+</ol>
+<h4>4. 例子：错排</h4>
+<p>把 $n$ 个元素排列，令 $A_i$ 表示“第 $i$ 个元素仍在原位”。指定 $j$ 个元素固定后，其余元素有 $(n-j)!$ 种排法，因此</p>
+<div class="math-display">$$
+D_n=n!-\binom n1(n-1)!+\binom n2(n-2)!-\cdots+(-1)^n
+=n!\sum_{j=0}^n\frac{(-1)^j}{j!}.
+$$</div>
+<p>所以随机排列没有固定点的概率为 $D_n/n!$，并在 $n\to\infty$ 时趋近 $e^{-1}$。</p>
+<p class="concept-check"><strong>常见误区：</strong>交集概率不能在没有独立性的情况下写成概率乘积；只保留前几项通常只是 Bonferroni 上下界而非精确答案；求“恰好发生若干个事件”时还要额外处理组合系数。</p>
+</div>
+</details>
+</li>
+</ul>
+~~~
 - □ “等可能”必须落实到正确的原子结果；两枚骰子的点数和并不等可能。
 
 *检查：* 能否不用背公式，直接数出生日碰撞、错排、固定点、逆序对和盒子占用问题？
@@ -104,7 +151,59 @@ $$</div>
 === 1.5 次序统计量与几何概率 \[P1\]
 
 - □ 最小值、最大值：先写 CDF；例如 $P(\\max_i X_i\\le x)=F(x)^n$。
-- □ 连续分布第 $k$ 个次序统计量密度。
+
+~~~
+{}{raw}
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-kth-order-statistic">
+<summary><span class="concept-label">□ 连续分布第 $k$ 个次序统计量密度（Density of the $k$-th Order Statistic）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 定义与结论</h4>
+<p>设 $X_1,\ldots,X_n$ 独立同分布，来自连续分布，其 CDF 为 $F$、密度为 $f$。排序后记为 $X_{(1)}\le\cdots\le X_{(n)}$。第 $k$ 个次序统计量的密度是</p>
+<div class="math-display">$$
+f_{X_{(k)}}(x)=
+\frac{n!}{(k-1)!(n-k)!}
+[F(x)]^{k-1}[1-F(x)]^{n-k}f(x).
+$$</div>
+<h4>2. 公式怎样推出来？</h4>
+<p>要让 $X_{(k)}$ 落在很短的区间 $[x,x+\mathrm dx]$，近似需要：</p>
+<ul>
+<li>恰好 $k-1$ 个样本小于 $x$，贡献 $F(x)^{k-1}$；</li>
+<li>恰好一个样本落在 $[x,x+\mathrm dx]$，贡献 $f(x)\,\mathrm dx$；</li>
+<li>其余 $n-k$ 个样本大于 $x$，贡献 $[1-F(x)]^{n-k}$；</li>
+<li>决定哪批样本扮演这三种角色，共有 $\frac{n!}{(k-1)!1!(n-k)!}$ 种。</li>
+</ul>
+<p>把这些因子相乘，再除以 $\mathrm dx$ 并令 $\mathrm dx\to0$，就得到密度公式。等价地，可以先写</p>
+<div class="math-display">$$
+P(X_{(k)}\le x)=\sum_{j=k}^n\binom nj[F(x)]^j[1-F(x)]^{n-j},
+$$</div>
+<p>因为 $X_{(k)}\le x$ 当且仅当至少 $k$ 个样本不超过 $x$，然后对 $x$ 求导。</p>
+<h4>3. Beta 变换与常用特例</h4>
+<p>概率积分变换给出 $F(X_{(k)})\sim\operatorname{Beta}(k,n+1-k)$。因此若 $U_i\sim\operatorname{Uniform}(0,1)$，</p>
+<div class="math-display">$$
+U_{(k)}\sim\operatorname{Beta}(k,n+1-k),\qquad
+\mathbb E[U_{(k)}]=\frac{k}{n+1},\qquad
+\operatorname{Var}(U_{(k)})=\frac{k(n+1-k)}{(n+1)^2(n+2)}.
+$$</div>
+<p>令 $k=1$ 或 $k=n$，可立即得到</p>
+<div class="math-display">$$
+f_{X_{(1)}}(x)=n[1-F(x)]^{n-1}f(x),\qquad
+f_{X_{(n)}}(x)=n[F(x)]^{n-1}f(x).
+$$</div>
+<h4>4. 小例子</h4>
+<p>若有 $n=5$ 个 Uniform$(0,1)$ 样本，第二小值的密度为</p>
+<div class="math-display">$$
+f_{U_{(2)}}(x)=\frac{5!}{1!3!}x(1-x)^3=20x(1-x)^3,\qquad 0&lt;x&lt;1,
+$$</div>
+<p>且 $\mathbb E[U_{(2)}]=2/6=1/3$。密度积分为 1，可作为快速自检。</p>
+<p class="concept-check"><strong>适用条件：</strong>上面的简洁公式依赖 i.i.d. 与连续性；连续性使并列值概率为零。若样本不独立、不同分布或含离散质量点，必须重新处理联合分布与 ties。</p>
+</div>
+</details>
+</li>
+</ul>
+~~~
+
 - □ 若 $U_{(k)}$ 来自 $n$ 个 Uniform$(0,1)$，则 $\\mathbb E U_{(k)}=\\frac{k}{n\\mathplus{}1}$。
 - □ 区间长度、断棍、单纯形、二维面积比。
 - □ 生日问题与 Poisson 近似；极值与尾部直觉。
@@ -130,7 +229,168 @@ $$</div>
 
 - □ 离散时间 Markov 链、转移矩阵、Chapman–Kolmogorov。
 - □ 平稳分布 $\\pi^{\\mathsf T}=\\pi^{\\mathsf T}P$；不可约、非周期与收敛。
-- □ 随机游走、赌徒破产、反射原理、首达时间。
+
+~~~
+{}{raw}
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-random-walk">
+<summary><span class="concept-label">□ 随机游走（Random Walk）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 基本模型</h4>
+<p>一维简单随机游走写成</p>
+<div class="math-display">$$
+S_n=S_0+\sum_{t=1}^n X_t,\qquad
+P(X_t=1)=p,\qquad P(X_t=-1)=q=1-p,
+$$</div>
+<p>其中步长独立同分布。给定当前状态后，下一步不再依赖更早历史，所以 $(S_n)$ 是 Markov 链。若 $S_0=i$，则</p>
+<div class="math-display">$$
+\mathbb E[S_n]=i+n(p-q),\qquad
+\operatorname{Var}(S_n)=4npq.
+$$</div>
+<p>$p=q=1/2$ 时没有漂移，$(S_n)$ 本身是鞅；$p\ne q$ 时，$S_n-n(p-q)$ 是鞅。</p>
+<h4>2. 面试中最重要的方法：第一步分析</h4>
+<p>不要先枚举整条路径。若 $h_i$ 是从状态 $i$ 出发最终命中某目标的概率，先按第一步条件化：</p>
+<div class="math-display">$$
+h_i=p\,h_{i+1}+q\,h_{i-1}.
+$$</div>
+<p>若 $e_i$ 是到达目标前的期望步数，当前这一步需要计入，因此</p>
+<div class="math-display">$$
+e_i=1+p\,e_{i+1}+q\,e_{i-1}.
+$$</div>
+<p>再加入吸收边界条件，就把随机路径问题转化成二阶差分方程。命中概率方程是齐次的，而期望时间方程多了常数 1，这是最容易漏掉的地方。</p>
+<h4>3. 分布与长期行为</h4>
+<p>若 $S_0=0$，要在 $n$ 步后位于 $j$，必须有 $(n+j)/2$ 次向上，因此只有 $n$ 与 $j$ 同奇偶时概率非零：</p>
+<div class="math-display">$$
+P(S_n=j)=\binom{n}{(n+j)/2}p^{(n+j)/2}q^{(n-j)/2}.
+$$</div>
+<p>无限直线上的一维公平随机游走会以概率 1 返回原点，但期望返回时间是无穷大；有非零漂移的游走则会向漂移方向逃逸。这个区别说明“几乎必然发生”并不保证“期望等待时间有限”。</p>
+<h4>4. 解题路线</h4>
+<ol>
+<li>明确状态空间、步长分布、起点、边界和停止规则。</li>
+<li>问固定时刻的位置时用二项计数；问是否先碰到某处时用第一步递推。</li>
+<li>问越界路径数或最大值时考虑反射原理；问停止时的概率或期望时考虑鞅与可选停时。</li>
+<li>最后检查奇偶性、边界值以及概率是否位于 $[0,1]$。</li>
+</ol>
+<p class="concept-check"><strong>常见误区：</strong>$S_n=a$ 只说明第 $n$ 步位于 $a$，不说明这是第一次到达；在无限状态空间中，命中概率为 1 也不意味着平均命中时间有限。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-gamblers-ruin">
+<summary><span class="concept-label">□ 赌徒破产（Gambler's Ruin）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 模型与胜率</h4>
+<p>资本位于 $\{0,1,\ldots,N\}$，从 $i$ 出发。每局以概率 $p$ 赢 1、以概率 $q=1-p$ 输 1；到 0 或 $N$ 就停止。令</p>
+<div class="math-display">$$
+u_i=P_i(\tau_N&lt;\tau_0).
+$$</div>
+<p>第一步分析给出 $u_i=p\,u_{i+1}+q\,u_{i-1}$，边界为 $u_0=0,u_N=1$。解这个差分方程得到</p>
+<div class="math-display">$$
+u_i=
+\begin{cases}
+\dfrac{i}{N}, &amp; p=q=\dfrac12,\\[6pt]
+\dfrac{1-(q/p)^i}{1-(q/p)^N}, &amp; p\ne q.
+\end{cases}
+$$</div>
+<h4>2. 为什么公平情形是 $i/N$？</h4>
+<p>当 $p=q=1/2$ 时，递推式等价于 $u_{i+1}-u_i=u_i-u_{i-1}$，所以相邻差为常数，$u_i$ 必为线性函数。连接边界点 $(0,0)$ 与 $(N,1)$ 就得到 $u_i=i/N$。也可以对有界停止时刻应用可选停时：</p>
+<div class="math-display">$$
+i=\mathbb E_i[S_\tau]=0\cdot(1-u_i)+N u_i.
+$$</div>
+<h4>3. 期望停止时间</h4>
+<p>令 $e_i=\mathbb E_i[\tau_0\wedge\tau_N]$。它满足 $e_0=e_N=0$ 和 $e_i=1+p e_{i+1}+q e_{i-1}$，因此</p>
+<div class="math-display">$$
+e_i=
+\begin{cases}
+i(N-i), &amp; p=q=\dfrac12,\\[6pt]
+\dfrac{i}{q-p}-\dfrac{N}{q-p}
+\dfrac{1-(q/p)^i}{1-(q/p)^N}, &amp; p\ne q.
+\end{cases}
+$$</div>
+<h4>4. 小例子</h4>
+<p>公平游戏中从 $i=3$ 出发，破产线为 0、目标为 $N=10$：先到 10 的概率为 $3/10$，期望停止时间为 $3(10-3)=21$ 局。胜率不高并不意味着游戏很快结束，这两个量要分别计算。</p>
+<p class="concept-check"><strong>常见误区：</strong>偏置情形不能继续使用 $i/N$；若每局盈亏不是 $\pm1$，状态与边界可能发生 overshoot，递推和边界条件都要重写；使用可选停时时必须核对停止时刻与鞅的条件。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-reflection-principle">
+<summary><span class="concept-label">□ 反射原理（Reflection Principle）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 核心思想</h4>
+<p>反射原理把“路径曾经越过边界”这种带历史约束的问题，一一映射成没有路径约束、只限制终点的问题。设公平简单随机游走从 0 出发，$M_n=\max_{0\le t\le n}S_t$。固定整数 $a&gt;0$ 与终点 $b&lt;a$，考虑所有满足 $M_n\ge a,S_n=b$ 的路径。</p>
+<p>对每条路径找到第一次到达 $a$ 的时刻 $T$，保留 $T$ 以前的部分，并把之后的每一步上下翻转，即令 $S'_t=2a-S_t$（$t\ge T$）。新路径终点变为 $2a-b&gt;a$。这个变换做两次会回到原路径，因此是一一对应：</p>
+<div class="math-display">$$
+P(M_n\ge a,\,S_n=b)=P(S_n=2a-b),\qquad b&lt;a.
+$$</div>
+<h4>2. 最大值分布</h4>
+<p>把所有 $b&lt;a$ 的终点求和，并加上本来就以 $S_n\ge a$ 结束的路径，可得</p>
+<div class="math-display">$$
+P(M_n\ge a)=P(S_n\ge a)+P(S_n&gt;a).
+$$</div>
+<p>离散游走有奇偶格点限制，所以右边是两个略有差别的尾概率。对 Brownian motion，终点连续、没有格点修正，于是得到更熟悉的形式</p>
+<div class="math-display">$$
+P\!\left(\sup_{0\le s\le t}B_s\ge a\right)=2P(B_t\ge a)
+=2\left[1-\Phi\!\left(\frac{a}{\sqrt t}\right)\right].
+$$</div>
+<h4>3. 为什么必须从“第一次”碰到边界后反射？</h4>
+<p>第一次命中时路径恰好位于 $a$，反射后的前后两段能无缝连接；同时每条越界路径都有唯一切点，使映射可逆。若随便选一个越界时刻，映射可能不是一一对应，计数就会重复或遗漏。</p>
+<h4>4. 常见应用</h4>
+<ul>
+<li>计算随机游走最大值、越界概率和首达时间分布；</li>
+<li>计数始终不跌破 0 的格路径，推导 Ballot theorem 与 Catalan 数；</li>
+<li>Brownian barrier probability 以及 barrier option 的基础直觉。</li>
+</ul>
+<p class="concept-check"><strong>检查：</strong>先确认步长对称；有漂移时，反射后路径的概率权重通常不同，不能直接按“路径条数相等”处理。离散情形还必须检查终点与步数的奇偶性。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-first-passage-time">
+<summary><span class="concept-label">□ 首达时间（First-Passage Time）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 定义</h4>
+<p>过程 $(X_t)$ 第一次进入集合 $A$ 的时间定义为</p>
+<div class="math-display">$$
+\tau_A=\inf\{t\ge0:X_t\in A\}.
+$$</div>
+<p>对随机游走常写 $\tau_a=\inf\{n\ge0:S_n=a\}$。若研究从状态 $i$ 出发后“第一次返回” $i$，必须排除时刻 0，写成 $\tau_i^+=\inf\{n\ge1:S_n=i\}$。首达时间是随机变量；命中概率、分布和期望是三个不同问题。</p>
+<h4>2. 公平随机游走命中正整数 $a$</h4>
+<p>设 $S_0=0$ 且每步等概率为 $\pm1$。由 Ballot／反射论证，若 $m\ge a$ 且 $m$ 与 $a$ 同奇偶，</p>
+<div class="math-display">$$
+P(\tau_a=m)=\frac{a}{m}P(S_m=a)
+=\frac{a}{m}\binom{m}{(m+a)/2}2^{-m};
+$$</div>
+<p>其他 $m$ 的概率为 0。因事件 $\{\tau_a\le n\}$ 等价于 $\{M_n\ge a\}$，也可以先用反射原理求 CDF，再作差得到 PMF。</p>
+<h4>3. 一个容易忽略的结论</h4>
+<p>一维公平随机游走最终会以概率 1 到达任意固定整数 $a$，但</p>
+<div class="math-display">$$
+P(\tau_a&lt;\infty)=1,\qquad \mathbb E[\tau_a]=\infty.
+$$</div>
+<p>首达时间的尾部太重，所以“几乎必然有限”与“期望有限”并不矛盾。若把游走限制在有限区间 $[0,N]$ 并在边界吸收，期望停止时间才是有限的，公平情形为 $i(N-i)$。</p>
+<h4>4. 连续时间对应</h4>
+<p>对从 0 出发的标准 Brownian motion，$a&gt;0$ 的首达时间满足</p>
+<div class="math-display">$$
+P(\tau_a\le t)=2\left[1-\Phi\!\left(\frac{a}{\sqrt t}\right)\right],
+\qquad
+f_{\tau_a}(t)=\frac{a}{\sqrt{2\pi t^3}}
+\exp\!\left(-\frac{a^2}{2t}\right),\qquad t&gt;0.
+$$</div>
+<h4>5. 常用求法</h4>
+<ul>
+<li><strong>第一步分析：</strong>为命中概率或期望时间写递推／边值问题；</li>
+<li><strong>反射原理：</strong>把“截至时刻 $n$ 已命中”转成最大值或终点尾概率；</li>
+<li><strong>尾和公式：</strong>离散非负时间满足 $\mathbb E\tau=\sum_{n\ge0}P(\tau&gt;n)$；</li>
+<li><strong>生成函数或鞅：</strong>处理完整分布、Laplace transform 或更复杂边界。</li>
+</ul>
+<p class="concept-check"><strong>常见误区：</strong>不要把 $P(S_n=a)$ 当成 $P(\tau_a=n)$，因为前者包含更早到达后又返回的路径；使用可选停时推期望前，必须先确认相关可积性或有界性条件。</p>
+</div>
+</details>
+</li>
+</ul>
+~~~
+
 - □ Poisson 过程：独立平稳增量、稀释、叠加、到达间隔。
 - □ 鞅、停时与可选停时的条件；警惕加倍下注反例。
 - □ Brownian motion、二次变差与 Itô 直觉 \[P2\]。

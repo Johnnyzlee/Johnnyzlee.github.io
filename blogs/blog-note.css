@@ -175,6 +175,88 @@ li p {
   margin: 0;
 }
 
+ul.concept-list {
+  margin: -12px 0 4px;
+  padding-left: 2em;
+}
+
+ul.concept-list > li + li {
+  margin-top: 0.25em;
+}
+
+details.concept-detail {
+  margin: 0;
+  scroll-margin-top: 20px;
+}
+
+details.concept-detail summary {
+  cursor: pointer;
+  display: block;
+  list-style: none;
+  padding: 0;
+  user-select: none;
+}
+
+details.concept-detail summary::-webkit-details-marker {
+  display: none;
+}
+
+details.concept-detail summary:hover .concept-action {
+  text-decoration: underline;
+}
+
+.concept-label {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.concept-action {
+  color: #0969da;
+  display: inline;
+  font-size: 0.92em;
+  margin-left: 0.45em;
+  white-space: nowrap;
+}
+
+.concept-action .when-open {
+  display: none;
+}
+
+details.concept-detail[open] .concept-action .when-closed {
+  display: none;
+}
+
+details.concept-detail[open] .concept-action .when-open {
+  display: inline;
+}
+
+.concept-content {
+  margin: 12px 0 18px;
+  padding: 0;
+}
+
+.concept-content h4 {
+  color: #1f2328;
+  font-size: 1.02em;
+  line-height: 1.35;
+  margin: 22px 0 8px;
+}
+
+.concept-content h4:first-child {
+  margin-top: 0;
+}
+
+.concept-content > :last-child {
+  margin-bottom: 0;
+}
+
+.concept-content .concept-check {
+  background: #fff8c5;
+  border-left: 3px solid #bf8700;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
 details.answer {
   background: #f6f8fa;
   border: 1px solid #d0d7de;
