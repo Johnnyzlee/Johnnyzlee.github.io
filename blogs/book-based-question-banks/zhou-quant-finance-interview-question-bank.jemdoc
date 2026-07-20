@@ -1,0 +1,300 @@
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}, addjs{../blog-sidebar}
+= A Practical Guide to Quantitative Finance Interviews
+[../../blog.html ← Blogs] \M /更新于 2026-07-20/
+
+本页依据 Xinfeng Zhou 的 [https://github.com/manavkapadnis/ALL-ML-DS-cheatsheets/blob/master/Xinfeng_Zhou-A_Practical_Guide_To_Quantitative_Finance_Interviews-CreateSpace_Independent_Publishing_Platform_%282008%29.PDF /A Practical Guide to Quantitative Finance Interviews/] 选取 20 个代表性题型。分类顺序对应原书从 Brain Teasers、数学基础、概率、随机过程、Finance 到 Algorithms 的知识路线；题面与解析均为独立改写。
+
+~~~
+{}{raw}
+<div class="page-toc" role="navigation" aria-labelledby="zhou-toc-title">
+<div class="page-toc-title" id="zhou-toc-title">目录</div>
+<ul>
+<li><a href="#zhou-brainteasers">A. Brain Teasers</a></li>
+<li><a href="#zhou-calculus-linear-algebra">B. Calculus &amp; Linear Algebra</a></li>
+<li><a href="#zhou-probability">C. Probability Theory</a></li>
+<li><a href="#zhou-stochastic">D. Stochastic Processes</a></li>
+<li><a href="#zhou-finance">E. Finance</a></li>
+<li><a href="#zhou-algorithms">F. Algorithms &amp; Numerical Methods</a></li>
+</ul>
+</div>
+<div class="section-anchor" id="zhou-brainteasers" aria-hidden="true"></div>
+~~~
+
+== A. Brain Teasers
+
+=== Z1 \[Core\] Three Mislabeled Bags \/ 三个标签全错的袋子
+*中文：* 三个袋子分别装“两枚金币”“两枚银币”“一金一银”，但三个标签全部贴错。只允许从一个袋子中抽一枚硬币，如何确定全部袋子的内容？
+
+*English:* Three bags contain two gold coins, two silver coins, and one of each, but every label is wrong. By drawing one coin from one bag, determine all three contents.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Draw from the bag labeled “mixed.” Because every label is wrong, that bag is homogeneous. If the draw is gold, it must be the two-gold bag; if silver, it is the two-silver bag. The remaining two bags are then determined by excluding their incorrect labels. The key is to sample from the label that rules out the mixed composition.</p>
+</div></details>
+~~~
+
+=== Z2 \[Medium\] Twenty-Five Horses \/ 二十五匹马
+*中文：* 25 匹马、每场最多 5 匹，没有计时器，只知道每场名次。至少需要多少场才能找出全体最快的三匹？假设速度稳定且无并列。
+
+*English:* There are 25 horses, five lanes, and no stopwatch; each race reveals only order. What is the minimum number of races needed to identify the three fastest horses, assuming fixed speeds and no ties?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Race five groups, then race the five group winners: six races. Suppose the winner order is $A_1,B_1,C_1,D_1,E_1$. Then $A_1$ is fastest, and only $A_2,A_3,B_1,B_2,C_1$ can still be second or third. Race those five once; its top two join $A_1$. Thus <strong>seven races</strong> suffice, and the elimination information shows six cannot.</p>
+</div></details>
+~~~
+
+=== Z3 \[Core\] Breaking a Chocolate Bar \/ 掰开巧克力
+*中文：* 一块 $m\\times n$ 的巧克力由 $mn$ 个小格组成。每次只能拿起一块已有碎片，沿格线掰成两块。最少需要掰多少次才能得到 $mn$ 个单格？
+
+*English:* An $m\\times n$ chocolate bar consists of $mn$ unit squares. Each move breaks one existing piece into exactly two along a grid line. What is the minimum number of breaks needed to separate all squares?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Each break increases the number of pieces by exactly one, regardless of where it occurs. Starting from one piece and ending with $mn$ pieces therefore requires exactly</p><p class="equation-line">$$mn-1$$</p><p>breaks. This invariant proves both achievability and optimality.</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="zhou-calculus-linear-algebra" aria-hidden="true"></div>
+~~~
+
+== B. Calculus & Linear Algebra
+
+=== Z4 \[Core\] Newton's Method for a Square Root \/ 牛顿法求平方根
+*中文：* 用牛顿法推导求 $\\sqrt a$（$a>0$）的迭代公式，并说明为何在根附近收敛很快。
+
+*English:* Derive Newton's iteration for $\\sqrt a$, where $a>0$, and explain its fast local convergence.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Apply Newton's method to $f(x)=x^2-a$:</p><p class="equation-line">$$x_{k+1}=x_k-\frac{x_k^2-a}{2x_k}=\frac12\left(x_k+\frac{a}{x_k}\right).$$</p><p>If $e_k=x_k-\sqrt a$ is small, then $e_{k+1}\approx e_k^2/(2\sqrt a)$, so the number of correct digits roughly doubles each iteration: local convergence is quadratic.</p>
+</div></details>
+~~~
+
+=== Z5 \[Medium\] Two-Asset Minimum Variance \/ 两资产最小方差组合
+*中文：* 两资产收益方差为 $\\sigma_1^2,\\sigma_2^2$，协方差为 $c$。组合在资产 1 上权重为 $w$、资产 2 上为 $1-w$，允许做空。求最小方差权重。
+
+*English:* Two assets have return variances $\\sigma_1^2,\\sigma_2^2$ and covariance $c$. A fully invested portfolio uses weights $w$ and $1-w$, with shorting allowed. Find the minimum-variance weight.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The portfolio variance is</p><p class="equation-line">$$V(w)=w^2\sigma_1^2+(1-w)^2\sigma_2^2+2w(1-w)c.$$</p><p>Setting $V'(w)=0$ gives</p><p class="equation-line">$$w^*=\frac{\sigma_2^2-c}{\sigma_1^2+\sigma_2^2-2c},\qquad 1-w^*=\frac{\sigma_1^2-c}{\sigma_1^2+\sigma_2^2-2c}.$$</p><p>Constraints would require projecting or resolving the constrained optimization problem.</p>
+</div></details>
+~~~
+
+=== Z6 \[Core\] Covariance, PSD, and Cholesky \/ 协方差矩阵与 Cholesky
+*中文：* 为什么协方差矩阵一定半正定？什么时候可以使用标准 Cholesky 分解生成相关高斯变量？
+
+*English:* Why is every covariance matrix positive semidefinite? When can standard Cholesky factorization be used to generate correlated Gaussian variables?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For any vector $v$,</p><p class="equation-line">$$v^\top\Sigma v=\operatorname{Var}(v^\top X)\ge0,$$</p><p>so $\Sigma$ is PSD. If it is positive definite, Cholesky gives $\Sigma=LL^\top$ with a nonsingular lower-triangular $L$; then $X=\mu+LZ$ for $Z\sim\mathcal N(0,I)$. A singular PSD matrix needs a rank-revealing eigen/SVD square root or a semidefinite-capable factorization.</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="zhou-probability" aria-hidden="true"></div>
+~~~
+
+== C. Probability Theory
+
+=== Z7 \[Core\] Fair Bits from an Unfair Coin \/ 有偏硬币生成公平比特
+*中文：* 一枚硬币正面概率为未知的 $p\\in(0,1)$，各次独立。如何生成无偏且相互独立的随机比特？
+
+*English:* Independent tosses have an unknown head probability $p\\in(0,1)$. How can you generate unbiased independent bits?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Toss in nonoverlapping pairs. Output 1 for HT, 0 for TH, and discard HH or TT. Since</p><p class="equation-line">$$\Pr(HT)=p(1-p)=\Pr(TH),$$</p><p>each accepted bit is fair. Using disjoint pairs preserves independence across outputs. The expected number of tosses per output is $1/[p(1-p)]$.</p>
+</div></details>
+~~~
+
+=== Z8 \[Core\] The Absent-Minded Passenger \/ 疯狂乘客
+*中文：* 100 位乘客依序登机。第一位忘了座位号，随机坐一席；之后每人若自己的座位空着就入座，否则从空位中随机选。最后一位坐到自己座位的概率是多少？
+
+*English:* One hundred passengers board in order. The first chooses a random seat; each later passenger takes their own seat if available, otherwise a random empty seat. What is the probability that the last passenger gets their own seat?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Ignore irrelevant correctly occupied seats. The random chain ends when someone chooses either the first passenger's seat or the last passenger's seat. These two distinguished empty seats are symmetric, so each is selected first with probability $1/2$. The last passenger gets their own seat with probability <strong>$1/2$</strong>.</p>
+</div></details>
+~~~
+
+=== Z9 \[Medium\] Correlation of Uniform Extremes \/ 均匀样本极值相关性
+*中文：* $X_1,\\ldots,X_n$ 独立服从 $\\operatorname{Uniform}(0,1)$。求最小值 $U$ 与最大值 $V$ 的相关系数。
+
+*English:* Let $X_1,\\ldots,X_n$ be i.i.d. $\\operatorname{Uniform}(0,1)$. Find the correlation between the minimum $U$ and maximum $V$.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The joint density is $n(n-1)(v-u)^{n-2}$ for $0&lt;u&lt;v&lt;1$. Its moments give</p><p class="equation-line">$$\operatorname{Var}(U)=\operatorname{Var}(V)=\frac{n}{(n+1)^2(n+2)},$$</p><p class="equation-line">$$\operatorname{Cov}(U,V)=\frac{1}{(n+1)^2(n+2)}.$$</p><p>Therefore $\operatorname{Corr}(U,V)=\mathbf{1/n}$.</p>
+</div></details>
+~~~
+
+=== Z10 \[Core\] Minimum-Variance Hedge Ratio \/ 最小方差套保比率
+*中文：* 以期货收益 $R_f$ 对冲资产收益 $R_p$，对冲收益为 $R_p-hR_f$。求最优 $h$。
+
+*English:* Futures return $R_f$ hedges asset return $R_p$, producing $R_p-hR_f$. Find the variance-minimizing $h$.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Differentiate the quadratic variance in $h$:</p><p class="equation-line">$$h^*=\frac{\operatorname{Cov}(R_p,R_f)}{\operatorname{Var}(R_f)}=\rho_{pf}\frac{\sigma_p}{\sigma_f}.$$</p><p>It is the population regression slope. Contract notionals, basis risk, costs, and instability of the estimated covariance must be handled in implementation.</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="zhou-stochastic" aria-hidden="true"></div>
+~~~
+
+== D. Stochastic Processes
+
+=== Z11 \[Medium\] General Gambler's Ruin \/ 一般赌徒破产
+*中文：* 随机游走位于 $\\{0,1,\\ldots,N\\}$，从 $i$ 出发，每步以概率 $p$ 加 1、概率 $q=1-p$ 减 1，碰到 0 或 $N$ 停止。先到 $N$ 的概率是多少？
+
+*English:* A random walk on $\\{0,1,\\ldots,N\\}$ starts at $i$, moves up with probability $p$ and down with $q=1-p$, and stops at 0 or $N$. What is the probability of reaching $N$ first?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Solving $u_i=pu_{i+1}+qu_{i-1}$ with $u_0=0,u_N=1$ gives</p><p class="equation-line">$$u_i=\begin{cases}\dfrac{1-(q/p)^i}{1-(q/p)^N},&amp;p\ne q,\\[6pt]\dfrac{i}{N},&amp;p=q=\tfrac12.\end{cases}$$</p><p>The fair-game result is linear; drift changes the harmonic function geometrically.</p>
+</div></details>
+~~~
+
+=== Z12 \[Core\] Stationary Distribution \/ 马尔可夫链平稳分布
+*中文：* 有限状态马尔可夫链转移矩阵为 $P$。平稳分布如何定义？不可约与非周期条件分别保证什么？
+
+*English:* A finite-state Markov chain has transition matrix $P$. Define a stationary distribution and explain what irreducibility and aperiodicity guarantee.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A row vector $\pi$ is stationary when</p><p class="equation-line">$$\pi=\pi P,\qquad \pi_i\ge0,\qquad \sum_i\pi_i=1.$$</p><p>A finite irreducible chain has a unique stationary distribution with positive entries. If it is also aperiodic, the distribution from any initial state converges to $\pi$. Aperiodicity is about convergence, not uniqueness.</p>
+</div></details>
+~~~
+
+=== Z13 \[Medium\] Itô's Lemma for Geometric Brownian Motion \/ 几何布朗运动的 Itô 引理
+*中文：* 若 $dS_t=\\mu S_t\\,dt\\mathplus{}\\sigma S_t\\,dW_t$，用 Itô 引理求 $d\\log S_t$，并写出 $S_T$。
+
+*English:* If $dS_t=\\mu S_t\\,dt\\mathplus{}\\sigma S_t\\,dW_t$, use Itô's lemma to find $d\\log S_t$ and write the solution for $S_T$.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For $f(S)=\log S$, $f'=1/S$ and $f''=-1/S^2$. Itô's correction yields</p><p class="equation-line">$$d\log S_t=\left(\mu-\frac12\sigma^2\right)dt+\sigma\,dW_t.$$</p><p>Integrating and exponentiating gives</p><p class="equation-line">$$S_T=S_0\exp\left[\left(\mu-\frac12\sigma^2\right)T+\sigma W_T\right].$$</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="zhou-finance" aria-hidden="true"></div>
+~~~
+
+== E. Finance
+
+=== Z14 \[Core\] Put–Call Parity \/ 看涨看跌平价
+*中文：* 对无分红股票、相同执行价与到期日的欧式看涨和看跌，写出看涨看跌平价，并说明复制组合。
+
+*English:* State put–call parity for European options on a non-dividend stock with common strike and maturity, and explain the replicating portfolios.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A call plus a bond paying $K$ at maturity has payoff $\max(S_T,K)$; a put plus one share has the same payoff. No arbitrage gives</p><p class="equation-line">$$C+Ke^{-rT}=P+S_0,$$</p><p>or $C-P=S_0-Ke^{-rT}$. Dividends and carry require replacing spot by the appropriate prepaid-forward value.</p>
+</div></details>
+~~~
+
+=== Z15 \[Medium\] Black–Scholes–Merton PDE \/ BSM 偏微分方程
+*中文：* 在 $dS=\\mu S\\,dt\\mathplus{}\\sigma S\\,dW$ 下，用 Delta 对冲说明衍生品价格 $V(S,t)$ 满足的 BSM 方程。为什么方程中没有 $\\mu$？
+
+*English:* Under $dS=\\mu S\\,dt\\mathplus{}\\sigma S\\,dW$, use delta hedging to state the PDE for a derivative $V(S,t)$. Why does $\\mu$ disappear?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Itô's lemma and a portfolio long one derivative and short $V_S$ shares eliminate the $dW$ term. The locally riskless portfolio must earn $r$, yielding</p><p class="equation-line">$$V_t+\frac12\sigma^2S^2V_{SS}+rSV_S-rV=0.$$</p><p>The hedge cancels the stock's instantaneous expected-return term, so pricing depends on no-arbitrage and risk-neutral carry rather than the physical drift $\mu$.</p>
+</div></details>
+~~~
+
+=== Z16 \[Core\] VaR and Expected Shortfall \/ VaR 与预期损失
+*中文：* 定义损失 $L$ 在置信水平 $\\alpha$ 下的 VaR 与 Expected Shortfall，并比较二者对极端尾部的敏感度。
+
+*English:* Define VaR and Expected Shortfall for loss $L$ at confidence level $\\alpha$, and compare their sensitivity to extreme tail losses.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>VaR is the loss quantile</p><p class="equation-line">$$\operatorname{VaR}_{\alpha}(L)=\inf\{\ell:\Pr(L\le\ell)\ge\alpha\}.$$</p><p>ES is the average upper-tail quantile; for a continuous distribution it equals $\mathbb E[L\mid L\ge\operatorname{VaR}_{\alpha}]$. VaR ignores the severity beyond its cutoff and may fail subadditivity. ES is coherent under standard conditions and tail-sensitive, but is statistically harder to estimate. Both require stress testing and model validation.</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="zhou-algorithms" aria-hidden="true"></div>
+~~~
+
+== F. Algorithms & Numerical Methods
+
+=== Z17 \[Core\] Horner's Algorithm \/ Horner 多项式求值
+*中文：* 如何以 $O(n)$ 次运算和 $O(1)$ 额外空间计算 $p(x)=a_0\\mathplus{}a_1x\\mathplus{}\\cdots\\mathplus{}a_nx^n$？
+
+*English:* How can $p(x)=a_0\\mathplus{}a_1x\\mathplus{}\\cdots\\mathplus{}a_nx^n$ be evaluated using $O(n)$ operations and $O(1)$ extra space?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Rewrite</p><p class="equation-line">$$p(x)=a_0+x\bigl(a_1+x(a_2+\cdots+x a_n)\bigr).$$</p><p>Initialize $v=a_n$ and iterate $v\leftarrow a_k+xv$ for $k=n-1,\ldots,0$. This uses $n$ multiplications, $n$ additions, and one accumulator, avoiding explicit powers of $x$.</p>
+</div></details>
+~~~
+
+=== Z18 \[Core\] Uniform Random Permutation \/ 均匀随机排列
+*中文：* 说明 Fisher–Yates 洗牌算法，并解释为何“对每个位置随机交换任意位置”通常不是均匀洗牌。
+
+*English:* State the Fisher–Yates shuffle and explain why swapping each position with an arbitrary random position generally does not produce a uniform permutation.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For $i=n-1,n-2,\ldots,1$, draw $j$ uniformly from $\{0,\ldots,i\}$ and swap entries $i,j$. At step $i$, every remaining item has probability $1/(i+1)$ of occupying position $i$, so induction gives probability $1/n!$ for every permutation. Arbitrary full-range swaps create $n^n$ random-choice sequences, which cannot in general be divided equally among $n!$ outcomes.</p>
+</div></details>
+~~~
+
+=== Z19 \[Core\] Maximum Contiguous Subarray \/ 最大连续子数组
+*中文：* 给定实数数组，在线性时间内求最大连续子数组和，并说明全为负数时如何处理。
+
+*English:* Given a real array, find the maximum contiguous-subarray sum in linear time and explain the all-negative case.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Kadane's recurrence is</p><p class="equation-line">$$b_i=\max(x_i,b_{i-1}+x_i),\qquad M_i=\max(M_{i-1},b_i).$$</p><p>Initialize both values to $x_1$, not zero, so an all-negative input returns its largest element rather than an inadmissible empty subarray. Store start indices when the first branch is chosen and update endpoints when the global maximum changes.</p>
+</div></details>
+~~~
+
+=== Z20 \[Medium\] Monte Carlo Error and Variance Reduction \/ 蒙特卡洛误差与降方差
+*中文：* 用 $N$ 条独立路径估计折现收益期望时，标准误如何随 $N$ 变化？列出至少三种不改变目标期望的降方差方法。
+
+*English:* When estimating an expected discounted payoff with $N$ independent paths, how does standard error scale with $N$? Name at least three variance-reduction methods that preserve the target expectation.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>If path payoffs have variance $\sigma_Y^2$, the sample-mean standard error is $\sigma_Y/\sqrt N$; reducing error by a factor of ten requires about one hundred times as many independent paths. Valid methods include antithetic variates, control variates with known expectation, stratified or quasi-random sampling with appropriate error assessment, importance sampling with likelihood weights, and conditional Monte Carlo. Bias, dependence, and numerical discretization error must be assessed separately.</p>
+</div></details>
+~~~
+
+*书目定位：* 本页对应原书 Chapter 2 的脑筋题、Chapter 3 的微积分与线性代数、Chapter 4 的概率、Chapter 5 的随机过程、Chapter 6 的金融，以及 Chapter 7 的算法与数值方法。

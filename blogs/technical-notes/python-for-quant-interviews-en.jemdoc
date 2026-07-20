@@ -1,980 +1,594 @@
-# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}, addjs{../blog-sidebar}
 = Python for Quantitative Research Interviews
-[../../blog.html ← Blogs] \M /updated 2026-07-20/
+[../../blog.html ← Blogs] \M /updated 2026-07-21/
 
 ~~~
 {}{raw}
-<div class="language-switch" role="navigation" aria-label="Language"><a href="python-for-quant-interviews.html" hreflang="zh-CN">中文</a><span class="active" aria-current="page">English</span></div>
+<div class="language-switch" role="navigation" aria-label="Language selection"><a href="python-for-quant-interviews.html" hreflang="zh-CN">中文</a><span class="active" aria-current="page">English</span></div>
+<div class="page-lead"><strong>Learning goal:</strong> move from recognizing short Python snippets to writing, explaining, and checking code independently in a quantitative research interview. This page covers the language and standard library only; NumPy, pandas, and scikit-learn now have separate tutorials. Every major example identifies its input, explains non-obvious lines, and shows the expected output.</div>
+<div class="study-callout"><strong>Series:</strong><a href="numpy-for-quant-interviews-en.html">NumPy</a> · <a href="pandas-for-quant-interviews-en.html">pandas</a> · <a href="scikit-learn-for-quant-interviews-en.html">scikit-learn</a></div>
 ~~~
 
-This is a closed-book coding review for quantitative-research interviews. The goal is to write correct, readable Python without autocomplete, then use NumPy, pandas, and scikit-learn without leakage. Memorize the small templates; understand shapes, dtypes, indexes, complexity, and time alignment.
+== 0. How to use this tutorial
 
-*Priority:* P0 = type from memory; P1 = recognize and adapt; P2 = look up when allowed. Unless an assessment specifies versions, prefer stable core APIs and avoid new\/version-specific shortcuts.
+Do not begin by memorizing APIs. Ask four questions for every example:
 
-== 0. Closed-book readiness checklist
+. What are the input types?
+. Which object does each line create or mutate?
+. What are the output type and value?
+. What are the complexity and boundary cases?
 
-- □ Parse input; loop\/enumerate\/zip; comprehensions; functions; exceptions.
-- □ Choose list\/tuple\/set\/dict; explain mutability, hashing and average complexity.
-- □ Use +Counter+, +defaultdict+, +deque+, +heapq+, +bisect+ and +itertools+.
-- □ Sort by a key; maintain top-k; two pointers; sliding window; prefix sums.
-- □ Create NumPy arrays; reason about shape, axis, broadcasting, indexing, copies and NaN.
-- □ Use pandas +loc\/iloc+, boolean filters, +groupby+, +agg\/transform+, +merge+, +pivot+, +shift+, +rolling+.
-- □ Build a leakage-safe sklearn +Pipeline+; split time-aware data; choose metrics.
-- □ Create forward returns, rolling features, ranks and IC without using future data.
-- □ State time and space complexity before coding; test empty, singleton, duplicate and all-equal cases.
+Text after +#+ is a comment and is not executed. A dark “Expected output” block shows what the terminal prints; do not copy that block into the program.
 
-== 1. Core Python syntax \[P0\]
+=== 0.1 A minimal program
 
-=== 1.1 Variables, scalar types and operators
-
-- +int+ has arbitrary precision; +float+ is binary floating point; +bool+ is a subclass of +int+.
-- +None+ is a singleton: test with +is None+, not +== None+.
-- Arithmetic: +\/\/+ floor division, +\%+ modulo, +\*\*+ power. For negative values, +\/\/+ rounds toward negative infinity.
-- Comparison chains work: +0 <= x < 1+. Boolean operators short-circuit and return an operand, not necessarily +bool+.
-- Use +math.isclose+ or +np.isclose+ for approximate floating comparison.
+Save this as +hello.py+ and run +python3 hello.py+:
 
 ~~~
 {}{python}
-x = 7
-q, r = divmod(x, 3)            # (2, 1)
-safe = value if condition else fallback
-if x is None:
-    ...
+name = "quant"                 # Bind name to a string object
+score = 0.81234                 # Bind score to a floating-point object
+print(f"{name}: {score:.3f}")  # :.3f formats the value to three decimals
 ~~~
 
-*Floating-point reflex:* 0.1\+0.2 is not exactly 0.3; avoid equality checks, subtracting nearly equal large numbers, and exp\/log overflow. Use +log1p+, +expm1+, and log-sum-exp patterns where needed.
-
-=== 1.2 Strings and formatting
-
 ~~~
-{}{python}
-s = "quant research"
-s.lower(); s.upper(); s.strip()
-s.split()                       # whitespace tokens
-",".join(["a", "b"])
-s.startswith("quant")
-s.replace("research", "trading")
-name, score = "Li", 0.81234
-text = f"{name}: {score:.3f}"
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">quant: 0.812</pre>
 ~~~
 
-Strings are immutable. Slicing is +s\[start:stop:step\]+ with stop excluded. Repeated string concatenation in a loop can be quadratic; append pieces and +\'\'.join(parts)+.
++print+ displays a value. A function without an explicit +return+ returns +None+. Interview platforms normally provide Python already, so installation commands do not belong in a coding answer.
 
-=== 1.3 Control flow and loops
+== 1. Names, objects, and types
+
+A Python variable is a name bound to an object, not a box that stores a copied value. Assignment +b = a+ normally does not copy the object.
 
 ~~~
 {}{python}
-for i in range(n):              # 0,...,n-1
-    pass
+prices = [100, 102, 101]  # Create a mutable list
+alias = prices            # Both names now refer to the same list
+alias.append(104)         # Mutate that shared list in place
 
-for i, value in enumerate(values):
-    pass
-
-for a, b in zip(xs, ys):        # stops at shorter iterable
-    pass
-
-for key in sorted(mapping):
-    value = mapping[key]
-
-while left < right:
-    ...
+print(prices)             # The change is visible through prices as well
+print(alias is prices)    # is asks whether both names reference one object
 ~~~
 
-- +break+ exits the nearest loop; +continue+ skips to its next iteration.
-- A loop's +else+ runs only if the loop finishes without +break+.
-- Do not modify a list\/dict's size while iterating over it; iterate over a copy or build a result.
-
-=== 1.4 Functions and arguments
-
 ~~~
-{}{python}
-def score(x, weight=1.0, *, clip=None):
-    # clip must be passed by keyword.
-    out = weight * x
-    if clip is not None:
-        out = max(-clip, min(clip, out))
-    return out
-
-def summarize(*values, **options):
-    return values, options
-
-args = (3,)
-kwargs = {"weight": 2.0, "clip": 5.0}
-score(*args, **kwargs)
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[100, 102, 101, 104]
+True</pre>
 ~~~
 
-*Mutable-default trap:*
+Use +prices.copy()+ when you need an independent shallow copy. A shallow copy duplicates only the outer container; nested objects may still be shared.
+
+=== 1.1 Mutable and immutable objects
+
+- Immutable: +int+, +float+, +bool+, +str+, and +tuple+. An apparent modification creates another object and rebinds the name.
+- Mutable: +list+, +dict+, +set+, and most data-science containers. A method may change the object in place.
+- +==+ compares values; +is+ compares identity. Test a missing sentinel with +x is None+.
 
 ~~~
 {}{python}
-def append_value(x, out=None):
-    if out is None:
-        out = []
-    out.append(x)
-    return out
+x = 10
+y = x
+x = x + 1              # Create integer 11; y still references integer 10
+
+print(x, y)
+print(x == y)
 ~~~
 
-Default arguments are evaluated once at function definition. Python passes object references by assignment: rebinding a local name does not mutate the caller's object, but mutating a passed list does.
-
-=== 1.5 Scope, closures and lambda
-
-- Name lookup follows LEGB: Local, Enclosing, Global, Builtins.
-- Assignment makes a name local unless declared +global+ or +nonlocal+.
-- A closure captures names (late binding), not frozen values. Bind a current loop value with a default argument when needed.
-
 ~~~
-{}{python}
-funcs = [lambda x, i=i: x + i for i in range(3)]
-key = lambda item: (item[1], item[0])
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">11 10
+False</pre>
 ~~~
 
-Use +lambda+ only for short expressions, mainly sorting\/grouping keys.
+== 2. Numbers, booleans, and floating point
 
-=== 1.6 Exceptions and resource handling
+=== 2.1 Common numeric operators
 
 ~~~
 {}{python}
-try:
-    value = mapping[key]
-except KeyError:
-    value = 0
+cash = 17
+lot_size = 5
+
+lots, remainder = divmod(cash, lot_size)  # Quotient and remainder together
+power = 2 ** 3                            # Exponentiation
+floor_value = -7 // 3                     # Floor toward negative infinity
+
+print(lots, remainder)
+print(power)
+print(floor_value)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">3 2
+8
+-3</pre>
+~~~
+
+Comparisons return +bool+. +and+ and +or+ short-circuit: the right-hand expression is skipped when the result is already determined.
+
+=== 2.2 Why direct floating-point equality fails
+
+Most decimal fractions do not have an exact finite binary representation.
+
+~~~
+{}{python}
+import math
+
+raw = 0.1 + 0.2
+print(raw)                              # Reveal the representation error
+print(raw == 0.3)                       # Exact equality is false
+print(math.isclose(raw, 0.3, rel_tol=1e-12))
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">0.30000000000000004
+False
+True</pre>
+~~~
+
+Explain why a tolerance is appropriate for the application. Money may require +decimal.Decimal+; scientific code usually uses floating point with explicit tolerances.
+
+== 3. The four core containers
+
+=== 3.1 list: ordered and mutable
+
+~~~
+{}{python}
+returns = [0.02, -0.01, 0.03]
+returns.append(0.01)          # Append at the end; amortized O(1)
+last = returns.pop()          # Remove and return the final item; O(1)
+middle = returns[1:3]         # Stop index 3 is excluded; creates a new list
+
+print(last)
+print(middle)
+print(returns)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">0.01
+[-0.01, 0.03]
+[0.02, -0.01, 0.03]</pre>
+~~~
+
+Indexing is $O(1)$; inserting or deleting at the front is $O(n)$. Use +collections.deque+ for a queue instead of repeatedly calling +list.pop(0)+.
+
+=== 3.2 tuple: an immutable record
+
+~~~
+{}{python}
+quote = ("AAPL", 214.5)
+symbol, price = quote       # Unpack two positions into two names
+print(symbol)
+print(price)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">AAPL
+214.5</pre>
+~~~
+
+A tuple can be a dictionary key when all its elements are hashable. A one-element tuple needs the comma: +(value,)+.
+
+=== 3.3 dict: keys mapped to values
+
+~~~
+{}{python}
+weights = {"AAPL": 0.4, "MSFT": 0.6}
+weights["GOOG"] = 0.0                   # Add a key-value pair
+apple_weight = weights.get("AAPL", 0.0) # Return the stored value
+missing = weights.get("TSLA", 0.0)      # Return the fallback for a missing key
+
+print(apple_weight)
+print(missing)
+print(list(weights.keys()))
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">0.4
+0.0
+['AAPL', 'MSFT', 'GOOG']</pre>
+~~~
+
+Lookup, insertion, and deletion are $O(1)$ on average. Direct indexing with a missing key raises +KeyError+; a silent default is correct only when it matches the problem semantics.
+
+=== 3.4 set: uniqueness and fast membership
+
+~~~
+{}{python}
+tradable = {"AAPL", "MSFT", "GOOG"}
+portfolio = {"AAPL", "TSLA"}
+
+print("AAPL" in tradable)       # Average O(1) membership test
+print(portfolio & tradable)      # Intersection
+print(portfolio - tradable)      # Items only in portfolio
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">True
+{'AAPL'}
+{'TSLA'}</pre>
+~~~
+
+Sets have no sorting semantics. Use +sorted(result)+ for deterministic presentation. The empty set is +set()+; +{}+ is an empty dictionary.
+
+== 4. Conditions, loops, and paired iteration
+
+=== 4.1 if / elif / else
+
+~~~
+{}{python}
+ret = -0.035
+
+if ret > 0.02:
+    label = "large gain"
+elif ret < -0.02:
+    label = "large loss"
 else:
-    process(value)
-finally:
-    cleanup()
+    label = "small move"
 
-if n < 0:
-    raise ValueError("n must be nonnegative")
-
-with open(path, "r", encoding="utf-8") as f:
-    text = f.read()
+print(label)
 ~~~
 
-Catch the narrow exception you expect; do not silently use +except Exception: pass+. Context managers guarantee cleanup.
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">large loss</pre>
+~~~
 
-== 2. Built-in data structures \[P0\]
+Indentation defines a block. Use four spaces and do not mix tabs and spaces.
 
-=== 2.1 List
-
-Ordered, mutable dynamic array. Index\/append\/pop-last are O(1) amortized; inserting\/deleting near the front is O(n); membership is O(n).
+=== 4.2 What enumerate and zip produce
 
 ~~~
 {}{python}
-a = [3, 1, 2]
-a.append(4)
-x = a.pop()
-a.extend([5, 6])
-b = a[::-1]                     # reversed copy
-c = sorted(a)                   # new list
-a.sort(key=lambda x: -x)        # in place, returns None
-squares = [x * x for x in a if x >= 0]
-matrix = [[0] * m for _ in range(n)]
+symbols = ["AAPL", "MSFT", "GOOG"]
+returns = [0.02, -0.01, 0.03]
+
+for position, (symbol, ret) in enumerate(zip(symbols, returns), start=1):
+    # zip yields (symbol, ret); enumerate adds a position starting at 1
+    print(position, symbol, f"{ret:.1%}")
 ~~~
 
-*Aliasing trap:* +\[\[0\] \* m\] \* n+ repeats references to the same inner list. Use the comprehension above.
-
-=== 2.2 Tuple
-
-Ordered and immutable; usable as a dict key if all elements are hashable. Packing\/unpacking is pervasive.
-
 ~~~
-{}{python}
-point = (2, 5)
-x, y = point
-first, *middle, last = range(6)
-single = (1,)                    # comma makes the tuple
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">1 AAPL 2.0%
+2 MSFT -1.0%
+3 GOOG 3.0%</pre>
 ~~~
 
-=== 2.3 Dictionary
++zip+ stops when its shortest input ends. If equal lengths are an invariant, modern Python supports +zip(a, b, strict=True)+; for an unknown interview runtime, an explicit length check is portable.
 
-Insertion-ordered mapping in modern Python. Average lookup\/insert\/delete O(1); keys must be hashable.
+=== 4.3 break and continue
 
 ~~~
 {}{python}
-d = {"a": 1}
-d["b"] = d.get("b", 0) + 1
-for k, v in d.items():
-    pass
-keys = set(d)
-value = d.pop("a", None)
-merged = d1 | d2                 # later mapping wins (modern Python)
+values = [3, -1, 5, 0, 8]
+first_zero = None
+
+for index, value in enumerate(values):
+    if value < 0:
+        continue                 # Skip the remaining body for negative values
+    if value == 0:
+        first_zero = index
+        break                    # Stop after the first zero is found
+
+print(first_zero)
 ~~~
 
-Avoid +if k in d.keys()+; use +if k in d+. Accessing a missing +d\[k\]+ raises +KeyError+.
-
-=== 2.4 Set
-
-Unordered unique hashable values. Average membership\/add\/remove O(1).
-
 ~~~
-{}{python}
-s = set(values)
-s.add(x); s.discard(x)           # discard does not raise if missing
-union = a | b
-inter = a & b
-diff = a - b
-sym = a ^ b
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">3</pre>
 ~~~
 
-Use a set for membership\/deduplication, but preserve order with +list(dict.fromkeys(values))+. An empty set is +set()+; +{}+ is a dict.
+== 5. Functions: make inputs, rules, and outputs explicit
 
-=== 2.5 Copying and identity
+=== 5.1 Consecutive simple returns
 
 ~~~
 {}{python}
-import copy
-b = a                            # same object
-b = a.copy()                     # shallow copy
-b = copy.deepcopy(a)             # recursive copy
+def simple_returns(prices):
+    """Return consecutive simple returns; require positive prices."""
+    if len(prices) < 2:                      # Two prices make one return
+        return []
+    if any(price <= 0 for price in prices):  # Prevent division by zero or invalid prices
+        raise ValueError("prices must be positive")
+
+    result = []
+    for previous, current in zip(prices, prices[1:]):
+        result.append(current / previous - 1.0)
+    return result
+
+answer = simple_returns([100, 102, 101])
+print([round(x, 4) for x in answer])
 ~~~
 
-+is+ tests identity; +==+ tests value equality. Shallow copies still share nested mutable objects.
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[0.02, -0.0098]</pre>
+~~~
 
-== 3. Comprehensions, iterators and generators \[P0\/P1\]
+Line by line:
+
+- +prices\[1:\]+ is a new list beginning at the second price.
+- +zip(prices, prices\[1:\])+ produces +(100,102)+ and +(102,101)+.
+- Compute at full precision; round for presentation only.
+- For $n$ inputs, one scan costs $O(n)$ time and the returned list costs $O(n)$ space.
+
+=== 5.2 Defaults and keyword arguments
 
 ~~~
 {}{python}
-evens = [x for x in values if x % 2 == 0]
-lookup = {x: x * x for x in values}
-unique = {normalize(x) for x in values}
-total = sum(x * x for x in values)       # generator expression
+def clip(value, lower=-1.0, upper=1.0):
+    return max(lower, min(value, upper))
 
-def running_total(values):
-    total = 0
-    for x in values:
-        total += x
-        yield total
+print(clip(1.7))                    # Use both defaults
+print(clip(1.7, upper=2.0))         # Override upper by name
 ~~~
 
-- Iterable: can produce an iterator. Iterator: has +__next__+ and is consumed.
-- Generators are lazy and memory-efficient; once consumed, recreate them.
-- +any+ and +all+ short-circuit. +min\/max+ accept a +key+.
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">1.0
+1.7</pre>
+~~~
 
-== 4. Standard-library tools to memorize \[P0\]
+Avoid mutable default arguments:
 
-=== 4.1 collections
+~~~
+{}{python}
+def append_value(value, output=None):
+    if output is None:       # Create a fresh list for each omitted argument
+        output = []
+    output.append(value)
+    return output
+
+print(append_value(1))
+print(append_value(2))
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[1]
+[2]</pre>
+~~~
+
+With +output=\[\]+, the list would be created once at function definition time and reused across calls.
+
+== 6. Comprehensions, generators, and standard-library tools
+
+=== 6.1 A comprehension is a compact loop
+
+~~~
+{}{python}
+returns = [0.02, -0.01, 0.03, -0.04]
+
+positive_bps = [round(ret * 10_000) for ret in returns if ret > 0]
+# Keep positive returns and convert decimal returns to basis points
+
+print(positive_bps)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[200, 300]</pre>
+~~~
+
+Use a comprehension for one expression and a simple filter. With multiple nested conditions, an ordinary loop is usually easier to explain and debug.
+
+=== 6.2 Counter, defaultdict, and deque
 
 ~~~
 {}{python}
 from collections import Counter, defaultdict, deque
 
-counts = Counter(values)
-counts.most_common(3)
+trades = [("AAPL", 10), ("MSFT", 5), ("AAPL", 7)]
 
-groups = defaultdict(list)
-for key, value in rows:
-    groups[key].append(value)
+trade_count = Counter(symbol for symbol, _ in trades)
+quantity_by_symbol = defaultdict(int)
+for symbol, quantity in trades:
+    quantity_by_symbol[symbol] += quantity
 
-q = deque([start])
-q.append(x); q.appendleft(y)
-q.popleft(); q.pop()
+recent = deque(maxlen=2)
+for trade in trades:
+    recent.append(trade)              # Discard the oldest item beyond length 2
+
+print(trade_count["AAPL"])
+print(dict(quantity_by_symbol))
+print(list(recent))
 ~~~
 
-+deque+ provides O(1) operations at both ends and is the correct BFS queue.
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">2
+{'AAPL': 17, 'MSFT': 5}
+[('MSFT', 5), ('AAPL', 7)]</pre>
+~~~
 
-=== 4.2 heapq and top-k
-
-Python's heap is a min-heap.
+=== 6.3 heapq and top-k
 
 ~~~
 {}{python}
 import heapq
 
-heap = []
-heapq.heappush(heap, value)
-smallest = heapq.heappop(heap)
-
-# Keep k largest values in O(n log k)
-heap = []
-for x in values:
-    if len(heap) < k:
-        heapq.heappush(heap, x)
-    elif x > heap[0]:
-        heapq.heapreplace(heap, x)
+scores = [0.12, -0.03, 0.44, 0.19, 0.31]
+top_two = heapq.nlargest(2, scores)  # Select only the two largest values
+print(top_two)
 ~~~
 
-For a max-heap in interview-compatible code, store negative numeric priorities: +(-priority, tie_breaker, item)+.
-
-=== 4.3 bisect
-
 ~~~
-{}{python}
-from bisect import bisect_left, bisect_right, insort
-
-i = bisect_left(a, x)            # first index with value >= x
-j = bisect_right(a, x)           # first index with value > x
-count_x = j - i
-insort(a, x)                     # search O(log n), insertion O(n)
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[0.44, 0.31]</pre>
 ~~~
 
-=== 4.4 itertools and functools
+Full sorting costs $O(n\log n)$; maintaining a heap of size $k$ is typically $O(n\log k)$ and is useful when $k\ll n$.
+
+== 7. Sorting, exceptions, files, and tests
+
+=== 7.1 A multi-level sorting key
 
 ~~~
 {}{python}
-from itertools import accumulate, combinations, permutations, product
-from functools import lru_cache
+rows = [
+    {"date": "2026-01-02", "score": 0.2, "id": "B"},
+    {"date": "2026-01-02", "score": 0.5, "id": "A"},
+    {"date": "2026-01-01", "score": 0.1, "id": "C"},
+]
 
-prefix = list(accumulate(values))
-for pair in combinations(values, 2):
-    pass
-for state in product(range(3), repeat=n):
-    pass
-
-@lru_cache(None)
-def dp(state):
-    ...
-~~~
-
-Know that combinatorial iterators can still generate exponentially\/factorially many results.
-
-== 5. Sorting, parsing and interview hygiene \[P0\]
-
-=== 5.1 Sorting
-
-Python sorting is stable and O(n log n). Composite keys are lexicographic.
-
-~~~
-{}{python}
-rows.sort(key=lambda row: (row[0], -row[1]))
-ranked = sorted(enumerate(scores), key=lambda p: p[1], reverse=True)
-~~~
-
-Stability lets you sort by a secondary key first, then by primary key.
-
-=== 5.2 Input\/output template
-
-~~~
-{}{python}
-import sys
-
-def solve():
-    data = sys.stdin.buffer.read().split()
-    it = iter(data)
-    n = int(next(it))
-    values = [int(next(it)) for _ in range(n)]
-    answer = sum(values)
-    print(answer)
-
-if __name__ == "__main__":
-    solve()
-~~~
-
-For interactive interviews, favor clarity over micro-optimized parsing. Never shadow builtins such as +list+, +sum+, +max+, +str+.
-
-=== 5.3 Testing checklist
-
-. Restate inputs, outputs, constraints and whether data are sorted\/unique.
-. Work a tiny example before coding.
-. State invariant and complexity.
-. Test empty input, one item, duplicates, negative values, all equal, already sorted, reverse sorted, and very large values.
-. For random\/numeric code, fix a seed only for reproducibility; do not mistake it for statistical independence.
-
-== 6. NumPy \[P0\]
-
-=== 6.1 Mental model: ndarray = data buffer \+ dtype \+ shape \+ strides
-
-~~~
-{}{python}
-import numpy as np
-
-a = np.array([1, 2, 3], dtype=float)
-z = np.zeros((3, 4))
-o = np.ones_like(z)
-I = np.eye(3)
-x = np.arange(0, 10, 2)
-grid = np.linspace(0.0, 1.0, 6)
-
-a.shape; a.ndim; a.size; a.dtype
-a.astype(np.float64, copy=False)
-~~~
-
-- One array has one dtype; mixing numbers and strings may coerce unexpectedly.
-- Shape +(n,)+ is a 1-D vector, not a row or column. Use +(n,1)+ or +(1,n)+ explicitly.
-- +axis+ is the dimension being reduced: for a 2-D array, +axis=0+ reduces rows and returns one value per column; +axis=1+ reduces columns and returns one per row.
-
-=== 6.2 Shape operations
-
-~~~
-{}{python}
-x = np.arange(12).reshape(3, 4)
-x.T
-x.reshape(-1, 1)
-x.ravel()                        # view when possible
-x.flatten()                      # copy
-np.squeeze(x)
-np.expand_dims(a, axis=1)
-
-np.concatenate([a, b], axis=0)  # existing axis
-np.stack([a, b], axis=0)        # new axis
-np.vstack([a, b])
-np.column_stack([a, b])
-~~~
-
-Always predict the output shape before running code.
-
-=== 6.3 Indexing: view versus copy
-
-~~~
-{}{python}
-x[1, 2]
-x[:, 1:3]                        # basic slice, usually a view
-x[[0, 2], :]                     # advanced indexing, copy
-x[x[:, 0] > 0]                  # boolean indexing, copy
-x[np.ix_([0, 2], [1, 3])]       # Cartesian submatrix
-~~~
-
-Basic slicing returns a view when possible; advanced integer\/boolean indexing returns a copy. If you need independence, call +.copy()+ explicitly.
-
-=== 6.4 Broadcasting
-
-Compare shapes from the right. Dimensions are compatible when equal or one is 1.
-
-~~~
-{}{python}
-X = np.arange(12).reshape(3, 4)
-row_centered = X - X.mean(axis=1, keepdims=True)  # (3,4)-(3,1)
-col_scaled = X / X.std(axis=0, keepdims=True)     # (3,4)-(1,4)
-pairwise = a[:, None] - b[None, :]                # (len(a),len(b))
-~~~
-
-Broadcasting avoids explicit loops but may materialize a huge result. A shape that broadcasts successfully can still represent the wrong calculation.
-
-=== 6.5 Vectorization, reductions and conditionals
-
-~~~
-{}{python}
-X.sum(axis=0)
-X.mean(axis=0)
-X.std(axis=0, ddof=1)            # sample standard deviation
-X.min(); X.argmin()
-np.quantile(X, [0.25, 0.5, 0.75], axis=0)
-np.cumsum(a); np.cumprod(a)
-np.diff(a)
-
-mask = np.isfinite(X) & (X > 0)
-clean = np.where(mask, X, np.nan)
-clipped = np.clip(X, -3, 3)
-~~~
-
-Use elementwise +&+, +|+, +\~+ with parentheses; Python +and\/or+ do not work elementwise on arrays.
-
-=== 6.6 NaN and missing numeric data
-
-~~~
-{}{python}
-np.isnan(X)
-np.nanmean(X, axis=0)
-np.nanstd(X, axis=0, ddof=1)
-np.nanquantile(X, 0.5, axis=0)
-~~~
-
-+NaN != NaN+; test with +np.isnan+. Integer arrays cannot represent NaN without dtype conversion or a masked\/nullable representation.
-
-=== 6.7 Sorting, ranking and selection
-
-~~~
-{}{python}
-np.sort(a)
-order = np.argsort(a, kind="stable")
-top_k_idx = np.argpartition(a, -k)[-k:]   # unsorted top-k, average O(n)
-values, counts = np.unique(a, return_counts=True)
-~~~
-
-Use +argpartition+ when only top-k membership matters; sort the selected subset if order is required.
-
-=== 6.8 Linear algebra
-
-~~~
-{}{python}
-y = A @ x
-C = A @ B
-solution = np.linalg.solve(A, b)          # square nonsingular
-coef, residuals, rank, s = np.linalg.lstsq(X, y, rcond=None)
-eigvals, eigvecs = np.linalg.eigh(S)      # symmetric/Hermitian
-U, singular, Vt = np.linalg.svd(X, full_matrices=False)
-L = np.linalg.cholesky(cov)
-norm = np.linalg.norm(x)
-~~~
-
-Do not write +np.linalg.inv(A) @ b+; use +solve+. For symmetric matrices use +eigh+, which returns real ordered eigenvalues and exploits structure.
-
-=== 6.9 Random numbers and simulation
-
-~~~
-{}{python}
-rng = np.random.default_rng(20260720)
-u = rng.random(1000)
-z = rng.normal(loc=0.0, scale=1.0, size=(1000, 3))
-idx = rng.choice(n, size=k, replace=False)
-perm = rng.permutation(n)
-~~~
-
-Prefer an explicit +Generator+ over global state. Simulation is a verification tool, not a substitute for an analytic answer when one is requested.
-
-== 7. pandas \[P0\]
-
-=== 7.1 Series, DataFrame and inspection
-
-~~~
-{}{python}
-import pandas as pd
-
-df = pd.read_csv("prices.csv", parse_dates=["date"])
-df.head(); df.tail()
-df.shape; df.columns; df.dtypes
-df.info()
-df.describe(include="all")
-df["symbol"].value_counts(dropna=False)
-df.nunique(dropna=False)
-~~~
-
-- +Series+ is one labeled vector; +DataFrame+ is a 2-D labeled table.
-- pandas aligns arithmetic by index labels, not row position. This is powerful and a frequent silent-bug source.
-- Keep keys such as +date,symbol+ explicit; assert uniqueness when the data model requires it.
-
-~~~
-{}{python}
-assert not df.duplicated(["date", "symbol"]).any()
-df = df.sort_values(["symbol", "date"]).reset_index(drop=True)
-~~~
-
-=== 7.2 Selection: loc versus iloc
-
-~~~
-{}{python}
-df["close"]                       # Series
-df[["date", "symbol", "close"]] # DataFrame
-df.loc[df["volume"] > 0, ["symbol", "close"]]
-df.iloc[:10, :3]
-df.at[row_label, "close"]
-df.iat[0, 2]
-~~~
-
-- +loc+ is label-based; label slices include the stop label.
-- +iloc+ is integer-position-based; slices exclude the stop position.
-- Combine masks with +&+ and +|+, parenthesizing each condition.
-
-~~~
-{}{python}
-mask = (
-    df["symbol"].isin(["A", "B"])
-    & df["close"].notna()
-    & df["date"].between("2025-01-01", "2025-12-31")
+ordered = sorted(
+    rows,
+    key=lambda row: (row["date"], -row["score"], row["id"]),
 )
-subset = df.loc[mask].copy()
+# Date ascending, then score descending, then id ascending
+
+print([(row["date"], row["id"]) for row in ordered])
 ~~~
 
-Avoid chained assignment such as +df\[df.x>0\]\[\"y\"\] = 1+. Use one +loc+ assignment. With evolving copy-on-write semantics, explicit +.copy()+ at ownership boundaries remains clearest.
-
-=== 7.3 Create, rename, sort and type columns
-
 ~~~
-{}{python}
-df = df.assign(
-    dollar_volume=lambda x: x["close"] * x["volume"],
-    log_price=lambda x: np.log(x["close"]),
-)
-df = df.rename(columns={"ticker": "symbol"})
-df = df.sort_values(["date", "score"], ascending=[True, False])
-df["date"] = pd.to_datetime(df["date"], errors="coerce")
-df["symbol"] = df["symbol"].astype("string")
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[('2026-01-01', 'C'), ('2026-01-02', 'A'), ('2026-01-02', 'B')]</pre>
 ~~~
 
-=== 7.4 Missing values and duplicates
++sorted(data)+ returns a new list. +data.sort()+ mutates in place and returns +None+. Python sorting is stable: equal keys preserve their original relative order.
+
+=== 7.2 Catch only an expected exception
 
 ~~~
 {}{python}
-df.isna().sum()
-df = df.dropna(subset=["date", "symbol", "close"])
-df["sector"] = df["sector"].fillna("Unknown")
-df["value"] = df.groupby("symbol")["value"].ffill()
-df = df.drop_duplicates(["date", "symbol"], keep="last")
+text = "12.5"
+
+try:
+    value = float(text)          # Invalid numeric text raises ValueError
+except ValueError:
+    value = None
+
+print(value)
 ~~~
 
-Missingness can be informative. Never forward-fill across symbols or across unavailable history. Specify why a duplicate exists before choosing first\/last.
-
-=== 7.5 groupby: agg, transform, filter, apply
-
 ~~~
-{}{python}
-summary = (
-    df.groupby("symbol", as_index=False)
-      .agg(mean_ret=("ret", "mean"),
-           vol=("ret", "std"),
-           n=("ret", "size"))
-)
-
-# Same length/index as input: cross-sectional z-score by date
-g = df.groupby("date")["signal"]
-df["signal_z"] = (df["signal"] - g.transform("mean")) / g.transform("std")
-
-large = df.groupby("symbol").filter(lambda x: len(x) >= 252)
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">12.5</pre>
 ~~~
 
-- +agg+ reduces each group.
-- +transform+ returns something aligned to every original row.
-- +filter+ keeps\/drops whole groups.
-- +apply+ is flexible but often slower and can produce complex indexes; prefer vectorized built-ins, +agg+, or +transform+.
-
-=== 7.6 Merge, join and concatenate
+Do not hide arbitrary failures with +except Exception: pass+. Use a context manager for files:
 
 ~~~
 {}{python}
-out = left.merge(
-    right,
-    on=["date", "symbol"],
-    how="left",
-    validate="many_to_one",
-    indicator=True,
-)
-assert (out["_merge"] != "left_only").all()
-out = out.drop(columns="_merge")
-
-rows = pd.concat([jan, feb, mar], ignore_index=True)
-wide = pd.concat([features_a, features_b], axis=1)
+with open("prices.csv", "r", encoding="utf-8") as file:
+    header = file.readline().strip()  # The file closes automatically afterward
 ~~~
 
-Know +inner\/left\/right\/outer+. Estimate expected row counts before merging. Use +validate+ (+one_to_one+, +one_to_many+, +many_to_one+) to catch accidental many-to-many explosions.
+=== 7.3 A minimum test checklist
 
-For point-in-time\/as-of joins:
+Consider empty input, one item, duplicates, negative values, all equal, sorted, reverse sorted, extreme values, and wrong types. State expectations as assertions:
 
 ~~~
 {}{python}
-left = left.sort_values(["date", "symbol"])
-right = right.sort_values(["effective_date", "symbol"])
-out = pd.merge_asof(
-    left,
-    right,
-    left_on="date",
-    right_on="effective_date",
-    by="symbol",
-    direction="backward",
-)
+assert simple_returns([]) == []
+assert simple_returns([100]) == []
+assert math.isclose(simple_returns([100, 110])[0], 0.1)
 ~~~
 
-Ensure the sort order required by the installed pandas version and verify that +effective_date <= date+ for every match.
+Passing assertions print nothing. A failed assertion raises +AssertionError+.
 
-=== 7.7 Reshaping
+== 8. Worked interview problem: fixed-window moving average
+
+Given a numeric sequence and window length $k$, return the mean of every consecutive window.
+
+Recomputing each sum costs $O(nk)$. Maintain one window sum instead: add the entering value and subtract the leaving value for $O(n)$ total time.
 
 ~~~
 {}{python}
-panel = df.pivot(index="date", columns="symbol", values="ret")
-panel = df.pivot_table(
-    index="date", columns="symbol", values="ret", aggfunc="mean"
-)
-long = panel.reset_index().melt(
-    id_vars="date", var_name="symbol", value_name="ret"
-)
-stacked = panel.stack(dropna=False)
+def moving_average(values, k):
+    if k <= 0:
+        raise ValueError("k must be positive")
+    if k > len(values):
+        return []
+
+    window_sum = sum(values[:k])       # Sum the first window; O(k)
+    averages = [window_sum / k]
+
+    for right in range(k, len(values)):
+        entering = values[right]       # New value entering the window
+        leaving = values[right - k]    # Old value leaving the window
+        window_sum += entering - leaving
+        averages.append(window_sum / k)
+
+    return averages
+
+result = moving_average([1, 2, 3, 6, 8], 3)
+print(result)
 ~~~
 
-+pivot+ requires unique keys; +pivot_table+ aggregates duplicates. Do not hide unexpected duplicates by choosing an arbitrary aggregation.
-
-=== 7.8 Time series, shift and windows
-
 ~~~
-{}{python}
-df = df.sort_values(["symbol", "date"])
-g = df.groupby("symbol", group_keys=False)
-
-df["ret_1d"] = g["close"].pct_change(fill_method=None)
-df["log_ret_1d"] = g["close"].transform(lambda s: np.log(s).diff())
-df["target_fwd_1d"] = g["ret_1d"].shift(-1)
-df["lag_ret_1d"] = g["ret_1d"].shift(1)
-
-df["mean_20"] = g["ret_1d"].transform(
-    lambda s: s.rolling(20, min_periods=20).mean()
-)
-df["vol_20"] = g["ret_1d"].transform(
-    lambda s: s.rolling(20, min_periods=20).std()
-)
-df["ewm_mean"] = g["ret_1d"].transform(
-    lambda s: s.ewm(span=20, adjust=False).mean()
-)
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[2.0, 3.6666666666666665, 5.666666666666667]</pre>
 ~~~
 
-*Leakage rule:* decide whether today's close is available at signal time. If not, shift features by one more period. A negative shift creates a future target and must never be used as a feature.
+The windows are +\[1,2,3\]+, +\[2,3,6\]+, and +\[3,6,8\]+. Initialization is $O(k)$ and every remaining value enters and leaves once, so total time is $O(n)$ and auxiliary space is $O(1)$ excluding the output.
 
-=== 7.9 Rank, quantiles and cross-sectional operations
+== 9. Pure-Python quantitative patterns
+
+=== 9.1 Online mean
 
 ~~~
 {}{python}
-df["rank_pct"] = df.groupby("date")["signal"].rank(
-    pct=True, method="average"
-)
-df["decile"] = df.groupby("date")["signal"].transform(
-    lambda s: pd.qcut(s, 10, labels=False, duplicates="drop")
-)
+stream = [2.0, 4.0, 8.0]
+count = 0
+mean = 0.0
 
-ic = df.groupby("date").apply(
-    lambda x: x["signal"].corr(x["target_fwd_1d"], method="spearman")
-)
+for value in stream:
+    count += 1
+    mean += (value - mean) / count  # Update after incorporating one observation
+    print(count, round(mean, 4))
 ~~~
 
-+qcut+ may drop bins when values tie. For performance-sensitive code, avoid Python-level +groupby.apply+ after correctness is established.
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">1 2.0
+2 3.0
+3 4.6667</pre>
+~~~
 
-=== 7.10 pandas performance and correctness
+This consumes $O(1)$ auxiliary space and works when the whole stream cannot be held in memory.
 
-- Prefer vectorized operations and grouped built-ins over +iterrows+ and row-wise +apply(axis=1)+.
-- Avoid unnecessary +object+ dtype; use numeric, datetime, categorical\/string types intentionally.
-- Read only needed columns; use Parquet for typed columnar storage when available.
-- Sort explicitly before +shift+, +rolling+, +merge_asof+, or cumulative calculations.
-- Check shape, keys, missingness, date range and a few hand-calculated rows after every major transformation.
-
-== 8. scikit-learn \[P0\/P1\]
-
-=== 8.1 Estimator API
+=== 9.2 Reproducible simulation
 
 ~~~
 {}{python}
-model.fit(X_train, y_train)
-pred = model.predict(X_test)
-proba = model.predict_proba(X_test)[:, 1]
-X_new = transformer.fit_transform(X_train)
-X_test_new = transformer.transform(X_test)
+import random
+
+rng = random.Random(42)                 # Local generator; do not alter global state
+tosses = [rng.choice(["H", "T"]) for _ in range(6)]
+print(tosses)
 ~~~
 
-- Estimators learn in +fit+; transformers expose +transform+; predictors expose +predict+.
-- Learned attributes usually end with underscore, e.g. +coef_+, +classes_+, +feature_importances_+.
-- Never call +fit_transform+ on validation\/test data.
-
-=== 8.2 Split and baseline
-
 ~~~
-{}{python}
-from sklearn.model_selection import train_test_split
-from sklearn.dummy import DummyRegressor, DummyClassifier
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+{}{raw}
+<div class="example-output-label">Expected output on standard CPython</div><pre class="example-output">['H', 'H', 'T', 'H', 'H', 'H']</pre>
 ~~~
 
-For classification with enough observations in every class, add +stratify=y+; do not pass a continuous regression target to +stratify+. Use random splits only for exchangeable samples. For time series, sort by time and use a chronological holdout or +TimeSeriesSplit+. Grouped entities may need +GroupKFold+.
+A fixed seed provides reproducibility, not better randomness. Use NumPy's +Generator+ for array simulations.
 
-=== 8.3 Leakage-safe pipeline
+== 10. Learning order and next steps
 
-~~~
-{}{python}
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import Ridge
+. Type each function in this page and predict its output before running it.
+. Study [numpy-for-quant-interviews-en.html NumPy] for shapes, axes, broadcasting, indexing, linear algebra, and simulation.
+. Study [pandas-for-quant-interviews-en.html pandas] for table selection, grouping, joins, reshaping, and time alignment.
+. Study [scikit-learn-for-quant-interviews-en.html scikit-learn] for preprocessing, pipelines, cross-validation, metrics, and leakage.
+. Return to interview problems and explain input types, alignment, complexity, and boundary tests aloud.
 
-pipe = Pipeline([
-    ("impute", SimpleImputer(strategy="median", add_indicator=True)),
-    ("scale", StandardScaler()),
-    ("model", Ridge(alpha=1.0)),
-])
-pipe.fit(X_train, y_train)
-pred = pipe.predict(X_test)
-~~~
+== 11. Official tutorials and references
 
-Everything data-dependent belongs inside the pipeline: imputation, scaling, encoding, PCA, feature selection and the estimator.
+- [https://docs.python.org/3/tutorial/ The Python Tutorial] — official coverage of control flow, functions, data structures, I/O, exceptions, classes, iterators, and environments.
+- [https://docs.python.org/3/tutorial/datastructures.html Python Data Structures] — lists, tuples, sets, dictionaries, comprehensions, and looping techniques.
+- [https://docs.python.org/3/library/collections.html collections] — +Counter+, +defaultdict+, +deque+, and specialized containers.
+- [https://docs.python.org/3/library/heapq.html heapq] and [https://docs.python.org/3/library/bisect.html bisect] — heaps and binary search in sorted lists.
+- [https://docs.python.org/3/tutorial/floatingpoint.html Floating-Point Arithmetic] — understand representation error instead of memorizing one example.
 
-=== 8.4 Mixed numeric\/categorical columns
-
-~~~
-{}{python}
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
-
-preprocess = ColumnTransformer([
-    ("num", Pipeline([
-        ("impute", SimpleImputer(strategy="median")),
-        ("scale", StandardScaler()),
-    ]), numeric_cols),
-    ("cat", Pipeline([
-        ("impute", SimpleImputer(strategy="most_frequent")),
-        ("onehot", OneHotEncoder(handle_unknown="ignore")),
-    ]), categorical_cols),
-])
-
-model = Pipeline([
-    ("preprocess", preprocess),
-    ("model", Ridge(alpha=1.0)),
-])
-~~~
-
-=== 8.5 Cross-validation and tuning
-
-~~~
-{}{python}
-from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
-
-cv = TimeSeriesSplit(n_splits=5)
-search = GridSearchCV(
-    pipe,
-    param_grid={"model__alpha": [0.01, 0.1, 1.0, 10.0]},
-    scoring="neg_mean_squared_error",
-    cv=cv,
-    n_jobs=-1,
-)
-search.fit(X_train, y_train)
-best_model = search.best_estimator_
-~~~
-
-The double underscore addresses a nested parameter. Keep a final untouched test set; nested CV is needed when an unbiased estimate after extensive tuning matters.
-
-=== 8.6 Metrics to memorize
-
-~~~
-{}{python}
-from sklearn.metrics import (
-    mean_absolute_error, mean_squared_error, r2_score,
-    accuracy_score, precision_score, recall_score, f1_score,
-    roc_auc_score, average_precision_score, log_loss,
-    confusion_matrix,
-)
-
-rmse = mean_squared_error(y_true, pred) ** 0.5
-mae = mean_absolute_error(y_true, pred)
-r2 = r2_score(y_true, pred)
-auc = roc_auc_score(y_true, proba)
-pr_auc = average_precision_score(y_true, proba)
-~~~
-
-- MSE\/RMSE heavily weight large errors; MAE is more robust.
-- Accuracy can be useless under imbalance.
-- AUC evaluates ranking; log loss\/Brier evaluate probabilities; threshold metrics depend on the operating point.
-- Scikit-learn's +neg_\*+ scorers are negated because higher score is always considered better.
-
-=== 8.7 Model quick map
-
-- +LinearRegression+: unregularized OLS; inspect rank\/conditioning.
-- +Ridge+, +Lasso+, +ElasticNet+: scaled linear features and regularization.
-- +LogisticRegression+: classification; tune +C+ (inverse regularization strength) and penalty\/solver compatibility.
-- +DecisionTree\*+: interpretable nonlinear splits, high variance without control.
-- +RandomForest\*+, +ExtraTrees\*+: bagged randomized trees.
-- +HistGradientBoosting\*+: strong tabular boosting baseline.
-- +SVC+: scale features; +probability=True+ adds cost and calibration behavior.
-- +KNeighbors\*+: scale, dimension-sensitive, prediction can be expensive.
-- +KMeans+, +PCA+: unsupervised; fit on training data only.
-
-=== 8.8 Reproducibility
-
-- Set +random_state+ on every stochastic component; record library versions and feature definitions.
-- Fixed seeds reproduce one random stream; they do not remove sampling uncertainty.
-- Parallel floating-point reductions may vary slightly; compare with tolerance.
-- Persist the entire fitted pipeline, not a model detached from preprocessing.
-
-== 9. Quant coding templates \[P0\]
-
-=== 9.1 Numerically stable online mean and variance
-
-~~~
-{}{python}
-def online_mean_variance(values):
-    n = 0
-    mean = 0.0
-    m2 = 0.0
-    for x in values:
-        n += 1
-        delta = x - mean
-        mean += delta / n
-        m2 += delta * (x - mean)
-    variance = m2 / (n - 1) if n > 1 else float("nan")
-    return mean, variance
-~~~
-
-Welford's update is one-pass and more stable than +mean(x²)-mean(x)²+.
-
-=== 9.2 Stable softmax and log-sum-exp
-
-~~~
-{}{python}
-def softmax(z):
-    z = np.asarray(z, dtype=float)
-    shifted = z - np.max(z, axis=-1, keepdims=True)
-    exp_z = np.exp(shifted)
-    return exp_z / exp_z.sum(axis=-1, keepdims=True)
-
-def logsumexp(z):
-    m = np.max(z)
-    return m + np.log(np.exp(z - m).sum())
-~~~
-
-=== 9.3 Forward-return target without accidental alignment
-
-~~~
-{}{python}
-df = df.sort_values(["symbol", "date"])
-next_close = df.groupby("symbol")["close"].shift(-1)
-df["fwd_ret_1d"] = next_close / df["close"] - 1
-
-# Feature known strictly before day t close
-df["feature_lagged"] = df.groupby("symbol")["raw_feature"].shift(1)
-~~~
-
-Write down the information timestamp and execution price; +shift+ direction alone does not prove correctness.
-
-=== 9.4 Cross-sectional neutralization by least squares
-
-~~~
-{}{python}
-def neutralize_one_date(group, feature, exposures):
-    cols = [feature] + exposures
-    clean = group.dropna(subset=cols).copy()
-    X = clean[exposures].to_numpy(float)
-    X = np.column_stack([np.ones(len(X)), X])
-    y = clean[feature].to_numpy(float)
-    beta, *_ = np.linalg.lstsq(X, y, rcond=None)
-    clean[feature + "_neutral"] = y - X @ beta
-    return clean
-~~~
-
-In production, preserve all rows\/indexes, handle categorical sectors, weights, small groups and collinearity explicitly.
-
-=== 9.5 Monte Carlo estimate with uncertainty
-
-~~~
-{}{python}
-rng = np.random.default_rng(42)
-n = 200_000
-x = rng.random(n)
-y = rng.random(n)
-indicator = (x * x + y * y <= 1.0)
-p_hat = indicator.mean()
-se = np.sqrt(p_hat * (1 - p_hat) / n)
-pi_hat = 4 * p_hat
-pi_se = 4 * se
-~~~
-
-Report Monte Carlo standard error, not only the point estimate.
-
-== 10. What to memorize versus derive
-
-*Memorize cold:*
-
-- Built-in container operations and complexity.
-- +enumerate+, +zip+, sorting keys, +Counter\/defaultdict\/deque\/heapq\/bisect+.
-- NumPy +shape\/axis+, +reshape+, indexing, broadcasting, reductions, +argsort+, +lstsq\/solve\/svd\/eigh+.
-- pandas +loc\/iloc+, +groupby.agg\/transform+, +merge(validate=...)+, +pivot\/melt+, +shift\/rolling+.
-- sklearn pipeline, split, fit\/predict, common metrics and +model__parameter+ tuning syntax.
-
-*Derive from principles:*
-
-- Rare API signatures, complex indexing tricks and version-specific behavior.
-- Shape of every vectorized expression.
-- Statistical assumptions, target timing and validation scheme.
-- Whether a merge\/window\/shift leaks future information.
-
-== 11. Seven-day coding reset
-
-. Day 1: core Python, containers, 10 small functions without IDE.
-. Day 2: +collections\/heapq\/bisect+; two-pointer, sliding-window and interval problems.
-. Day 3: NumPy shapes, broadcasting, indexing, reductions and linear algebra; reimplement OLS.
-. Day 4: pandas selection, groupby, merge, reshape and missing data on a toy price panel.
-. Day 5: pandas time series; build lagged features\/forward targets and manually audit five rows.
-. Day 6: sklearn pipelines, time-aware CV, metrics and a complete tabular model.
-. Day 7: 90-minute mock: one probability simulation, one pandas task and two algorithm problems; then write an error log.
-
-== 12. Primary references
-
-- [https://docs.python.org/3/tutorial/ The Python Tutorial] — official syntax, data structures, modules, I\/O, exceptions and classes.
-- [https://numpy.org/doc/stable/user/basics.html NumPy Fundamentals] and [https://numpy.org/doc/stable/user/basics.indexing.html NumPy Indexing] — official broadcasting, dtype, indexing, copies and views.
-- [https://pandas.pydata.org/docs/user_guide/ pandas User Guide] — official indexing, missing data, merge, groupby, windowing and time series.
-- [https://scikit-learn.org/stable/user_guide.html scikit-learn User Guide] — official model selection, pipelines, preprocessing, metrics and pitfalls.
-- [https://cs229.stanford.edu/syllabus-fall2020.html Stanford CS229 materials] — official Python\/NumPy review and ML derivations.
-
-*Version note:* documentation pages evolve. Interview platforms may pin older Python\/library versions, so avoid relying on the newest convenience API unless the environment is stated.
+*Version note:* official documentation evolves with Python. Check the interview runtime first; when it is unknown, prefer long-stable language features and standard-library interfaces.

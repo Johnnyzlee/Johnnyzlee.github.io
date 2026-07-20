@@ -1,4 +1,4 @@
-# jemdoc: nofooter, nodefaultcss, addcss{../blog-note}
+# jemdoc: nofooter, nodefaultcss, addcss{../blog-note}, addjs{../blog-sidebar}
 = HKUST HPC Server Guide
 [../../blog.html ← Blogs] \M /updated 2026-07-18/
 

@@ -1,0 +1,475 @@
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}, addjs{../blog-sidebar}
+= NumPy for Quantitative Research Interviews
+[../../blog.html ← Blogs] \M /更新于 2026-07-21/
+
+~~~
+{}{raw}
+<div class="language-switch" role="navigation" aria-label="语言选择"><span class="active" aria-current="page">中文</span><a href="numpy-for-quant-interviews-en.html" hreflang="en">English</a></div>
+<div class="page-lead"><strong>学习目标：</strong>建立“数组 = 数据缓冲区 + dtype + shape”的心智模型，能在运行前预测每个表达式的形状，并掌握索引、广播、归约、线性代数和随机模拟。本文假设你已经理解 Python 列表、循环和函数。</div>
+<div class="study-callout"><strong>系列导航：</strong><a href="python-for-quant-interviews.html">Python</a> · <a href="pandas-for-quant-interviews.html">pandas</a> · <a href="scikit-learn-for-quant-interviews.html">scikit-learn</a></div>
+~~~
+
+== 0. NumPy 解决什么问题
+
+Python 列表可以混合不同类型，而且逐元素循环由 Python 解释器执行。NumPy 的 +ndarray+ 通常保存同一种 +dtype+，大量循环在编译后的底层代码中完成，因此数值运算更紧凑、更快。
+
+安装与导入：
+
+~~~
+{}{python}
+# 在终端安装；如果环境已经有 NumPy，不要重复执行
+# python3 -m pip install numpy
+
+import numpy as np  # 约定俗成的别名；后面用 np.array、np.mean 等
+~~~
+
+NumPy 文档中以 +>>>+ 开头的是输入提示符，不是代码的一部分。本文代码块可以直接复制运行。
+
+== 1. ndarray 的五个基本属性
+
+~~~
+{}{python}
+import numpy as np
+
+prices = np.array(
+    [[100, 101, 103],
+     [200, 198, 202]],
+    dtype=float,                 # 所有元素统一存为浮点数
+)
+
+print(prices)
+print("shape:", prices.shape)    # 每个轴的长度：2 行、3 列
+print("ndim:", prices.ndim)      # 轴的数量
+print("size:", prices.size)      # 元素总数 2 * 3
+print("dtype:", prices.dtype)    # 每个元素的存储类型
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[[100. 101. 103.]
+ [200. 198. 202.]]
+shape: (2, 3)
+ndim: 2
+size: 6
+dtype: float64</pre>
+~~~
+
+最重要的是 +shape+。面试中每写一次矩阵表达式，先在旁边写形状。例如这里 +prices+ 是 +(2,3)+：可以理解为 2 个资产、3 个日期。
+
+=== 1.1 创建数组
+
+~~~
+{}{python}
+zeros = np.zeros((2, 3))             # 2×3 的全零浮点数组
+sequence = np.arange(0, 10, 2)       # 从 0 开始、步长 2，不包含 10
+grid = np.linspace(0.0, 1.0, 5)      # 在闭区间 [0,1] 取 5 个等距点
+
+print(sequence)
+print(grid)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[0 2 4 6 8]
+[0.   0.25 0.5  0.75 1.  ]</pre>
+~~~
+
++arange+ 更适合整数步长；浮点网格优先 +linspace+，因为浮点步长可能带来端点误差。
+
+== 2. axis：到底沿哪个方向计算
+
++axis+ 表示“被消去的轴”。对二维 +(行,列)+ 数组：
+
+- +axis=0+ 消去行，得到每一列一个结果；
+- +axis=1+ 消去列，得到每一行一个结果；
+- 不写 +axis+ 会把所有元素一起归约成一个数。
+
+~~~
+{}{python}
+X = np.array([[1, 2, 3],
+              [4, 5, 6]])
+
+print("all:", X.sum())
+print("axis=0:", X.sum(axis=0))
+print("axis=1:", X.sum(axis=1))
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">all: 21
+axis=0: [5 7 9]
+axis=1: [ 6 15]</pre>
+~~~
+
+把 +axis=0+ 想成“把第 0 轴上的两行压掉”，所以保留三列；不要只背“按列算”，因为高维数组中这种口诀容易失效。
+
+=== 2.1 keepdims 为什么有用
+
+~~~
+{}{python}
+row_mean = X.mean(axis=1, keepdims=True)  # 保留被归约的轴，形状为 (2,1)
+centered = X - row_mean                   # (2,3) 减 (2,1)，按行广播
+
+print(row_mean)
+print(row_mean.shape)
+print(centered)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[[2.]
+ [5.]]
+(2, 1)
+[[-1.  0.  1.]
+ [-1.  0.  1.]]</pre>
+~~~
+
+若省略 +keepdims=True+，+row_mean+ 形状是 +(2,)+，不能按照预期与 +(2,3)+ 相减。
+
+== 3. 索引、切片、视图与复制
+
+=== 3.1 基础索引
+
+~~~
+{}{python}
+X = np.arange(12).reshape(3, 4)
+
+print(X)
+print("one value:", X[1, 2])       # 第 2 行、第 3 列；索引从 0 开始
+print("column:", X[:, 1])          # 所有行，第 2 列；形状 (3,)
+print("block:\n", X[0:2, 1:3])     # 前两行、中间两列
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[[ 0  1  2  3]
+ [ 4  5  6  7]
+ [ 8  9 10 11]]
+one value: 6
+column: [1 5 9]
+block:
+ [[1 2]
+ [5 6]]</pre>
+~~~
+
+=== 3.2 为什么切片会修改原数组
+
+基础切片通常返回视图：新数组共享原来的数据缓冲区。
+
+~~~
+{}{python}
+x = np.array([10, 20, 30, 40])
+view = x[1:3]          # view 指向 x 中间两格，并没有复制数据
+view[0] = 999          # 修改共享数据
+
+print(view)
+print(x)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[999  30]
+[ 10 999  30  40]</pre>
+~~~
+
+需要独立数据时显式写 +copy = x\[1:3\].copy()+。整数数组索引与布尔索引通常返回复制：
+
+~~~
+{}{python}
+x = np.array([10, 20, 30, 40])
+picked = x[[1, 3]]     # 高级索引，复制第 2 和第 4 个元素
+picked[0] = -1
+
+print(picked)
+print(x)               # 原数组不变
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[-1 40]
+[10 20 30 40]</pre>
+~~~
+
+== 4. 形状变换：一维向量不是列向量
+
+~~~
+{}{python}
+x = np.array([1, 2, 3])
+row = x.reshape(1, -1)    # 1 行，列数由 -1 自动推断：形状 (1,3)
+column = x.reshape(-1, 1) # 行数自动推断，1 列：形状 (3,1)
+
+print("x:", x.shape)
+print("row:", row.shape)
+print("column:", column.shape)
+print(column)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">x: (3,)
+row: (1, 3)
+column: (3, 1)
+[[1]
+ [2]
+ [3]]</pre>
+~~~
+
++(3,)+ 只有一个轴，既不是 +(1,3)+ 也不是 +(3,1)+。矩阵乘法前必须明确这一点。
+
+=== 4.1 reshape、ravel、flatten 和转置
+
+- +reshape+ 在可能时返回视图，否则可能复制；不要假定它一定是哪一种。
+- +ravel()+ 尽量返回一维视图；+flatten()+ 总是返回复制。
+- +X.T+ 反转二维数组的两个轴。对一维 +(n,)+ 数组，+x.T+ 仍然是 +(n,)+。
+- +concatenate+ 沿已有轴连接；+stack+ 创建一个新轴。
+
+~~~
+{}{python}
+a = np.array([1, 2])
+b = np.array([3, 4])
+
+print(np.concatenate([a, b]))       # 沿已有的一维轴接长
+print(np.stack([a, b], axis=0))     # 新建第 0 轴，得到 2×2
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[1 2 3 4]
+[[1 2]
+ [3 4]]</pre>
+~~~
+
+== 5. 广播：先从右侧比较形状
+
+两个形状从最右维开始逐项比较。每一维必须相等，或至少有一个是 1；缺失的左侧维度视为 1。
+
+~~~
+{}{python}
+X = np.array([[1, 2, 3],
+              [4, 5, 6]])           # shape (2,3)
+column_adjustment = np.array([[10],
+                              [20]]) # shape (2,1)
+
+result = X + column_adjustment       # (2,3) + (2,1) -> (2,3)
+print(result)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[[11 12 13]
+ [24 25 26]]</pre>
+~~~
+
+NumPy 在概念上把 +10+ 横向用于第一行、+20+ 横向用于第二行，但通常不会真的复制出完整临时数组。
+
+=== 5.1 成对差值矩阵
+
+~~~
+{}{python}
+a = np.array([1, 4, 8])
+b = np.array([2, 5])
+
+pairwise = a[:, None] - b[None, :]
+# a[:, None] 是 (3,1)，b[None, :] 是 (1,2)，结果是 (3,2)
+
+print(pairwise)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[[-1 -4]
+ [ 2 -1]
+ [ 6  3]]</pre>
+~~~
+
+能广播不代表计算正确；广播也可能生成巨大的结果。面试中必须同时检查“形状兼容”和“统计含义正确”。
+
+== 6. 向量化、布尔掩码与 where
+
+~~~
+{}{python}
+returns = np.array([0.02, -0.03, np.nan, 0.01])
+
+finite = np.isfinite(returns)              # 标记非 NaN、非无穷的元素
+valid_returns = returns[finite]             # 布尔索引得到复制
+clipped = np.where(finite, returns, 0.0)    # 有效值保留，无效值替换为 0
+
+print(finite)
+print(valid_returns)
+print(clipped)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[ True  True False  True]
+[ 0.02 -0.03  0.01]
+[ 0.02 -0.03  0.    0.01]</pre>
+~~~
+
++np.where(condition, a, b)+ 对每个位置选择 +a+ 或 +b+。不要无意中把缺失收益当成真实的 0；上例只展示机制，实际处理规则必须由数据含义决定。
+
+=== 6.1 向量化收益率
+
+~~~
+{}{python}
+prices = np.array([100.0, 102.0, 101.0, 104.0])
+returns = prices[1:] / prices[:-1] - 1.0
+
+print(np.round(returns, 4))
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[ 0.02   -0.0098  0.0297]</pre>
+~~~
+
++prices\[1:\]+ 和 +prices\[:-1\]+ 形状都为 +(3,)+，因此逐元素相除。向量化通常更快，但仍要先解释数组对齐关系。
+
+== 7. 归约、NaN 与标准差
+
+~~~
+{}{python}
+X = np.array([[1.0, np.nan, 3.0],
+              [4.0, 5.0, 6.0]])
+
+print(np.mean(X, axis=0))       # 普通 mean 会传播 NaN
+print(np.nanmean(X, axis=0))    # nanmean 忽略 NaN
+print(np.nanstd(X, axis=0, ddof=1))  # ddof=1 表示样本标准差
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[2.5 nan 4.5]
+[2.5 5.  4.5]
+[2.12132034        nan 2.12132034]</pre>
+~~~
+
+第二列只有一个非缺失值，因此样本标准差自由度不足，结果是 +nan+ 并可能产生警告。使用 +nanmean+ 不是中立操作：它隐含“缺失值可以忽略”的统计假设。
+
+== 8. 排序、排名与 top-k
+
+~~~
+{}{python}
+scores = np.array([0.4, -0.2, 0.7, 0.1])
+
+ascending_index = np.argsort(scores)          # 返回排序后的原位置
+descending_index = ascending_index[::-1]
+ranks = np.empty_like(ascending_index)
+ranks[ascending_index] = np.arange(len(scores))
+
+print(ascending_index)
+print(descending_index[:2])
+print(ranks)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[1 3 0 2]
+[2 0]
+[2 0 3 1]</pre>
+~~~
+
++argsort+ 返回索引而不是排序后的值。若只需要 top-k，+argpartition+ 平均更快，但被选区内部没有排序保证；通常先选取，再对少量候选排序。
+
+== 9. 线性代数：不要显式求逆
+
+拟合 $y=\beta_0+\beta_1x$：
+
+~~~
+{}{python}
+x = np.array([0.0, 1.0, 2.0])
+y = np.array([1.0, 3.0, 5.0])
+
+X = np.column_stack([np.ones_like(x), x])  # 第一列截距，第二列特征
+beta, residuals, rank, singular_values = np.linalg.lstsq(X, y, rcond=None)
+
+print(X)
+print(beta)
+print("rank:", rank)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出</div><pre class="example-output">[[1. 0.]
+ [1. 1.]
+ [1. 2.]]
+[1. 2.]
+rank: 2</pre>
+~~~
+
+结果是截距 $1$、斜率 $2$。+lstsq+ 比手写 +inv(X.T @ X) @ X.T @ y+ 更稳定，也能处理非方阵。
+
+常用选择：
+
+- 解方阵线性系统 $A\beta=b$：+np.linalg.solve(A, b)+；
+- 最小二乘：+np.linalg.lstsq(X, y, rcond=None)+；
+- 奇异值分解：+np.linalg.svd(X, full_matrices=False)+；
+- 对称矩阵特征分解：+np.linalg.eigh(A)+，不要用一般的 +eig+。
+
+== 10. 随机数与 Monte Carlo
+
+使用局部 +Generator+，不要依赖全局 +np.random.seed+：
+
+~~~
+{}{python}
+rng = np.random.default_rng(42)
+coin_tosses = rng.integers(0, 2, size=(3, 4))  # 0 或 1；上界 2 不包含
+
+print(coin_tosses)
+print("row means:", coin_tosses.mean(axis=1))
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出（NumPy 默认 PCG64）</div><pre class="example-output">[[0 1 1 0]
+ [0 1 0 1]
+ [0 0 1 1]]
+row means: [0.5 0.5 0.5]</pre>
+~~~
+
+不同随机算法或库版本可能改变具体样本；稳定的研究应记录种子、位生成器、库版本和模拟参数。
+
+=== 10.1 用模拟估计圆周率
+
+单位正方形中均匀取点，落入四分之一单位圆的概率为 $\pi/4$。
+
+~~~
+{}{python}
+rng = np.random.default_rng(7)
+n = 100_000
+points = rng.random((n, 2))                    # n 行二维点，坐标在 [0,1)
+inside = np.square(points).sum(axis=1) <= 1.0  # 每个点的 x^2 + y^2
+pi_hat = 4.0 * inside.mean()
+standard_error = 4.0 * inside.std(ddof=1) / np.sqrt(n)
+
+print(round(pi_hat, 4))
+print(round(standard_error, 4))
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">预期输出（NumPy 默认 PCG64）</div><pre class="example-output">3.1454
+0.0052</pre>
+~~~
+
+只报告模拟点估计不够；还应报告 Monte Carlo 标准误。样本量增大四倍，标准误大约减半。
+
+== 11. 高频错误与面试检查表
+
+- 把 +(n,)+ 当成列向量；应显式 +reshape(-1,1)+。
+- 混淆 +axis=0+ 与 +axis=1+；应先写输入和输出形状。
+- 修改切片视图后意外污染原数组；需要独立数据时 +copy()+。
+- 广播成功就认为计算正确；仍需检查统计含义和内存规模。
+- 用 +np.vectorize+ 误以为获得真正底层向量化；它主要是便利循环，不保证性能。
+- 显式求逆解方程；优先 +solve+ 或 +lstsq+。
+- 看到 NaN 就机械使用 +nanmean+；先定义缺失机制和样本规则。
+- 未固定局部随机生成器，或只给点估计不报告模拟误差。
+
+== 12. 官方教程、用户指南与练习
+
+- [https://numpy.org/doc/stable/user/absolute_beginners.html NumPy: the absolute basics for beginners]：从数组创建、索引、形状到基本运算的官方入门教程。
+- [https://numpy.org/doc/stable/user/basics.html NumPy Fundamentals]：dtype、广播、索引、视图与复制等核心概念。
+- [https://numpy.org/doc/stable/user/basics.broadcasting.html Broadcasting] 与 [https://numpy.org/doc/stable/user/basics.copies.html Copies and Views]：面试最常考的两个主题。
+- [https://numpy.org/learn/ NumPy Learn]：由 NumPy 社区筛选的教程、可视化指南、练习和书籍。
+- [https://numpy.org/numpy-tutorials/ NumPy Tutorials]：NumPy 文档团队维护的可运行 Jupyter 教程。
+- [https://numpy.org/doc/stable/numpy-user.pdf NumPy User Guide PDF]：适合离线查阅的完整官方手册。

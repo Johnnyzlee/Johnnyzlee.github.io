@@ -1,12 +1,22 @@
 # jemdoc: menu{MENU}{blog.html}, nofooter  
 = Li Zeng's Blogs
 
-== Mathematical Problems & Puzzles
-- [blogs/mathematical-problems-and-puzzles/brainteasers.html Brainteasers]
+== Quantitative Career Resources
+
+=== Study Guides
+- [blogs/technical-notes/quant-math-review.html Quantitative Research Interview Mathematics Review]
+- [blogs/technical-notes/python-for-quant-interviews.html Python for Quantitative Research Interviews]
+- [blogs/technical-notes/numpy-for-quant-interviews.html NumPy for Quantitative Research Interviews]
+- [blogs/technical-notes/pandas-for-quant-interviews.html pandas for Quantitative Research Interviews]
+- [blogs/technical-notes/scikit-learn-for-quant-interviews.html scikit-learn for Quantitative Research Interviews]
+- [blogs/technical-notes/algorithms-for-quant-interviews.html Algorithms for Quantitative Research Interviews]
+
+=== Problem Sets
+- [blogs/mathematical-problems-and-puzzles/brainteasers.html Assorted Brainteasers]
+- [blogs/technical-notes/quant-interview-question-bank.html Quantitative Research Interview Mathematics Question Bank]
+- [blogs/book-based-question-banks/mosteller-probability-problems.html Mosteller: Fifty Challenging Problems in Probability]
+- [blogs/book-based-question-banks/crack-heard-on-the-street-question-bank.html Crack: Heard on the Street]
+- [blogs/book-based-question-banks/zhou-quant-finance-interview-question-bank.html Zhou: A Practical Guide to Quantitative Finance Interviews]
 
 == Technical Notes
-- [blogs/technical-notes/quant-math-review.html Quantitative Research Interview Mathematics Review]
-- [blogs/technical-notes/quant-interview-question-bank.html Quantitative Research Mathematics Question Bank]
-- [blogs/technical-notes/python-for-quant-interviews.html Python for Quantitative Research Interviews]
-- [blogs/technical-notes/algorithms-for-quant-interviews.html Algorithms for Quantitative Research Interviews]
 - [blogs/technical-notes/hkust-hpc-server-guide.html HKUST HPC Server Guide]

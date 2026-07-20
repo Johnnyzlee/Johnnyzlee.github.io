@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head>
+<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../blog-note.css" type="text/css" />
+<script src="../math-render.js" type="text/javascript"></script>
+<script src="../blog-sidebar.js" type="text/javascript"></script>
+<title>Mosteller’s Fifty Challenging Problems</title>
+</head>
+<body>
+<div id="layout-content">
+<div id="toptitle">
+<h1>Mosteller’s Fifty Challenging Problems</h1>
+<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>更新于 2026-07-20</i></div>
+</div>
+<p>本页依据 Frederick Mosteller 的 <a href="https://github.com/manavkapadnis/ALL-ML-DS-cheatsheets/blob/master/Fifty_Challenging_Problems_in_Probability.pdf"><i>Fifty Challenging Problems in Probability</i></a> 选取 16 个代表性题型，按知识结构重新分类。题面与解析均为独立改写；中文与英文题干并列，Solution 使用英文。</p>
+<div class="page-toc" role="navigation" aria-labelledby="mosteller-toc-title">
+<div class="page-toc-title" id="mosteller-toc-title">目录</div>
+<ul>
+<li><a href="#mosteller-counting">A. 计数、条件概率与对称性</a></li>
+<li><a href="#mosteller-games">B. 游戏、决策与策略</a></li>
+<li><a href="#mosteller-geometry">C. 随机几何与期望</a></li>
+<li><a href="#mosteller-walks">D. 随机游走与最优停止</a></li>
+</ul>
+</div>
+<div class="section-anchor" id="mosteller-counting" aria-hidden="true"></div>
+<h2>A. 计数、条件概率与对称性</h2>
+<h3>M1 [Medium] The Sock Drawer / 袜子抽屉</h3>
+<p><b>中文：</b> 抽屉中有 $r$ 只红袜和 $b$ 只黑袜。随机不放回抽两只，两只都是红袜的概率为 $1/2$。（a）袜子总数最少是多少？（b）若黑袜数还必须为偶数，最少是多少？</p>
+<p><b>English:</b> A drawer contains $r$ red and $b$ black socks. Two are drawn uniformly without replacement, and the probability that both are red is $1/2$. (a) What is the smallest possible total? (b) What is the smallest total if $b$ must be even?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The condition is</p><p class="equation-line">$$\frac{r(r-1)}{(r+b)(r+b-1)}=\frac12.$$</p><p>The smallest positive integer solution is $(r,b)=(3,1)$, so the answer to (a) is <strong>4</strong>. Continuing the integer solutions of $2r(r-1)=n(n-1)$, the first one with even $b=n-r$ is $(r,b)=(15,6)$, so (b) is <strong>21</strong>.</p>
+</div></details>
+<h3>M2 [Core] The Flippant Juror / 随机裁决的陪审员</h3>
+<p><b>中文：</b> 三人陪审团中，两人各自独立地以概率 $p$ 作出正确判断，第三人抛公平硬币决定；多数票胜。它与一位以概率 $p$ 判断正确的单人陪审团相比，谁更准确？</p>
+<p><b>English:</b> In a three-person jury, two jurors independently decide correctly with probability $p$, while the third flips a fair coin. Majority rules. Is this jury more accurate than a single juror who is correct with probability $p$?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The jury is correct if both informed jurors are correct, or if they disagree and the coin-flipping juror breaks the tie correctly:</p><p class="equation-line">$$p^2+2p(1-p)\frac12=p.$$</p><p>The two procedures have exactly the same accuracy. The random third vote does not aggregate additional information.</p>
+</div></details>
+<h3>M3 [Core] Collecting Five Coupons / 集齐五种优惠券</h3>
+<p><b>中文：</b> 每盒麦片独立且等概率地附带编号 1 至 5 中的一张优惠券。集齐五种优惠券平均需要买多少盒？</p>
+<p><b>English:</b> Each cereal box independently contains one of five equally likely coupon types. What is the expected number of boxes needed to collect all five?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>After $k$ types have been collected, the chance that the next box contains a new type is $(5-k)/5$, so the expected additional wait is $5/(5-k)$. Hence</p><p class="equation-line">$$\mathbb E[T]=5\left(1+\frac12+\frac13+\frac14+\frac15\right)=\frac{137}{12}\approx11.42.$$</p>
+</div></details>
+<h3>M4 [Core] Waiting for the First Ace / 等待第一张 A</h3>
+<p><b>中文：</b> 一副 52 张的标准扑克牌充分洗匀后，从顶部逐张翻开，直到出现第一张 A。翻牌张数的期望是多少？</p>
+<p><b>English:</b> A standard 52-card deck is shuffled and cards are revealed until the first ace appears. What is the expected number of cards revealed?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The four aces divide the 48 non-aces into five exchangeable gaps. The expected number of non-aces before the first ace is $48/5$, so</p><p class="equation-line">$$\mathbb E[T]=1+\frac{48}{5}=\frac{53}{5}=10.6.$$</p><p>Equivalently, the expected minimum of four sampled positions from $\{1,\ldots,52\}$ is $(52+1)/(4+1)$.</p>
+</div></details>
+<div class="section-anchor" id="mosteller-games" aria-hidden="true"></div>
+<h2>B. 游戏、决策与策略</h2>
+<h3>M5 [Core] Successive Wins / 连赢两局</h3>
+<p><b>中文：</b> 你在三局中交替对阵较弱的对手和较强的对手，只要连续赢两局就获奖。单局胜率分别为 $p$ 和 $q$，其中 $p&gt;q$。应把谁安排在中间一局？</p>
+<p><b>English:</b> You play three independent matches against a weaker and a stronger opponent in alternating order. You win the prize if you win two consecutive matches. The win probabilities are $p$ and $q$, with $p&gt;q$. Who should be placed in the middle match?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The middle match is indispensable. Weak–Strong–Weak succeeds with probability $q[1-(1-p)^2]=pq(2-p)$; Strong–Weak–Strong succeeds with $p[1-(1-q)^2]=pq(2-q)$. Since $p&gt;q$, choose <strong>Strong–Weak–Strong</strong>.</p>
+</div></details>
+<h3>M6 [Core] Chuck-a-Luck House Edge / 三骰押点的庄家优势</h3>
+<p><b>中文：</b> 玩家押一个点数，掷三枚公平骰子。若该点数出现 $k=1,2,3$ 次，净赢 $k$ 个单位；一次也未出现则净输 1 个单位。每押 1 单位的期望净收益是多少？</p>
+<p><b>English:</b> A player chooses one face and rolls three fair dice. If that face appears $k=1,2,3$ times, the net profit is $k$ units; if it never appears, the loss is one unit. What is the expected net profit per unit stake?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $K\sim\operatorname{Binomial}(3,1/6)$. The payoff equals $K$ when $K&gt;0$ and $-1$ when $K=0$. Therefore</p><p class="equation-line">$$\mathbb E[\Pi]=\mathbb E[K]-\Pr(K=0)=\frac12-\left(\frac56\right)^3=-\frac{17}{216}.$$</p><p>The house edge is $17/216\approx0.0787$, or <strong>7.87%</strong>.</p>
+</div></details>
+<h3>M7 [Medium] Winning at Craps / Craps 的获胜概率</h3>
+<p><b>中文：</b> 首掷两骰，和为 7 或 11 立即胜，2、3、12 立即负；否则该和成为 point，继续掷到再次出现 point 则胜、先出现 7 则负。求玩家获胜概率。</p>
+<p><b>English:</b> In craps, a first-roll total of 7 or 11 wins, while 2, 3, or 12 loses. Otherwise the total becomes the point; the player wins by rolling the point again before rolling 7. Find the win probability.</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The immediate-win probability is $8/36$. Conditional on points $4$ or $10$, $5$ or $9$, and $6$ or $8$, the eventual win probabilities are respectively $3/(3+6)$, $4/(4+6)$, and $5/(5+6)$. Thus</p><p class="equation-line">$$\frac8{36}+2\left[\frac3{36}\frac13+\frac4{36}\frac25+\frac5{36}\frac5{11}\right]=\frac{244}{495}\approx0.49293.$$</p>
+</div></details>
+<h3>M8 [Hard] The Three-Cornered Duel / 三人决斗</h3>
+<p><b>中文：</b> A、B、C 的命中率分别为 0.3、1、0.5，依次循环开枪，可选择任一仍在场的对手；中弹者退出。A 先开枪，应采取什么第一步策略？</p>
+<p><b>English:</b> A, B, and C have hit probabilities $0.3$, $1$, and $0.5$. They fire cyclically, each choosing any surviving opponent; a hit eliminates the target. A fires first. What should A do initially?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A should deliberately miss. B then rationally removes C, the more accurate rival, and A gets one shot at perfect-shooting B; A survives with probability $0.3$. Shooting C first gives at most $0.7(0.3)=0.21$. Shooting B gives about $0.7(0.3)+0.3[0.5(0.3)/(1-0.5\cdot0.7)]\approx0.2792$. Strategic inaction is optimal because being the weakest shooter temporarily makes A a less attractive target.</p>
+</div></details>
+<div class="section-anchor" id="mosteller-geometry" aria-hidden="true"></div>
+<h2>C. 随机几何与期望</h2>
+<h3>M9 [Core] Coin Entirely Inside a Square / 硬币完整落入方格</h3>
+<p><b>中文：</b> 边长 1 英寸的方格无限铺开，直径 $3/4$ 英寸的硬币中心在一个基本方格内均匀落下。硬币完整位于某一方格内的概率是多少？</p>
+<p><b>English:</b> A plane is tiled by one-inch squares. The center of a coin of diameter $3/4$ inch lands uniformly in a fundamental square. What is the probability that the coin lies entirely inside one square?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The center must stay at least $3/8$ inch from every grid line. The admissible region is a square of side $1-2(3/8)=1/4$, so the probability is</p><p class="equation-line">$$\left(\frac14\right)^2=\frac1{16}.$$</p>
+</div></details>
+<h3>M10 [Medium] Random-Chord Ambiguity / 随机弦的歧义</h3>
+<p><b>中文：</b> 在半径为 $R$ 的圆中“随机选一条弦”。弦长超过 $R$ 的概率是多少？说明为什么题目若不定义抽样机制就没有唯一答案。</p>
+<p><b>English:</b> A chord is chosen “at random” in a circle of radius $R$. What is the probability that its length exceeds $R$? Explain why no unique answer exists without a sampling rule.</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The condition is that the chord's distance $D$ from the center satisfies $D&lt;\sqrt3R/2$. Uniform endpoints give probability $2/3$; choosing a radius and taking $D$ uniformly on $[0,R]$ gives $\sqrt3/2$; choosing the midpoint uniformly in the disk gives $3/4$. Each is internally valid but represents a different probability measure. “Random chord” is incomplete model specification.</p>
+</div></details>
+<h3>M11 [Medium] The Broken Bar / 随机折断两次</h3>
+<p><b>中文：</b> 在单位线段上独立均匀选两个断点，得到三段。最短、中间和最长一段的期望长度分别是多少？</p>
+<p><b>English:</b> Two independent uniform breakpoints split a unit bar into three pieces. What are the expected lengths of the shortest, middle, and longest pieces?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The three unsorted spacings have the uniform Dirichlet$(1,1,1)$ distribution. Integrating their order statistics gives</p><p class="equation-line">$$\mathbb E[L_{(1)}]=\frac19,\qquad \mathbb E[L_{(2)}]=\frac5{18},\qquad \mathbb E[L_{(3)}]=\frac{11}{18}.$$</p><p>They sum to one, providing an immediate consistency check.</p>
+</div></details>
+<h3>M12 [Core] Expected Number of Matches / 信件入对信封</h3>
+<p><b>中文：</b> $n$ 封写给不同收件人的信随机装入 $n$ 个已写地址的信封。装入正确对应信封的信件数量期望是多少？</p>
+<p><b>English:</b> Letters for $n$ distinct recipients are placed uniformly at random into $n$ addressed envelopes. What is the expected number of correctly matched letters?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $I_i$ indicate that letter $i$ enters its own envelope. Since $\mathbb E[I_i]=1/n$, linearity gives</p><p class="equation-line">$$\mathbb E\left[\sum_{i=1}^n I_i\right]=n\cdot\frac1n=1.$$</p><p>The indicators are dependent, but independence is unnecessary for linearity of expectation.</p>
+</div></details>
+<div class="section-anchor" id="mosteller-walks" aria-hidden="true"></div>
+<h2>D. 随机游走与最优停止</h2>
+<h3>M13 [Medium] Escaping the Cliff / 逃离悬崖</h3>
+<p><b>中文：</b> 醉汉距离悬崖边一步。每一步以概率 $2<i>3$ 远离悬崖，以概率 $1</i>3$ 走向悬崖。无限行走时，他永不坠崖的概率是多少？</p>
+<p><b>English:</b> A walker starts one step from a cliff. Each step moves away with probability $2<i>3$ and toward the cliff with probability $1</i>3$. What is the probability that he never hits the cliff?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For a biased random walk with upward probability $p&gt;q$, the probability of ever hitting zero from state $i$ is $(q/p)^i$. Starting at $i=1$,</p><p class="equation-line">$$\Pr(\text{hit cliff})=\frac{1/3}{2/3}=\frac12,$$</p><p>so the escape probability is <strong>$1/2$</strong>.</p>
+</div></details>
+<h3>M14 [Medium] Gambler's Ruin from One Dollar / 一美元起步的破产问题</h3>
+<p><b>中文：</b> M 有 1 美元，N 有 2 美元。每局赢家从输家获得 1 美元；M 每局以概率 $2/3$ 获胜。直到一人破产。M 最终赢得全部 3 美元的概率是多少？</p>
+<p><b>English:</b> M starts with one dollar and N with two. Each round transfers one dollar from loser to winner, and M wins a round with probability $2/3$. What is the probability that M eventually owns all three dollars?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For gambler's ruin with target $N=3$, start $i=1$, and $p\ne q$,</p><p class="equation-line">$$u_i=\frac{1-(q/p)^i}{1-(q/p)^N}.$$</p><p>Here $q/p=1/2$, so $u_1=(1-1/2)/(1-1/8)=\mathbf{4/7}$.</p>
+</div></details>
+<h3>M15 [Medium] Choosing the Largest Dowry / 最大嫁妆与最优停止</h3>
+<p><b>中文：</b> 100 个互不相同的数按随机顺序出现，每次只能知道当前数相对之前的排名，并必须立即接受或永远拒绝；只能接受一次。怎样最大化选中全局最大值的概率？</p>
+<p><b>English:</b> One hundred distinct values arrive in random order. You observe only relative ranks and must accept or reject each immediately, accepting at most once. How do you maximize the chance of selecting the overall maximum?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Reject the first $r$ observations, then accept the first subsequent record. The exact success probability is</p><p class="equation-line">$$P(r)=\frac{r}{100}\sum_{k=r+1}^{100}\frac1{k-1}.$$</p><p>The maximizing cutoff is near $100/e$, so reject roughly the first <strong>37</strong> and then take the next record. The large-$n$ success probability approaches $1/e$.</p>
+</div></details>
+<h3>M16 [Medium] Buffon's Needle / Buffon 投针</h3>
+<p><b>中文：</b> 平面上有间距 $2a$ 的平行线，把长度 $2\ell&lt;2a$ 的针随机抛下，针的方向均匀，针中心相对最近线的位置均匀。针与某条线相交的概率是多少？</p>
+<p><b>English:</b> Parallel lines are spaced $2a$ apart. A needle of length $2\ell&lt;2a$ is tossed with uniform orientation and uniform center position relative to the nearest line. What is the crossing probability?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Given acute angle $\theta$ to the lines, a crossing occurs when the center is within $\ell\sin\theta$ of a line, so the conditional probability is $(\ell/a)\sin\theta$. Averaging $\theta$ uniformly on $[0,\pi/2]$ gives</p><p class="equation-line">$$P=\frac{2}{\pi}\int_0^{\pi/2}\frac{\ell}{a}\sin\theta\,d\theta=\frac{2\ell}{\pi a}.$$</p>
+</div></details>
+<p><b>书目定位：</b> 以上题型分别对应原书的袜子、陪审团、优惠券、第一张 A、连续获胜、Chuck-a-Luck、Craps、三人决斗、方格硬币、随机弦、折断木条、匹配、悬崖随机游走、赌徒破产、最大嫁妆与 Buffon 投针问题。</p>
+</div>
+</body>
+</html>
