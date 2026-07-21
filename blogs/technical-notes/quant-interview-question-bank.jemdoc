@@ -1,13 +1,25 @@
-# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}
-= 量化研究面试数学题库
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}, addjs{../blog-sidebar}
+= Quantitative Research Interview Mathematics Question Bank
 [../../blog.html ← Blogs] \M /更新于 2026-07-20/
 
 ~~~
 {}{raw}
-<div class="page-lead"><strong>使用说明：</strong>每道题同时提供中文与英文题面，解析统一使用英文并默认折叠。建议先在纸上完整作答，再展开核对。</div>
+<div class="page-toc" role="navigation" aria-labelledby="question-bank-toc-title">
+<div class="page-toc-title" id="question-bank-toc-title">目录</div>
+<ul>
+<li><a href="#probability-random-processes">A. 概率与随机过程</a></li>
+<li><a href="#statistics-regression">B. 统计与回归</a></li>
+<li><a href="#linear-algebra-matrix-calculus">C. 线性代数与矩阵微积分</a></li>
+<li><a href="#combinatorics-discrete-reasoning">D. 组合数学与离散推理</a></li>
+<li><a href="#machine-learning-quant-research">E. 机器学习数学与量化研究</a></li>
+<li><a href="#classic-interview-strategies">F. 经典面试策略题</a></li>
+<li><a href="#derivatives-financial-mathematics">G. 衍生品与金融数学</a></li>
+<li><a href="#practice-method">H. 练习方法</a></li>
+<li><a href="#references">I. 参考来源与延伸题库</a></li>
+</ul>
+</div>
+<div class="section-anchor" id="probability-random-processes" aria-hidden="true"></div>
 ~~~
-
-*建议用时：* Core 5–10 分钟；Medium 10–15 分钟；Hard 20–30 分钟。面试时应主动说明假设、验证一个小例子、口述推导，并对结果做数量级与边界检查。
 
 == A. 概率与随机过程
 
@@ -31,7 +43,7 @@
 ~~~
 {}{raw}
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Bayes' rule gives</p><p class="equation-line">$$P(D\mid +)=\frac{0.99\cdot0.01}{0.99\cdot0.01+0.05\cdot0.99}.$$</p><p>The numerator is $0.0099$ and the denominator is $0.0594$, so the answer is <strong>$\frac16\approx16.7\%$</strong>. The low base rate makes false positives numerous despite high sensitivity.</p>
+<p>Bayes' rule gives</p><p class="equation-line">$$P(D\mid +)=\frac{0.99\cdot0.01}{0.99\cdot0.01+0.05\cdot0.99}.$$</p><p>The numerator is $0.0099$ and the denominator is $0.0594$, so the answer is <strong>$1/6\approx0.167$ (16.7%)</strong>. The low base rate makes false positives numerous despite high sensitivity.</p>
 </div></details>
 ~~~
 
@@ -79,7 +91,13 @@
 ~~~
 {}{raw}
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Use the complement:</p><p class="equation-line">$$P(\text{collision})=1-\prod_{k=0}^{22}\frac{365-k}{365}.$$</p><p>This is approximately <strong>$0.5073$</strong>. The rough Poisson approximation is $1-\exp[-23\cdot22/(2\cdot365)]\approx0.500$.</p>
+<p>Use the complement. If the first $k$ people have distinct birthdays, person $k+1$ avoids them with probability $(365-k)/365$. Hence</p><p class="equation-line">$$P(\text{no collision})=\prod_{k=0}^{22}\left(1-\frac{k}{365}\right),$$</p><p class="equation-line">$$P(\text{collision})=1-\prod_{k=0}^{22}\left(1-\frac{k}{365}\right)\approx\mathbf{0.507297}.$$</p>
+
+<p><strong>Where does the approximation come from?</strong> Take logarithms so that the product becomes a sum:</p><p class="equation-line">$$\log P(\text{no collision})=\sum_{k=0}^{22}\log\left(1-\frac{k}{365}\right).$$</p><p>Because $k/365$ is small (at most $22/365\approx0.0603$), use the first-order Taylor approximation</p><p class="equation-line">$$\log(1-x)\approx-x.$$</p><p>Therefore</p><p class="equation-line">$$\log P(\text{no collision})\approx-\sum_{k=0}^{22}\frac{k}{365}=-\frac{22\cdot23}{2\cdot365}=-\frac{253}{365}.$$</p><p>Exponentiating gives</p><p class="equation-line">$$P(\text{collision})\approx1-e^{-253/365}\approx1-e^{-0.6931507}\approx\mathbf{0.500002}.$$</p><p>The numerical coincidence $253/365\approx\log 2$ explains why the rough answer is almost exactly $1/2$.</p>
+
+<p><strong>Poisson interpretation.</strong> There are $\binom{23}{2}=253$ pairs of people, and each pair matches with probability $1/365$. Thus the expected number of matching pairs is</p><p class="equation-line">$$\lambda=\binom{23}{2}\frac1{365}=\frac{253}{365}.$$</p><p>Matching pairs are rare and only weakly dependent, so their count is approximately $\operatorname{Poisson}(\lambda)$. Hence</p><p class="equation-line">$$P(\text{at least one match})\approx1-P(\operatorname{Poisson}(\lambda)=0)=1-e^{-\lambda}.$$</p>
+
+<p><strong>Why is $0.5000$ below the exact $0.5073$?</strong> The first-order approximation omits the next negative term in</p><p class="equation-line">$$\log(1-x)=-x-\frac{x^2}{2}-\frac{x^3}{3}-\cdots.$$</p><p>Keeping the quadratic term gives</p><p class="equation-line">$$\log P(\text{no collision})\approx-\frac{253}{365}-\frac{1}{2\cdot365^2}\sum_{k=0}^{22}k^2=-\frac{253}{365}-\frac{3795}{2\cdot365^2},$$</p><p>and therefore</p><p class="equation-line">$$P(\text{collision})\approx1-e^{-0.7073935}\approx\mathbf{0.507073},$$</p><p>already very close to the exact value $0.507297$.</p>
 </div></details>
 ~~~
 
@@ -103,7 +121,48 @@
 ~~~
 {}{raw}
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>For a binary pattern of length 3, the base contribution is $2^3=8$. A proper prefix that is also a suffix creates overlap and adds its corresponding power of 2. HHT has no nonempty proper border, so its expectation is <strong>$8$</strong>. HTH has the one-symbol border H, adding $2^1$, so its expectation is <strong>$10$</strong>. A state-machine first-step calculation gives the same result.</p>
+<p><strong>1. State-machine derivation.</strong> The key is to keep only the part of the past that can still help complete the target. After any sequence of tosses, define the state to be the <em>longest suffix of the observed sequence that is also a prefix of the target</em>. Everything before that suffix is irrelevant to the future waiting time.</p>
+
+<p><strong>Target HHT.</strong> The unfinished states are $0$ (no useful suffix), H, and HH. Let $E_0,E_H,E_{HH}$ be the expected additional numbers of tosses from these states.</p>
+<ul>
+<li>From state $0$, H moves to H and T leaves us at $0$:</li>
+</ul>
+<p class="equation-line">$$E_0=1+\frac12E_H+\frac12E_0=2+E_H.$$</p>
+<ul>
+<li>From H, another H moves to HH, while T produces HT. Since HT has no nonempty suffix that is a prefix of HHT, the latter transition returns to $0$:</li>
+</ul>
+<p class="equation-line">$$E_H=1+\frac12E_{HH}+\frac12E_0.$$</p>
+<ul>
+<li>From HH, T completes HHT. If H occurs, the observed ending is HHH; its longest useful suffix is still HH, so the state remains HH:</li>
+</ul>
+<p class="equation-line">$$E_{HH}=1+\frac12\cdot0+\frac12E_{HH}=2.$$</p>
+<p>Therefore $E_H=2+\frac12E_0$, and hence</p>
+<p class="equation-line">$$E_0=2+E_H=4+\frac12E_0,$$</p>
+<p>which gives <strong>$E_0=8$</strong>.</p>
+
+<p><strong>Target HTH.</strong> The unfinished states are $0$, H, and HT. Let the corresponding expectations be $F_0,F_H,F_{HT}$.</p>
+<ul>
+<li>From $0$, H moves to H and T leaves us at $0$, so $F_0=2+F_H$.</li>
+<li>From H, T moves to HT. If H occurs, the ending is HH, whose longest suffix matching a prefix of HTH is H; therefore the state stays at H:</li>
+</ul>
+<p class="equation-line">$$F_H=1+\frac12F_H+\frac12F_{HT}=2+F_{HT}.$$</p>
+<ul>
+<li>From HT, H completes HTH, while T produces HTT and returns to $0$:</li>
+</ul>
+<p class="equation-line">$$F_{HT}=1+\frac12\cdot0+\frac12F_0=1+\frac12F_0.$$</p>
+<p>Combining the three equations,</p>
+<p class="equation-line">$$F_0=2+F_H=4+F_{HT}=5+\frac12F_0,$$</p>
+<p>so <strong>$F_0=10$</strong>.</p>
+
+<p><strong>2. Prefix-suffix overlap formula.</strong> For a word $w=w_1\cdots w_m$ over $q$ equally likely symbols, define its set of <em>border lengths</em> by</p>
+<p class="equation-line">$$\mathcal B(w)=\left\{k\in\{1,\ldots,m\}:w_1\cdots w_k=w_{m-k+1}\cdots w_m\right\}.$$</p>
+<p>Thus $k$ belongs to $\mathcal B(w)$ when the prefix of length $k$ is also the suffix of length $k$. The full length $m$ is always included; any $k&lt;m$ is a proper self-overlap. The expected waiting time is</p>
+<p class="equation-line">$$\boxed{\mathbb E[T_w]=\sum_{k\in\mathcal B(w)}q^k}.$$</p>
+<p>For a fair coin, $q=2$. HHT has $\mathcal B(HHT)=\{3\}$, so its expectation is $2^3=8$. HTH has $\mathcal B(HTH)=\{1,3\}$ because its first and last symbols are both H, so its expectation is $2^1+2^3=10$. As another check, HHH has border lengths $1,2,3$ and expectation $2+4+8=14$.</p>
+
+<p><strong>Why does the formula work?</strong> Imagine that immediately before every toss a new bettor arrives with one unit and bets the entire current capital successively on the symbols of $w$. A correct fair-coin guess doubles the capital, and an incorrect guess loses it. At the first completion time $T_w$, a bettor survives exactly when the portion just matched is both a prefix and a suffix of $w$, that is, when its length is in $\mathcal B(w)$. Such a bettor has capital $2^k$. Fairness (or optional stopping applied to this bounded-increment game) equates the expected total amount put in, $\mathbb E[T_w]$, with the total surviving capital, $\sum_{k\in\mathcal B(w)}2^k$.</p>
+
+<p><strong>Interpretation.</strong> HTH can overlap with a later copy through its final H: in HTHTH, the last H of the first occurrence is already the first H of the next. This creates clustered occurrences and contributes the extra $2^1$. HHT has no nonempty proper prefix that is also a suffix, so it has no such extra term. The state-machine equations are the constructive method; the border formula is the compact shortcut.</p>
 </div></details>
 ~~~
 
@@ -115,7 +174,13 @@
 ~~~
 {}{raw}
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>After $k$ distinct types have been collected, the probability that the next draw is new is $\frac{n-k}{n}$, so the expected waiting time is $\frac{n}{n-k}$. Summing over $k=0,\ldots,n-1$ gives</p><p class="equation-line">$$\mathbb E[T]=nH_n=n\sum_{j=1}^{n}\frac1j\sim n\log n+\gamma n.$$</p>
+<p>After $k$ distinct types have been collected, the probability that the next draw is new is $(n-k)/n$, so the expected waiting time is $n/(n-k)$. Equivalently, when $m$ types remain missing, the expected wait for the next new type is $n/m$. Summing the stages gives the exact answer</p><p class="equation-line">$$\mathbb E[T]=\sum_{m=1}^{n}\frac{n}{m}=nH_n,\qquad H_n=\sum_{m=1}^{n}\frac1m.$$</p>
+
+<p><strong>Why is $H_n$ approximately $\log n$?</strong> The function $1/x$ is positive and decreasing, so the sum of unit-width rectangles can be compared with the area under $1/x$:</p><p class="equation-line">$$\int_1^{n+1}\frac{dx}{x}\le H_n\le1+\int_1^n\frac{dx}{x}.$$</p><p>Thus</p><p class="equation-line">$$\log(n+1)\le H_n\le1+\log n,$$</p><p>which already proves $H_n=\log n+O(1)$ and therefore $\mathbb E[T]\sim n\log n$.</p>
+
+<p>The rectangle sum stays slightly above the logarithmic area. Their difference converges to the Euler–Mascheroni constant</p><p class="equation-line">$$\gamma=\lim_{n\to\infty}\left(H_n-\log n\right)\approx0.5772156649.$$</p><p>Euler–Maclaurin summation sharpens the integral comparison to</p><p class="equation-line">$$H_n=\log n+\gamma+\frac{1}{2n}-\frac{1}{12n^2}+O\!\left(\frac1{n^4}\right).$$</p><p>Multiplying by $n$ gives</p><p class="equation-line">$$\boxed{\mathbb E[T]=n\log n+\gamma n+\frac12-\frac{1}{12n}+O\!\left(\frac1{n^3}\right)}.$$</p>
+
+<p>So $n\log n$ is the leading-order approximation, $\gamma n$ is the main correction, and $1/2$ is the next correction. For example, when $n=100$, $100H_{100}\approx518.738$, whereas $100\log100\approx460.517$; adding $100\gamma+1/2$ gives $518.739$, already accurate to three decimal places.</p>
 </div></details>
 ~~~
 
@@ -228,9 +293,9 @@
 ~~~
 
 === Q19 \[Medium\] Common probability shock \/ 共同概率冲击
-*中文：* 给定随机成功率 $P$，$n$ 次试验条件独立，$K\\mid P\\sim\\operatorname{Binomial}(n,P)$。设 $\\mathbb E[P]=\\mu$、$\\operatorname{Var}(P)=τ^2$。求 $\\operatorname{Var}(K)$，并与 $\\operatorname{Binomial}(n,\\mu)$ 比较。
+*中文：* 给定随机成功率 $P$，$n$ 次试验条件独立，$K\\mid P\\sim\\operatorname{Binomial}(n,P)$。设 $\\mathbb E(P)=\\mu$、$\\operatorname{Var}(P)=τ^2$。求 $\\operatorname{Var}(K)$，并与 $\\operatorname{Binomial}(n,\\mu)$ 比较。
 
-*English:* Conditional on a random success probability $P$, $n$ trials are independent and $K\\mid P\\sim\\operatorname{Binomial}(n,P)$. If $\\mathbb E[P]=\\mu$ and $\\operatorname{Var}(P)=τ^2$, find $\\operatorname{Var}(K)$ and compare it with $\\operatorname{Binomial}(n,\\mu)$.
+*English:* Conditional on a random success probability $P$, $n$ trials are independent and $K\\mid P\\sim\\operatorname{Binomial}(n,P)$. If $\\mathbb E(P)=\\mu$ and $\\operatorname{Var}(P)=τ^2$, find $\\operatorname{Var}(K)$ and compare it with $\\operatorname{Binomial}(n,\\mu)$.
 
 ~~~
 {}{raw}
@@ -264,9 +329,9 @@
 ~~~
 
 === Q22 \[Medium\] Random sum and Wald's identity \/ 随机和
-*中文：* $X_i$ 为 i.i.d. 且 $\\mathbb E[X_i]=\\mu$，$N$ 是与整个序列独立的非负整数随机变量，$\\mathbb E[N]\\lt\\infty$。求 $\\mathbb E[\\sum_{i=1}^{N}X_i]$。哪些条件不能随意删除？
+*中文：* $X_i$ 为 i.i.d. 且 $\\mathbb E(X_i)=\\mu$，$N$ 是与整个序列独立的非负整数随机变量，$\\mathbb E(N)\\lt\\infty$。求 $\\mathbb E(\\sum_{i=1}^{N}X_i)$。哪些条件不能随意删除？
 
-*English:* Let $X_i$ be i.i.d. with mean $\\mu$, and let $N$ be an independent nonnegative integer-valued variable with finite mean. Find $\\mathbb E[\\sum_{i=1}^{N}X_i]$. Which assumptions should not be casually dropped?
+*English:* Let $X_i$ be i.i.d. with mean $\\mu$, and let $N$ be an independent nonnegative integer-valued variable with finite mean. Find $\\mathbb E(\\sum_{i=1}^{N}X_i)$. Which assumptions should not be casually dropped?
 
 ~~~
 {}{raw}
@@ -276,9 +341,9 @@
 ~~~
 
 === Q23 \[Core\] Fair bits from a biased coin \/ 用有偏硬币生成公平比特
-*中文：* 一枚硬币正面概率 p 未知且 0<p<1。如何仅通过抛这枚硬币生成无偏的 0\/1？期望需要多少次抛掷？
+*中文：* 一枚硬币正面概率 $p$ 未知且 $0\\lt p\\lt1$。如何仅通过抛这枚硬币生成无偏的 0\/1？期望需要多少次抛掷？
 
-*English:* A coin has unknown head probability p with 0&lt;p&lt;1. How can you generate an unbiased bit using only this coin, and what is the expected number of tosses?
+*English:* A coin has unknown head probability $p$ with $0\\lt p\\lt1$. How can you generate an unbiased bit using only this coin, and what is the expected number of tosses?
 
 ~~~
 {}{raw}
@@ -311,6 +376,11 @@
 </div></details>
 ~~~
 
+~~~
+{}{raw}
+<div class="section-anchor" id="statistics-regression" aria-hidden="true"></div>
+~~~
+
 == B. 统计与回归
 
 === Q26 \[Core\] Why divide by n-1? \/ 为什么样本方差除以 n-1？
@@ -338,14 +408,14 @@
 ~~~
 
 === Q28 \[Core\] Confidence-interval interpretation \/ 置信区间的解释
-*中文：* 已得到参数 $θ$ 的一个 $95\\%$ 频率学置信区间 $(L,U)$。“$θ$ 以 $95\\%$ 概率位于此区间”是否正确？
+*中文：* 已得到参数 $θ$ 的一个 95\% 频率学置信区间 $(L,U)$。“$θ$ 以 95\% 概率位于此区间”是否正确？
 
-*English:* A $95\\%$ frequentist confidence interval $(L,U)$ for a parameter $θ$ has been computed. Is it correct to say that $θ$ lies in this realized interval with $95\\%$ probability?
+*English:* A 95\% frequentist confidence interval $(L,U)$ for a parameter $θ$ has been computed. Is it correct to say that $θ$ lies in this realized interval with 95\% probability?
 
 ~~~
 {}{raw}
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Not in the standard frequentist interpretation. The parameter is fixed and the interval is random before sampling. The procedure has $95\%$ long-run coverage: over repeated samples, $95\%$ of constructed intervals contain $\theta$. A posterior probability statement requires a Bayesian model and prior.</p>
+<p>Not in the standard frequentist interpretation. The parameter is fixed and the interval is random before sampling. The procedure has 95% long-run coverage: over repeated samples, 95% of constructed intervals contain $\theta$. A posterior probability statement requires a Bayesian model and prior.</p>
 </div></details>
 ~~~
 
@@ -458,9 +528,9 @@
 ~~~
 
 === Q38 \[Core\] Heteroskedasticity \/ 异方差
-*中文：* 在 $\\mathbb E[ε\\mid X]=0$ 但 $\\operatorname{Var}(ε\\mid X)$ 非常数时，OLS 系数、经典标准误和有效性分别如何？
+*中文：* 在 $\\mathbb E(ε\\mid X)=0$ 但 $\\operatorname{Var}(ε\\mid X)$ 非常数时，OLS 系数、经典标准误和有效性分别如何？
 
-*English:* If $\\mathbb E[ε\\mid X]=0$ but $\\operatorname{Var}(ε\\mid X)$ is not constant, what happens to OLS coefficients, classical standard errors, and efficiency?
+*English:* If $\\mathbb E(ε\\mid X)=0$ but $\\operatorname{Var}(ε\\mid X)$ is not constant, what happens to OLS coefficients, classical standard errors, and efficiency?
 
 ~~~
 {}{raw}
@@ -539,6 +609,11 @@
 <details class="answer"><summary>Solution</summary><div class="answer-content">
 <p>The mean is efficient under light-tailed symmetric models but has unbounded sensitivity. The median is robust but discards magnitude information. Trimming removes tail observations; winsorization caps them. Financial extremes may be data errors, but they may also be genuine crashes, liquidity events, or the source of risk/return. Apply rules using point-in-time information, document them, and stress-test rather than sanitizing away the phenomenon.</p>
 </div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="linear-algebra-matrix-calculus" aria-hidden="true"></div>
 ~~~
 
 == C. 线性代数与矩阵微积分
@@ -711,6 +786,11 @@
 </div></details>
 ~~~
 
+~~~
+{}{raw}
+<div class="section-anchor" id="combinatorics-discrete-reasoning" aria-hidden="true"></div>
+~~~
+
 == D. 组合数学与离散推理
 
 === Q59 \[Core\] Walk on a triangle \/ 三角形上游走
@@ -855,6 +935,11 @@
 <details class="answer"><summary>Solution</summary><div class="answer-content">
 <p>Count the union of multiples:</p><p class="equation-line">$$500+333+200-166-100-66+33=734.$$</p><p>The complement has <strong>$1000-734=266$</strong> integers. A block check also works: $\varphi(30)=8$ valid residues per full block, plus the first 10 numbers of the remainder.</p>
 </div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="machine-learning-quant-research" aria-hidden="true"></div>
 ~~~
 
 == E. 机器学习数学与量化研究
@@ -1123,20 +1208,192 @@
 </div></details>
 ~~~
 
-== F. 练习方法
+~~~
+{}{raw}
+<div class="section-anchor" id="classic-interview-strategies" aria-hidden="true"></div>
+~~~
 
-. 第一轮：Q1–Q7、Q9–Q10、Q13–Q18、Q20–Q21、Q26–Q32、Q34–Q39、Q43、Q45–Q48、Q51–Q55、Q59–Q60、Q63、Q65–Q70、Q71–Q77、Q79、Q81–Q82、Q85–Q91。
+== F. 经典面试策略题
+
+=== Q93 \[Core\] Alternating Opponents \/ 交替对手的三局赛
+*中文：* 你要依次与父亲和网球冠军打三局，并且必须采用“父亲—冠军—父亲”或“冠军—父亲—冠军”的顺序。只要连续赢两局就获胜。设你单局战胜父亲和冠军的概率分别为 $p$ 和 $q$，各局独立，且 $p>q$。应选择哪种顺序？
+
+*English:* You must play three independent matches in either Father–Champion–Father or Champion–Father–Champion order. You win the series if you win two consecutive matches. Your single-match win probabilities are $p$ against your father and $q$ against the champion, with $p>q$. Which order is better?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The middle match must be won. Under Father–Champion–Father, the success probability is</p><p class="equation-line">$$q\left[1-(1-p)^2\right]=pq(2-p).$$</p><p>Under Champion–Father–Champion, it is</p><p class="equation-line">$$p\left[1-(1-q)^2\right]=pq(2-q).$$</p><p>Because $p&gt;q$, we have $2-q&gt;2-p$. Therefore <strong>Champion–Father–Champion</strong> is better: the easier opponent should be placed in the indispensable middle match.</p>
+</div></details>
+~~~
+
+=== Q94 \[Core\] Pepys' Dice Comparison \/ 六骰、十二骰与十八骰
+*中文：* 比较三个事件的概率：（A）掷 6 枚公平骰子，至少出现 1 个六点；（B）掷 12 枚，至少出现 2 个六点；（C）掷 18 枚，至少出现 3 个六点。哪个事件最可能发生？
+
+*English:* Which event is most likely: (A) at least one six in 6 fair-die rolls, (B) at least two sixes in 12 rolls, or (C) at least three sixes in 18 rolls?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Use binomial tail probabilities:</p><p class="equation-line">$$P_A=1-\left(\frac56\right)^6\approx0.6651,$$</p><p class="equation-line">$$P_B=1-\left[\left(\frac56\right)^{12}+12\left(\frac16\right)\left(\frac56\right)^{11}\right]\approx0.6187,$$</p><p class="equation-line">$$P_C=1-\sum_{k=0}^{2}\binom{18}{k}\left(\frac16\right)^k\left(\frac56\right)^{18-k}\approx0.5973.$$</p><p>Thus <strong>event A</strong> is the most likely. Equal expected numbers of sixes do not imply equal upper-tail probabilities.</p>
+</div></details>
+~~~
+
+=== Q95 \[Medium\] Ballot Tie Probability \/ 计票过程何时追平
+*中文：* 候选人 A 获得 $a$ 票，候选人 B 获得 $b$ 票，其中 $a>b$。所有计票顺序等可能。已知第一张票投给 A，在此后的计票过程中，A 与 B 的累计票数至少追平一次的概率是多少？
+
+*English:* Candidate A receives $a$ votes and B receives $b$ votes, where $a>b$, and all vote orders are equally likely. Conditional on the first vote being for A, what is the probability that the running totals are tied at least once later?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Unconditionally, Bertrand's ballot theorem gives $(a-b)/(a+b)$ for staying strictly ahead. Such a path must start with A, and $\Pr(\text{first vote is A})=a/(a+b)$. Therefore</p><p class="equation-line">$$\Pr(\text{strictly ahead throughout}\mid\text{first is A})=\frac{a-b}{a}.$$</p><p>Taking the complement gives</p><p class="equation-line">$$\Pr(\text{a later tie}\mid\text{first is A})=1-\frac{a-b}{a}=\frac{b}{a}.$$</p>
+</div></details>
+~~~
+
+=== Q96 \[Medium\] Secretary Stopping Rule \/ 最优停止与秘书问题
+*中文：* $n$ 位候选人按随机顺序出现；每人面试后必须立即决定是否录用，且只能判断其相对于已面试者的排名。只能录用一人。给出使录用全局最佳候选人概率最大的策略及其渐近成功率。
+
+*English:* The $n$ candidates arrive in a uniformly random order. After each interview you must accept or reject immediately, observing only relative ranks, and may accept only one candidate. Give the rule that maximizes the probability of selecting the overall best candidate and its asymptotic success probability.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Reject the first $r$ candidates, then accept the first later candidate who is better than everyone observed so far. Its success probability is</p><p class="equation-line">$$P(r)=\frac{r}{n}\sum_{k=r+1}^{n}\frac{1}{k-1}.$$</p><p>For large $n$, write $x=r/n$. Then $P(r)\approx-x\log x$, maximized at $x=e^{-1}$. Hence choose $r\approx n/e$, and the optimal success probability tends to <strong>$1/e\approx0.368$ (36.8%)</strong>.</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="derivatives-financial-mathematics" aria-hidden="true"></div>
+~~~
+
+== G. 衍生品与金融数学
+
+=== Q97 \[Core\] Put–Call Parity and Arbitrage Bounds \/ 看涨看跌平价与套利界
+*中文：* 对同一无分红股票、相同执行价 $K$ 和到期日 $T$ 的欧式看涨与看跌期权，写出看涨看跌平价，并由无套利给出两者的基本价格上下界。假设无违约、可做空且利率 $r\\mathrel{≥}0$。
+
+*English:* For European call and put options on the same non-dividend-paying stock with strike $K$ and maturity $T$, state put–call parity and derive their basic no-arbitrage bounds. Assume frictionless trading, no default, short selling, and $r\\mathrel{≥}0$.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A call plus a zero-coupon bond paying $K$ at $T$ has the same terminal payoff as a put plus one share. Therefore</p><p class="equation-line">$$C-P=S_0-Ke^{-rT}.$$</p><p>No arbitrage also implies</p><p class="equation-line">$$\max(0,S_0-Ke^{-rT})\le C\le S_0,$$</p><p class="equation-line">$$\max(0,Ke^{-rT}-S_0)\le P\le Ke^{-rT}.$$</p><p>Any violation supports a long-short portfolio with nonpositive initial cost and nonnegative terminal payoff, positive in at least one state.</p>
+</div></details>
+~~~
+
+=== Q98 \[Core\] American versus European Calls \/ 美式与欧式看涨
+*中文：* 为什么在无分红股票、非负利率和无摩擦市场中，美式看涨期权通常不应提前行权？什么时候这个结论会失效？
+
+*English:* Why is early exercise of an American call on a non-dividend-paying stock suboptimal under nonnegative rates and frictionless markets? When can this conclusion fail?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Exercising early destroys remaining optionality and pays $K$ sooner. Selling the option, or keeping it while investing the present value of $K$, weakly dominates immediate exercise. Thus, under the stated assumptions,</p><p class="equation-line">$$C_{\mathrm{American}}=C_{\mathrm{European}}.$$</p><p>Dividends can make early call exercise optimal near an ex-dividend date. Negative rates, funding constraints, transaction costs, stock-loan frictions, or other contract features can also change the argument. American puts may be optimally exercised early even without dividends.</p>
+</div></details>
+~~~
+
+=== Q99 \[Medium\] Delta Hedging and Residual Risk \/ Delta 对冲与剩余风险
+*中文：* 你做空一份欧式看涨期权并用股票做 Delta 对冲。若股价突然大幅下跌，应如何调整股票头寸？为什么连续重新计算 Delta 仍不能消除全部风险？
+
+*English:* You are short one European call and delta-hedge it with the stock. After a sharp stock-price drop, how should the stock position generally be adjusted? Why does repeatedly recomputing delta still fail to eliminate all risk?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A short call has delta $-\Delta$, so the hedge initially holds $+\Delta$ shares. For a standard call with positive gamma, a stock-price drop lowers the call delta; the hedge should therefore <strong>sell some shares</strong>. Delta removes only the local first-order exposure. Discrete rebalancing leaves gamma error, and realized volatility, jumps, stochastic volatility, model misspecification, transaction costs, liquidity, rates, and dividends create additional residual risk. A delta hedge is not a risk-free replication in a real market.</p>
+</div></details>
+~~~
+
+=== Q100 \[Medium\] Gamma–Theta Trade-off \/ Gamma–Theta 权衡
+*中文：* 解释香草期权组合中 Gamma 与 Theta 为什么经常符号相反。Delta 中性且多 Gamma 的组合如何从实际价格波动中获利？这一说法有哪些限制？
+
+*English:* Explain why gamma and theta often have opposite signs for vanilla-option positions. How can a delta-neutral, long-gamma book benefit from realized price movement, and what are the limitations of that statement?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The Black–Scholes PDE is</p><p class="equation-line">$$\Theta+\frac12\sigma^2S^2\Gamma+rS\Delta-rV=0.$$</p><p>After delta hedging and abstracting from carry, long gamma earns convexity when the underlying moves but usually pays negative theta while waiting. Over a short interval, the rehedged P&amp;L is approximately driven by</p><p class="equation-line">$$\frac12\Gamma S^2\left(\sigma_{\mathrm{realized}}^2-\sigma_{\mathrm{implied}}^2\right)\Delta t.$$</p><p>This is an approximation: rates, dividends, jumps, volatility dynamics, discrete hedging, costs, and path-dependent or exotic exposures can break the simple sign and P&amp;L interpretation.</p>
+</div></details>
+~~~
+
+=== Q101 \[Core\] Implied-Volatility Smile \/ 隐含波动率微笑
+*中文：* 如果 Black–Scholes 假设同一标的、同一期限只有一个波动率，为什么市场报价会呈现隐含波动率微笑或偏斜？它在经济上表达了什么？
+
+*English:* If Black–Scholes assumes a single volatility for one underlying and maturity, why do market quotes display an implied-volatility smile or skew? What does that surface represent economically?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Implied volatility is the value that maps an observed option price back through the Black–Scholes formula; it is a quoting coordinate, not a separate physical volatility for each strike. Strike dependence shows that a constant-lognormal model cannot fit the market's risk-neutral distribution. Skewness, heavy tails, jumps, leverage effects, stochastic volatility, crash insurance demand, and supply-demand pressure all affect prices. Across strikes and maturities, the surface summarizes state-price information subject to no-arbitrage constraints.</p>
+</div></details>
+~~~
+
+=== Q102 \[Core\] Duration and Convexity \/ 久期与凸性
+*中文：* 定义债券价格对到期收益率的修正久期与凸性，并写出二阶价格近似。这个近似隐含了哪些限制？
+
+*English:* Define modified duration and convexity with respect to yield to maturity, and give the second-order bond-price approximation. What limitations are implicit in this approximation?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For price $P(y)$, define</p><p class="equation-line">$$D_{\mathrm{mod}}=-\frac{1}{P}\frac{dP}{dy},\qquad \mathcal C=\frac{1}{P}\frac{d^2P}{dy^2}.$$</p><p>For a small yield change,</p><p class="equation-line">$$\frac{\Delta P}{P}\approx-D_{\mathrm{mod}}\Delta y+\frac12\mathcal C(\Delta y)^2.$$</p><p>Duration is the first-order slope and convexity corrects curvature. The approximation deteriorates for large changes and treats a single yield movement; nonparallel curve shifts, embedded options, spread changes, and changing cash flows require key-rate or option-adjusted measures.</p>
+</div></details>
+~~~
+
+=== Q103 \[Core\] Minimum-Variance Hedge Ratio \/ 最小方差套保比率
+*中文：* 用期货收益 $R_f$ 对冲资产收益 $R_p$。若对冲后收益写为 $R_p-hR_f$，求使方差最小的 $h$，并给出最小剩余方差。
+
+*English:* Futures return $R_f$ is used to hedge asset return $R_p$. If the hedged return is $R_p-hR_f$, derive the variance-minimizing hedge ratio and the minimum residual variance.
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Differentiate</p><p class="equation-line">$$\operatorname{Var}(R_p-hR_f)=\operatorname{Var}(R_p)+h^2\operatorname{Var}(R_f)-2h\operatorname{Cov}(R_p,R_f).$$</p><p>The optimum is the regression slope</p><p class="equation-line">$$h^*=\frac{\operatorname{Cov}(R_p,R_f)}{\operatorname{Var}(R_f)},$$</p><p>with residual variance</p><p class="equation-line">$$\operatorname{Var}(R_p)-\frac{\operatorname{Cov}(R_p,R_f)^2}{\operatorname{Var}(R_f)}.$$</p><p>Contract multipliers and notionals must convert this return ratio into a number of contracts. Estimation error, changing correlation, basis risk, costs, and nonlinear exposure limit the hedge.</p>
+</div></details>
+~~~
+
+=== Q104 \[Core\] Value at Risk versus Expected Shortfall \/ VaR 与 ES
+*中文：* 从损失变量 $L$ 出发定义置信水平 $\\alpha$ 下的 VaR 与 Expected Shortfall。为什么 ES 通常比 VaR 更能描述尾部风险？两者在实践中各有什么局限？
+
+*English:* For a loss variable $L$, define Value at Risk and Expected Shortfall at confidence level $\\alpha$. Why is ES generally more informative about tail severity, and what practical limitations do both measures have?
+
+~~~
+{}{raw}
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>One standard definition is</p><p class="equation-line">$$\operatorname{VaR}_{\alpha}(L)=\inf\{\ell:\Pr(L\le\ell)\ge\alpha\}.$$</p><p>For a continuous loss distribution,</p><p class="equation-line">$$\operatorname{ES}_{\alpha}(L)=\mathbb E[L\mid L\ge\operatorname{VaR}_{\alpha}(L)].$$</p><p>More generally, ES is the average upper-tail quantile, which handles atoms correctly. VaR reports a cutoff but ignores how severe losses are beyond it and need not be subadditive; ES is tail-sensitive and coherent under standard conditions. Both depend on horizon, data, distribution and liquidity assumptions. ES is harder to estimate precisely, so neither replaces stress tests, scenario analysis, or model validation.</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="practice-method" aria-hidden="true"></div>
+~~~
+
+== H. 练习方法
+
+. 第一轮：Q1–Q7、Q9–Q10、Q13–Q18、Q20–Q21、Q26–Q32、Q34–Q39、Q43、Q45–Q48、Q51–Q55、Q59–Q60、Q63、Q65–Q70、Q71–Q77、Q79、Q81–Q82、Q85–Q94、Q97–Q98、Q101–Q104。
 . 第二轮：完成所有 Medium 题，写出完整推导、复杂度与假设。
 . 第三轮：完成 Hard 题和变体；不看公式，口头讲清解法。
 . 每道错题在 1 天、3 天、7 天和 14 天后重新作答。
 . 概率题在完成解析解后，再用小规模枚举或模拟校验。
 
-== G. 参考来源与延伸题库
+~~~
+{}{raw}
+<div class="section-anchor" id="references" aria-hidden="true"></div>
+~~~
+
+== I. 参考来源与延伸题库
 
 - [https://www.janestreet.com/static/pdfs/trading-interview.pdf Jane Street Probability & Markets Guide] 将计数、概率、独立性、期望与条件概率列为官方面试基础。
 - [https://www.janestreet.com/probability-playing-cards/ Jane Street Probability Playing Cards] 与 [https://www.janestreet.com/puzzles/ Jane Street Puzzles] 提供官方延伸练习。
 - [https://stat110.hsites.harvard.edu/strategic-practice-problems Harvard Stat 110 Strategic Practice] 提供按概念组织并附解答的概率题。
 - [https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/ MIT 18.06] 与 [https://cs229.stanford.edu/2023_index.html Stanford CS229] 提供权威推导和练习。
-- 经典书目：Timothy Crack，/Heard on the Street/；Xinfeng Zhou，/A Practical Guide to Quantitative Finance Interviews/；Frederick Mosteller，/Fifty Challenging Problems in Probability/。请使用合法副本，并坚持先做后看。
+- [https://github.com/manavkapadnis/ALL-ML-DS-cheatsheets/blob/master/Timothy%20Falcon%20Crack%20-%20Heard%20on%20the%20Street%2C%20Quantitative%20Questions%20from%20Wall%20Street%20Job%20Interviews%20%282014%2C%20Timothy%20Crack%29%20-%20libgen.lc.pdf Timothy Crack, /Heard on the Street/]：Q97–Q102 的期权、对冲与固定收益主题参考其对应章节后重新组织。
+- [https://github.com/manavkapadnis/ALL-ML-DS-cheatsheets/blob/master/Xinfeng_Zhou-A_Practical_Guide_To_Quantitative_Finance_Interviews-CreateSpace_Independent_Publishing_Platform_%282008%29.PDF Xinfeng Zhou, /A Practical Guide to Quantitative Finance Interviews/]：Q97–Q104 综合其概率、期权、风险管理与套保主题。
+- [https://github.com/manavkapadnis/ALL-ML-DS-cheatsheets/blob/master/Fifty_Challenging_Problems_in_Probability.pdf Frederick Mosteller, /Fifty Challenging Problems in Probability/]：Q93–Q96 依据书中的交替对手、Pepys 掷骰、计票与最优停止题型独立改写并推导。
+
+*取材说明：* 上述 PDF 仅作为核对原书目录、题型与知识覆盖的资料；没有复制进本站仓库。新增题面和解析均为独立重写，并与原有 92 题的中英题面、英文 Solution 格式保持一致。
 
 *覆盖范围：* 有限题库不可能包含所有机构的专属题目。本页刻意覆盖可迁移的模式，并吸收公开的机构信息。遇到新笔试\/面试题时，应加入错题日志，并归类到最接近的模式。

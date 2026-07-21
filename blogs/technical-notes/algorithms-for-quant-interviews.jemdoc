@@ -1,5 +1,5 @@
-# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}
-= 量化研究面试算法复习笔记
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}, addjs{../blog-sidebar}
+= Algorithms for Quantitative Research Interviews
 [../../blog.html ← Blogs] \M /更新于 2026-07-20/
 
 ~~~

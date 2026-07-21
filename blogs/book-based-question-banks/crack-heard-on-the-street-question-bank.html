@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head>
+<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../blog-note.css" type="text/css" />
+<script src="../math-render.js" type="text/javascript"></script>
+<script src="../blog-sidebar.js" type="text/javascript"></script>
+<title>Heard on the Street</title>
+</head>
+<body>
+<div id="layout-content">
+<div id="toptitle">
+<h1>Heard on the Street</h1>
+<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>更新于 2026-07-20</i></div>
+</div>
+<p>本页依据 Timothy Crack 的 <a href="https://github.com/manavkapadnis/ALL-ML-DS-cheatsheets/blob/master/Timothy%20Falcon%20Crack%20-%20Heard%20on%20the%20Street%2C%20Quantitative%20Questions%20from%20Wall%20Street%20Job%20Interviews%20%282014%2C%20Timothy%20Crack%29%20-%20libgen.lc.pdf"><i>Heard on the Street</i></a> 选取 20 个代表性题型，并沿用原书四个技术章节的结构重新命题。中文与英文题干并列，Solution 使用英文。</p>
+<div class="page-toc" role="navigation" aria-labelledby="crack-toc-title">
+<div class="page-toc-title" id="crack-toc-title">目录</div>
+<ul>
+<li><a href="#crack-pure-quant">A. Pure Quantitative &amp; Logic</a></li>
+<li><a href="#crack-derivatives">B. Derivatives</a></li>
+<li><a href="#crack-financial-economics">C. Financial Economics</a></li>
+<li><a href="#crack-statistics">D. Statistics &amp; Probability</a></li>
+</ul>
+</div>
+<div class="section-anchor" id="crack-pure-quant" aria-hidden="true"></div>
+<h2>A. Pure Quantitative &amp; Logic</h2>
+<h3>C1 [Hard] Three Thousand Apples / 三千个苹果</h3>
+<p><b>中文：</b> A、B 两城相距 1000 英里。A 城有 3000 个苹果，卡车最多载 1000 个；只要车上有苹果，每行驶 1 英里司机就吃掉 1 个。允许中途卸货和往返搬运。最多能把多少苹果送到 B？</p>
+<p><b>English:</b> Cities A and B are 1,000 miles apart. You have 3,000 apples, a truck capacity of 1,000, and the driver consumes one apple per mile whenever carrying apples. Intermediate caches and return trips are allowed. What is the maximum delivery?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>While more than 2,000 apples remain, three forward loads and two return trips are needed per mile, costing five apples per mile. Move 200 miles to reduce 3,000 to 2,000. With two loads, the cost is three apples per mile; move another $1000/3$ miles to reduce 2,000 to 1,000. The last load then travels the remaining $1000-200-1000/3=1400/3$ miles. The continuous idealization delivers</p><p class="equation-line">$$1000-\frac{1400}{3}=\frac{1600}{3}=533\frac13.$$</p><p>If apples and mile-by-mile consumption must be integral, the deliverable whole-apple count is 533.</p>
+</div></details>
+<h3>C2 [Core] One Hundred Light Bulbs / 一百盏灯</h3>
+<p><b>中文：</b> 100 盏灯初始关闭。第 $k$ 个人切换所有编号为 $k$ 的倍数的灯。100 人依次操作后，哪些灯亮着？</p>
+<p><b>English:</b> One hundred bulbs start off. Person $k$ toggles every bulb whose number is a multiple of $k$. Which bulbs remain on after all 100 people act?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Bulb $n$ is toggled once for each divisor of $n$. Divisors pair as $d$ and $n/d$, except when $n$ is a perfect square. Thus exactly the squares have an odd number of divisors. The illuminated bulbs are</p><p class="equation-line">$$1,4,9,16,25,36,49,64,81,100.$$</p>
+</div></details>
+<h3>C3 [Core] The Race to Fifty / 报数到 50</h3>
+<p><b>中文：</b> 两人轮流报递增整数。首位玩家可报 1 至 10；之后每个数必须比前一个大 1 至 10。先报出 50 者胜。你是否应先手？策略是什么？</p>
+<p><b>English:</b> Players alternately call increasing integers. The first call is from 1 to 10; each later call must exceed the previous by 1 through 10. The first to call 50 wins. Should you move first, and what is the strategy?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Move first and call <strong>6</strong>. Thereafter, if the opponent increases by $d\in\{1,\ldots,10\}$, increase by $11-d$. Your calls are $6,17,28,39,50$. Each pair of increments totals 11, so the opponent cannot avoid handing you the next target.</p>
+</div></details>
+<h3>C4 [Core] Ants on a Ruler / 尺子上的蚂蚁</h3>
+<p><b>中文：</b> 许多蚂蚁随机落在 100 厘米长的尺子上，以 1 厘米每秒向左或向右直行；迎面相撞时两只都立即掉头。多久后可以保证全部离开尺子？</p>
+<p><b>English:</b> Many ants occupy a 100-cm ruler, each moving left or right at 1 cm/s. When two collide head-on, both instantly reverse. How long guarantees that all ants have left?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For indistinguishable ants, a collision followed by reversal is equivalent to the ants passing through each other and exchanging identities. Every trajectory is therefore a straight path to an endpoint, of length at most 100 cm. The sharp guarantee is <strong>100 seconds</strong>.</p>
+</div></details>
+<h3>C5 [Core] Eight Balls and a Balance / 八球找重球</h3>
+<p><b>中文：</b> 8 个外观相同的球中有 1 个较重。只有一架无砝码天平。如何在两次称量内找出重球？</p>
+<p><b>English:</b> One of eight identical-looking balls is heavier. Using a balance scale without weights, identify it in at most two weighings.</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Weigh three balls against three. If they balance, the heavy ball is among the remaining two; weigh them. If they do not balance, it is among the three on the heavier side; weigh two of those against each other. A tilt identifies the heavier one, while balance identifies the third.</p>
+</div></details>
+<h3>C6 [Core] Two Uneven Fuses / 两根不均匀导火索</h3>
+<p><b>中文：</b> 两根导火索各自从一端烧完都恰需 60 分钟，但燃烧速度沿长度不均匀。只有火柴，没有钟。如何量出 45 分钟？</p>
+<p><b>English:</b> Each of two nonuniform fuses takes exactly 60 minutes to burn from one end. With matches but no clock, how can you measure 45 minutes?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>At time zero, light both ends of fuse A and one end of fuse B. Fuse A finishes after 30 minutes. At that instant light the other end of B. The remaining portion of B, which would have taken 30 minutes from one end, now burns from both ends in 15 minutes. Total elapsed time: <strong>45 minutes</strong>.</p>
+</div></details>
+<div class="section-anchor" id="crack-derivatives" aria-hidden="true"></div>
+<h2>B. Derivatives</h2>
+<h3>C7 [Core] Zero-Volatility Call / 零波动率看涨期权</h3>
+<p><b>中文：</b> 无分红 Black–Scholes 市场中，$S_0=K=100$、连续复利率 $r=0.05$（即 5%）、期限 1 年且波动率为 0。欧式看涨价值是多少？卖方如何对冲？</p>
+<p><b>English:</b> In a non-dividend Black–Scholes market, $S_0=K=100$, the continuously compounded rate is $r=0.05$ (5%), maturity is one year, and volatility is zero. What is the European call worth, and how should a short call be hedged?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The stock grows deterministically at the risk-free rate under the model, so the call finishes in the money. Its value is</p><p class="equation-line">$$C_0=S_0-Ke^{-rT}=100(1-e^{-0.05})\approx4.8771.$$</p><p>Its delta is one. A short call is hedged by holding one share and borrowing $Ke^{-rT}$; the portfolio exactly delivers the terminal payoff.</p>
+</div></details>
+<h3>C8 [Core] Equal Call and Put Values / 同价看涨与看跌</h3>
+<p><b>中文：</b> 同一无分红股票上的欧式看涨和看跌具有相同 $K,T$，且 $S_0=K$、$r=0$。看涨上行无限而看跌上行有限，为什么二者价格仍相等？</p>
+<p><b>English:</b> A European call and put share $K,T$ on a non-dividend stock, with $S_0=K$ and $r=0$. The call has unlimited upside while the put does not. Why must their prices nevertheless be equal?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Put–call parity gives</p><p class="equation-line">$$C-P=S_0-Ke^{-rT}=0,$$</p><p>so $C=P$. The payoff ranges alone do not determine value: the risk-neutral probabilities and payoff magnitudes differ across states. Pointwise, call minus put equals $S_T-K$, and the prepaid forward value of that difference is zero here.</p>
+</div></details>
+<h3>C9 [Medium] Rebalancing a Long-Call Hedge / 多头看涨的对冲调整</h3>
+<p><b>中文：</b> 你持有一份看涨期权，并通过卖空 $\Delta$ 股股票做 Delta 中性对冲。股价突然大跌后，一般应买入还是继续卖空股票？为什么？</p>
+<p><b>English:</b> You own a call and delta-hedge it by shorting $\Delta$ shares. After a sharp stock-price drop, should you generally buy or sell stock to rebalance, and why?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A standard call has positive gamma, so its delta falls when the stock falls. The required short-stock hedge becomes smaller in magnitude; therefore <strong>buy back shares</strong>. A long-gamma rehedging rule buys after declines and sells after rises. Jumps, discrete trading, costs, and model error prevent perfect replication.</p>
+</div></details>
+<h3>C10 [Medium] Cash-or-Nothing Digital Call / 现金或无数字看涨</h3>
+<p><b>中文：</b> 到期若 $S_T&gt;K$ 就支付固定金额 $H$，否则支付 0。Black–Scholes 模型下该欧式数字期权的价格是多少？它与普通看涨对执行价的导数有什么关系？</p>
+<p><b>English:</b> A European digital call pays $H$ if $S_T&gt;K$ and zero otherwise. What is its Black–Scholes price, and how is it related to the strike derivative of a vanilla call?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Under the risk-neutral measure, with continuous dividend yield $q$,</p><p class="equation-line">$$D=He^{-r\tau}N(d_2),\qquad d_2=\frac{\log(S/K)+(r-q-\tfrac12\sigma^2)\tau}{\sigma\sqrt{\tau}}.$$</p><p>For a vanilla call $C(K)$ with the same maturity,</p><p class="equation-line">$$-\frac{\partial C}{\partial K}=e^{-r\tau}N(d_2),$$</p><p>so $D=-H\,\partial C/\partial K$ where differentiability holds.</p>
+</div></details>
+<h3>C11 [Core] Early Exercise of a Call / 看涨期权提前行权</h3>
+<p><b>中文：</b> 对无分红股票，在非负利率与无摩擦市场中，为什么美式看涨不应提前行权？哪些现实因素可能改变结论？</p>
+<p><b>English:</b> Why should an American call on a non-dividend stock not be exercised early under nonnegative rates and frictionless trading? What real-world features can alter the conclusion?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Early exercise discards time value and pays $K$ sooner. Keeping or selling the option while investing the present value of $K$ weakly dominates. Hence $C_A=C_E$ under the assumptions. Dividends, negative rates, funding or short-sale constraints, transaction costs, and special contract terms can change the comparison.</p>
+</div></details>
+<h3>C12 [Medium] Smile and Gamma–Theta / 微笑与 Gamma–Theta</h3>
+<p><b>中文：</b> （a）为何不同执行价的隐含波动率形成微笑或偏斜？（b）为什么香草期权的 Gamma 与 Theta 经常符号相反？</p>
+<p><b>English:</b> (a) Why does implied volatility vary by strike as a smile or skew? (b) Why do gamma and theta often have opposite signs for vanilla options?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>(a) A constant-lognormal model cannot match market-implied skewness, heavy tails, jumps, stochastic volatility, leverage effects, and option supply-demand, so prices invert to strike-dependent implied volatilities. (b) The Black–Scholes PDE</p><p class="equation-line">$$\Theta+\frac12\sigma^2S^2\Gamma+rS\Delta-rV=0$$</p><p>shows that, after abstracting from delta and carry, long convexity is financed by time decay. The sign relation is a useful vanilla approximation, not a universal rule for every portfolio or exotic payoff.</p>
+</div></details>
+<div class="section-anchor" id="crack-financial-economics" aria-hidden="true"></div>
+<h2>C. Financial Economics</h2>
+<h3>C13 [Core] Forward Rate from Spot Rates / 由即期利率求远期利率</h3>
+<p><b>中文：</b> 年复利 5 年与 10 年即期利率分别为 10% 和 15%。5 年后开始、期限 5 年的远期年化利率是多少？</p>
+<p><b>English:</b> With annual compounding, the five-year and ten-year spot rates are 10% and 15%. What is the annualized five-year forward rate beginning in year five?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>No arbitrage equates a ten-year investment with a five-year investment rolled into the forward:</p><p class="equation-line">$$ (1.15)^{10}=(1.10)^5(1+f_{5,10})^5.$$</p><p>Therefore</p><p class="equation-line">$$f_{5,10}=\left(\frac{1.15^{10}}{1.10^5}\right)^{1/5}-1\approx0.2023.$$</p><p>The forward rate is approximately <strong>20.23%</strong>. The numerical answer changes with the compounding convention, which must be stated.</p>
+</div></details>
+<h3>C14 [Core] Why Bond Prices Are Convex / 债券价格为何凸</h3>
+<p><b>中文：</b> 画出普通无期权债券价格关于到期收益率的形状，并从现金流贴现公式解释其单调性与凸性。</p>
+<p><b>English:</b> Describe the price–yield curve of an option-free bond and explain its monotonicity and convexity from the discounted-cash-flow formula.</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For annual cash flows $CF_t\ge0$,</p><p class="equation-line">$$P(y)=\sum_t\frac{CF_t}{(1+y)^t}.$$</p><p>For admissible $y$, each term has a negative first derivative and positive second derivative, so price decreases with yield and bends upward. Convexity means an equal yield decline produces a larger gain than the loss from an equal yield increase, locally. Embedded options can materially alter this shape.</p>
+</div></details>
+<h3>C15 [Medium] GARCH(1,1) / 条件波动率模型</h3>
+<p><b>中文：</b> 写出 GARCH(1,1) 的基本方程，解释各项，并给出有限无条件方差的典型条件。</p>
+<p><b>English:</b> Write the basic GARCH(1,1) equations, interpret the terms, and state the usual condition for a finite unconditional variance.</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A standard specification is</p><p class="equation-line">$$r_t=\mu+\varepsilon_t,\qquad \varepsilon_t=\sigma_t z_t,\qquad \sigma_t^2=\omega+\alpha\varepsilon_{t-1}^2+\beta\sigma_{t-1}^2,$$</p><p>with $\omega&gt;0$, $\alpha,\beta\ge0$, and standardized $z_t$. The shock term reacts to recent squared innovations and the lagged variance term creates persistence. If $\alpha+\beta&lt;1$, the covariance-stationary variance is $\omega/(1-\alpha-\beta)$ under standard assumptions.</p>
+</div></details>
+<div class="section-anchor" id="crack-statistics" aria-hidden="true"></div>
+<h2>D. Statistics &amp; Probability</h2>
+<h3>C16 [Core] The Two-Headed Coin / 双面正硬币</h3>
+<p><b>中文：</b> 罐中有 999 枚公平硬币和 1 枚双面都是正面的硬币。随机取一枚并连续掷出 10 次正面。它是双面正硬币的后验概率是多少？</p>
+<p><b>English:</b> A jar contains 999 fair coins and one double-headed coin. A randomly selected coin produces ten consecutive heads. What is the posterior probability that it is double-headed?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Bayes' rule gives</p><p class="equation-line">$$\frac{(1/1000)\cdot1}{(1/1000)\cdot1+(999/1000)\cdot2^{-10}}=\frac{1024}{2023}\approx0.5062.$$</p><p>Ten heads are strong evidence, but the prior odds against the special coin are 999 to 1.</p>
+</div></details>
+<h3>C17 [Core] Disease Test and Base Rate / 疾病检测与基准率</h3>
+<p><b>中文：</b> 疾病患病率为 0.5%；患者检测必为阳性，健康者假阳性率为 7%。随机一人检测阳性，其患病概率是多少？</p>
+<p><b>English:</b> Disease prevalence is 0.5%. Sensitivity is 100%, and the false-positive rate is 7%. For a random person who tests positive, what is the disease probability?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>By Bayes' rule,</p><p class="equation-line">$$\Pr(D\mid+)=\frac{0.005}{0.005+0.995(0.07)}\approx0.0669.$$</p><p>Despite perfect sensitivity, most positives are false because the condition is rare.</p>
+</div></details>
+<h3>C18 [Medium] Waiting for Consecutive Heads / 等待连续正面</h3>
+<p><b>中文：</b> 每次独立抛一枚正面概率为 $p$ 的硬币。等待连续 2 个正面和连续 3 个正面的期望抛掷次数分别是多少？</p>
+<p><b>English:</b> Independent tosses have head probability $p$. What are the expected waiting times for two consecutive heads and for three consecutive heads?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Using states equal to the current run length and solving the first-step recurrences gives the general formula</p><p class="equation-line">$$\mathbb E[T_k]=\frac{1+p+\cdots+p^{k-1}}{p^k}.$$</p><p>Thus</p><p class="equation-line">$$\mathbb E[T_2]=\frac{1+p}{p^2},\qquad \mathbb E[T_3]=\frac{1+p+p^2}{p^3}.$$</p>
+</div></details>
+<h3>C19 [Core] Broken-Stick Triangle / 断棍成三角形</h3>
+<p><b>中文：</b> 在单位线段上独立均匀选两个断点。三段能组成三角形的概率是多少？</p>
+<p><b>English:</b> Two independent uniform breakpoints split a unit stick into three pieces. What is the probability that the pieces form a triangle?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A triangle is possible iff every piece is shorter than $1/2$. In the unit-square representation of the two breakpoints, the failure regions where one piece is at least $1/2$ have total area $3/4$. Therefore the success probability is <strong>$1/4$</strong>.</p>
+</div></details>
+<h3>C20 [Core] Meeting at the Station / 车站会面</h3>
+<p><b>中文：</b> 两人在 1 点至 2 点之间独立均匀到达，各等待 15 分钟但不超过 2 点。两人碰面的概率是多少？</p>
+<p><b>English:</b> Two people independently arrive uniformly between 1:00 and 2:00 and each waits 15 minutes, never beyond 2:00. What is the probability that they meet?</p>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let arrival times $X,Y$ be measured in hours. They meet iff $|X-Y|\le1/4$. The two failure triangles in the unit square have total area $(3/4)^2$. Hence</p><p class="equation-line">$$\Pr(\text{meet})=1-\left(\frac34\right)^2=\frac7{16}.$$</p>
+</div></details>
+<p><b>书目定位：</b> 本页覆盖原书 Chapter 1 的逻辑与定量题、Chapter 2 的衍生品题、Chapter 3 的金融经济学题，以及 Chapter 4 的统计与概率题；行为面试清单不纳入数学题库。</p>
+</div>
+</body>
+</html>

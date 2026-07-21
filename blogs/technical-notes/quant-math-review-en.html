@@ -7,16 +7,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" href="../blog-note.css" type="text/css" />
 <script src="../math-render.js" type="text/javascript"></script>
+<script src="../blog-sidebar.js" type="text/javascript"></script>
 <title>Quantitative Research Interview Mathematics Review</title>
 </head>
 <body>
 <div id="layout-content">
 <div id="toptitle">
 <h1>Quantitative Research Interview Mathematics Review</h1>
-<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>updated 2026-07-20</i></div>
+<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>updated 2026-07-21</i></div>
 </div>
 <div class="language-switch" role="navigation" aria-label="Language"><a href="quant-math-review.html" hreflang="zh-CN">中文</a><span class="active" aria-current="page">English</span></div>
-<p>This is a high-coverage mathematics checklist for quantitative research written tests and interviews. It is designed for rapid recall, not as a first textbook. Standard terms are kept explicit because interviews often expect them directly.</p>
+<p>This is a high-coverage mathematics checklist for quantitative research written tests and interviews. It is designed for rapid recall, not as a first textbook. Standard terms are kept explicit because interviews often expect them directly. Topics marked “Expand” include detailed notes and remain collapsed by default so that the checklist stays easy to scan.</p>
 <p><b>Priority:</b> P0 = must be able to derive and use without notes; P1 = commonly tested; P2 = role-dependent bonus. For every checkbox, require yourself to: define it, state the assumptions, derive the key formula, solve one small example, and explain one failure mode.</p>
 <h2>0. High-priority review order</h2>
 <p>Review in this order:</p>
@@ -49,7 +50,50 @@
 </li>
 <li><p>□ Sampling with/without replacement; ordered/unordered; distinguishability; circular arrangements.</p>
 </li>
-<li><p>□ Inclusion-exclusion, stars and bars, pigeonhole principle, symmetry and complementary counting.</p>
+<li><p>□ Stars and bars, pigeonhole principle, symmetry and complementary counting.</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-inclusion-exclusion">
+<summary><span class="concept-label">□ Inclusion–Exclusion Principle</span><span class="concept-action"><span class="when-closed">Expand</span><span class="when-open">Collapse</span></span></summary>
+<div class="concept-content">
+<h4>1. What problem does it solve?</h4>
+<p>When sets overlap, adding their sizes double-counts objects. Inclusion–exclusion alternately adds and subtracts intersections so that every object in the union is counted exactly once. For finite sets $A_1,\ldots,A_n$,</p>
+<div class="math-display">$$
+\left|\bigcup_{i=1}^n A_i\right|
+=\sum_i|A_i|-\sum_{i&lt;j}|A_i\cap A_j|
++\sum_{i&lt;j&lt;k}|A_i\cap A_j\cap A_k|-\cdots
++(-1)^{n+1}\left|\bigcap_{i=1}^n A_i\right|.
+$$</div>
+<p>Replacing cardinalities by probabilities gives the probability version. In particular,</p>
+<div class="math-display">$$
+P(A\cup B\cup C)=P(A)+P(B)+P(C)
+-P(A\cap B)-P(A\cap C)-P(B\cap C)+P(A\cap B\cap C).
+$$</div>
+<h4>2. Why do the signs alternate?</h4>
+<p>Suppose an outcome belongs to exactly $r$ sets. The single-set sum counts it $\binom r1$ times, the pairwise term subtracts it $\binom r2$ times, and so on. Its final coefficient is</p>
+<div class="math-display">$$
+\binom r1-\binom r2+\binom r3-\cdots+(-1)^{r+1}\binom rr=1,
+$$</div>
+<p>by $(1-1)^r=0$. Thus each outcome in the union leaves exactly one copy, while an outcome outside the union is never counted.</p>
+<h4>3. Standard interview workflow</h4>
+<ol>
+<li>Define bad events $A_i$; the target is often that none of them occurs.</li>
+<li>Count an arbitrary intersection $A_{i_1}\cap\cdots\cap A_{i_j}$. Symmetry often makes all intersections of the same order equal.</li>
+<li>Alternate signs by intersection order; if the target is “none,” subtract the union from the total.</li>
+<li>Check signs and boundaries on a small instance.</li>
+</ol>
+<h4>4. Example: derangements</h4>
+<p>Permute $n$ objects and let $A_i$ mean that object $i$ remains fixed. If a specified set of $j$ objects is fixed, the remaining objects have $(n-j)!$ permutations. Therefore</p>
+<div class="math-display">$$
+D_n=n!-\binom n1(n-1)!+\binom n2(n-2)!-\cdots+(-1)^n
+=n!\sum_{j=0}^n\frac{(-1)^j}{j!}.
+$$</div>
+<p>The probability that a random permutation has no fixed points is $D_n/n!$, which tends to $e^{-1}$ as $n\to\infty$.</p>
+<p class="concept-check"><strong>Common pitfalls:</strong> an intersection probability is not a product unless independence is justified; stopping after only a few terms usually gives Bonferroni bounds rather than an exact answer; “exactly $r$ events” requires an additional combinatorial adjustment.</p>
+</div>
+</details>
 </li>
 </ul>
 <p><b>Interview reflex:</b> before calculating, say what one outcome is and why outcomes are equally likely. Most counting errors come from changing the sample space halfway through.</p>
@@ -150,7 +194,57 @@
 <ul>
 <li><p>□ For i.i.d. samples with CDF $F$, $P(\max_iX_i\le x)=F(x)^n$ and $P(\min_iX_i&gt;x)=(1-F(x))^n$.</p>
 </li>
-<li><p>□ Density of the $k$-th order statistic and $\mathbb E U_{(k)}=\frac{k}{n\mathplus{}1}$ for uniform order statistics.</p>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-kth-order-statistic">
+<summary><span class="concept-label">□ Density of the $k$-th Order Statistic</span><span class="concept-action"><span class="when-closed">Expand</span><span class="when-open">Collapse</span></span></summary>
+<div class="concept-content">
+<h4>1. Setup and formula</h4>
+<p>Let $X_1,\ldots,X_n$ be i.i.d. from a continuous distribution with CDF $F$ and density $f$, and write $X_{(1)}\le\cdots\le X_{(n)}$ for the sorted sample. Then</p>
+<div class="math-display">$$
+f_{X_{(k)}}(x)=
+\frac{n!}{(k-1)!(n-k)!}
+[F(x)]^{k-1}[1-F(x)]^{n-k}f(x).
+$$</div>
+<h4>2. Where does the formula come from?</h4>
+<p>For $X_{(k)}$ to lie in a short interval $[x,x+\mathrm dx]$, approximately:</p>
+<ul>
+<li>exactly $k-1$ observations lie below $x$, contributing $F(x)^{k-1}$;</li>
+<li>one observation lies in $[x,x+\mathrm dx]$, contributing $f(x)\,\mathrm dx$;</li>
+<li>the remaining $n-k$ observations exceed $x$, contributing $[1-F(x)]^{n-k}$;</li>
+<li>the observations can take these roles in $\frac{n!}{(k-1)!1!(n-k)!}$ ways.</li>
+</ul>
+<p>Multiply the factors, divide by $\mathrm dx$, and let $\mathrm dx\to0$. Equivalently, start from</p>
+<div class="math-display">$$
+P(X_{(k)}\le x)=\sum_{j=k}^n\binom nj[F(x)]^j[1-F(x)]^{n-j},
+$$</div>
+<p>because $X_{(k)}\le x$ exactly when at least $k$ observations do not exceed $x$, and then differentiate.</p>
+<h4>3. Beta transform and useful special cases</h4>
+<p>The probability integral transform gives $F(X_{(k)})\sim\operatorname{Beta}(k,n+1-k)$. Hence, for a Uniform$(0,1)$ sample,</p>
+<div class="math-display">$$
+U_{(k)}\sim\operatorname{Beta}(k,n+1-k),\qquad
+\mathbb E[U_{(k)}]=\frac{k}{n+1},\qquad
+\operatorname{Var}(U_{(k)})=\frac{k(n+1-k)}{(n+1)^2(n+2)}.
+$$</div>
+<p>Setting $k=1$ or $k=n$ gives</p>
+<div class="math-display">$$
+f_{X_{(1)}}(x)=n[1-F(x)]^{n-1}f(x),\qquad
+f_{X_{(n)}}(x)=n[F(x)]^{n-1}f(x).
+$$</div>
+<h4>4. Small example</h4>
+<p>For $n=5$ independent Uniform$(0,1)$ observations, the second-smallest value has density</p>
+<div class="math-display">$$
+f_{U_{(2)}}(x)=\frac{5!}{1!3!}x(1-x)^3=20x(1-x)^3,\qquad 0&lt;x&lt;1,
+$$</div>
+<p>and mean $\mathbb E[U_{(2)}]=2/6=1/3$. Integrating the density to 1 is a quick check.</p>
+<p class="concept-check"><strong>Assumptions:</strong> the compact formula uses i.i.d. observations and continuity, which makes ties have probability zero. Dependence, non-identical distributions, or point masses require a different joint-distribution or tie calculation.</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
+<li><p>□ For Uniform$(0,1)$ order statistics, $\mathbb E U_{(k)}=\frac{k}{n\mathplus{}1}$.</p>
 </li>
 <li><p>□ Range, spacings and broken-stick/simplex arguments.</p>
 </li>
@@ -180,8 +274,165 @@
 </li>
 <li><p>□ First-step analysis for hitting probabilities and expected hitting times.</p>
 </li>
-<li><p>□ Random walks, gambler's ruin and reflection/symmetry arguments.</p>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-random-walk">
+<summary><span class="concept-label">□ Random Walk</span><span class="concept-action"><span class="when-closed">Expand</span><span class="when-open">Collapse</span></span></summary>
+<div class="concept-content">
+<h4>1. Basic model</h4>
+<p>A one-dimensional simple random walk is</p>
+<div class="math-display">$$
+S_n=S_0+\sum_{t=1}^n X_t,\qquad
+P(X_t=1)=p,\qquad P(X_t=-1)=q=1-p,
+$$</div>
+<p>with i.i.d. increments. Given the current state, the next step does not depend on the earlier path, so $(S_n)$ is a Markov chain. If $S_0=i$, then</p>
+<div class="math-display">$$
+\mathbb E[S_n]=i+n(p-q),\qquad
+\operatorname{Var}(S_n)=4npq.
+$$</div>
+<p>When $p=q=1/2$, the walk has no drift and $(S_n)$ is a martingale. When $p\ne q$, the centered process $S_n-n(p-q)$ is a martingale.</p>
+<h4>2. The key interview tool: first-step analysis</h4>
+<p>Do not begin by enumerating entire paths. If $h_i$ is the probability of eventually hitting a target when starting at $i$, condition on the first step:</p>
+<div class="math-display">$$
+h_i=p\,h_{i+1}+q\,h_{i-1}.
+$$</div>
+<p>If $e_i$ is the expected number of steps until the target, the current step must be counted:</p>
+<div class="math-display">$$
+e_i=1+p\,e_{i+1}+q\,e_{i-1}.
+$$</div>
+<p>Absorbing boundary conditions turn each path problem into a second-order difference equation. The hitting-probability equation is homogeneous; the expected-time equation contains the extra 1, which is easy to miss.</p>
+<h4>3. Distribution and long-run behavior</h4>
+<p>For $S_0=0$, reaching $j$ after $n$ steps requires $(n+j)/2$ upward steps, so the probability is nonzero only when $n$ and $j$ have the same parity:</p>
+<div class="math-display">$$
+P(S_n=j)=\binom{n}{(n+j)/2}p^{(n+j)/2}q^{(n-j)/2}.
+$$</div>
+<p>On the infinite line, a one-dimensional fair walk returns to zero with probability 1, yet its expected return time is infinite. A walk with nonzero drift is transient in the drift direction. Thus an almost-sure event need not have a finite expected waiting time.</p>
+<h4>4. Problem-solving map</h4>
+<ol>
+<li>Specify the state space, increment law, starting point, boundaries, and stopping rule.</li>
+<li>Use binomial counting for a fixed-time location; use first-step recurrences for which boundary is hit first.</li>
+<li>Use reflection for path crossings or maxima, and martingales or optional stopping for stopped probabilities and expectations.</li>
+<li>Check parity, boundary values, and that probabilities lie in $[0,1]$.</li>
+</ol>
+<p class="concept-check"><strong>Common pitfalls:</strong> $S_n=a$ does not say that time $n$ is the first visit to $a$; on an infinite state space, hitting with probability 1 does not imply a finite mean hitting time.</p>
+</div>
+</details>
 </li>
+<li>
+<details class="concept-detail" id="concept-gamblers-ruin">
+<summary><span class="concept-label">□ Gambler's Ruin</span><span class="concept-action"><span class="when-closed">Expand</span><span class="when-open">Collapse</span></span></summary>
+<div class="concept-content">
+<h4>1. Model and winning probability</h4>
+<p>Capital moves on $\{0,1,\ldots,N\}$ from $i$. Each round wins one unit with probability $p$ and loses one with probability $q=1-p$; play stops at 0 or $N$. Define</p>
+<div class="math-display">$$
+u_i=P_i(\tau_N&lt;\tau_0).
+$$</div>
+<p>First-step analysis gives $u_i=p\,u_{i+1}+q\,u_{i-1}$ with $u_0=0,u_N=1$. Solving the difference equation yields</p>
+<div class="math-display">$$
+u_i=
+\begin{cases}
+\dfrac{i}{N}, &amp; p=q=\dfrac12,\\[6pt]
+\dfrac{1-(q/p)^i}{1-(q/p)^N}, &amp; p\ne q.
+\end{cases}
+$$</div>
+<h4>2. Why is the fair-game answer $i/N$?</h4>
+<p>For $p=q=1/2$, the recurrence says $u_{i+1}-u_i=u_i-u_{i-1}$, so adjacent differences are constant and $u_i$ is linear. The line through $(0,0)$ and $(N,1)$ is $u_i=i/N$. Alternatively, optional stopping at the bounded absorbing time gives</p>
+<div class="math-display">$$
+i=\mathbb E_i[S_\tau]=0\cdot(1-u_i)+Nu_i.
+$$</div>
+<h4>3. Expected duration</h4>
+<p>Let $e_i=\mathbb E_i[\tau_0\wedge\tau_N]$. It satisfies $e_0=e_N=0$ and $e_i=1+p e_{i+1}+q e_{i-1}$, giving</p>
+<div class="math-display">$$
+e_i=
+\begin{cases}
+i(N-i), &amp; p=q=\dfrac12,\\[6pt]
+\dfrac{i}{q-p}-\dfrac{N}{q-p}
+\dfrac{1-(q/p)^i}{1-(q/p)^N}, &amp; p\ne q.
+\end{cases}
+$$</div>
+<h4>4. Small example</h4>
+<p>In a fair game starting from $i=3$, with ruin at 0 and target $N=10$, the probability of reaching 10 first is $3/10$ and the expected duration is $3(10-3)=21$ rounds. Winning probability and game duration are separate quantities.</p>
+<p class="concept-check"><strong>Common pitfalls:</strong> the biased case does not use $i/N$; non-unit payoffs can overshoot a boundary and change the recurrence; optional stopping requires its integrability or boundedness conditions.</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-reflection-principle">
+<summary><span class="concept-label">□ Reflection Principle</span><span class="concept-action"><span class="when-closed">Expand</span><span class="when-open">Collapse</span></span></summary>
+<div class="concept-content">
+<h4>1. Core idea</h4>
+<p>The reflection principle turns a historical path constraint—“the path crossed a boundary”—into an unconstrained endpoint condition. Let a fair simple random walk start at 0 and let $M_n=\max_{0\le t\le n}S_t$. Fix an integer $a&gt;0$ and endpoint $b&lt;a$, and consider paths satisfying $M_n\ge a,S_n=b$.</p>
+<p>For each path, find its first hitting time $T$ of $a$. Keep the path through $T$ and reverse every later up/down step, equivalently setting $S'_t=2a-S_t$ for $t\ge T$. The new endpoint is $2a-b&gt;a$. Reflection is an involution, hence a bijection:</p>
+<div class="math-display">$$
+P(M_n\ge a,\,S_n=b)=P(S_n=2a-b),\qquad b&lt;a.
+$$</div>
+<h4>2. Distribution of the maximum</h4>
+<p>Sum over endpoints $b&lt;a$ and include paths already ending at $S_n\ge a$:</p>
+<div class="math-display">$$
+P(M_n\ge a)=P(S_n\ge a)+P(S_n&gt;a).
+$$</div>
+<p>The two discrete tails differ because of lattice parity. Brownian motion has a continuous endpoint, so the correction disappears and the familiar formula is</p>
+<div class="math-display">$$
+P\!\left(\sup_{0\le s\le t}B_s\ge a\right)=2P(B_t\ge a)
+=2\left[1-\Phi\!\left(\frac{a}{\sqrt t}\right)\right].
+$$</div>
+<h4>3. Why reflect after the first hit?</h4>
+<p>At the first hitting time the path is exactly at $a$, so the reflected suffix joins continuously. Every crossing path also has a unique cutting point, which makes the map reversible. Reflecting after an arbitrary crossing need not be one-to-one and can overcount or omit paths.</p>
+<h4>4. Common applications</h4>
+<ul>
+<li>random-walk maxima, boundary-crossing probabilities, and first-passage distributions;</li>
+<li>nonnegative lattice paths, the ballot theorem, and Catalan-number counts;</li>
+<li>Brownian barrier probabilities and the intuition behind barrier options.</li>
+</ul>
+<p class="concept-check"><strong>Check:</strong> symmetry of the increments is essential for equal path weights. With drift, the reflected path usually has a different probability weight. In discrete time, also enforce endpoint and time parity.</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-first-passage-time">
+<summary><span class="concept-label">□ First-Passage Time</span><span class="concept-action"><span class="when-closed">Expand</span><span class="when-open">Collapse</span></span></summary>
+<div class="concept-content">
+<h4>1. Definition</h4>
+<p>The first time a process $(X_t)$ enters a set $A$ is</p>
+<div class="math-display">$$
+\tau_A=\inf\{t\ge0:X_t\in A\}.
+$$</div>
+<p>For a random walk, write $\tau_a=\inf\{n\ge0:S_n=a\}$. A first return to the starting state $i$ must exclude time zero: $\tau_i^+=\inf\{n\ge1:S_n=i\}$. A hitting probability, the distribution of the hitting time, and its expectation are three distinct questions.</p>
+<h4>2. Fair random walk hitting a positive integer $a$</h4>
+<p>Let $S_0=0$ and let each increment be $\pm1$ with equal probability. A ballot/reflection argument gives, for $m\ge a$ with $m$ and $a$ of the same parity,</p>
+<div class="math-display">$$
+P(\tau_a=m)=\frac{a}{m}P(S_m=a)
+=\frac{a}{m}\binom{m}{(m+a)/2}2^{-m};
+$$</div>
+<p>the probability is zero otherwise. Because $\{\tau_a\le n\}=\{M_n\ge a\}$, one may also obtain the CDF from reflection and difference it to get the PMF.</p>
+<h4>3. A subtle but important fact</h4>
+<p>A one-dimensional fair random walk eventually reaches every fixed integer $a$ with probability 1, but</p>
+<div class="math-display">$$
+P(\tau_a&lt;\infty)=1,\qquad \mathbb E[\tau_a]=\infty.
+$$</div>
+<p>The first-passage distribution has a heavy tail, so “almost surely finite” does not imply “finite expectation.” Confining the walk to $[0,N]$ with absorbing boundaries makes the expected duration finite; in the fair case it is $i(N-i)$.</p>
+<h4>4. Continuous-time analogue</h4>
+<p>For standard Brownian motion starting at 0 and $a&gt;0$,</p>
+<div class="math-display">$$
+P(\tau_a\le t)=2\left[1-\Phi\!\left(\frac{a}{\sqrt t}\right)\right],
+\qquad
+f_{\tau_a}(t)=\frac{a}{\sqrt{2\pi t^3}}
+\exp\!\left(-\frac{a^2}{2t}\right),\qquad t&gt;0.
+$$</div>
+<h4>5. Standard methods</h4>
+<ul>
+<li><strong>First-step analysis:</strong> write a recurrence or boundary-value problem for hitting probabilities or expected times.</li>
+<li><strong>Reflection:</strong> turn “hit by time $n$” into a maximum or endpoint-tail event.</li>
+<li><strong>Tail sums:</strong> for a nonnegative integer time, $\mathbb E\tau=\sum_{n\ge0}P(\tau&gt;n)$.</li>
+<li><strong>Generating functions or martingales:</strong> obtain a full law, Laplace transform, or handle more complicated boundaries.</li>
+</ul>
+<p class="concept-check"><strong>Common pitfalls:</strong> $P(S_n=a)$ is not $P(\tau_a=n)$ because it includes paths that arrived earlier and returned; check optional-stopping integrability or boundedness before using it to derive an expectation.</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
 <li><p>□ Poisson process: independent stationary increments, exponential interarrival times, thinning and superposition.</p>
 </li>
 <li><p>□ Martingale definition, fair-game intuition and when optional stopping is invalid.</p>

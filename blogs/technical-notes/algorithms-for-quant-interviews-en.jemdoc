@@ -1,4 +1,4 @@
-# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}, addjs{../blog-sidebar}
 = Algorithms for Quantitative Research Interviews
 [../../blog.html ← Blogs] \M /updated 2026-07-20/
 

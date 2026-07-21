@@ -1,18 +1,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" href="../blog-note.css" type="text/css" />
-<title>Brainteasers</title>
+<script src="../blog-sidebar.js" type="text/javascript"></script>
+<title>Assorted Brainteasers</title>
 </head>
 <body>
 <div id="layout-content">
 <div id="toptitle">
-<h1>Brainteasers</h1>
-<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>updated 2026-07-20</i></div>
+<h1>Assorted Brainteasers</h1>
+<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>updated 2026-07-21</i></div>
 </div>
 <p>A growing collection of numbered brainteasers. Open the answer only when you are ready.</p>
 <h2>Problem 1</h2>
@@ -135,6 +136,20 @@
 <p>Therefore, <i>f</i>(8) = 2<sup>7</sup> = 128. Since all 8! permutations are equally likely:</p>
 <p class="equation-line">P = 2<sup>7</sup>/8! = 128/40320 = 1/315.</p>
 <p>The required probability is <strong>1/315</strong>.</p>
+</div>
+</details>
+<h2>Problem 8 ★</h2>
+<p>A simple symmetric random walk starts at 0. At each step, it moves +1 or -1 with equal probability. Before it reaches 3 for the first time, what is the expected number of visits to -2? Count every landing on -2 as one visit.</p>
+<details class="answer">
+<summary>Show answer</summary>
+<div class="answer-content">
+<p>First, the probability of reaching -2 before 3 when starting from 0 is 3/5 by the gambler's ruin formula.</p>
+<p>Now suppose the walk has reached -2. After each visit to -2, it avoids ever returning to -2 before hitting 3 only if it first moves to -1, which has probability 1/2, and then reaches 3 before -2. Starting from -1, that second probability is 1/5.</p>
+<p>Therefore, the probability that a visit to -2 is the final visit before hitting 3 is:</p>
+<p class="equation-line">(1/2)(1/5) = 1/10.</p>
+<p>Conditional on reaching -2, the total number of visits to -2 is geometric with mean 10. Multiplying by the probability of reaching -2 at all gives:</p>
+<p class="equation-line">E[number of visits to -2] = (3/5)(10) = 6.</p>
+<p>Therefore, the expected number of visits to -2 before the first visit to 3 is <strong>6</strong>.</p>
 </div>
 </details>
 </div>
