@@ -152,6 +152,20 @@
 <p>Therefore, the expected number of visits to -2 before the first visit to 3 is <strong>6</strong>.</p>
 </div>
 </details>
+<h2>Problem 9 ★</h2>
+<p>Four points are chosen independently and uniformly at random on a circle and labeled <i>A</i>, <i>B</i>, <i>C</i>, and <i>D</i> in clockwise order. They are connected in the order <i>A</i>-<i>C</i>-<i>B</i>-<i>D</i>-<i>A</i>, forming a self-intersecting quadrilateral. What is the probability that the center of the circle lies in its interior? Interpret the interior using the usual even-odd rule.</p>
+<details class="answer">
+<summary>Show answer</summary>
+<div class="answer-content">
+<p>Let <i>X</i> be the intersection of chords <i>AC</i> and <i>BD</i>. Under the even-odd rule, the interior of the self-intersecting quadrilateral is the union of triangles <i>BCX</i> and <i>DAX</i>.</p>
+<p>First consider the ordinary convex quadrilateral <i>ABCD</i>. Its interior contains the circle's center exactly when the four points are not all contained in a semicircle. For any chosen point, the probability that the other three points lie in the clockwise semicircle starting there is (1/2)<sup>3</sup>. Almost surely, these four possible starting-point events are disjoint, so:</p>
+<p class="equation-line">P(center lies in <i>ABCD</i>) = 1 - 4(1/2)<sup>3</sup> = 1/2.</p>
+<p>When the center lies in <i>ABCD</i>, the crossing chords divide the quadrilateral into four triangles: <i>ABX</i>, <i>BCX</i>, <i>CDX</i>, and <i>DAX</i>. By cyclic symmetry, the center is equally likely to lie in any one of them.</p>
+<p>The self-intersecting quadrilateral contains two of these four triangles, <i>BCX</i> and <i>DAX</i>. Thus, conditional on the center lying in <i>ABCD</i>, the required probability is 2/4 = 1/2.</p>
+<p class="equation-line">P = (1/2)(1/2) = 1/4.</p>
+<p>Therefore, the required probability is <strong>1/4</strong>.</p>
+</div>
+</details>
 </div>
 </body>
 </html>
