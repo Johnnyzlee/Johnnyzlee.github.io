@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
@@ -14,11 +14,11 @@
 <div id="layout-content">
 <div id="toptitle">
 <h1>A Practical Guide to Quantitative Finance Interviews</h1>
-<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>更新于 2026-07-20</i></div>
+<div id="subtitle"><a href="../../blog.html">← Blogs</a></div>
 </div>
-<p>本页依据 Xinfeng Zhou 的 <a href="https://github.com/manavkapadnis/ALL-ML-DS-cheatsheets/blob/master/Xinfeng_Zhou-A_Practical_Guide_To_Quantitative_Finance_Interviews-CreateSpace_Independent_Publishing_Platform_%282008%29.PDF"><i>A Practical Guide to Quantitative Finance Interviews</i></a> 选取 20 个代表性题型。分类顺序对应原书从 Brain Teasers、数学基础、概率、随机过程、Finance 到 Algorithms 的知识路线；题面与解析均为独立改写。</p>
+<p>本页是来自 Xinfeng Zhou 的 <a href="https://github.com/manavkapadnis/ALL-ML-DS-cheatsheets/blob/master/Xinfeng_Zhou-A_Practical_Guide_To_Quantitative_Finance_Interviews-CreateSpace_Independent_Publishing_Platform_%282008%29.PDF"><i>A Practical Guide to Quantitative Finance Interviews</i></a> 一书的题目选集，请勿用于传播。</p>
 <div class="page-toc" role="navigation" aria-labelledby="zhou-toc-title">
-<div class="page-toc-title" id="zhou-toc-title">目录</div>
+<div class="page-toc-title" id="zhou-toc-title">题目目录</div>
 <ul>
 <li><a href="#zhou-brainteasers">A. Brain Teasers</a></li>
 <li><a href="#zhou-calculus-linear-algebra">B. Calculus &amp; Linear Algebra</a></li>
@@ -30,137 +30,1372 @@
 </div>
 <div class="section-anchor" id="zhou-brainteasers" aria-hidden="true"></div>
 <h2>A. Brain Teasers</h2>
-<h3>Z1 [Core] Three Mislabeled Bags / 三个标签全错的袋子</h3>
-<p><b>中文：</b> 三个袋子分别装“两枚金币”“两枚银币”“一金一银”，但三个标签全部贴错。只允许从一个袋子中抽一枚硬币，如何确定全部袋子的内容？</p>
-<p><b>English:</b> Three bags contain two gold coins, two silver coins, and one of each, but every label is wrong. By drawing one coin from one bag, determine all three contents.</p>
+<h3>Z001 · Screwy pirates / 古怪海盗分金 （Page 19）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 五名海盗分 100 枚金币。最年长者先提出方案，所有人（包括提案者）投票；赞成票达到至少一半时方案通过，否则提案者被处死，再由下一位提出方案。海盗依次追求：先保命、再多拿金币；若两种结果在这两点上相同，则更愿意看到其他海盗被处死。最终金币会怎样分配？</p>
+<p><strong>English:</strong> Five pirates must divide 100 gold coins. The most senior proposes a division and everyone votes. A proposal passes with at least 50% of the votes; otherwise its proposer is killed and the process repeats. Each pirate ranks survival first, then coins, then—if still indifferent—prefers another pirate to die. What division results?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Draw from the bag labeled “mixed.” Because every label is wrong, that bag is homogeneous. If the draw is gold, it must be the two-gold bag; if silver, it is the two-silver bag. The remaining two bags are then determined by excluding their incorrect labels. The key is to sample from the label that rules out the mixed composition.</p>
+<p>Work backward. With two pirates, the senior pirate's own vote is enough, so he keeps all 100. With three, the senior pirate buys the vote of the pirate who would otherwise receive zero for one coin. Repeating this argument, with five pirates the most senior buys the votes of pirates 1 and 3 for one coin each.</p>
+<p>The final allocation from most senior to least senior is $(98,0,1,0,1)$. It passes $3$–$2$.</p>
 </div></details>
-<h3>Z2 [Medium] Twenty-Five Horses / 二十五匹马</h3>
-<p><b>中文：</b> 25 匹马、每场最多 5 匹，没有计时器，只知道每场名次。至少需要多少场才能找出全体最快的三匹？假设速度稳定且无并列。</p>
-<p><b>English:</b> There are 25 horses, five lanes, and no stopwatch; each race reveals only order. What is the minimum number of races needed to identify the three fastest horses, assuming fixed speeds and no ties?</p>
+<h3>Z002 · Tiger and sheep / 老虎与羊 （Page 20）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 魔法岛上有 100 只老虎和 1 只羊，岛上只有草。老虎能吃草，但更想吃羊；每次只能有一只老虎吃羊，而且吃掉羊的老虎随后会变成羊。所有老虎都足够聪明，并把生存放在首位。这只羊会被吃掉吗？</p>
+<p><strong>English:</strong> One hundred perfectly rational tigers and one sheep live on an island. A tiger prefers sheep to grass, but a tiger that eats the sheep becomes a sheep and values survival above eating. Only one tiger can eat the sheep at a time. Will the sheep be eaten?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Race five groups, then race the five group winners: six races. Suppose the winner order is $A_1,B_1,C_1,D_1,E_1$. Then $A_1$ is fastest, and only $A_2,A_3,B_1,B_2,C_1$ can still be second or third. Race those five once; its top two join $A_1$. Thus <strong>seven races</strong> suffice, and the elimination information shows six cannot.</p>
+<p>Backward induction on the number of tigers gives an alternating result. With one tiger, it eats; with two, either eater would become a sheep and be eaten, so neither eats. Thus an odd number eats and an even number does not: after eating, an odd population leaves an even tiger population, in which the new sheep survives.</p>
+<p>Because 100 is even, the original sheep is not eaten.</p>
 </div></details>
-<h3>Z3 [Core] Breaking a Chocolate Bar / 掰开巧克力</h3>
-<p><b>中文：</b> 一块 $m	imes n$ 的巧克力由 $mn$ 个小格组成。每次只能拿起一块已有碎片，沿格线掰成两块。最少需要掰多少次才能得到 $mn$ 个单格？</p>
-<p><b>English:</b> An $m	imes n$ chocolate bar consists of $mn$ unit squares. Each move breaks one existing piece into exactly two along a grid line. What is the minimum number of breaks needed to separate all squares?</p>
+<h3>Z003 · River crossing / 过桥问题 （Page 21）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A、B、C、D 四人夜间过桥，过桥必须带唯一的一支手电，桥上每次最多两人，同行速度取决于较慢者。四人单独过桥分别需要 10、5、2、1 分钟。让所有人到达对岸至少需要多少时间？</p>
+<p><strong>English:</strong> Four people take 10, 5, 2, and 1 minutes to cross a bridge. At most two may cross together, they must carry the only torch, and a pair moves at the slower person's speed. What is the minimum time for all four to cross?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Each break increases the number of pieces by exactly one, regardless of where it occurs. Starting from one piece and ending with $mn$ pieces therefore requires exactly</p><p class="equation-line">$$mn-1$$</p><p>breaks. This invariant proves both achievability and optimality.</p>
+<p>The optimal sequence is: the 1- and 2-minute people cross (2); the 1-minute person returns (1); the 5- and 10-minute people cross (10); the 2-minute person returns (2); then the 1- and 2-minute people cross (2). Total: 17 minutes.</p>
+<p>The two slowest must cross together; otherwise the required torch returns make their combined cost no smaller. This gives the matching lower bound.</p>
+</div></details>
+<h3>Z004 · Birthday problem / 生日推理 （Page 21）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 老板的生日只可能是以下十个日期之一：3 月 4、5、8 日；6 月 4、7 日；9 月 1、5 日；12 月 1、2、8 日。你只知道月份，同事 C 只知道日期。你先说：“我不知道，C 也不知道。”C 随后说：“原来不知道，现在知道了。”你再说：“现在我也知道了。”秘书听完便写下答案。老板的生日是哪一天？</p>
+<p><strong>English:</strong> A birthday is one of: Mar 4, 5, 8; Jun 4, 7; Sep 1, 5; Dec 1, 2, 8. You know only the month and C knows only the day. You say, ‘I do not know, and C does not know either.’ C then says, ‘Now I know.’ You reply, ‘Now I know too.’ What is the birthday?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Your first statement rules out June and December: on day 7 or day 2, respectively, C could have known immediately. The remaining dates are Mar 4, Mar 5, Mar 8, Sep 1, Sep 5. C's new certainty rules out day 5, leaving Mar 4, Mar 8, Sep 1. If your month were March you would still be uncertain, so it must be September.</p>
+<p>The birthday is September 1.</p>
+</div></details>
+<h3>Z005 · Card game / 红黑牌游戏 （Page 22）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一副 52 张牌每次翻两张：两张黑牌归庄家，两张红牌归你，一红一黑则丢弃，直到牌翻完。你的牌数多于庄家便赢 100 美元，否则（含平局）收益为零。你最多愿意付多少钱参加这场游戏？</p>
+<p><strong>English:</strong> A shuffled 52-card deck is exposed two cards at a time. A black-black pair goes to the dealer, a red-red pair goes to you, and a mixed pair is discarded. You receive USD 100 only if your pile ends larger than the dealer's. What is a fair entry price?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $RR$, $BB$, and $RB$ be the numbers of red-red, black-black, and mixed pairs. Counting red and black cards gives $2RR+RB=26=2BB+RB$, hence $RR=BB$. Your pile and the dealer's pile always have equal size.</p>
+<p>You can never win under the stated payoff, so the fair entry price is zero.</p>
+</div></details>
+<h3>Z006 · Burning ropes / 燃烧的绳子 （Page 23）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 有两根材质不均匀的绳子，每根从一端烧完都恰好需要 1 小时，但各段燃烧速度不恒定。怎样用它们准确计时 45 分钟？</p>
+<p><strong>English:</strong> Two nonuniform ropes each take exactly one hour to burn from one end, but their local burn rates vary. How can they measure exactly 45 minutes?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>At time zero, light both ends of rope A and one end of rope B. Rope A finishes after 30 minutes. At that instant light the other end of rope B. Its remaining burn time is then 15 minutes, so rope B finishes exactly 45 minutes after the start.</p>
+</div></details>
+<h3>Z007 · Defective ball / 瑕疵球称重 （Page 23）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 12 个外观相同的球中有 1 个重量异常，但不知道它更重还是更轻。只用一架能比较两边轻重的天平，怎样在 3 次称量内找出异常球并判断它是重是轻？</p>
+<p><strong>English:</strong> Among 12 visually identical balls, one has a different weight and may be either heavier or lighter. Using a balance scale, identify the ball and whether it is heavy or light in at most three weighings.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Label the balls 1–12. First weigh 1,2,3,4 against 5,6,7,8. If they balance, weigh 9,10,11 against three known-normal balls. A balance makes 12 defective; otherwise the direction tells whether one of 9–11 is heavy or light, and weighing 9 against 10 resolves it.</p>
+<p>If the first left pan is heavy, the candidates are 1–4 heavy or 5–8 light. Weigh 1,2,5 against 3,6,9, where 9 is normal. If the left pan is heavy, test 1 against 2: the heavier one is defective, or a balance means 6 is light. If the right pan is heavy, test 3 against 9: 3 heavy or, on balance, 5 light. If they balance, test 7 against 8: the lighter one is defective, or a balance means 4 is heavy. Mirror the labels when the first right pan is heavy.</p>
+</div></details>
+<h3>Z008 · Trailing zeros / 阶乘末尾零 （Page 25）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> $100!$ 的末尾有多少个零？</p>
+<p><strong>English:</strong> How many trailing zeros does $100!$ have?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Each trailing zero requires a factor 5 paired with a factor 2, and factors 2 are abundant. The number of factors $5$ in $100!$ is $\lfloor100/5\rfloor+\lfloor100/25\rfloor=20+4=24$.</p>
+</div></details>
+<h3>Z009 · Horse race / 赛马选优 （Page 25）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 25 匹马速度各不相同且保持恒定；赛道一次最多容纳 5 匹马，也没有秒表。要找出最快的 3 匹马，最少需要赛几场？</p>
+<p><strong>English:</strong> Twenty-five horses have distinct constant speeds. A race has at most five horses and no stopwatch is available. What is the minimum number of races needed to identify the three fastest horses?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Race five groups of five, then race the five group winners: six races. Suppose the winners finish $A_1&gt;B_1&gt;C_1&gt;D_1&gt;E_1$, and each group was internally ordered. $A_1$ is fastest overall. Only $A_2,A_3,B_1,B_2,C_1$ can still be second or third. Race those five once.</p>
+<p>Seven races suffice. Six cannot suffice because after the group-winner race the remaining candidates for second and third have not been mutually ordered.</p>
+</div></details>
+<h3>Z010 · Infinite sequence / 无穷序列 （Page 26）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若无穷幂塔 $x^{x^{x^{\cdot^{\cdot^\cdot}}}}$ 的值为 $2$，求 $x$。</p>
+<p><strong>English:</strong> If the infinite power tower $x^{x^{x^{\cdot^{\cdot^\cdot}}}}$ converges to $2$, what is $x$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let the convergent tower equal $L$. Then $L=x^L$. With $L=2$, $x^2=2$, so $x=\sqrt2$ for the positive real tower. This value lies in the real convergence interval for infinite power towers, so the proposed limit is consistent.</p>
+</div></details>
+<h3>Z011 · Box packing / 装箱问题 （Page 26）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 能否把 53 块尺寸为 $1\times1\times4$ 的砖完整装进一个 $6\times6\times6$ 的立方体箱子？</p>
+<p><strong>English:</strong> Can 53 bricks of size $1\times1\times4$ be packed into a $6\times6\times6$ box without overlap?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Partition the box into $27$ blocks of size $2\times2\times2$ and checkerboard-color these blocks. There are 14 blocks of one color and 13 of the other. Every axis-aligned $1\times1\times4$ brick occupies two unit layers in each of two adjacent, oppositely colored blocks. A $2\times2\times2$ block can accommodate at most four such half-bricks.</p>
+<p>The color represented by only 13 blocks therefore supports at most $13\times4=52$ bricks. Packing 53 is impossible.</p>
+</div></details>
+<h3>Z012 · Calendar cubes / 日历方块 （Page 27）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 定制两个六面方块，在每个面写一个数字。每天用两个方块的正面显示当月日期，1—9 日必须显示成 01—09，两个方块可以互换位置。两个方块的各个面应分别写哪些数字，才能显示 01—31？</p>
+<p><strong>English:</strong> Put one digit on each face of two cubes so that, using both cubes and allowing their order to swap, their front faces can display every calendar date 01 through 31. Which digits should be used?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>One valid labeling is cube A: 0,1,2,3,4,5; cube B: 0,1,2,6,7,8. Turn the 6 upside down to represent 9. The duplicated 0, 1, and 2 allow 01–09, 11, 22, and all tens digits needed through 31.</p>
+</div></details>
+<h3>Z013 · Door to offer / 门与录用通知 （Page 28）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 面前有两扇门，一扇通向录用通知，另一扇通向出口；两名守卫一人永远说真话，一人永远说谎。只能向其中一人问一个是非问题。应问什么，才能确定通往录用通知的门？</p>
+<p><strong>English:</strong> Two doors lead respectively to a job offer and the exit. One guard always lies and the other always tells the truth. You may ask either guard one yes/no question. How do you find the offer?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Ask either guard: ‘Which door would the other guard say leads to the offer?’ Both guards indicate the wrong door—one by reporting the liar's answer truthfully and the other by lying about the truthful answer. Choose the opposite door.</p>
+</div></details>
+<h3>Z014 · Message delivery / 消息传递 （Page 29）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 你要通过不可信的信使把文件寄给同事。文件可以放进带挂锁的箱子；你和同事各自的锁都只有上锁者持有唯一钥匙，而未上锁的箱子内物品在途中会丢失。怎样在不交换钥匙的情况下安全送达文件？</p>
+<p><strong>English:</strong> You and a colleague each own a padlock with a unique private key. An insecure courier will steal anything sent in an unlocked box. How can you send a document securely without exchanging keys?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Send the locked box using your lock. Your colleague adds their own lock and sends it back. Remove your lock and return the box, still secured by the colleague's lock. The colleague removes that lock with their key. The box is locked during every trip and no key is transmitted.</p>
+</div></details>
+<h3>Z015 · Last ball / 最后一球 （Page 29）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 袋中起初有 20 个蓝球和 14 个红球。每次随机取出两个球且不放回：同色时放入一个蓝球，异色时放入一个红球；不断重复直到只剩一个球。最后一个球是什么颜色？如果初始改为 20 个蓝球和 13 个红球，答案又是什么？</p>
+<p><strong>English:</strong> A bag starts with 20 blue and 14 red balls. Repeatedly remove two balls: replace a same-color pair with one blue ball and a mixed pair with one red ball. What is the final ball's color? What changes if the bag starts with 20 blue and 13 red balls?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Track the parity of the number of red balls. Removing two same-color balls changes the red count by 0 or −2; removing a mixed pair and adding red also leaves the red count unchanged. Thus red parity is invariant. With one ball left, an even red count means the last ball is blue, while an odd red count means it is red.</p>
+<p>Starting with 14 red gives a blue final ball; starting with 13 red gives a red final ball.</p>
+</div></details>
+<h3>Z016 · Light switches / 灯与开关 （Page 30）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 房间内有一盏灯，房间外有四个开关，只有一个开关控制这盏灯，起初全部关闭。你可以任意操作开关。最少进入房间几次，才能确定正确的开关？</p>
+<p><strong>English:</strong> One of four outside switches controls a bulb inside a closed room; all switches start off. You may operate the switches freely. What is the fewest number of visits to the room needed to identify the controlling switch?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>One visit suffices if both light and heat can be observed. Turn switches 1 and 2 on long enough to heat the bulb. Then turn switch 2 off, turn switch 3 on, and immediately enter the room. A lit and hot bulb identifies switch 1; off and hot identifies switch 2; lit and cold identifies switch 3; off and cold identifies switch 4.</p>
+</div></details>
+<h3>Z017 · Quant salary / 量化薪资 （Page 31）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 来自不同银行的 8 名量化从业者想算出大家的平均薪资，但每个人都不愿向其他人透露自己的工资。设计一种能得到平均值、又不会让任何人知道他人工资的办法。</p>
+<p><strong>English:</strong> Eight quants want to compute their average salary while no participant reveals an individual salary to anyone else. Give a protocol that computes the average.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Quant 1 privately chooses a random offset $R$, adds it to their salary, and sends the result to quant 2. Each subsequent quant adds their own salary and passes the running total; quant 8 returns it to quant 1. Quant 1 subtracts $R$ and announces the total, which everyone divides by eight.</p>
+<p>No participant sees another salary in isolation. This protects against individual observers, though not against arbitrary collusion between neighbors.</p>
+</div></details>
+<h3>Z018 · Coin piles / 硬币堆对称性 （Page 31）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 你蒙着眼面对 1000 枚硬币，其中 980 枚反面朝上、20 枚正面朝上。你无法靠触摸辨认正反面，但可以翻转任意硬币。怎样把硬币分成两堆，并保证两堆中正面朝上的硬币数相同？</p>
+<p><strong>English:</strong> While blindfolded, you have 1,000 coins: 980 tails-up and 20 heads-up. You cannot feel orientation but may flip coins. Divide them into two piles guaranteed to contain the same number of heads.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Take any 20 coins as pile A and put the other 980 in pile B. If A initially contains $h$ heads, then B contains $20-h$ heads. Flip every coin in A; its $h$ heads become tails and its $20-h$ tails become heads. Both piles now contain $20-h$ heads.</p>
+</div></details>
+<h3>Z019 · Mislabeled bags / 标签全错的袋子 （Page 32）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 三个袋子分别装苹果、橙子以及苹果橙子混合物，袋上的“苹果”“橙子”“混合”三个标签全部贴错。最少取出几个水果、应从哪个袋子取，才能确定每袋的内容？</p>
+<p><strong>English:</strong> Three bags contain only apples, only oranges, and a mixture. The labels ‘apples,’ ‘oranges,’ and ‘mix’ are all wrong. What is the minimum number of fruit draws needed to identify every bag?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Draw one fruit from the bag labeled ‘mix.’ Because every label is wrong, this bag is pure. If the draw is an apple, relabel it apples; the bag labeled oranges cannot be oranges and cannot now be apples, so it is mix, and the last is oranges. The orange case is symmetric.</p>
+<p>Exactly one fruit draw is necessary and sufficient.</p>
+</div></details>
+<h3>Z020 · Wise men / 智者与玻璃杯 （Page 33）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 苏丹囚禁了 50 名智者，并放置一个初始正放、可以翻转的玻璃杯。每分钟随机叫出一人，此人可以翻转杯子或不操作；同一人可能被叫出无限多次。任何人一旦正确宣布“所有人都至少被叫过一次”，众人获释；若判断错误则全部处死。智者只能在被隔离前商议一次。请设计保证最终获释的策略。</p>
+<p><strong>English:</strong> Fifty prisoners are visited one at a time in random order, with repetitions, and see a glass initially upright. A visitor may flip it or do nothing. Before separation they may agree on a strategy; afterward, a correct declaration that everyone has visited frees all, while a false declaration kills all. Give a strategy that eventually succeeds with certainty.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Designate one prisoner as counter. Every other prisoner flips the glass from upright to upside down exactly once—the first time they see it upright—and otherwise does nothing. The counter flips it back upright whenever it is upside down and increments a private count. When the count reaches 49, the counter declares that everyone has visited.</p>
+<p>Every counted flip came from a distinct non-counter. Random repeated visits ensure all 49 flips and counter resets eventually occur with probability one.</p>
+</div></details>
+<h3>Z021 · Clock pieces / 时钟碎片求和 （Page 34）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一个按顺时针标有 1—12 的钟面摔成三个相连的碎片，每块碎片上的数字之和相同，且不允许形状离奇地跨越钟面。三块各包含哪些数字？</p>
+<p><strong>English:</strong> A clock face numbered 1 through 12 breaks into three ordinary connected pieces whose number sums are equal. Which numbers lie on each piece?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The total is $1+\cdots+12=78$, so each piece must sum to $26$. One geometrically feasible division is $\{11,12,1,2\}$, $\{3,4,9,10\}$, and $\{5,6,7,8\}$; every set sums to $26$.</p>
+</div></details>
+<h3>Z022 · Missing integers / 缺失整数 （Page 34）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 从 1 到 100 中取出 98 个互不相同的整数。怎样高效找出缺少的两个整数？</p>
+<p><strong>English:</strong> Given 98 distinct integers from 1 through 100, find the two missing integers efficiently.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let the missing numbers be $a$ and $b$. From the sum, $s=a+b=5050-\sum x_i$. From the sum of squares, $q=a^2+b^2=338350-\sum x_i^2$. Then $ab=(s^2-q)/2$. The missing numbers are the two roots of $t^2-st+ab=0$.</p>
+<p>This uses constant auxiliary storage and one pass through the 98 numbers.</p>
+</div></details>
+<h3>Z023 · Counterfeit coins I / 假币问题一 （Page 35）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：有 10 袋硬币，每袋 100 枚。正常硬币每枚重 10 克，只有一袋是假币，且该袋每枚都重 9 克或都重 11 克，但不知道是哪一种。只用一次能显示精确重量的电子秤，怎样找出假币袋？</p>
+<p>B：一栋楼有 100 层，两只完全相同的玻璃球从低于临界楼层 $X$ 的位置扔下不会破，从第 $X$ 层或更高处扔下必破。怎样在最坏情况下用最少的投掷次数确定 $X$？</p>
+<p><strong>English:</strong> A. Ten bags contain 100 coins each. Nine bags have 10-gram coins; one bag has coins all weighing either 9 or 11 grams. Find the counterfeit bag and its coin weight with one exact digital-scale weighing.</p>
+<p>B. Two identical glass balls are tested in a 100-story building. A ball survives every drop below an unknown threshold floor $X$ and breaks from floor $X$ or above. Determine $X$ while minimizing the worst-case number of drops.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Take 1 coin from bag 1, 2 from bag 2, …, and 10 from bag 10. If all were genuine the weight would be $10(1+\cdots+10)=550$ grams. An observed deviation of $+k$ grams identifies bag $k$ as containing 11-gram coins; a deviation of $-k$ identifies bag $k$ as containing 9-gram coins.</p>
+<p>B. If at most $n$ drops are allowed, choose the first-ball test floors with successively decreasing gaps $n,n-1,\ldots,1$. A break leaves at most the number of remaining drops minus one floors to test linearly with the second ball. Such a schedule covers at most</p>
+<p class="equation-line">$$n+(n-1)+\cdots+1=\frac{n(n+1)}2$$</p>
+<p>floors. Since $13\cdot14/2=91&lt;100$ but $14\cdot15/2=105\ge100$, at least 14 drops are necessary. They are sufficient: test the first ball at floors $14,27,39,50,60,69,77,84,90,95,99$, then 100 if needed; after a break, test the unresolved floors one by one with the second ball. Every branch uses at most 14 drops.</p>
+</div></details>
+<h3>Z024 · Matching socks / 配对袜子 （Page 37）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 抽屉里有 2 只红袜、20 只黄袜和 31 只蓝袜。闭眼取袜子时，至少取多少只才能保证其中有一双同色袜子？</p>
+<p><strong>English:</strong> A drawer contains 2 red, 20 yellow, and 31 blue socks. How many socks must be drawn blindly to guarantee a same-color pair?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>There are three colors. Three draws could contain one of each color, so they do not guarantee a pair. The fourth draw must repeat a color by the pigeonhole principle. The answer is 4.</p>
+</div></details>
+<h3>Z025 · Handshakes / 握手次数 （Page 37）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一场聚会中除你以外还有 25 人，每个人都与你握手，其他人之间也可能彼此握手。即使不知道握手总次数，能否断定现场至少有两个人与完全相同数量的人握过手？请说明理由。</p>
+<p><strong>English:</strong> At a party with you and 25 teammates, everyone else shakes your hand and arbitrary additional handshakes occur. Prove that at least two people have shaken hands with the same number of people.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>You have degree 25 in the handshake graph. Each of the other 25 people has degree between 1 and 25 because everyone shook your hand. If their degrees are not all distinct, the claim is proved. If they are all distinct, they must be exactly 1,…,25, so the person of degree 25 has the same degree as you. Either way a duplicate exists.</p>
+</div></details>
+<h3>Z026 · Have we met before? / 是否曾经相遇 （Page 37）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 证明：任意 6 人中，必定存在 3 人彼此认识，或者存在 3 人彼此都不认识。</p>
+<p><strong>English:</strong> Prove that among any six people there are either three mutual acquaintances or three mutual strangers.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Choose any person A. Among the other five, at least three are either acquaintances of A or strangers to A. Suppose B,C,D are acquaintances. If any pair among B,C,D know each other, that pair with A forms three mutual acquaintances; otherwise B,C,D are three mutual strangers. The other case is the same with ‘acquaintance’ and ‘stranger’ interchanged.</p>
+</div></details>
+<h3>Z027 · Ants on a square / 正方形上的蚂蚁 （Page 38）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 边长为 1 的正方形内有 51 只蚂蚁。用一个半径为 1/7 的圆形玻璃杯，能否总找到一种摆放位置，使杯口至少圈住 3 只蚂蚁？</p>
+<p><strong>English:</strong> Fifty-one ants lie in a unit square. Can a circular glass of radius 1/7 always be positioned to cover at least three ants?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Partition the square into a $5\times5$ grid. By the pigeonhole principle, one small square contains at least $\lceil51/25\rceil=3$ ants. A circle of radius 1/7 centered at that square's center covers it because the center-to-corner distance is $\sqrt2/10&lt;1/7$. Therefore the glass can cover at least three ants.</p>
+</div></details>
+<h3>Z028 · Counterfeit coins II / 假币问题二 （Page 38）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 有 5 袋硬币，每袋 100 枚；一枚硬币可能重 9、10 或 11 克，同一袋内重量相同，但各袋属于哪一类未知。使用能显示精确重量的电子秤，最少称几次可以确定每袋硬币的重量？</p>
+<p><strong>English:</strong> Five bags contain 100 coins each. Every coin weighs 9, 10, or 11 grams, and each bag is internally uniform. Determine every bag's type using an exact digital scale as few times as possible.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>One weighing is enough. Take $1,3,9,27,81$ coins from bags $1$–$5$. Relative to the $10$-gram baseline of $1{,}210$ grams, the deviation is $\sum_{i=1}^5 d_i3^{i-1}$, where $d_i\in\{-1,0,1\}$ according as bag $i$ contains $9$-, $10$-, or $11$-gram coins. Balanced-ternary representation is unique, so the single deviation identifies all five bags.</p>
+</div></details>
+<h3>Z029 · Prisoner problem / 囚犯与彩帽 （Page 40）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：100 名囚犯各戴一顶随机分配的红帽或蓝帽；每人能看到别人的帽子，却看不到自己的。囚犯按随机顺序公开猜自己的帽色，猜对获释、猜错处死，开始后不能交流，但可事先商议。怎样制定策略，最多能保证救下多少人？</p>
+<p>B：如果可能的帽色改为红、绿、蓝三种，最多又能保证救下多少人？</p>
+<p><strong>English:</strong> A. One hundred prisoners wear arbitrary red or blue hats. Each sees all other hats and, in random order, publicly guesses only their own color; a correct guess frees that prisoner and an incorrect guess kills them. They may agree on a strategy beforehand. How many can they guarantee to save?</p>
+<p>B. What changes if the possible hat colors are red, green, and blue?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Whoever is called first acts as the parity announcer: that prisoner encodes the parity of the red hats among the other 99 in the color they announce. Every later prisoner combines that announced parity with the other 98 hats they can see to infer their own hat.</p>
+<p>The first prisoner may be wrong, but every other prisoner is correct. Thus 99 can be guaranteed; 100 cannot be guaranteed because the first speaker receives no information distinguishing the two possible colors of their own hat.</p>
+<p>B. Encode the three colors as $0,1,2$ modulo $3$. The first prisoner announces the color encoding the sum of the other 99 color values modulo $3$. Every later prisoner subtracts the visible sum of the other 98 from that announced residue, modulo $3$, thereby recovering their own color. Again 99 prisoners are guaranteed to survive; the first survives with probability $1/3$ under uniformly random hats.</p>
+</div></details>
+<h3>Z030 · Division by 9 / 整除 9 判据 （Page 41）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 给定任意整数，写出判断它能否被 9 整除的规则，并证明该规则。</p>
+<p><strong>English:</strong> State and prove a digit-based test for divisibility by 9.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Write $n=\sum_k d_k10^k$. Since $10\equiv1\pmod 9$, $n\equiv\sum_kd_k\pmod 9$. Hence $n$ is divisible by $9$ exactly when its digit sum is; repeated digit summing preserves the same residue.</p>
+</div></details>
+<h3>Z031 · Chameleon colors / 变色龙颜色 （Page 42）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 岛上有 13 只红变色龙、15 只绿变色龙和 17 只蓝变色龙。每当两只不同颜色的变色龙相遇，它们都会变成第三种颜色。是否可能最终让所有变色龙颜色相同？为什么？</p>
+<p><strong>English:</strong> An island has 13 red, 15 green, and 17 blue chameleons. Whenever two different colors meet, both change to the third color. Can all chameleons ever become the same color?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Modulo $3$, a meeting changes the three color counts by $(-1,-1,+2)$, which is congruent to subtracting $1$ from every count. Therefore the pairwise differences of the three counts modulo $3$ are invariant. Initially $13,15,17$ have residues $1,0,2$, not all equal. A monochromatic state would have counts $45,0,0$, whose residues are all $0$. It is unreachable.</p>
+</div></details>
+<h3>Z032 · Coin split problem / 硬币拆堆 （Page 43）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 把 1000 枚硬币任意分成两堆，若两堆数量为 $x,y$，就把 $xy$ 记入总和；随后继续拆分每一堆，并把每次拆分所得两堆数量的乘积累加，直到全都成为单枚硬币。最终总和是多少？证明结果与拆分方式无关。</p>
+<p><strong>English:</strong> Split 1,000 coins repeatedly. Whenever a pile of size $n$ is split into sizes $x$ and $y$, add $xy$ to a running total. Continue until every pile has size 1. Find the final total and prove it is independent of the splits.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Label the original coins. A split of a pile into sizes $x$ and $y$ contributes $xy$, exactly the number of unordered coin pairs separated from one another by that split. Every original pair is separated once and only once during the complete splitting tree. Therefore the total is $\binom{1000}{2}=499{,}500$, independent of the splitting order.</p>
+</div></details>
+<h3>Z033 · Chocolate bar problem / 巧克力分块 （Page 44）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一块 $6\times8$ 的巧克力由 $48$ 个 $1\times1$ 小方块组成。每次只能把一块矩形巧克力掰成两个更小的矩形。要得到 48 个单独的小方块，一共需要掰多少次？</p>
+<p><strong>English:</strong> A $6\times8$ chocolate bar is broken into its 48 unit squares. Each break divides exactly one existing rectangular piece into two. How many breaks are required?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Initially there is one piece and finally there are 48. Each permitted break increases the number of pieces by exactly one. Therefore exactly $48-1=47$ breaks are necessary and sufficient.</p>
+</div></details>
+<h3>Z034 · Race track / 环形赛道与汽油 （Page 45）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 单向环形赛道上有 N 个油桶，油量总和恰好够汽车绕行一圈。汽车起初没有油，但可以任选起点，并在沿途取用油桶。是否总能找到一个起点，使汽车不中途断油地跑完一圈？</p>
+<p><strong>English:</strong> On a one-way circular track, N fuel cans contain exactly enough total fuel for one lap. Starting with an empty tank, may one always choose a can as the starting point and complete the lap without running out?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $g_i$ be fuel collected at can $i$ minus fuel required to reach the next can, so $\sum_i g_i=0$. Form cumulative sums $S_k=\sum_{i=1}^k g_i$ and start immediately after an index where $S_k$ is minimal. Every partial sum measured from that start is nonnegative, so the tank never goes below zero and the car completes the lap.</p>
+</div></details>
+<h3>Z035 · Irrational number / 无理数证明 （Page 47）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 证明 $\sqrt2$ 是无理数。</p>
+<p><strong>English:</strong> Prove that $\sqrt2$ is irrational.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Assume $\sqrt2=a/b$ in lowest terms. Then $a^2=2b^2$, so $a$ is even: $a=2k$. Substitution gives $b^2=2k^2$, so $b$ is also even. This contradicts $\gcd(a,b)=1$; therefore $\sqrt2$ is irrational.</p>
+</div></details>
+<h3>Z036 · Rainbow hats / 彩虹帽策略 （Page 47）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 7 名囚犯各自会被戴上一顶彩虹七色之一的帽子，颜色由行刑者任意决定。每人能看到其余 6 人的帽子，但看不到自己的，也不能交流；随后每人写下对自己帽色的唯一猜测。只要至少一人猜对，所有人都获释。能否事先设计一个保证获释的策略？</p>
+<p><strong>English:</strong> Seven prisoners receive hats in seven possible colors. Each sees the other six hats and independently writes one guess of their own color. Can they prearrange a strategy guaranteeing at least one correct guess for every hat assignment?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Encode the seven colors and the seven prisoners by residues $0,\ldots,6$ modulo $7$. Prisoner $i$ sees the other colors and guesses the unique color $g_i$ satisfying $g_i+\sum_{j\ne i}c_j\equiv i\pmod 7$. Let $T=\sum_jc_j\pmod 7$. Prisoner $i$ is correct exactly when $T=i$. Exactly one prisoner has that index, so exactly one guess is guaranteed correct.</p>
 </div></details>
 <div class="section-anchor" id="zhou-calculus-linear-algebra" aria-hidden="true"></div>
 <h2>B. Calculus &amp; Linear Algebra</h2>
-<h3>Z4 [Core] Newton's Method for a Square Root / 牛顿法求平方根</h3>
-<p><b>中文：</b> 用牛顿法推导求 $\sqrt a$（$a&gt;0$）的迭代公式，并说明为何在根附近收敛很快。</p>
-<p><b>English:</b> Derive Newton's iteration for $\sqrt a$, where $a&gt;0$, and explain its fast local convergence.</p>
+<h3>Z037 · Basics of derivatives / 导数基础 （Page 50）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 利用导数的链式法则和乘积法则，求 $y=(\ln x)^{\ln x}$ 的导数。</p>
+<p><strong>English:</strong> Differentiate $y=(\ln x)^{\ln x}$.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Apply Newton's method to $f(x)=x^2-a$:</p><p class="equation-line">$$x_{k+1}=x_k-\frac{x_k^2-a}{2x_k}=\frac12\left(x_k+\frac{a}{x_k}\right).$$</p><p>If $e_k=x_k-\sqrt a$ is small, then $e_{k+1}\approx e_k^2/(2\sqrt a)$, so the number of correct digits roughly doubles each iteration: local convergence is quadratic.</p>
+<p>Take logarithms: $\ln y=(\ln x)\ln(\ln x)$. Differentiating gives $y'/y=[\ln(\ln x)+1]/x$. Hence</p>
+<p class="equation-line">$$y'=(\ln x)^{\ln x}\frac{\ln(\ln x)+1}{x},$$</p>
+<p>on the real domain where the expression is defined, in particular $x&gt;1$.</p>
 </div></details>
-<h3>Z5 [Medium] Two-Asset Minimum Variance / 两资产最小方差组合</h3>
-<p><b>中文：</b> 两资产收益方差为 $\sigma_1^2,\sigma_2^2$，协方差为 $c$。组合在资产 1 上权重为 $w$、资产 2 上为 $1-w$，允许做空。求最小方差权重。</p>
-<p><b>English:</b> Two assets have return variances $\sigma_1^2,\sigma_2^2$ and covariance $c$. A fully invested portfolio uses weights $w$ and $1-w$, with shorting allowed. Find the minimum-variance weight.</p>
+<h3>Z038 · Maximum and minimum / 极值问题 （Page 51）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 不直接计算数值，比较 $e^{\pi}$ 与 $\pi^e$ 的大小。</p>
+<p><strong>English:</strong> Without numerical evaluation, determine which is larger: $e^{\pi}$ or $\pi^e$.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>The portfolio variance is</p><p class="equation-line">$$V(w)=w^2\sigma_1^2+(1-w)^2\sigma_2^2+2w(1-w)c.$$</p><p>Setting $V'(w)=0$ gives</p><p class="equation-line">$$w^*=\frac{\sigma_2^2-c}{\sigma_1^2+\sigma_2^2-2c},\qquad 1-w^*=\frac{\sigma_1^2-c}{\sigma_1^2+\sigma_2^2-2c}.$$</p><p>Constraints would require projecting or resolving the constrained optimization problem.</p>
+<p>The function $f(x)=\ln x/x$ has derivative $f'(x)=(1-\ln x)/x^2$ and is strictly decreasing for $x&gt;e$. Since $\pi&gt;e$, $\ln\pi/\pi&lt;1/e$. Thus $e\ln\pi&lt;\pi$, so $\ln(\pi^e)&lt;\ln(e^{\pi})$, and $e^{\pi}&gt;\pi^e$.</p>
 </div></details>
-<h3>Z6 [Core] Covariance, PSD, and Cholesky / 协方差矩阵与 Cholesky</h3>
-<p><b>中文：</b> 为什么协方差矩阵一定半正定？什么时候可以使用标准 Cholesky 分解生成相关高斯变量？</p>
-<p><b>English:</b> Why is every covariance matrix positive semidefinite? When can standard Cholesky factorization be used to generate correlated Gaussian variables?</p>
+<h3>Z039 · L'Hospital's rule / 洛必达法则 （Page 52）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 分别求极限：$x\to\infty$ 时 $e^x/x^2$ 的极限，以及 $x\to0^+$ 时 $x^2\ln x$ 的极限。</p>
+<p><strong>English:</strong> Evaluate $\lim_{x\to\infty}e^x/x^2$ and $\lim_{x\to0^+}x^2\ln x$.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>For any vector $v$,</p><p class="equation-line">$$v^\top\Sigma v=\operatorname{Var}(v^\top X)\ge0,$$</p><p>so $\Sigma$ is PSD. If it is positive definite, Cholesky gives $\Sigma=LL^\top$ with a nonsingular lower-triangular $L$; then $X=\mu+LZ$ for $Z\sim\mathcal N(0,I)$. A singular PSD matrix needs a rank-revealing eigen/SVD square root or a semidefinite-capable factorization.</p>
+<p>Repeated use of l'Hôpital gives $e^x/x^2\to\infty$ as $x\to\infty$. For the second limit write $x^2\ln x=(\ln x)/x^{-2}$; l'Hôpital gives</p>
+<p class="equation-line">$$\frac{1/x}{-2x^{-3}}=-\frac{x^2}{2}\longrightarrow0.$$</p>
+<p>The limits are $\infty$ and $0$, respectively.</p>
+</div></details>
+<h3>Z040 · Basics of integration / 积分基础 （Page 53）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：求不定积分 $\int\ln x\,dx$。</p>
+<p>B：计算定积分 $\int_0^{\pi/6}\sec x\,dx$。</p>
+<p><strong>English:</strong> A. Find $\int\ln x\,dx$.</p>
+<p>B. Evaluate $\int_0^{\pi/6}\sec x\,dx$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Integration by parts with $u=\ln x$ and $dv=dx$ gives $\int\ln x\,dx=x\ln x-x+C$.</p>
+<p>B. Since $\int\sec x\,dx=\ln|\sec x+\tan x|+C$, the value is $\ln(2/\sqrt3+1/\sqrt3)=\ln\sqrt3$.</p>
+</div></details>
+<h3>Z041 · Applications of integration / 积分应用 （Page 54）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：两个半径均为 1 的圆柱互相垂直，且两条中心轴相交。求它们公共部分的体积。</p>
+<p>B：中午之前某时开始以恒定速率下雪。扫雪车中午出发，并以恒定体积流量清雪；下午 1 点行进了 2 英里，下午 2 点共行进了 3 英里。雪从几点开始下？</p>
+<p><strong>English:</strong> A. Two radius-one cylinders intersect at right angles and their axes meet. Find the volume common to both cylinders.</p>
+<p>B. Snow began falling at a constant rate before noon. A plow started at noon and removes a constant volume of snow per minute. It had traveled 2 miles by 1 p.m. and 3 miles by 2 p.m. When did the snow begin?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. At coordinate $x$ along the common perpendicular, the intersection cross-section is a square of side $2\sqrt{1-x^2}$. Thus</p>
+<p class="equation-line">$$V=\int_{-1}^{1}4(1-x^2)\,dx=\frac{16}{3}.$$</p>
+<p>B. If snowfall began $T$ hours before noon, snow depth at time $t$ after noon is proportional to $T+t$. Constant volume removal implies speed $dx/dt=C/(T+t)$, so distance is $C\ln[(T+t)/T]$. The observations give</p>
+<p class="equation-line">$$\ln\frac{T+2}{T}=\frac{3}{2}\ln\frac{T+1}{T}.$$</p>
+<p>Solving yields $T=(\sqrt5-1)/2\approx0.618$ hours. Snow began about $37.1$ minutes before noon, approximately 11:23 a.m.</p>
+</div></details>
+<h3>Z042 · Expected value using integration / 用积分求期望 （Page 56）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若 $X\sim N(0,1)$，求条件期望 $E[X\mid X&gt;0]$。</p>
+<p><strong>English:</strong> If $X\sim N(0,1)$, compute $E[X\mid X&gt;0]$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>By symmetry $P(X&gt;0)=1/2$. Also $\int_0^\infty x\phi(x)\,dx=\phi(0)=1/\sqrt{2\pi}$. Dividing gives $E[X\mid X&gt;0]=\sqrt{2/\pi}$.</p>
+</div></details>
+<h3>Z043 · Partial Derivatives and Multiple Integrals / 偏导数与多重积分 （Page 57）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 利用二重积分和极坐标计算高斯积分 $\int_{-\infty}^{\infty}e^{-x^2/2}\,dx$。</p>
+<p><strong>English:</strong> Evaluate the Gaussian integral $\int_{-\infty}^{\infty}e^{-x^2/2}\,dx$, using a double integral and polar coordinates.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $I=\int_{-\infty}^{\infty}e^{-x^2/2}\,dx$. Then $I^2$ is the integral of $e^{-(x^2+y^2)/2}$ over the plane. In polar coordinates,</p>
+<p class="equation-line">$$I^2=\int_0^{2\pi}\int_0^\infty e^{-r^2/2}r\,dr\,d\theta=2\pi.$$</p>
+<p>Since $I&gt;0$, $I=\sqrt{2\pi}$.</p>
+</div></details>
+<h3>Z044 · Taylor's series / 泰勒级数 （Page 58）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：求 $i^i$。</p>
+<p>B：证明 Bernoulli 不等式：对 $x&gt;-1$ 以及整数 $n\ge2$，有 $(1+x)^n\ge1+nx$。</p>
+<p><strong>English:</strong> A. Evaluate $i^i$.</p>
+<p>B. Prove Bernoulli's inequality $(1+x)^n\ge1+nx$ for $x&gt;-1$ and integers $n\ge2$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Using the multivalued logarithm, $i^i=\exp[i\cdot i(\pi/2+2\pi k)]=\exp(-\pi/2-2\pi k)$, $k\in\mathbb Z$. Its principal value is $e^{-\pi/2}$.</p>
+<p>B. Induct on $n$. The case $n=2$ is $(1+x)^2-(1+2x)=x^2\ge0$. If the claim holds at $n$, multiplication by $1+x&gt;0$ gives</p>
+<p class="equation-line">$$(1+x)^{n+1}\ge(1+nx)(1+x)=1+(n+1)x+nx^2\ge1+(n+1)x.$$</p>
+</div></details>
+<h3>Z045 · Newton's method / 牛顿法 （Page 60）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：用牛顿法求 $\sqrt{37}$，精确到小数点后三位。</p>
+<p>B：说明几种求解可微方程 $f(x)=0$ 的数值求根算法。</p>
+<p><strong>English:</strong> A. Use Newton's method to approximate $\sqrt{37}$ to three decimal places.</p>
+<p>B. Explain several algorithms for finding a root of a differentiable equation $f(x)=0$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Apply $x_{k+1}=(x_k+37/x_k)/2$. Starting at $x_0=6$ gives $6.083333\ldots$, then $6.08276257\ldots$, so $\sqrt{37}\approx6.083$ to three decimal places ($6.08$ to three significant figures).</p>
+<p>B. Bisection brackets a sign-changing root and converges robustly but linearly. Newton uses $x-f(x)/f'(x)$ and is locally quadratic but sensitive to the initial value and derivative. The secant method replaces the derivative by a finite slope and is superlinear; hybrid solvers combine bracketing with Newton or secant steps.</p>
+</div></details>
+<h3>Z046 · Lagrange multipliers / 拉格朗日乘子 （Page 62）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 用拉格朗日乘子法求原点到平面 $2x+3y+4z=12$ 的距离。</p>
+<p><strong>English:</strong> Find the distance from the origin to the plane $2x+3y+4z=12$ using Lagrange multipliers.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Minimize $x^2+y^2+z^2$ subject to $2x+3y+4z=12$. The first-order condition makes $(x,y,z)=\lambda(2,3,4)$. The constraint gives $\lambda=12/29$. The distance is $|\lambda|\sqrt{29}=12/\sqrt{29}$.</p>
+</div></details>
+<h3>Z047 · Separable differential equations / 可分离微分方程 （Page 63）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：求解初值问题 $y'+6xy=0$，$y(0)=1$。</p>
+<p>B：求解微分方程 $y'=(x-y)/(x+y)$。</p>
+<p><strong>English:</strong> A. Solve $y'+6xy=0$ with $y(0)=1$.</p>
+<p>B. Solve $y'=(x-y)/(x+y)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Separation gives $dy/y=-6x\,dx$, hence $y=Ce^{-3x^2}$. The initial condition gives $y=e^{-3x^2}$.</p>
+<p>B. The differential form $(y-x)\,dx+(x+y)\,dy=0$ is exact. Integrating gives $y^2+2xy-x^2=C$.</p>
+</div></details>
+<h3>Z048 · First-order linear differential equations / 一阶线性微分方程 （Page 64）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 用积分因子法求解 $y'+y/x=1/x^2$（$x&gt;0$），并满足 $y(1)=1$。</p>
+<p><strong>English:</strong> Solve $y'+y/x=1/x^2$ for $x&gt;0$, subject to $y(1)=1$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The integrating factor is $\exp(\int dx/x)=x$. Multiplying gives $(xy)'=1/x$. Therefore $xy=\ln x+C$. Since $y(1)=1$, $C=1$, and $y=(\ln x+1)/x$.</p>
+</div></details>
+<h3>Z049 · Homogeneous linear equations / 齐次线性方程 （Page 65）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求常系数齐次微分方程 $y''+y'+y=0$ 的通解。</p>
+<p><strong>English:</strong> Find the general solution of $y''+y'+y=0$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The characteristic equation $r^2+r+1=0$ has roots $(-1\pm i\sqrt3)/2$. Hence</p>
+<p class="equation-line">$$y=e^{-x/2}\left[C_1\cos\left(\frac{\sqrt3x}{2}\right)+C_2\sin\left(\frac{\sqrt3x}{2}\right)\right].$$</p>
+</div></details>
+<h3>Z050 · Nonhomogeneous linear equations / 非齐次线性方程 （Page 66）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 分别求非齐次微分方程 $y''+y'+y=1$ 与 $y''+y'+y=x$ 的通解。</p>
+<p><strong>English:</strong> Find the general solutions of $y''+y'+y=1$ and $y''+y'+y=x$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The homogeneous part is $e^{-x/2}[C_1\cos(\sqrt3x/2)+C_2\sin(\sqrt3x/2)]$. For right-hand side $1$, a particular solution is $1$. For right-hand side $x$, a particular solution is $x-1$. Add the same homogeneous solution in each case.</p>
+</div></details>
+<h3>Z051 · Vectors / 向量 （Page 67）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 随机变量 $X,Y,Z$ 满足 $\operatorname{Corr}(X,Y)=\operatorname{Corr}(X,Z)=0.8$。$\operatorname{Corr}(Y,Z)$ 的最大值和最小值分别是多少？</p>
+<p><strong>English:</strong> Random variables $X,Y,Z$ satisfy $\operatorname{Corr}(X,Y)=\operatorname{Corr}(X,Z)=0.8$. Find the minimum and maximum possible $\operatorname{Corr}(Y,Z)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The correlation matrix must be positive semidefinite. With $r=\operatorname{Corr}(Y,Z)$, its determinant is</p>
+<p class="equation-line">$$1+2(0.8)^2r-2(0.8)^2-r^2=(1-r)(r-0.28).$$</p>
+<p>Hence $0.28\le r\le1$, and both endpoints are attainable by positive-semidefinite matrices.</p>
+</div></details>
+<h3>Z052 · QR decomposition / QR 分解 （Page 68）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如果所用编程语言没有现成的线性最小二乘回归函数，怎样利用 QR 分解设计求解算法？</p>
+<p><strong>English:</strong> Design a linear least-squares regression solver using QR decomposition, assuming no library regression routine is available.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For an $m\times n$ full-column-rank design matrix $X$, compute the economy QR factorization $X=QR$, where $Q^{\mathsf T}Q=I$ and $R$ is upper triangular. The least-squares problem becomes $\min_\beta\|Q^{\mathsf T}y-R\beta\|^2$ plus an orthogonal residual, so solve $R\beta=Q^{\mathsf T}y$ by back substitution. Householder QR is numerically preferable to forming $X^{\mathsf T}X$.</p>
+</div></details>
+<h3>Z053 · Determinant, eigenvalue and eigenvector / 行列式、特征值与特征向量 （Page 71）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求矩阵 $A=\begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}$ 的特征值及对应特征向量。</p>
+<p><strong>English:</strong> Find the eigenvalues and corresponding eigenvectors of $A=\begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>$\det(A-\lambda I)=(2-\lambda)^2-1$, so $\lambda=3$ and $\lambda=1$. Corresponding normalized eigenvectors are $(1,1)/\sqrt2$ for $\lambda=3$ and $(1,-1)/\sqrt2$ for $\lambda=1$.</p>
+</div></details>
+<h3>Z054 · Positive semidefinite/definite matrix / 半正定与正定矩阵 （Page 72）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 利用相关矩阵必须半正定这一性质：已知 $\operatorname{Corr}(X,Y)=\operatorname{Corr}(X,Z)=0.8$，求 $\operatorname{Corr}(Y,Z)$ 的取值范围。</p>
+<p><strong>English:</strong> Use positive semidefiniteness of a correlation matrix to find the range of $\operatorname{Corr}(Y,Z)$ when $\operatorname{Corr}(X,Y)=\operatorname{Corr}(X,Z)=0.8$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For $r=\operatorname{Corr}(Y,Z)$, positive semidefiniteness requires</p>
+<p class="equation-line">$$\det\begin{pmatrix}1&amp;0.8&amp;0.8\\0.8&amp;1&amp;r\\0.8&amp;r&amp;1\end{pmatrix}=(1-r)(r-0.28)\ge0.$$</p>
+<p>Thus $r\in[0.28,1]$.</p>
+</div></details>
+<h3>Z055 · LU decomposition and Cholesky decomposition / LU 与 Cholesky 分解 （Page 73）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 已有标准正态随机数生成器，怎样生成两个都服从 $N(0,1)$、且相关系数为 $\rho$ 的随机变量？</p>
+<p><strong>English:</strong> Given a generator of independent $N(0,1)$ variables, generate two standard normal variables with correlation $\rho$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Generate independent $Z_1,Z_2\sim N(0,1)$ and set $X=Z_1$ and $Y=\rho Z_1+\sqrt{1-\rho^2}Z_2$. Then both variances are one and $\operatorname{Cov}(X,Y)=\rho$, so $\operatorname{Corr}(X,Y)=\rho$. This is the two-dimensional Cholesky construction.</p>
 </div></details>
 <div class="section-anchor" id="zhou-probability" aria-hidden="true"></div>
 <h2>C. Probability Theory</h2>
-<h3>Z7 [Core] Fair Bits from an Unfair Coin / 有偏硬币生成公平比特</h3>
-<p><b>中文：</b> 一枚硬币正面概率为未知的 $p\in(0,1)$，各次独立。如何生成无偏且相互独立的随机比特？</p>
-<p><b>English:</b> Independent tosses have an unknown head probability $p\in(0,1)$. How can you generate unbiased independent bits?</p>
+<h3>Z056 · Coin toss game / 抛硬币游戏 （Page 77）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 赌徒 A 有 $n+1$ 枚公平硬币，赌徒 B 有 $n$ 枚公平硬币；两人同时抛完各自所有硬币。A 的正面数多于 B 的概率是多少？</p>
+<p><strong>English:</strong> Gambler A tosses $n+1$ fair coins and gambler B tosses $n$ fair coins. What is the probability that A gets strictly more heads than B?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Toss in nonoverlapping pairs. Output 1 for HT, 0 for TH, and discard HH or TT. Since</p><p class="equation-line">$$\Pr(HT)=p(1-p)=\Pr(TH),$$</p><p>each accepted bit is fair. Using disjoint pairs preserves independence across outputs. The expected number of tosses per output is $1/[p(1-p)]$.</p>
+<p>Compare A's first $n$ coins with B's $n$ coins. By symmetry, A is ahead and B is ahead with equal probability; otherwise they tie. In a tie, A's extra coin wins exactly when it is heads. Pairing these cases shows $P(A\text{ has more heads})=1/2$.</p>
 </div></details>
-<h3>Z8 [Core] The Absent-Minded Passenger / 疯狂乘客</h3>
-<p><b>中文：</b> 100 位乘客依序登机。第一位忘了座位号，随机坐一席；之后每人若自己的座位空着就入座，否则从空位中随机选。最后一位坐到自己座位的概率是多少？</p>
-<p><b>English:</b> One hundred passengers board in order. The first chooses a random seat; each later passenger takes their own seat if available, otherwise a random empty seat. What is the probability that the last passenger gets their own seat?</p>
+<h3>Z057 · Card game / 纸牌概率 （Page 77）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 从一副标准 52 张牌中，你和庄家依次各抽一张且不放回，按点数 $2&lt;3&lt;\cdots&lt;10&lt;J&lt;Q&lt;K&lt;A$ 比较；只有你的点数严格更大才算赢。你的胜率是多少？</p>
+<p><strong>English:</strong> You and a dealer draw two cards without replacement from a standard deck. Ranks are ordered $2&lt;\cdots&lt;10&lt;J&lt;Q&lt;K&lt;A$, and you win only when your rank is strictly higher. What is your winning probability?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Ignore irrelevant correctly occupied seats. The random chain ends when someone chooses either the first passenger's seat or the last passenger's seat. These two distinguished empty seats are symmetric, so each is selected first with probability $1/2$. The last passenger gets their own seat with probability <strong>$1/2$</strong>.</p>
+<p>By exchangeability, your rank is higher and the dealer's rank is higher with equal probability. A tie occurs when the second card matches the first card's rank, with probability $3/51=1/17$. Therefore $P(\text{win})=(1-1/17)/2=8/17$.</p>
 </div></details>
-<h3>Z9 [Medium] Correlation of Uniform Extremes / 均匀样本极值相关性</h3>
-<p><b>中文：</b> $X_1,\ldots,X_n$ 独立服从 $\operatorname{Uniform}(0,1)$。求最小值 $U$ 与最大值 $V$ 的相关系数。</p>
-<p><b>English:</b> Let $X_1,\ldots,X_n$ be i.i.d. $\operatorname{Uniform}(0,1)$. Find the correlation between the minimum $U$ and maximum $V$.</p>
+<h3>Z058 · Drunk passenger / 疯狂乘客 （Page 78）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 100 名乘客依次登机，第 n 人的票对应 n 号座位。第一名醉酒乘客随机选座；之后每人若自己的座位空着就坐下，否则随机选择剩余座位。你是第 100 名乘客，最终坐到 100 号座位的概率是多少？</p>
+<p><strong>English:</strong> One hundred passengers board in order. Passenger 1 takes a uniformly random seat; each later passenger takes their assigned seat if free and otherwise a uniformly random free seat. What is the probability passenger 100 gets seat 100?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>The joint density is $n(n-1)(v-u)^{n-2}$ for $0&lt;u&lt;v&lt;1$. Its moments give</p><p class="equation-line">$$\operatorname{Var}(U)=\operatorname{Var}(V)=\frac{n}{(n+1)^2(n+2)},$$</p><p class="equation-line">$$\operatorname{Cov}(U,V)=\frac{1}{(n+1)^2(n+2)}.$$</p><p>Therefore $\operatorname{Corr}(U,V)=\mathbf{1/n}$.</p>
+<p>Until either seat 1 or seat 100 is taken, the displaced-passenger process is symmetric between those two seats. The first one selected ends the chain: seat 1 leaves passenger 100's seat free, while seat 100 takes it. Each occurs with probability 1/2, so passenger 100 sits correctly with probability 1/2.</p>
 </div></details>
-<h3>Z10 [Core] Minimum-Variance Hedge Ratio / 最小方差套保比率</h3>
-<p><b>中文：</b> 以期货收益 $R_f$ 对冲资产收益 $R_p$，对冲收益为 $R_p-hR_f$。求最优 $h$。</p>
-<p><b>English:</b> Futures return $R_f$ hedges asset return $R_p$, producing $R_p-hR_f$. Find the variance-minimizing $h$.</p>
+<h3>Z059 · N points on a circle / 圆上 N 点 （Page 79）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在圆周上独立均匀随机取 $N$ 个点。所有点都落在某一个半圆内的概率是多少？</p>
+<p><strong>English:</strong> $N$ points are independently and uniformly placed on a circle. What is the probability that all of them lie in some semicircle?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Differentiate the quadratic variance in $h$:</p><p class="equation-line">$$h^*=\frac{\operatorname{Cov}(R_p,R_f)}{\operatorname{Var}(R_f)}=\rho_{pf}\frac{\sigma_p}{\sigma_f}.$$</p><p>It is the population regression slope. Contract notionals, basis risk, costs, and instability of the estimated covariance must be handled in implementation.</p>
+<p>With probability one there are no antipodal ties. If all points fit in a semicircle, exactly one of the $N$ points can serve as the clockwise starting boundary of such a containing semicircle. For a specified starting point, each other point independently lies in the following semicircle with probability 1/2. Thus the probability is $N/2^{N-1}$.</p>
+</div></details>
+<h3>Z060 · Poker hands / 扑克手牌 （Page 82）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 从一副标准 52 张牌中抽取 5 张，分别求四条、葫芦和两对这三类牌型出现的概率。</p>
+<p><strong>English:</strong> For a five-card hand from a standard deck, find the probabilities of four of a kind, a full house, and two pairs.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>There are $\binom{52}{5}$ hands. Four of a kind: $13\cdot48$ hands, so probability $624/\binom{52}{5}$. Full house: $13\binom43\cdot12\binom42=3{,}744$ hands. Two pairs: $\binom{13}{2}\binom42^2\cdot11\cdot4=123{,}552$ hands. Divide each count by $\binom{52}{5}$.</p>
+</div></details>
+<h3>Z061 · Hopping rabbit / 跳跃的兔子 （Page 82）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一只兔子要爬上 $n$ 级台阶，每次只能跳 1 级或 2 级。一共有多少种不同的上楼方式？</p>
+<p><strong>English:</strong> A rabbit climbs $n$ stairs by jumps of one or two stairs. How many jump sequences are possible?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $a_n$ be the number of ways. Conditioning on the final jump gives $a_n=a_{n-1}+a_{n-2}$, with $a_0=a_1=1$. Therefore $a_n=F_{n+1}$ under $F_1=F_2=1$.</p>
+</div></details>
+<h3>Z062 · Screwy pirates 2 / 海盗分金二 （Page 83）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 11 名海盗把宝藏放进保险箱，并要求任意过半数（至少 6 人）合作都能打开，而不足 6 人绝不能打开。每把锁可以配多把钥匙，但一把钥匙只能开一把锁。最少需要多少把锁？每名海盗要携带多少把钥匙？</p>
+<p><strong>English:</strong> Eleven pirates require a lock-and-key system in which every group of at least six can open a safe but no group of five can. A lock may have many keys, but each key opens one lock. Minimize the number of locks and find the number of keys per pirate.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For every five-pirate minority, install one lock and give its keys to the other six pirates. Then that five-person group lacks that lock's key, while any six-person group intersects the keyholders of every lock. Every forbidden group needs a distinct lock, so the minimum is $\binom{11}{5}=462$. A given pirate receives keys for the $\binom{10}{5}=252$ excluded five-sets not containing that pirate.</p>
+</div></details>
+<h3>Z063 · Chess tournament / 国际象棋锦标赛 （Page 84）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 有 $2^n$ 名选手参加单败淘汰赛，实力严格按 $1&gt;2&gt;\cdots&gt;2^n$ 排列，强者必胜；除决赛外，每轮对阵都随机抽签。排名第 1 和第 2 的选手在决赛相遇的概率是多少？</p>
+<p><strong>English:</strong> A knockout tournament has $2^n$ players ranked $1&gt;2&gt;\cdots&gt;2^n$, with the stronger player always winning. Pairings are random. What is the probability players 1 and 2 meet in the final?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Fix player 1's bracket position. Of the remaining $2^n-1$ positions, exactly $2^{n-1}$ are in the opposite half. Player 2 reaches the final exactly when placed in that half, so the probability is $2^{n-1}/(2^n-1)$.</p>
+</div></details>
+<h3>Z064 · Application letters / 求职申请信 （Page 85）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 5 封分别为五家公司定制的求职信被随机装进 5 个写好地址的信封。所有信都寄错公司的概率是多少？</p>
+<p><strong>English:</strong> Five personalized cover letters are independently placed into five addressed envelopes as a random permutation. What is the probability every letter goes to the wrong firm?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The number of derangements of five objects is $!5=5![1-1/1!+1/2!-1/3!+1/4!-1/5!]=44$. The probability is $44/120=11/30$.</p>
+</div></details>
+<h3>Z065 · Birthday problem / 生日碰撞 （Page 87）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 忽略闰年并假设生日在 365 天中均匀分布。班级至少要有多少人，才使其中至少两人同生日的概率超过 1/2？</p>
+<p><strong>English:</strong> Assuming 365 equally likely birthdays, what is the smallest class size for which a shared birthday has probability greater than 1/2?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For $k$ people, the no-match probability is $\prod_{j=0}^{k-1}(365-j)/365$. It is still above $1/2$ at $k=22$ and below $1/2$ at $k=23$. The minimum class size is 23.</p>
+</div></details>
+<h3>Z066 · 100th digit / 第 100 位数字 （Page 87）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求 $(1+\sqrt2)^{3000}$ 的十进制表示中，小数点右侧第 100 位数字。</p>
+<p><strong>English:</strong> What is the 100th digit after the decimal point of $(1+\sqrt2)^{3000}$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $a=(1+\sqrt2)^{3000}$ and $b=(1-\sqrt2)^{3000}$. Their sum is an integer because conjugate irrational terms cancel in the binomial expansion. Also $0&lt;b&lt;1$, so $a$ is that integer minus a tiny positive number. Its fractional part is 0.999… through far more than 100 places. The 100th digit is 9.</p>
+</div></details>
+<h3>Z067 · Cubic of integer / 整数立方 （Page 88）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 从 $1$ 到 $10^{12}$ 的整数中均匀随机选取 $x$。$x^3$ 的十进制末两位恰为 11 的概率是多少？</p>
+<p><strong>English:</strong> Choose an integer $x$ uniformly from $1$ through $10^{12}$. What is the probability that $x^3$ ends in the two digits 11?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Modulo $100$, $x^3\equiv11$ has the unique solution $x\equiv71$. One way to see it: the units digit must be $1$, so write $x=1+10b$; then $x^3\equiv1+30b\pmod{100}$, requiring $3b\equiv1\pmod{10}$, hence $b\equiv7$. Because $10^{12}$ is divisible by $100$, exactly one in every 100 integers works. The probability is 1/100.</p>
+</div></details>
+<h3>Z068 · Boys and girls / 男孩与女孩 （Page 89）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：从至少有一个儿子的两孩母亲中选出一人。她的两个孩子都是男孩的概率是多少？</p>
+<p>B：已知一位同事有两个孩子；你遇见她和随机同行的一个孩子，而这个孩子是男孩。两个孩子都是男孩的概率是多少？</p>
+<p><strong>English:</strong> A. A two-child mother is selected from mothers known to have at least one son. What is the probability both children are boys?</p>
+<p>B. A colleague has two children. You encounter her with one randomly selected child, who is a boy. What is the probability both children are boys?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Conditional on at least one boy, the equally likely ordered possibilities are $BB$, $BG$, and $GB$, so the answer is $1/3$.</p>
+<p>B. If the accompanying child is selected without sex-based bias, observing a boy size-biases families by their number of boys. Equivalently the remaining sibling is independently boy or girl, so the answer is $1/2$.</p>
+</div></details>
+<h3>Z069 · All-girl world? / 全女孩世界 （Page 90）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 某社会中每个家庭不断生育，直到生到第一个女孩便停止；每个孩子独立地以 1/2 概率为女孩。长期来看，社会中的女孩比例会是多少？</p>
+<p><strong>English:</strong> Every couple has independent children with equal boy/girl probabilities and stops as soon as it has a girl. What is the long-run fraction of girls among all children?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Every family has exactly one girl. The number of boys before that girl is geometric with mean $(1-1/2)/(1/2)=1$. Thus across many independent families there is on average one boy and one girl per family; by the law of large numbers the girl fraction tends to 1/2.</p>
+</div></details>
+<h3>Z070 · Unfair coin / 不公平硬币 （Page 90）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 1000 枚硬币中有 1 枚两面都是正面，其余 999 枚为公平硬币。随机选一枚连续抛 10 次，结果全为正面。所选硬币是双正面硬币的后验概率是多少？</p>
+<p><strong>English:</strong> Among 1,000 coins, one is double-headed and 999 are fair. A uniformly selected coin produces ten heads. What is the posterior probability it is double-headed?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Bayes' rule gives</p>
+<p class="equation-line">$$P(\text{double-headed}\mid10H)=\frac{(1/1000)\cdot1}{(1/1000)\cdot1+(999/1000)\cdot2^{-10}}=\frac{1024}{2023}\approx0.5062.$$</p>
+</div></details>
+<h3>Z071 · Fair probability from an unfair coin / 用不公平硬币生成公平事件 （Page 91）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一枚硬币正面概率未知，且可能偏向任意一面。怎样只用这枚硬币构造一个两种结果等概率的随机试验？</p>
+<p><strong>English:</strong> Using only a coin with an unknown fixed bias, construct two outcomes having exactly equal probabilities.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Use von Neumann's method: toss twice. Output one result for HT and the other for TH; discard HH and TT and repeat. If $P(H)=p$, then $P(HT)=p(1-p)=P(TH)$, so the two outputs are exactly fair.</p>
+</div></details>
+<h3>Z072 · Dart game / 飞镖游戏 （Page 91）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> Jason 的三次投镖水平不变。已知第二镖离靶心比第一镖更远，第三镖也比第一镖更远的概率是多少？</p>
+<p><strong>English:</strong> Three dart distances from the center are IID continuous variables. Given that the second is farther than the first, what is the probability the third is also farther than the first?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Rank the three IID continuous distances. Of the three equally likely relative orders satisfying $D_2&gt;D_1$, two also satisfy $D_3&gt;D_1$: $D_1&lt;D_2&lt;D_3$ and $D_1&lt;D_3&lt;D_2$. Only $D_3&lt;D_1&lt;D_2$ fails. The conditional probability is $2/3$.</p>
+</div></details>
+<h3>Z073 · Birthday line / 生日排队 （Page 92）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 电影院把免费票送给队伍中第一个与前面某人生日相同的人。生日独立且均匀分布在 365 天，你可以任选排队位置。站在第几位获得免费票的概率最大？</p>
+<p><strong>English:</strong> A free ticket goes to the first person in line whose birthday matches an earlier customer's. With IID uniform birthdays, which line position maximizes your chance of winning?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For position $k\ge2$, the winning probability is $[(365)_{k-1}/365^{k-1}]\cdot(k-1)/365$: the first $k-1$ birthdays are distinct and yours matches one of them. Comparing consecutive probabilities shows an increase through $k=20$ and a decrease afterward. The optimal position is 20.</p>
+</div></details>
+<h3>Z074 · Dice order / 骰子次序 （Page 94）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 依次掷三枚标准骰子，三次点数严格递增的概率是多少？</p>
+<p><strong>English:</strong> Three fair dice are rolled in order. What is the probability their results are strictly increasing?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Choose the three distinct face values first. Each $3$-element subset of $\{1,\ldots,6\}$ has exactly one increasing order, so there are $\binom63=20$ favorable ordered outcomes among $6^3$. The probability is $20/216=5/54$.</p>
+</div></details>
+<h3>Z075 · Monty Hall problem / 三门问题 （Page 94）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 三扇门后分别有一辆车和两只羊。你先选一扇门，主持人随后在另外两扇中打开一扇确定有羊的门，并允许你改选剩下的门。是否应该换门？换门赢得汽车的概率是多少？</p>
+<p><strong>English:</strong> In the Monty Hall game, after you choose one of three doors, the host opens another door known to hide a goat and offers a switch. Should you switch, and what is the winning probability?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Switch. Your initial choice is correct with probability 1/3 and wrong with probability 2/3. The host's forced goat reveal transfers the entire 2/3 probability of an initially wrong choice to the sole unopened alternative. Switching wins with probability 2/3.</p>
+</div></details>
+<h3>Z076 · Amoeba population / 阿米巴种群 （Page 95）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 池塘中起初有一个阿米巴；每分钟每个阿米巴独立地以相同概率死亡、不变、分裂成两个或分裂成三个。种群最终灭绝的概率是多少？</p>
+<p><strong>English:</strong> Starting from one amoeba, each organism independently dies, remains one, splits into two, or splits into three after one minute, each with probability 1/4. What is the eventual extinction probability?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let q be the extinction probability starting from one amoeba. The branching property gives $q=(1+q+q^2+q^3)/4$. Rearranging yields $(q-1)(q^2+2q-1)=0$. Because the mean number of offspring is $3/2&gt;1$, the extinction probability is the smaller root in $[0,1]$: $q=\sqrt2-1$.</p>
+</div></details>
+<h3>Z077 · Candies in a jar / 罐中糖果 （Page 95）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 罐中有 10 颗红糖、20 颗蓝糖和 30 颗绿糖，随机逐颗取出。取完所有红糖时，罐中仍至少各有 1 颗蓝糖和绿糖的概率是多少？</p>
+<p><strong>English:</strong> A jar contains 10 red, 20 blue, and 30 green candies, removed in random order. When the last red is removed, what is the probability at least one blue and one green remain?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The bad event ‘no blue remains when the reds are exhausted’ means the last candy among red and blue is red, with probability $10/(10+20)=1/3$. Similarly, no green remains has probability $10/(10+30)=1/4$. Both occur exactly when the last candy overall is red, with probability $10/60=1/6$. Inclusion–exclusion gives $1-1/3-1/4+1/6=7/12$.</p>
+</div></details>
+<h3>Z078 · Coin toss game / 连续抛硬币 （Page 96）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A、B 轮流抛一枚公平硬币，A 先手。记录连续结果，一旦出现相邻的 HT，抛出这个 T 的人获胜。A 获胜的概率是多少？</p>
+<p><strong>English:</strong> A and B alternately toss a fair coin, with A first. The game ends at the first adjacent HT, and the player who tosses that T wins. What is $P(A\text{ wins})$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Use four states according to whose turn it is and whether the previous toss was H. Let $a,b$ be A's win probabilities on A's turn after non-H and H, and $c,d$ the analogous probabilities on B's turn. Then $a=(d+c)/2$, $b=(1+d)/2$, $c=(b+a)/2$, and $d=b/2$. Solving gives $a=4/9$. The game starts in state $a$, so $P(A\text{ wins})=4/9$.</p>
+</div></details>
+<h3>Z079 · Russian roulette series / 俄罗斯轮盘系列 （Page 97）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：六发左轮中随机装入一颗子弹并转动弹巢一次；两人随后轮流扣扳机，中间不再转动，击发者输。若可选择先手或后手，应怎样选？对应的死亡概率是多少？</p>
+<p>B：仍只装一颗子弹，但每次扣扳机前都重新随机转动弹巢。应选先手还是后手？死亡概率是多少？</p>
+<p>C：随机位置装入两颗子弹。对手第一次扣扳机后幸存，现在轮到你；你应不应该重新转动弹巢？</p>
+<p>D：如果两颗子弹必定装在相邻弹膛，而对手第一次扣扳机后幸存，你又应不应该重新转动弹巢？</p>
+<p><strong>English:</strong> A. One bullet is uniformly placed in a six-chamber revolver and the cylinder is spun once. Two players alternate pulling the trigger without respinning; the shooter who fires the bullet loses. Should you go first or second, and what is your loss probability?</p>
+<p>B. With one bullet, suppose the cylinder is randomly spun before every trigger pull. Should you go first or second, and what is your loss probability?</p>
+<p>C. Two bullets are placed in uniformly random chambers. Your opponent survives the first pull. Before your pull, should you spin the cylinder?</p>
+<p>D. What if the two bullets occupy consecutive chambers and your opponent has just survived—should you spin?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. After the single spin, the bullet is equally likely to be in any chamber. The first player dies if it is in positions 1,3,5; the second dies if it is in 2,4,6. Each loss probability is $3/6=1/2$, so neither position has an advantage.</p>
+<p>B. Let $p$ be the first player's eventual loss probability. The first player dies immediately with probability $1/6$; after surviving, with probability $5/6$, the players exchange roles in a fresh game. Thus</p>
+<p class="equation-line">$$p=\frac16+\frac56(1-p),\qquad p=\frac6{11}.$$</p>
+<p>The second player's loss probability is $5/11$, so choose second.</p>
+<p>C. Under the standard interpretation—minimize the chance that the upcoming pull kills you—the next unspun chamber contains one of the two randomly placed bullets with probability $2/5$, conditional on the known empty chamber. Spinning makes the immediate loss probability $2/6=1/3$. Since $1/3&lt;2/5$, spin. If instead the objective is the probability of eventually losing an indefinitely continued alternating game with no later choices, both actions give eventual loss probability $3/5$; the immediate-pull interpretation is therefore essential.</p>
+<p>D. Given two consecutive bullets and a surviving first pull, the current chamber is uniformly one of the four empty chambers. Only one of those four is immediately followed by a bullet, so not spinning gives loss probability $1/4$. Spinning gives $2/6=1/3$. Since $1/4&lt;1/3$, do not spin.</p>
+</div></details>
+<h3>Z080 · Aces / 四张 A （Page 98）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 把一副 52 张牌平均随机发给 4 人，每人 13 张。每个人都恰好拿到一张 A 的概率是多少？</p>
+<p><strong>English:</strong> A standard deck is randomly dealt to four players, 13 cards each. What is the probability each player receives exactly one ace?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Regard the four ace locations as a uniformly chosen 4-subset of the 52 dealt positions. Favorable sets choose one of the 13 positions in each hand, giving $13^4$ possibilities. The probability is $13^4/\binom{52}{4}$.</p>
+</div></details>
+<h3>Z081 · Gambler's ruin problem / 赌徒破产 （Page 99）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 赌徒初始有 $i$ 美元，每局以概率 $p$ 赢 $1$ 美元、以概率 $q=1-p$ 输 $1$ 美元，资金到 $0$ 或 $N$ 时停止。最终先到达 $N$ 美元的概率是多少？</p>
+<p><strong>English:</strong> A gambler starts with $i$ dollars and wins one dollar with probability $p$ or loses one with probability $q=1-p$ until reaching $0$ or $N$. What is the probability of reaching $N$ first?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $u_i$ be the probability of reaching $N$ before $0$. It satisfies $u_i=pu_{i+1}+qu_{i-1}$, with $u_0=0$ and $u_N=1$. Thus $u_i=i/N$ when $p=q=1/2$. When $p\ne q$, $u_i=[1-(q/p)^i]/[1-(q/p)^N]$.</p>
+</div></details>
+<h3>Z082 · Basketball scores / 篮球比分 （Page 100）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一名球员罚球 100 次：第一次命中、第二次未中；此后每次命中的概率等于此前命中次数占已投次数的比例。100 次结束时恰好命中 50 次的概率是多少？</p>
+<p><strong>English:</strong> A player makes the first of 100 free throws and misses the second. Thereafter, the probability of making the next throw equals the fraction made so far. What is the probability of exactly 50 makes after 100 throws?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>This is a Pólya urn beginning with one success and one failure. After the remaining 98 trials, the total number of successes is uniformly distributed over 1,2,…,99. Therefore $P(\text{exactly 50 successes})=1/99$.</p>
+</div></details>
+<h3>Z083 · Cars on road / 道路上的汽车 （Page 101）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 任意 20 分钟内至少观察到一辆汽车的概率为 609/625，并假设车辆到达率恒定。任意 5 分钟内至少观察到一辆汽车的概率是多少？</p>
+<p><strong>English:</strong> The probability of at least one car in any 20-minute interval is 609/625. Assuming a constant arrival mechanism with independent equal-length intervals, find the probability of at least one car in five minutes.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let q be the probability of no car in a five-minute interval. Four such intervals make 20 minutes, so under the stated independent stationary-arrival assumption $q^4=1-609/625=16/625=(2/5)^4$. Thus $q=2/5$ and $P(\text{at least one car in five minutes})=3/5$.</p>
+</div></details>
+<h3>Z084 · Meeting probability / 会面概率 （Page 104）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两名银行家分别在早上 5:00—6:00 间独立均匀到达车站，各停留恰好 5 分钟。两人相遇的概率是多少？</p>
+<p><strong>English:</strong> Two people independently arrive uniformly between 5:00 and 6:00 and each waits exactly five minutes. What is the probability they meet?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Represent arrival times by a point uniformly distributed in a $60\times60$ square. They miss each other when $|X-Y|&gt;5$, the two corner triangles of total area $55^2$. Hence $P(\text{meet})=1-55^2/60^2=23/144$.</p>
+</div></details>
+<h3>Z085 · Probability of triangle / 构成三角形的概率 （Page 105）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在一根木棍上独立均匀地随机选两个切点，把木棍分成三段。三段能组成三角形的概率是多少？</p>
+<p><strong>English:</strong> Two independent uniform cuts split a stick into three pieces. What is the probability the pieces form a triangle?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Normalize the stick length to one and order the cut points $X&lt;Y$. The pieces form a triangle exactly when $X&lt;1/2$, $Y&gt;1/2$, and $Y-X&lt;1/2$. The favorable region has area 1/4 of the unit square of unordered cuts, so the probability is 1/4.</p>
+</div></details>
+<h3>Z086 · Property of Poisson process / 泊松过程性质 （Page 106）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 公交车按平均间隔 10 分钟的泊松过程到站。你在系统已运行很久后随机到达车站：还要等多久才会等到下一班车？上一班车平均在多久前离开？</p>
+<p><strong>English:</strong> Buses follow a stationary Poisson process with mean interarrival time 10 minutes. At a random observation time, what are the expected wait to the next bus and elapsed time since the previous bus?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Poisson interarrival times are exponential and memoryless. From an arbitrary time, the forward recurrence time is exponential with mean $1/\lambda=10$ minutes. Stationarity and time reversal give the same distribution for the time since the previous bus. Both expectations are 10 minutes.</p>
+</div></details>
+<h3>Z087 · Moments of normal distribution / 正态分布矩 （Page 107）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若 $X\sim N(0,1)$，分别计算 $n=1,2,3,4$ 时的矩 $E[X^n]$。</p>
+<p><strong>English:</strong> For $X\sim N(0,1)$, compute $E[X^n]$ for $n=1,2,3,4$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A centered normal has zero odd moments, so $E[X]=E[X^3]=0$. Its variance gives $E[X^2]=1$. The standard normal fourth moment is $3$, obtainable from the moment-generating function $e^{t^2/2}$ or integration by parts. The answers are $0,1,0,3$.</p>
+</div></details>
+<h3>Z088 · Connecting noodles / 连接面条 （Page 109）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 碗中有 100 根面条。蒙眼后反复随机选取两个尚未连接的面条端点并把它们接在一起，直到没有自由端点。最终形成环的期望数量是多少？</p>
+<p><strong>English:</strong> One hundred open noodles have 200 free ends. Repeatedly choose two free ends uniformly and join them until none remain. What is the expected number of loops?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>When $k$ open chains remain, there are $2k$ free ends. After choosing one end, exactly one of the other $2k-1$ ends closes that same chain into a loop, so the conditional probability that the next join creates a loop is $1/(2k-1)$. By linearity of expectation, the answer is $\sum_{k=1}^{100}1/(2k-1)$.</p>
+</div></details>
+<h3>Z089 · Optimal hedge ratio / 最优套保比率 （Page 110）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 持有 1 股股票 A，并准备用做空股票 B 来对冲。已知两者收益率方差分别为 $\sigma_A^2,\sigma_B^2$，相关系数为 $\rho$。做空多少股 B 可使对冲组合的方差最小？</p>
+<p><strong>English:</strong> You hold one unit of asset A and short $h$ units of asset B. Their return volatilities are $\sigma_A$ and $\sigma_B$ and correlation is $\rho$. Find $h$ minimizing the hedged return variance.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The hedged return is $R_A-hR_B$, with variance $\sigma_A^2+h^2\sigma_B^2-2h\rho\sigma_A\sigma_B$. Differentiating in $h$ gives $h^*=\rho\sigma_A/\sigma_B$. If the question is literally in shares rather than equal-value return units, multiply by the appropriate ratio of position values.</p>
+</div></details>
+<h3>Z090 · Dice game / 骰子期望游戏 （Page 110）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 反复掷一枚标准骰子，每次获得等于点数的金额；若掷出 4、5、6 就继续，掷出 1、2、3 时领取该次金额后游戏结束。游戏的期望总收益是多少？</p>
+<p><strong>English:</strong> Roll a fair die repeatedly and receive each face value. After 4, 5, or 6 you roll again; after 1, 2, or 3 the game stops, but that last payment is retained. Find the expected total payoff.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $V$ be the expected future total from a fresh roll. One roll has mean $3.5$, and with probability $1/2$ the outcome is $4$–$6$ and the game restarts. Thus $V=3.5+V/2$, so $V=7$ dollars.</p>
+</div></details>
+<h3>Z091 · Card game / 纸牌期望游戏 （Page 111）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 随机排列一副标准 52 张牌并依次翻开。翻到第一张 A 为止，期望需要翻多少张牌？</p>
+<p><strong>English:</strong> In a uniformly shuffled standard deck, how many cards are expected to be exposed through the first ace?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The four aces divide the 48 non-aces into five exchangeable gaps. The expected number of non-aces before the first ace is $48/5$, so the expected first-ace position is $1+48/5=53/5=10.6$.</p>
+</div></details>
+<h3>Z092 · Sum of random variables / 随机变量之和 （Page 111）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> $X_1,\ldots,X_n$ 独立同分布于 $U(0,1)$，令 $S_n=X_1+\cdots+X_n$。求 $P(S_n\le1)$。</p>
+<p><strong>English:</strong> Let $X_1,\ldots,X_n$ be IID $U(0,1)$. Find $P(X_1+\cdots+X_n&lt;1)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Inside the unit cube $[0,1]^n$, the event $\sum_iX_i&lt;1$ is the standard $n$-simplex. Its volume—and therefore its probability—is $1/n!$. The boundary has probability zero, so $\lt$ and $\le$ are equivalent here.</p>
+</div></details>
+<h3>Z093 · Coupon collection / 优惠券收集 （Page 113）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 麦片盒中有 $N$ 种优惠券，每盒独立且等概率出现一种。A：集齐所有种类平均需要买多少盒？B：买了 $n$ 盒后，已收集到的不同种类数的期望是多少？</p>
+<p><strong>English:</strong> A. With $N$ equally likely coupon types independently drawn, what is the expected number of boxes needed to collect every type?</p>
+<p>B. After $n$ boxes, what is the expected number of distinct types collected?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. After $k-1$ types have been collected, the next new type arrives after a geometric waiting time of mean $N/(N-k+1)$. Summing gives $N(1+1/2+\cdots+1/N)=NH_N$.</p>
+<p>B. For each type $j$, let $I_j$ indicate that it has appeared. $P(I_j=1)=1-(1-1/N)^n$. Linearity of expectation gives $N[1-(1-1/N)^n]$.</p>
+</div></details>
+<h3>Z094 · Joint default probability / 联合违约概率 （Page 114）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 债券 A 明年违约概率为 50%，债券 B 为 30%。至少一只债券违约的概率范围是什么？两者违约事件的相关系数范围又是什么？</p>
+<p><strong>English:</strong> Bond A defaults next year with probability 0.5 and bond B with probability 0.3. Find the possible range of $P(\text{at least one defaults})$ and the possible range of correlation between the two default indicators.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $x=P(A\text{ defaults and }B\text{ defaults})$. Fréchet bounds give $0\le x\le0.3$. Then $P(A\cup B)=0.8-x$, so its range is $[0.5,0.8]$. For default indicators, $\operatorname{Corr}=(x-0.15)/\sqrt{(0.5)(0.5)(0.3)(0.7)}$, giving the range approximately $[-0.65465,0.65465]$.</p>
+</div></details>
+<h3>Z095 · Expected value of max and min / 最大值与最小值的期望 （Page 115）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> $X_1,\ldots,X_n$ 独立同分布于 $U(0,1)$。分别求最大值 $Z=\max(X_1,\ldots,X_n)$ 与最小值 $Y=\min(X_1,\ldots,X_n)$ 的分布函数、密度函数和期望。</p>
+<p><strong>English:</strong> For IID $U(0,1)$ variables $X_1,\ldots,X_n$, find the CDF, density, and expectation of their maximum $Z$ and minimum $Y$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For $0\le z\le1$, $F_Z(z)=z^n$, $f_Z(z)=nz^{n-1}$, and $E[Z]=n/(n+1)$. For $0\le y\le1$, $F_Y(y)=1-(1-y)^n$, $f_Y(y)=n(1-y)^{n-1}$, and $E[Y]=1/(n+1)$. Extend each CDF by 0 below zero and 1 above one.</p>
+</div></details>
+<h3>Z096 · Correlation of max and min / 最大值与最小值的相关性 （Page 116）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> $X_1,X_2$ 独立同分布于 $U(0,1)$，令 $Y=\min(X_1,X_2)$、$Z=\max(X_1,X_2)$。对 $y,z\in[0,1]$ 求 $P(Y\ge y\mid Z\le z)$，并求 $Y$ 与 $Z$ 的相关系数。</p>
+<p><strong>English:</strong> For two IID $U(0,1)$ variables, let $Y=\min(X_1,X_2)$ and $Z=\max(X_1,X_2)$. Find $P(Y\ge y\mid Z\le z)$ for $y,z\in[0,1]$, and find $\operatorname{Corr}(Y,Z)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For $0\le y\le z\le1$, conditioning on $Z\le z$ makes both observations IID uniform on $[0,z]$, so $P(Y\ge y\mid Z\le z)=((z-y)/z)^2$. It is $0$ when $y&gt;z$ (and handle $z=0$ by the limiting convention). Also $E[Y]=1/3$, $E[Z]=2/3$, $E[YZ]=E[X_1X_2]=1/4$, and $\operatorname{Var}(Y)=\operatorname{Var}(Z)=1/18$. Hence $\operatorname{Corr}(Y,Z)=1/2$.</p>
+</div></details>
+<h3>Z097 · Random ants / 随机蚂蚁 （Page 118）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 把 500 只蚂蚁独立均匀地放在一根 1 英尺长的绳上，每只以相同概率选择左右方向，并以 1 英尺/分钟匀速前进直至掉落；两只蚂蚁迎面相撞时都立刻反向。所有蚂蚁掉落所需时间的期望是多少？</p>
+<p><strong>English:</strong> Five hundred ants are independently uniform on a one-foot string, choose directions independently, and move at one foot per minute. Colliding ants reverse directions. Find the expected time until all have fallen off.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>At a collision, reversing both ants is indistinguishable from letting them pass through while exchanging identities. Thus each ghost ant simply travels to its initially chosen endpoint. Its exit time is uniform on $[0,1]$ minute, independently across ants. The maximum of $500$ IID $U(0,1)$ variables has mean $500/501$ minutes.</p>
 </div></details>
 <div class="section-anchor" id="zhou-stochastic" aria-hidden="true"></div>
 <h2>D. Stochastic Processes</h2>
-<h3>Z11 [Medium] General Gambler's Ruin / 一般赌徒破产</h3>
-<p><b>中文：</b> 随机游走位于 $\{0,1,\ldots,N\}$，从 $i$ 出发，每步以概率 $p$ 加 1、概率 $q=1-p$ 减 1，碰到 0 或 $N$ 停止。先到 $N$ 的概率是多少？</p>
-<p><b>English:</b> A random walk on $\{0,1,\ldots,N\}$ starts at $i$, moves up with probability $p$ and down with $q=1-p$, and stops at 0 or $N$. What is the probability of reaching $N$ first?</p>
+<h3>Z098 · Gambler's ruin problem / 马尔可夫链赌徒破产 （Page 123）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> M 有 1 美元，N 有 2 美元；每局胜者从败者处赢 1 美元，M 每局获胜概率为 2/3。两人一直玩到一方破产。M 最终获胜的概率是多少？</p>
+<p><strong>English:</strong> M starts with USD 1, N with USD 2. Each game transfers one dollar from loser to winner, and M wins each game with probability 2/3. They play to bankruptcy. What is $P(M\text{ wins})$?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Solving $u_i=pu_{i+1}+qu_{i-1}$ with $u_0=0,u_N=1$ gives</p><p class="equation-line">$$u_i=\begin{cases}\dfrac{1-(q/p)^i}{1-(q/p)^N},&amp;p\ne q,\\[6pt]\dfrac{i}{N},&amp;p=q=\tfrac12.\end{cases}$$</p><p>The fair-game result is linear; drift changes the harmonic function geometrically.</p>
+<p>This is gambler's ruin with total wealth 3, starting state $i=1$, $p=2/3$, $q=1/3$. The probability M reaches $3$ first is $[1-(q/p)]/[1-(q/p)^3]=(1-1/2)/(1-1/8)=4/7$.</p>
 </div></details>
-<h3>Z12 [Core] Stationary Distribution / 马尔可夫链平稳分布</h3>
-<p><b>中文：</b> 有限状态马尔可夫链转移矩阵为 $P$。平稳分布如何定义？不可约与非周期条件分别保证什么？</p>
-<p><b>English:</b> A finite-state Markov chain has transition matrix $P$. Define a stationary distribution and explain what irreducibility and aperiodicity guarantee.</p>
+<h3>Z099 · Dice question / 骰子马尔可夫链 （Page 124）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 不断掷两枚标准骰子。玩家 A 赌点数和 12 会先出现，玩家 B 赌连续两次点数和 7 会先出现。A 获胜的概率是多少？</p>
+<p><strong>English:</strong> Repeatedly roll two fair dice. A wins if sum 12 occurs before B sees two consecutive sums of 7. What is $P(A\text{ wins})$?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>A row vector $\pi$ is stationary when</p><p class="equation-line">$$\pi=\pi P,\qquad \pi_i\ge0,\qquad \sum_i\pi_i=1.$$</p><p>A finite irreducible chain has a unique stationary distribution with positive entries. If it is also aperiodic, the distribution from any initial state converges to $\pi$. Aperiodicity is about convergence, not uniqueness.</p>
+<p>Let a be A's win probability when the previous roll was not 7, and b after one 7. Using $P(12)=1/36$, $P(7)=6/36$, and $P(\text{other})=29/36$:</p>
+<p class="equation-line">$$a=\frac1{36}+\frac16b+\frac{29}{36}a,\qquad b=\frac1{36}+\frac{29}{36}a.$$</p>
+<p>Solving gives $a=7/13$.</p>
 </div></details>
-<h3>Z13 [Medium] Itô's Lemma for Geometric Brownian Motion / 几何布朗运动的 Itô 引理</h3>
-<p><b>中文：</b> 若 $dS_t=\mu S_t\,dt\mathplus{}\sigma S_t\,dW_t$，用 Itô 引理求 $d\log S_t$，并写出 $S_T$。</p>
-<p><b>English:</b> If $dS_t=\mu S_t\,dt\mathplus{}\sigma S_t\,dW_t$, use Itô's lemma to find $d\log S_t$ and write the solution for $S_T$.</p>
+<h3>Z100 · Coin triplets / 硬币三连模式 （Page 125）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：连续抛公平硬币，第一次出现 HHH 平均要抛多少次？第一次出现 THH 又平均要抛多少次？</p>
+<p>B：一直抛到 HHH 或 THH 首次出现。HHH 先出现的概率是多少？</p>
+<p>C：玩家 1 先公布一个长度为 3 的 H/T 模式，玩家 2 再选不同模式；不断抛硬币，谁的模式先出现谁赢。双方都最优时，应选先手还是后手？后手能保证多大胜率？</p>
+<p><strong>English:</strong> A. Find the expected waiting times for HHH and THH in repeated fair-coin tosses.</p>
+<p>B. If tossing stops at the first occurrence of either HHH or THH, find $P(HHH\text{ occurs first})$.</p>
+<p>C. Player 1 announces a length-three H/T pattern, then player 2 chooses a different pattern. Toss until one appears. Under optimal play, who prefers which position, and what winning probability can player 2 guarantee?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>For $f(S)=\log S$, $f'=1/S$ and $f''=-1/S^2$. Itô's correction yields</p><p class="equation-line">$$d\log S_t=\left(\mu-\frac12\sigma^2\right)dt+\sigma\,dW_t.$$</p><p>Integrating and exponentiating gives</p><p class="equation-line">$$S_T=S_0\exp\left[\left(\mu-\frac12\sigma^2\right)T+\sigma W_T\right].$$</p>
+<p>A. Pattern waiting-time recursions give $E[T_{HHH}]=14$ and $E[T_{THH}]=8$. HHH overlaps itself after one or two Hs, which lengthens its mean; THH has no proper prefix that is also a suffix.</p>
+<p>B. Once any T has occurred, the first subsequent HH completes THH before HHH can complete. HHH wins only when the first three tosses are HHH, so the probability is $1/8$.</p>
+<p>C. Go second. Against player 1's pattern abc, a strong response is (opposite of b) followed by ab. The game is non-transitive. Player 1 optimally chooses one of HTH, HTT, THH, or THT, but player 2 can still choose a response with winning probability $2/3$. Against other first choices the second-player advantage is larger.</p>
+</div></details>
+<h3>Z101 · Color balls / 彩球状态转移 （Page 129）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 盒中有 $n$ 个球，初始颜色各不相同。每一步随机选两个球，把第一个球涂成第二个球的颜色，再把两球放回。直到所有球同色，所需步骤数的期望是多少？</p>
+<p><strong>English:</strong> A box initially contains $n$ balls of $n$ distinct colors. At each step an ordered pair is chosen uniformly, the first ball is repainted to the second ball's color, and both are returned. Find the expected number of steps until all balls share one color.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Trace ancestral colors backward. When $k$ ancestral lineages remain among $n$ positions, one update coalesces two lineages with probability $[k/n][(k-1)/(n-1)]=k(k-1)/[n(n-1)]$. The expected time to go from $k$ lineages to $k-1$ is therefore $n(n-1)/[k(k-1)]$. Summing from $k=n$ down to $2$ gives</p>
+<p class="equation-line">$$n(n-1)\sum_{k=2}^n\frac1{k(k-1)}=(n-1)^2.$$</p>
+</div></details>
+<h3>Z102 · Drunk man / 醉汉随机游走 （Page 132）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 醉汉站在一座 100 米长桥的第 17 米处，每步以 1/2 概率向前或向后走 1 米。先到达第 100 米而不是第 0 米的概率是多少？到达任一端所需步数的期望是多少？</p>
+<p><strong>English:</strong> A symmetric random walk starts at meter 17 of a bridge with endpoints 0 and 100. Find the probability it hits 100 first and the expected time to hit either endpoint.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For an unbiased walk on $\{0,\ldots,100\}$, the probability of hitting $100$ before $0$ from $i$ is $i/100$, hence $17/100$. The expected absorption time solves $e_i=1+(e_{i-1}+e_{i+1})/2$ with zero boundary values, yielding $e_i=i(100-i)$. At $i=17$ this is $17\cdot83=1{,}411$ steps.</p>
+</div></details>
+<h3>Z103 · Dice game / 鞅与骰子游戏 （Page 133）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 反复掷一枚骰子，每次获得等于点数的金额；掷出 4、5、6 时继续，掷出 1、2、3 时游戏结束。求游戏的期望总收益。</p>
+<p><strong>English:</strong> Roll a fair die repeatedly, accumulating each face value; continue after 4, 5, or 6 and stop after 1, 2, or 3. Find the expected total payoff.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $N$ be the number of rolls. Each roll is in $\{1,2,3\}$ with probability $1/2$, so $E[N]=2$. The face values are IID with mean $3.5$ and $N$ is a stopping time with finite mean. Wald's identity gives $E[\text{total}]=E[N]E[\text{face}]=2\cdot3.5=7$ dollars.</p>
+</div></details>
+<h3>Z104 · Ticket line / 售票队列 （Page 133）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 售票处有 $2n$ 人排队，其中 $n$ 人只有 $5$ 美元纸币，另 $n$ 人只有 $10$ 美元纸币；票价 5 美元，售票员起初没有零钱。随机排列队伍时，所有人都无需换位便能顺利买票的概率是多少？</p>
+<p><strong>English:</strong> A random queue contains $n$ people with USD $5$ bills and $n$ with USD $10$ bills. Each buys a USD 5 ticket, and the seller starts with no change. What is the probability nobody must change position?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Encode a USD 5 customer as +1 and a USD 10 customer as −1. A feasible queue is a length-$2n$ path with $n$ up and $n$ down steps whose partial sums never become negative. There are Catalan number $C_n=\binom{2n}{n}/(n+1)$ such queues among $\binom{2n}{n}$ total type sequences. The probability is $1/(n+1)$.</p>
+</div></details>
+<h3>Z105 · Coin sequence / 硬币序列 （Page 135）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 连续抛一枚公平硬币，第一次出现连续 $n$ 个正面所需抛掷次数的期望是多少？</p>
+<p><strong>English:</strong> What is the expected number of fair-coin tosses needed to obtain $n$ consecutive heads?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $E_k$ be the additional tosses needed after a current run of $k$ heads. Then $E_n=0$ and $E_k=1+(E_{k+1}+E_0)/2$ for $k&lt;n$. Solving backward gives $E_0=2+4+\cdots+2^n=2^{n+1}-2$.</p>
+</div></details>
+<h3>Z106 · Dynamic programming (DP) algorithm / 动态规划算法 （Page 138）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 说明动态规划中的最优性原理，以及如何从终止阶段开始向前逆推价值函数和最优策略。</p>
+<p><strong>English:</strong> State the principle of optimality and explain the backward recursion used in a finite-horizon dynamic-programming problem.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The principle of optimality says that the tail of an optimal policy must itself be optimal for the state reached. For terminal cost $g_N$, set $J_N(x)=g_N(x)$ and recurse backward:</p>
+<p class="equation-line">$$J_k(x)=\min_u E\!\left[g_k(x,u,W_k)+J_{k+1}\!\left(f(x,u,W_k)\right)\right].$$</p>
+<p>An optimizer at each state supplies the policy, and $J_0$ gives the optimal expected cost.</p>
+</div></details>
+<h3>Z107 · Dice game / 动态骰子游戏 （Page 139）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一枚六面骰子最多可掷 3 次。前两次掷出 x 后，可以立即领取 x 美元，也可以放弃该结果继续；第三次必须领取点数对应金额。游戏价值是多少？最优策略是什么？</p>
+<p><strong>English:</strong> A fair die may be rolled at most three times. After roll one or two, either accept that face value in dollars or discard it and continue; roll three must be accepted. Find the value and optimal strategy.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>On the third roll the expected value is 3.5. Therefore on roll two accept 4,5,6 and reroll 1,2,3; the roll-two value is $[3\cdot3.5+4+5+6]/6=4.25$. On roll one accept 5 or 6 and reroll 1–4. The initial value is $[4\cdot4.25+5+6]/6=14/3\approx4.667$ dollars.</p>
+</div></details>
+<h3>Z108 · World series / 世界大赛 （Page 139）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 世界大赛采用七局四胜制。你有 100 美元，只能逐场对红袜队下注且每注输赢均为等额。怎样根据赛况安排每场下注额，使红袜最终夺冠时恰好净赚 100 美元、失冠时恰好净亏 100 美元？</p>
+<p><strong>English:</strong> In a best-of-seven series, you start with USD 100 and may make even-money bets on the Red Sox one game at a time. Specify bets so that your final wealth is USD 200 if they win the series and zero if they lose it.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $V(w,l)$ be the required bankroll after $w$ Red Sox wins and $l$ losses. Set $V(4,l)=200$ and $V(w,4)=0$, and work backward with $V(w,l)=[V(w+1,l)+V(w,l+1)]/2$. Before the next game, bet $B(w,l)=[V(w+1,l)-V(w,l+1)]/2$ on Boston. A win changes wealth to $V(w+1,l)$; a loss changes it to $V(w,l+1)$, so terminal wealth is exactly 200 or 0 on every path.</p>
+<p>Initially $V(0,0)=100$ and the first bet is USD 31.25. The same recursion determines every later bet from the current series score.</p>
+</div></details>
+<h3>Z109 · Dynamic dice game / 动态骰子决策 （Page 142）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 可以反复掷骰子：掷出 1—5 时累计获得相应美元，并可选择收手或继续；一旦掷出 6，累计收益归零且游戏结束。风险中性玩家最多愿意花多少钱参加？最优停手策略是什么？</p>
+<p><strong>English:</strong> Repeatedly roll a fair die. Faces 1–5 add that many dollars and allow you to stop or continue; a 6 ends the game and erases all accumulated winnings. Find the risk-neutral value and optimal stopping rule.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $V(n)$ be the optimal value after accumulating $n$ dollars. Then</p>
+<p class="equation-line">$$V(n)=\max\left\{n,\frac{V(n+1)+\cdots+V(n+5)}6\right\},$$</p>
+<p>because rolling a $6$ contributes zero. For $n\ge15$, stopping is optimal; for $n\le14$, continuing is optimal (at $15$ the one-step comparison is a tie and stopping is valid). Backward evaluation from $V(15),\ldots,V(19)=15,\ldots,19$ gives $V(0)=6.1537379\ldots$.</p>
+<p>A risk-neutral player pays at most about USD 6.15 and stops once the accumulated total reaches at least USD 15.</p>
+</div></details>
+<h3>Z110 · Dynamic card game / 动态纸牌决策 （Page 143）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一副 26 红、26 黑的牌充分洗牌后逐张发出且不放回；每张红牌赚 1 美元，每张黑牌亏 1 美元，你可以随时叫停。使期望收益最大的停牌规则是什么？这场游戏的公平价格是多少？</p>
+<p><strong>English:</strong> A shuffled deck has 26 red and 26 black cards. Revealed reds add USD 1 and blacks subtract USD 1; you may stop at any time. Give the optimal stopping rule and the fair value of the game.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $v(r,b)$ be the maximum additional expected payoff with $r$ red and $b$ black cards remaining, measured from the current accumulated payoff. The Bellman recursion is</p>
+<p class="equation-line">$$v(r,b)=\max\left\{0,\frac{r[1+v(r-1,b)]+b[-1+v(r,b-1)]}{r+b}\right\},$$</p>
+<p>with $v(0,b)=0$ and $v(r,0)=r$. Continue exactly when the continuation expression is positive; otherwise stop.</p>
+<p>Evaluating this finite table gives $v(26,26)\approx2.624475$ dollars. Thus the fair value is about USD 2.62; the recursion, rather than a rule based only on the current score, is the exact stopping policy.</p>
+</div></details>
+<h3>Z111 · Brownian motion / 布朗运动 （Page 145）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：给出标准布朗运动的定义并列举主要性质。</p>
+<p>B：求 $\operatorname{Corr}(B_t,B_t^2)$。</p>
+<p>C：若 $B$ 为标准布朗运动，求 $P(B_1&gt;0,\ B_2&lt;0)$。</p>
+<p><strong>English:</strong> A. Define standard Brownian motion and list its main properties.</p>
+<p>B. Find $\operatorname{Corr}(B_t,B_t^2)$ for $t&gt;0$.</p>
+<p>C. For standard Brownian motion B, find $P(B_1&gt;0,\ B_2&lt;0)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Standard Brownian motion has $B_0=0$, continuous paths, independent stationary increments, and $B_t-B_s\sim N(0,t-s)$ for $t&gt;s$. It is a Gaussian Markov martingale with covariance $\operatorname{Cov}(B_s,B_t)=\min(s,t)$.</p>
+<p>B. $\operatorname{Cov}(B_t,B_t^2)=E[B_t^3]-E[B_t]E[B_t^2]=0$, so the correlation is $0$ for $t&gt;0$.</p>
+<p>C. $(B_1,B_2)$ is bivariate normal with correlation $1/\sqrt2$. The opposite-quadrant probability is $1/4-\arcsin(1/\sqrt2)/(2\pi)=1/8$.</p>
+</div></details>
+<h3>Z112 · Stopping time/ first passage time / 停时与首次到达 （Page 147）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：标准布朗运动首次到达 −1 或 1 的停时，期望是多少？</p>
+<p>B：令 $\tau_x=\inf\{t\ge0:W_t=x\}$，$x&gt;0$。求 $\tau_x$ 的密度和期望。</p>
+<p>C：从 0 出发的布朗运动先到 3 而不是 −5 的概率是多少？分别讨论零漂移和漂移为 μ。</p>
+<p>D：从 0 出发且满足 $dX_t=dt+dW_t$ 的过程，曾经到达 −1 的概率是多少？</p>
+<p><strong>English:</strong> A. Find the mean time for standard Brownian motion to hit either −1 or 1.</p>
+<p>B. For $\tau_x=\inf\{t\ge0:W_t=x\}$, $x&gt;0$, find its density and expectation.</p>
+<p>C. Starting at zero, find the probability Brownian motion hits 3 before −5, first with zero drift and then with drift μ.</p>
+<p>D. For $dX_t=dt+dW_t$ starting at zero, find the probability X ever reaches −1.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. For $\tau=\inf\{t:|B_t|=1\}$, optional stopping applied to $B_t^2-t$ gives $E[\tau]=E[B_\tau^2]=1$.</p>
+<p>B. The first-passage density is</p>
+<p class="equation-line">$$f_{\tau_x}(t)=\frac{x}{\sqrt{2\pi t^3}}\exp\left(-\frac{x^2}{2t}\right),\qquad t&gt;0.$$</p>
+<p>Its tail is heavy enough that $E[\tau_x]=\infty$.</p>
+<p>C. With zero drift, the upper-hit probability is distance to the lower barrier divided by interval length: $5/8$. With drift $\mu\ne0$ it is $[1-e^{-10\mu}]/[1-e^{-16\mu}]$, whose $\mu\to0$ limit is $5/8$.</p>
+<p>D. A Brownian motion with drift +1 hits a level one unit below its start with probability $\exp(-2\cdot1\cdot1)=e^{-2}$.</p>
+</div></details>
+<h3>Z113 · Ito's lemma / 伊藤引理 （Page 151）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：设 $B_t$ 为布朗运动，$Z_t=\sqrt t\,B_t$。求 $Z_t$ 的均值、方差，并判断 Z 是否为鞅。</p>
+<p>B：$W_t^3$ 是鞅吗？</p>
+<p><strong>English:</strong> A. Let $B$ be Brownian motion and $Z_t=\sqrt t\,B_t$. Find $E[Z_t]$, $\operatorname{Var}(Z_t)$, and determine whether Z is a martingale.</p>
+<p>B. Is $W_t^3$ a martingale?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. $E[Z_t]=0$ and $\operatorname{Var}(Z_t)=t\operatorname{Var}(B_t)=t^2$. For $0&lt;s&lt;t$, $E[Z_t\mid\mathcal F_s]=\sqrt t\,B_s$, which generally differs from $Z_s=\sqrt s\,B_s$. Therefore Z is not a martingale.</p>
+<p>B. Itô's lemma gives $d(W_t^3)=3W_t^2\,dW_t+3W_t\,dt$, so $W_t^3$ has a drift and is not a martingale. The compensated process $W_t^3-3tW_t$ is a martingale.</p>
 </div></details>
 <div class="section-anchor" id="zhou-finance" aria-hidden="true"></div>
 <h2>E. Finance</h2>
-<h3>Z14 [Core] Put–Call Parity / 看涨看跌平价</h3>
-<p><b>中文：</b> 对无分红股票、相同执行价与到期日的欧式看涨和看跌，写出看涨看跌平价，并说明复制组合。</p>
-<p><b>English:</b> State put–call parity for European options on a non-dividend stock with common strike and maturity, and explain the replicating portfolios.</p>
+<h3>Z114 · Price direction of options / 期权价格方向 （Page 153）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 当标的价格 $S$、执行价 $K$、剩余期限、波动率 $\sigma$、无风险利率 $r$ 或股息发生变化时，普通欧式与美式期权的价格方向分别怎样变化？</p>
+<p><strong>English:</strong> How do vanilla European and American call and put values respond to changes in spot $S$, strike $K$, time to maturity $\tau$, volatility $\sigma$, risk-free rate $r$, and dividends $D$?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>A call plus a bond paying $K$ at maturity has payoff $\max(S_T,K)$; a put plus one share has the same payoff. No arbitrage gives</p><p class="equation-line">$$C+Ke^{-rT}=P+S_0,$$</p><p>or $C-P=S_0-Ke^{-rT}$. Dividends and carry require replacing spot by the appropriate prepaid-forward value.</p>
+<p>Holding other inputs fixed: increasing $S$ raises calls and lowers puts; increasing $K$ lowers calls and raises puts; increasing $\sigma$ raises both calls and puts. For a non-dividend stock, increasing $r$ raises calls and lowers puts. Increasing dividends lowers calls and raises puts.</p>
+<p>More exercise time cannot reduce an American option's value. European time-to-maturity effects are not universally monotone because discounting and dividends compete with optionality; a non-dividend European call with nonnegative rates is nondecreasing, while a deep-in-the-money European put can decrease with maturity. These are monotonicities, not constant Greek signs in every extended model.</p>
 </div></details>
-<h3>Z15 [Medium] Black–Scholes–Merton PDE / BSM 偏微分方程</h3>
-<p><b>中文：</b> 在 $dS=\mu S\,dt\mathplus{}\sigma S\,dW$ 下，用 Delta 对冲说明衍生品价格 $V(S,t)$ 满足的 BSM 方程。为什么方程中没有 $\mu$？</p>
-<p><b>English:</b> Under $dS=\mu S\,dt\mathplus{}\sigma S\,dW$, use delta hedging to state the PDE for a derivative $V(S,t)$. Why does $\mu$ disappear?</p>
+<h3>Z115 · Put-call parity / 看涨看跌平价 （Page 154）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 写出无股息股票欧式期权的看涨—看跌平价关系，并给出无套利证明。</p>
+<p><strong>English:</strong> State and prove put–call parity for European options on a non-dividend-paying stock.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Itô's lemma and a portfolio long one derivative and short $V_S$ shares eliminate the $dW$ term. The locally riskless portfolio must earn $r$, yielding</p><p class="equation-line">$$V_t+\frac12\sigma^2S^2V_{SS}+rSV_S-rV=0.$$</p><p>The hedge cancels the stock's instantaneous expected-return term, so pricing depends on no-arbitrage and risk-neutral carry rather than the physical drift $\mu$.</p>
+<p>For strike $K$ and maturity $T$,</p>
+<p class="equation-line">$$C+Ke^{-rT}=P+S_0.$$</p>
+<p>Portfolio 1 is a call plus a zero-coupon bond paying $K$; portfolio 2 is a put plus one share. At $T$ both pay $\max(S_T,K)$. Equal terminal cash flows imply equal current prices by no arbitrage.</p>
 </div></details>
-<h3>Z16 [Core] VaR and Expected Shortfall / VaR 与预期损失</h3>
-<p><b>中文：</b> 定义损失 $L$ 在置信水平 $lpha$ 下的 VaR 与 Expected Shortfall，并比较二者对极端尾部的敏感度。</p>
-<p><b>English:</b> Define VaR and Expected Shortfall for loss $L$ at confidence level $lpha$, and compare their sensitivity to extreme tail losses.</p>
+<h3>Z116 · American v.s. European options / 美式与欧式期权 （Page 155）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：无股息股票上的美式看涨期权为什么不应提前行权？</p>
+<p>B：同一无股息股票、同一到期日的欧式看跌期权报价为 $P(80)=8$、$P(90)=9$。是否存在套利？</p>
+<p><strong>English:</strong> A. Why is early exercise of an American call on a non-dividend-paying stock never optimal?</p>
+<p>B. European puts on the same non-dividend-paying stock and maturity have prices $P(80)=8$ and $P(90)=9$. Is there an arbitrage?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>VaR is the loss quantile</p><p class="equation-line">$$\operatorname{VaR}_{\alpha}(L)=\inf\{\ell:\Pr(L\le\ell)\ge\alpha\}.$$</p><p>ES is the average upper-tail quantile; for a continuous distribution it equals $\mathbb E[L\mid L\ge\operatorname{VaR}_{\alpha}]$. VaR ignores the severity beyond its cutoff and may fail subadditivity. ES is coherent under standard conditions and tail-sensitive, but is statistically harder to estimate. Both require stress testing and model validation.</p>
+<p>A. Before expiry, $C_A\ge C_E\ge S_0-Ke^{-r\tau}&gt;S_0-K$ when $r&gt;0$. Exercising gives only $S_0-K$, sacrifices remaining optionality, and pays $K$ earlier than necessary. With zero rates, waiting is still weakly better. Thus early exercise is not optimal and the American and European call values coincide.</p>
+<p>B. The put spread costs $9-8=1$ and pays between $0$ and $10$, so no arbitrage requires $0\le P(90)-P(80)\le10e^{-rT}$. The quotes are consistent when $1\le10e^{-rT}$, as under ordinary rate and maturity inputs; if that inequality fails, the spread is overpriced and can be arbitraged. Without $r$ and $T$, an unconditional yes/no conclusion is not available.</p>
+</div></details>
+<h3>Z117 · Black-Scholes-Merton differential equation / BSM 偏微分方程 （Page 158）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 写出 Black–Scholes–Merton 偏微分方程，并简要说明其推导思路。</p>
+<p><strong>English:</strong> State the Black–Scholes–Merton PDE and briefly derive it by delta hedging.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For an asset with continuous dividend yield $q$, the PDE is</p>
+<p class="equation-line">$$V_t+\frac12\sigma^2S^2V_{SS}+(r-q)SV_S-rV=0.$$</p>
+<p>Form a portfolio long one derivative and short $\Delta=V_S$ shares. Itô's lemma shows the diffusion terms cancel. The locally riskless portfolio must earn $r$; equating its drift to the risk-free return and accounting for dividends yields the PDE. The terminal payoff and boundary conditions select the particular derivative price.</p>
+</div></details>
+<h3>Z118 · Black-Scholes formula / Black-Scholes 公式 （Page 160）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：Black–Scholes 公式依赖哪些假设？</p>
+<p>B：用风险中性定价推导无股息股票的欧式看涨期权公式。</p>
+<p>C：从 Black–Scholes–Merton 偏微分方程推导同一公式。</p>
+<p>D：零利率、无股息且 $S_0=1$；一项无到期日合约在股价首次触及 $H&gt;1$ 时支付 $1$。求当前价值。</p>
+<p>E：无股息股票服从几何布朗运动；一项合约在 $T$ 时支付 $1/S_T$。求其价值。</p>
+<p><strong>English:</strong> A. State the assumptions behind the Black–Scholes formula.</p>
+<p>B. Derive the non-dividend-paying European call price under the risk-neutral measure.</p>
+<p>C. Derive the same formula from the Black–Scholes–Merton PDE.</p>
+<p>D. With zero rates, no dividends, $S_0=1$, and no expiry, a claim pays $1$ when $S$ first hits $H&gt;1$. Find its value.</p>
+<p>E. For a non-dividend-paying geometric Brownian stock, price a claim paying $1/S_T$ at maturity $T$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. The standard model assumes frictionless continuous trading; no arbitrage; unrestricted borrowing/shorting; constant known $r$, dividend yield $q$, and volatility $\sigma$; and a lognormal stock with continuous paths $dS=(\mu-q)S\,dt+\sigma S\,dW$. European exercise and known terminal payoff are also assumed.</p>
+<p>B. Under $Q$, $S_T=S_0\exp[(r-\sigma^2/2)T+\sigma\sqrt T\,Z]$. Discounting $E^Q[(S_T-K)^+]$ and integrating over the normal tail gives</p>
+<p class="equation-line">$$C=S_0N(d_1)-Ke^{-rT}N(d_2),$$</p>
+<p>where $d_1=[\ln(S_0/K)+(r+\sigma^2/2)T]/(\sigma\sqrt T)$ and $d_2=d_1-\sigma\sqrt T$.</p>
+<p>C. Solve $V_t+(1/2)\sigma^2S^2V_{SS}+rSV_S-rV=0$ with $V(S,T)=(S-K)^+$. The substitutions $x=\ln(S/K)$, time-to-expiry $\tau$, and an exponential rescaling remove the first-derivative and discount terms, reducing the PDE to the heat equation. Convolution with the Gaussian heat kernel and undoing the substitutions gives the same formula in part B.</p>
+<p>D. With $r=0$, $S$ is a nonnegative martingale. Stop at the first hit of $H$ and localize with a lower barrier $\varepsilon&gt;0$. If $p_\varepsilon$ is the probability of hitting $H$ before $\varepsilon$, optional stopping gives $1=p_\varepsilon H+(1-p_\varepsilon)\varepsilon$. Letting $\varepsilon\downarrow0$ yields $P(\tau_H&lt;\infty)=1/H$, which is also the claim value.</p>
+<p>E. Under $Q$, $E[1/S_T]=(1/S_0)e^{(-r+\sigma^2)T}$. Discounting once more gives $V_0=(1/S_0)e^{(\sigma^2-2r)T}$.</p>
+</div></details>
+<h3>Z119 · Delta / Delta （Page 165）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：求无股息股票上欧式看涨期权的 Delta，并从定价公式推导。</p>
+<p>B：估计平值看涨期权的 Delta，并说明临近到期时它如何变化。</p>
+<p>C：持有一份欧式看涨期权多头时，怎样做动态 Delta 对冲？若股价突然上涨，应如何再平衡？</p>
+<p>D：在利率很低、到期时间很短时，估算无股息股票上平值欧式看涨期权的价值。</p>
+<p><strong>English:</strong> A. Find and derive the delta of a European call on a non-dividend-paying stock.</p>
+<p>B. Estimate the delta of an at-the-money call and describe its limit as maturity approaches.</p>
+<p>C. How do you dynamically delta-hedge a long European call, and how should the hedge be rebalanced after a sudden stock-price increase?</p>
+<p>D. Estimate the value of a short-dated at-the-money European call on a non-dividend-paying stock when interest rates are low.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Differentiating $C=S_0N(d_1)-Ke^{-rT}N(d_2)$, and using $S_0\phi(d_1)=Ke^{-rT}\phi(d_2)$, gives $\Delta=N(d_1)$. With dividend yield $q$ it is $e^{-qT}N(d_1)$.</p>
+<p>B. An at-the-money call has delta near 0.5 (slightly above it for $S=K$ with positive $r$ under the usual convention). As time to maturity tends to zero while $S=K$, delta tends to 0.5. Away from the strike it tends to 1 in the money and 0 out of the money.</p>
+<p>C. For each long call, short $\Delta$ shares, with the remaining value carried in the cash account so the hedge is self-financing. A call has positive gamma, so a stock-price rise increases $d_1$ and hence $\Delta$; restore delta neutrality by shorting additional shares and placing the short-sale proceeds in the cash account. A fall is handled symmetrically by buying shares back.</p>
+<p>D. With $S=K$, low $r$, and small $T$,</p>
+<p class="equation-line">$$C=S\bigl[N(d_1)-e^{-rT}N(d_2)\bigr]\approx S\phi(0)(d_1-d_2)=\frac{\sigma S\sqrt T}{\sqrt{2\pi}}\approx0.4\,\sigma S\sqrt T.$$</p>
+<p>This is a short-maturity approximation, not an exact price.</p>
+</div></details>
+<h3>Z120 · Gamma / Gamma （Page 169）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 平值欧式期权临近到期时，Gamma 会怎样变化？</p>
+<p><strong>English:</strong> What happens to the gamma of an at-the-money European option as maturity approaches?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For a dividend yield $q$, $\Gamma=e^{-q\tau}\phi(d_1)/(S\sigma\sqrt\tau)$. At the money, $d_1\to0$ as $\tau\to0$, so $\Gamma\sim1/[S\sigma\sqrt{2\pi\tau}]$ and diverges to $+\infty$ in the idealized model. The peak also becomes increasingly concentrated around the strike.</p>
+</div></details>
+<h3>Z121 · Theta / Theta （Page 171）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：欧式期权在什么情况下可能具有正的 Theta？</p>
+<p>B：持有看涨期权多头，并做空股票使组合 Delta 中性。若股价立刻上升或下降，组合价值怎样变化？这是否构成套利？假设股票不付股息。</p>
+<p><strong>English:</strong> A. When can a European option have positive theta?</p>
+<p>B. A long call is delta-hedged by shorting stock. What happens to the portfolio after an immediate up or down move in the stock? Is this an arbitrage? Assume no dividends.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Theta can be positive when carry dominates lost optionality—for example a sufficiently deep-in-the-money European put with positive rates, or a call on an asset with sufficiently large dividends. It is not a universal sign for all European options.</p>
+<p>B. At the instant of a small stock move, a delta-neutral long-call portfolio gains approximately $(1/2)\Gamma(\Delta S)^2$ for either direction because the call has positive gamma. This is not a free arbitrage: the option premium pays for convexity, theta is typically negative, and real hedging is discrete and costly. Over time the gamma gain must be compared with time decay and realized versus implied volatility.</p>
+</div></details>
+<h3>Z122 · Vega / Vega （Page 172）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：解释隐含波动率和波动率微笑，并说明其对 Black–Scholes 模型意味着什么。</p>
+<p>B：为欧式看涨期权定价时，一种方案固定使用 30% 波动率；另一种从均值为 30% 的随机分布抽取波动率。哪一种价格更高？</p>
+<p>C：不假定股票服从几何布朗运动，但已知同一到期日、所有连续执行价 $K$ 的欧式看涨期权价格。能否恢复 $S_T$ 的风险中性密度？</p>
+<p><strong>English:</strong> A. Explain implied volatility and the volatility smile, and its implication for Black–Scholes.</p>
+<p>B. Compare a European call priced at constant 30% volatility with one priced by drawing a random volatility whose mean is 30%. Which is more expensive?</p>
+<p>C. Given European call prices for every strike $K$ at one maturity, recover the risk-neutral density of $S_T$ without assuming geometric Brownian motion.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Implied volatility is the $\sigma$ that makes a pricing model match a market option price. A smile or skew is systematic variation of implied $\sigma$ with strike. It shows that a single constant-volatility lognormal Black–Scholes model cannot fit all strikes, reflecting features such as stochastic volatility, leverage, and jumps.</p>
+<p>B. The mean volatility alone is insufficient. Jensen's inequality favors random volatility only where the call price is convex over its support. Black–Scholes volga is $\mathrm{Vega}\cdot d_1d_2/\sigma$, which can be positive for sufficiently in- or out-of-the-money options and negative near at the money. Thus the random-volatility price may be higher or lower; its distribution and the option parameters are required.</p>
+<p>C. Writing</p>
+<p class="equation-line">$$C(K)=e^{-rT}\int_K^\infty(s-K)f_Q(s)\,ds$$</p>
+<p>and differentiating twice gives the Breeden–Litzenberger result $f_Q(K)=e^{rT}\,\partial^2C/\partial K^2$, assuming sufficient smoothness and no arbitrage.</p>
+</div></details>
+<h3>Z123 · Bull spread / 牛市价差 （Page 175）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 牛市看涨价差组合的价格上下界是什么？</p>
+<p><strong>English:</strong> For $K_1&lt;K_2$, find no-arbitrage price bounds for the bull call spread $C(K_1)-C(K_2)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The terminal payoff is $(S_T-K_1)^+-(S_T-K_2)^+$, which lies between $0$ and $K_2-K_1$. Therefore $0\le C(K_1)-C(K_2)\le e^{-rT}(K_2-K_1)$. The lower bound also expresses that call prices are nonincreasing in strike.</p>
+</div></details>
+<h3>Z124 · Straddle / 跨式组合 （Page 175）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是跨式组合（straddle）？在什么市场判断下适合买入跨式组合？</p>
+<p><strong>English:</strong> What is a long straddle, and when would an investor buy one?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A long straddle buys a call and a put with the same strike and maturity, usually near at the money. Its payoff is $|S_T-K|$. Buy it when expecting a large move in either direction—or realized volatility above that implied by the combined premium—without wanting to choose a direction.</p>
+</div></details>
+<h3>Z125 · Binary options / 二元期权 （Page 176）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若无股息股票价格服从几何布朗运动，现金或无（cash-or-nothing）欧式看涨二元期权应如何定价？怎样对冲？该对冲策略有什么局限？</p>
+<p><strong>English:</strong> For a non-dividend-paying geometric Brownian stock, price a cash-or-nothing European call. How is it delta-hedged, and what is the practical limitation?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A unit cash-or-nothing call pays $\mathbf1_{\{S_T&gt;K\}}$, so its value is $e^{-rT}N(d_2)$. Its delta is $e^{-rT}\phi(d_2)/(S\sigma\sqrt T)$, with T interpreted as remaining maturity.</p>
+<p>Delta hedging requires holding that many shares and rebalancing. Near expiry and near the strike, delta changes extremely rapidly and gamma is singular in the model. Discrete trading, jumps, spreads, and uncertain volatility make exact replication impractical and create substantial gap risk.</p>
+</div></details>
+<h3>Z126 · Exchange options / 交换期权 （Page 177）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两只无股息股票 $S_1,S_2$ 均服从相关系数为 $\rho$ 的几何布朗运动。到期支付 $\max(S_1-S_2,0)$ 的交换期权应如何定价？</p>
+<p><strong>English:</strong> Two non-dividend-paying stocks follow correlated geometric Brownian motions. Price the exchange option paying $\max(S_{1,T}-S_{2,T},0)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Margrabe's formula is</p>
+<p class="equation-line">$$V=S_1N(d_1)-S_2N(d_2),\qquad \sigma_M=\sqrt{\sigma_1^2+\sigma_2^2-2\rho\sigma_1\sigma_2},$$</p>
+<p>where $d_1=[\ln(S_1/S_2)+(1/2)\sigma_M^2T]/(\sigma_M\sqrt T)$ and $d_2=d_1-\sigma_M\sqrt T$. Using $S_2$ as numeraire turns $S_1/S_2$ into a driftless lognormal ratio under the associated measure.</p>
+</div></details>
+<h3>Z127 · Portfolio optimization / 投资组合优化 （Page 179）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 股票 A、B 的期望收益率均为 12%，收益率标准差分别为 20% 和 30%，相关系数为 50%。在只用这两只股票构建组合时，怎样配置权重才能使组合风险最小？</p>
+<p><strong>English:</strong> Assets A and B both have expected return 12%, volatilities 20% and 30%, and correlation 50%. Find the fully invested weights minimizing portfolio variance.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>With weight $w$ in A and $1-w$ in B, differentiate $w^2\sigma_A^2+(1-w)^2\sigma_B^2+2w(1-w)\rho\sigma_A\sigma_B$. The minimizer is</p>
+<p class="equation-line">$$w=\frac{\sigma_B^2-\rho\sigma_A\sigma_B}{\sigma_A^2+\sigma_B^2-2\rho\sigma_A\sigma_B}.$$</p>
+<p>Substitution gives $w=(0.09-0.03)/(0.04+0.09-0.06)=6/7$ in A and $1/7$ in B.</p>
+</div></details>
+<h3>Z128 · Value at risk / 风险价值 （Page 180）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 简要解释风险价值（VaR），并说明用 VaR 衡量衍生品风险可能有哪些缺陷。</p>
+<p><strong>English:</strong> Briefly define value at risk (VaR) and explain drawbacks of using it for derivative portfolios.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>At confidence $\alpha$ and horizon $h$, VaR is a loss quantile: the smallest $l$ such that $P(\mathrm{Loss}\le l)\ge\alpha$. It says how large a loss is not exceeded with the chosen confidence under the model.</p>
+<p>VaR does not describe loss severity beyond the quantile, can fail subadditivity, and can be unstable for nonlinear portfolios with jumps, sparse data, or model error. It also depends strongly on horizon, revaluation method, and distributional assumptions. Expected shortfall and stress tests address some of these gaps.</p>
+</div></details>
+<h3>Z129 · Duration and convexity / 久期与凸性 （Page 182）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一只面值 100 美元、年票息率为 $30\%-3r$、5 年到期且每半年付息的反向浮息债券，在当前收益率曲线平坦且为 7.5% 时，价格和久期分别是多少？</p>
+<p><strong>English:</strong> An inverse floater has face value USD 100, annual coupon rate $30\%-3r$, semiannual coupons, and five years to maturity. With a flat 7.5% yield curve, find its price and duration.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Replicate the inverse floater by going long four par fixed-rate bonds paying 7.5% and short three par floating-rate notes. Its coupon is $4(7.5\%)-3r=30\%-3r$ and its principal is $4\cdot100-3\cdot100=100$. Both components are at par on the flat 7.5% curve, so the price is USD 100.</p>
+<p>Let $y=0.075$ and $m=10$ half-year periods. For one fixed-rate bond, differentiating</p>
+<p class="equation-line">$$P_{\mathrm{fixed}}(y)=\sum_{k=1}^{10}\frac{3.75}{(1+y/2)^k}+\frac{100}{(1+y/2)^{10}}$$</p>
+<p>gives dollar duration $-dP_{\mathrm{fixed}}/dy\approx410.64$. A par floating-rate note just before its next coupon has value $103.75$ payable over the next half-year for duration purposes, so its dollar duration is $0.5(103.75)/(1+y/2)^2\approx48.19$. Hence the inverse-floater dollar duration is $4(410.64)-3(48.19)\approx1{,}498$, and its duration is $1{,}498/100\approx14.98$ years. The duration can exceed the five-year maturity because the inverse coupon embeds leveraged negative exposure to the floating rate.</p>
+</div></details>
+<h3>Z130 · Forward and futures / 远期与期货 （Page 183）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 远期合约与期货合约有什么区别？若标的资产价格与随机利率高度正相关，期货价和远期价哪个更高？为什么？</p>
+<p><strong>English:</strong> Contrast forwards and futures. With stochastic interest rates and strong positive correlation between the underlying price and rates, which price is higher, and why?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A forward is an OTC contract settled mainly at maturity and can be customized; a futures contract is standardized, exchange-traded, margined, and marked to market daily. With stochastic rates and positive price–rate correlation, futures gains tend to arrive when rates are high and can be reinvested advantageously, while losses tend to occur when financing is cheaper. Consequently the futures price is generally higher than the otherwise comparable forward price.</p>
+</div></details>
+<h3>Z131 · Interest rate models / 利率模型 （Page 184）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 介绍几种基本利率模型，并比较它们的主要差异。</p>
+<p><strong>English:</strong> Explain several basic short-rate models and compare their main features.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Ho–Lee uses $dr=\theta(t)\,dt+\sigma\,dW$ and fits the initial curve but has no mean reversion and permits negative rates. Vasicek adds Gaussian mean reversion, $dr=\kappa(\theta-r)\,dt+\sigma\,dW$, but still permits negative rates. CIR uses $dr=\kappa(\theta-r)\,dt+\sigma\sqrt r\,dW$, making volatility state-dependent and keeping rates nonnegative under the Feller condition. Hull–White makes the mean level time-dependent so a mean-reverting Gaussian model fits today's curve exactly. The trade-offs are curve fit, mean reversion, positivity, tractability, and the volatility structure.</p>
 </div></details>
 <div class="section-anchor" id="zhou-algorithms" aria-hidden="true"></div>
 <h2>F. Algorithms &amp; Numerical Methods</h2>
-<h3>Z17 [Core] Horner's Algorithm / Horner 多项式求值</h3>
-<p><b>中文：</b> 如何以 $O(n)$ 次运算和 $O(1)$ 额外空间计算 $p(x)=a_0\mathplus{}a_1x\mathplus{}\cdots\mathplus{}a_nx^n$？</p>
-<p><b>English:</b> How can $p(x)=a_0\mathplus{}a_1x\mathplus{}\cdots\mathplus{}a_nx^n$ be evaluated using $O(n)$ operations and $O(1)$ extra space?</p>
+<h3>Z132 · Number swap / 数字交换 （Page 188）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 不使用额外存储空间，怎样交换两个整数 $i$ 和 $j$ 的值？</p>
+<p><strong>English:</strong> Swap two integers $i$ and $j$ without additional storage.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Rewrite</p><p class="equation-line">$$p(x)=a_0+x\bigl(a_1+x(a_2+\cdots+x a_n)\bigr).$$</p><p>Initialize $v=a_n$ and iterate $v\leftarrow a_k+xv$ for $k=n-1,\ldots,0$. This uses $n$ multiplications, $n$ additions, and one accumulator, avoiding explicit powers of $x$.</p>
+<p>For distinct storage locations, XOR swap works: <code>i ^= j; j ^= i; i ^= j</code>. Arithmetic <code>i = i + j; j = i - j; i = i - j</code> is another option but may overflow. In production, an ordinary temporary variable is clearer and usually optimized just as well; XOR swap also fails if the two references alias the same location.</p>
 </div></details>
-<h3>Z18 [Core] Uniform Random Permutation / 均匀随机排列</h3>
-<p><b>中文：</b> 说明 Fisher–Yates 洗牌算法，并解释为何“对每个位置随机交换任意位置”通常不是均匀洗牌。</p>
-<p><b>English:</b> State the Fisher–Yates shuffle and explain why swapping each position with an arbitrary random position generally does not produce a uniform permutation.</p>
+<h3>Z133 · Unique elements / 唯一元素 （Page 189）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 给定一个已排序数组，编写算法提取其中不重复的元素。例如 $[1,1,3,3,3,5,5,5,9,9,9,9]$ 应得到 $[1,3,5,9]$。</p>
+<p><strong>English:</strong> Given a sorted array, output its unique elements; for example $[1,1,3,3,3,5,5,5,9,9,9,9]$ becomes $[1,3,5,9]$.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>For $i=n-1,n-2,\ldots,1$, draw $j$ uniformly from $\{0,\ldots,i\}$ and swap entries $i,j$. At step $i$, every remaining item has probability $1/(i+1)$ of occupying position $i$, so induction gives probability $1/n!$ for every permutation. Arbitrary full-range swaps create $n^n$ random-choice sequences, which cannot in general be divided equally among $n!$ outcomes.</p>
+<p>Scan once with a write index. Keep the first element; for each later element, write it only if it differs from the last retained value. This takes $O(n)$ time and $O(1)$ extra space when compacting in place, and the retained prefix is the unique array.</p>
 </div></details>
-<h3>Z19 [Core] Maximum Contiguous Subarray / 最大连续子数组</h3>
-<p><b>中文：</b> 给定实数数组，在线性时间内求最大连续子数组和，并说明全为负数时如何处理。</p>
-<p><b>English:</b> Given a real array, find the maximum contiguous-subarray sum in linear time and explain the all-negative case.</p>
+<h3>Z134 · Horner's algorithm / Horner 算法 （Page 190）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 用 Horner 算法计算多项式 $y=A_0+A_1x+A_2x^2+\cdots+A_nx^n$。</p>
+<p><strong>English:</strong> Give an efficient algorithm to evaluate $A_0+A_1x+\cdots+A_nx^n$.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Kadane's recurrence is</p><p class="equation-line">$$b_i=\max(x_i,b_{i-1}+x_i),\qquad M_i=\max(M_{i-1},b_i).$$</p><p>Initialize both values to $x_1$, not zero, so an all-negative input returns its largest element rather than an inadmissible empty subarray. Store start indices when the first branch is chosen and update endpoints when the global maximum changes.</p>
+<p>Use Horner's rule: set $y=A_n$ and for $k=n-1,\ldots,0$ update $y=y\,x+A_k$. The result is $A_0+x(A_1+x(A_2+\cdots+xA_n))$. It uses $n$ multiplications, $n$ additions, $O(n)$ time, and $O(1)$ space.</p>
 </div></details>
-<h3>Z20 [Medium] Monte Carlo Error and Variance Reduction / 蒙特卡洛误差与降方差</h3>
-<p><b>中文：</b> 用 $N$ 条独立路径估计折现收益期望时，标准误如何随 $N$ 变化？列出至少三种不改变目标期望的降方差方法。</p>
-<p><b>English:</b> When estimating an expected discounted payoff with $N$ independent paths, how does standard error scale with $N$? Name at least three variance-reduction methods that preserve the target expectation.</p>
+<h3>Z135 · Moving average / 移动平均 （Page 190）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 给定长度为 $m$ 的大数组 $A$，设计高效算法计算窗口长度为 $n$ 的移动平均数组。</p>
+<p><strong>English:</strong> For an array of length $m$, compute every $n$-element moving average efficiently.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>If path payoffs have variance $\sigma_Y^2$, the sample-mean standard error is $\sigma_Y/\sqrt N$; reducing error by a factor of ten requires about one hundred times as many independent paths. Valid methods include antithetic variates, control variates with known expectation, stratified or quasi-random sampling with appropriate error assessment, importance sampling with likelihood weights, and conditional Monte Carlo. Bias, dependence, and numerical discretization error must be assessed separately.</p>
+<p>Compute the first window sum in $O(n)$. When the window moves one place, update <code>sum += new_element - departing_element</code> and divide by $n$. All $m-n+1$ averages are produced in $O(m)$ time and $O(1)$ auxiliary space besides the output.</p>
 </div></details>
-<p><b>书目定位：</b> 本页对应原书 Chapter 2 的脑筋题、Chapter 3 的微积分与线性代数、Chapter 4 的概率、Chapter 5 的随机过程、Chapter 6 的金融，以及 Chapter 7 的算法与数值方法。</p>
+<h3>Z136 · Sorting algorithm / 排序算法 （Page 190）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 说明三种对 $n$ 个互不相同的值进行排序的算法，并分析各自的时间复杂度。</p>
+<p><strong>English:</strong> Explain three algorithms for sorting $n$ distinct values and analyze their time complexity.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Insertion sort inserts each item into a sorted prefix: $O(n^2)$ worst/average time, $O(n)$ best on sorted input, and $O(1)$ space. Merge sort recursively sorts halves and merges: $O(n\log n)$ time in all cases and $O(n)$ auxiliary space in the usual array implementation. Quicksort partitions around pivots: expected $O(n\log n)$, worst $O(n^2)$, with expected $O(\log n)$ stack space; random pivots make the bad case unlikely.</p>
+</div></details>
+<h3>Z137 · Random permutation / 随机排列 （Page 192）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：已有均匀随机数生成器，怎样洗一副 52 张牌，使每种排列等概率？</p>
+<p>B：一个文件只能顺序读取，长度未知。怎样选出一个字符，使每个字符被选中的概率相同？</p>
+<p><strong>English:</strong> A. Using uniform random numbers, shuffle 52 cards so every permutation is equally likely.</p>
+<p>B. A file can be read only sequentially and its length is unknown. Select one character so every character has equal probability of being chosen.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Use Fisher–Yates. For $i=51$ down to $1$, choose $j$ uniformly from $\{0,\ldots,i\}$ and swap cards $i$ and $j$. Every permutation has probability $\prod_{i=1}^{51}1/(i+1)=1/52!$.</p>
+<p>B. Use reservoir sampling. Keep the first character. When the $k$-th character arrives, replace the stored character with probability $1/k$. Induction shows each of the $k$ characters is retained with probability $1/k$; no file length is needed.</p>
+</div></details>
+<h3>Z138 · Search algorithm / 搜索算法 （Page 193）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：用不超过 $3n/2$ 次比较，同时找出 $n$ 个数的最小值和最大值。</p>
+<p>B：一个长度未知的数组先全为 0，从某处起全为非零；在不知道数组大小的情况下找出第一个非零位置。</p>
+<p>C：一个 $n\times n$ 矩阵每行从左到右递增、每列从上到下递增。设计查找给定数的算法，并分析复杂度。</p>
+<p><strong>English:</strong> A. Find both minimum and maximum among $n$ numbers with at most $3n/2$ comparisons.</p>
+<p>B. An array has an unknown-length prefix of zeros followed only by nonzeros, and its size is unknown. Find the first nonzero position.</p>
+<p>C. Rows and columns of an $n\times n$ matrix increase. Find a target and analyze complexity.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Pair the numbers. Compare within each pair, send the smaller to a minimum tournament and the larger to a maximum tournament. For even $n$ this uses $n/2+2(n/2-1)=3n/2-2$ comparisons, within the bound.</p>
+<p>B. Probe indices $1,2,4,8,\ldots$ until finding a nonzero value, then binary-search between the last zero index and that index. This takes $O(\log k)$ probes when the first nonzero is at $k$.</p>
+<p>C. Start at the top-right corner. If the entry is too large move left; if too small move down; if equal stop. Each step eliminates a row or column, so an $n\times n$ matrix takes $O(n)$ comparisons.</p>
+</div></details>
+<h3>Z139 · Fibonacci numbers / 斐波那契数 （Page 195）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 给出的递归程序用 $F(n-1)+F(n-2)$ 计算斐波那契数。若计算 $F(n)$ 需要 $100$ 秒，计算 $F(n+1)$ 约需多少秒？该算法是否高效？还能怎样计算斐波那契数？</p>
+<p><strong>English:</strong> A naive recursive Fibonacci program computes $F(n)$ in $100$ seconds for large $n$. Estimate the time for $F(n+1)$ to the nearest second. Is the algorithm efficient, and how should Fibonacci numbers be computed?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The naive runtime obeys essentially the Fibonacci recurrence, so $T(n+1)/T(n)$ tends to the golden ratio $\varphi\approx1.618$. The estimate is 162 seconds. The recursion is exponential and repeats subproblems. An iterative two-variable method is $O(n)$ time and $O(1)$ space; matrix exponentiation or fast doubling computes $F(n)$ in $O(\log n)$ arithmetic operations.</p>
+</div></details>
+<h3>Z140 · Maximum contiguous subarray / 最大连续子数组 （Page 196）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一维数组 $A$ 长度为 $n$，元素有正有负。设计算法找出和最大的连续子数组。</p>
+<p><strong>English:</strong> Design an algorithm to find a maximum-sum contiguous subarray of an array containing positive and negative values.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Kadane's algorithm maintains $\mathrm{best\_ending\_here}=\max(A_i,\mathrm{best\_ending\_here}+A_i)$ and $\mathrm{best\_so\_far}=\max(\mathrm{best\_so\_far},\mathrm{best\_ending\_here})$, recording start/end indices when the first term is chosen or a new maximum appears. Initialize from $A_1$ so all-negative arrays are handled. Time is $O(n)$ and extra space $O(1)$.</p>
+</div></details>
+<h3>Z141 · Power of 2? / 是否为 2 的幂 （Page 198）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 怎样判断一个整数是否为 2 的幂？</p>
+<p><strong>English:</strong> Determine whether an integer is a power of two.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For a positive integer $x$, $x$ is a power of two exactly when <code>x &amp; (x - 1)</code> equals zero: a power of two has one set bit, and subtracting one turns that bit off and all lower bits on. Therefore test <code>x &gt; 0 &amp;&amp; (x &amp; (x - 1)) == 0</code>.</p>
+</div></details>
+<h3>Z142 · Multiplication by 7 / 乘以 7 （Page 198）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 不使用乘法运算符，怎样快速把一个整数乘以 7？</p>
+<p><strong>English:</strong> Multiply an integer by 7 quickly without using the multiplication operator.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Use $7x=8x-x$, implemented as <code>(x &lt;&lt; 3) - x</code>. For fixed-width signed integers, ensure the shift and subtraction do not overflow and follow the language's rules for negative shifts.</p>
+</div></details>
+<h3>Z143 · Probability simulation / 概率模拟 （Page 198）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 只有一枚公平硬币时，怎样设计一个简单随机试验，使获胜概率恰好为任意给定的 $p$（$0&lt;p&lt;1$）？</p>
+<p><strong>English:</strong> Using only a fair coin, construct a game whose winning probability is any prescribed $p$ with $0&lt;p&lt;1$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Write $p=0.b_1b_2\ldots$ in binary. Toss the fair coin to generate independent bits $U_1,U_2,\ldots$ of $U\sim U(0,1)$. Compare $U$'s bits with $p$'s bits until the first difference; declare a win if $U&lt;p$. Equality forever has probability zero, so the algorithm terminates almost surely and $P(\text{win})=P(U&lt;p)=p$. Choose a consistent non-terminating binary representation at dyadic $p$.</p>
+</div></details>
+<h3>Z144 · Poisonous wine / 毒酒定位 （Page 199）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> 1000 瓶酒中恰有 1 瓶有毒。距聚会还有 20 小时；手上有 10 只实验鼠，老鼠喝到任意剂量毒酒都会在恰好 18 小时后死亡，之前无症状。怎样保证在聚会前找出毒酒？</p>
+<p><strong>English:</strong> Exactly one of 1,000 wine bottles is poisoned. Ten mice die exactly 18 hours after any exposure, and the party is 20 hours away. Identify the bottle with certainty in one testing round.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Number bottles 0 through 999 and write each number as a $10$-bit binary string. Mouse $k$ drinks a sample from every bottle whose $k$-th bit is $1$. After $18$ hours, interpret dead mice as $1$ and survivors as $0$. The resulting $10$-bit pattern is the poisoned bottle's number. Since $2^{10}=1{,}024$, ten mice cover all 1,000 bottles in one round.</p>
+</div></details>
+<h3>Z145 · Monte Carlo simulation / 蒙特卡洛模拟 （Page 200）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：说明如何用蒙特卡洛模拟为欧式看涨期权定价。</p>
+<p>B：电脑只能生成 $U(0,1)$ 随机数时，怎样生成 $N(\mu,\sigma^2)$ 随机数？</p>
+<p>C：说明几种蒙特卡洛方差缩减方法。</p>
+<p>D：没有闭式定价公式时，怎样估计期权的 Delta 和 Gamma？</p>
+<p>E：怎样用蒙特卡洛模拟估计 $\pi$？</p>
+<p><strong>English:</strong> A. Explain Monte Carlo pricing of a European call.</p>
+<p>B. Generate $N(\mu,\sigma^2)$ variables using only $U(0,1)$ variables.</p>
+<p>C. Explain several Monte Carlo variance-reduction methods.</p>
+<p>D. Without a closed-form price, estimate an option's delta and gamma.</p>
+<p>E. Estimate $\pi$ by Monte Carlo.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Simulate $Z\sim N(0,1)$, set $S_T=S_0\exp[(r-q-\sigma^2/2)T+\sigma\sqrt T\,Z]$, compute $e^{-rT}(S_T-K)^+$, and average over many independent paths. Report a Monte Carlo standard error as the sample standard deviation divided by $\sqrt N$.</p>
+<p>B. Box–Muller: from independent $U_1,U_2\sim U(0,1)$, set</p>
+<p class="equation-line">$$Z_1=\sqrt{-2\ln U_1}\cos(2\pi U_2),\qquad Z_2=\sqrt{-2\ln U_1}\sin(2\pi U_2).$$</p>
+<p>Then $\mu+\sigma Z_i\sim N(\mu,\sigma^2)$.</p>
+<p>C. Useful methods include antithetic variates, control variates with known expectations, stratified or Latin-hypercube sampling, importance sampling for rare events, conditional Monte Carlo, and quasi-random sequences. Each should preserve unbiasedness or make any bias explicit.</p>
+<p>D. Revalue at $S_0+h$, $S_0$, and $S_0-h$ using the same random numbers. Estimate</p>
+<p class="equation-line">$$\Delta\approx\frac{V(S_0+h)-V(S_0-h)}{2h},\qquad \Gamma\approx\frac{V(S_0+h)-2V(S_0)+V(S_0-h)}{h^2}.$$</p>
+<p>Common random numbers greatly reduce difference-estimator noise; pathwise or likelihood-ratio estimators may be better when applicable.</p>
+<p>E. Draw IID points $(X,Y)$ uniformly in $[0,1]^2$. The fraction with $X^2+Y^2\le1$ converges to the quarter-circle area $\pi/4$, so estimate $\pi$ by four times that fraction.</p>
+</div></details>
+<h3>Z146 · Finite difference method / 有限差分法 （Page 205）</h3>
+<div class="bilingual-question">
+<p><strong>中文:</strong> A：简要说明用有限差分法求解衍生品定价偏微分方程的基本思路。</p>
+<p>B：用显式有限差分法求解抛物型偏微分方程时，时间方向步数过多和空间方向步数过多，哪一种更危险？为什么？</p>
+<p><strong>English:</strong> A. Briefly explain finite-difference methods for derivative-pricing PDEs.</p>
+<p>B. For an explicit scheme for a parabolic PDE, is excessive refinement in time or in space more dangerous, and why?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A. Lay down a grid in asset state and time, replace PDE derivatives by finite differences, impose terminal and boundary conditions, and step backward to today. Explicit schemes compute the next layer directly; implicit schemes solve a linear system and are more stable; Crank–Nicolson averages the two and is second-order in time for smooth solutions. American exercise is handled by applying the early-exercise constraint at each step.</p>
+<p>B. For $u_t=\kappa u_{xx}$, the explicit centered scheme requires $\kappa\Delta t/(\Delta x)^2\le1/2$. More time steps reduce $\Delta t$ and improve stability, though they cost computation. More space steps reduce $\Delta x$; if $\Delta t$ is unchanged, the ratio grows and can make the method unstable. Therefore excessive spatial refinement is the dangerous one unless time is refined proportionally to $(\Delta x)^2$.</p>
+</div></details>
 </div>
 </body>
 </html>

@@ -26,6 +26,7 @@ blogs/
     ├── hkust-hpc-server-guide.html
     ├── numpy-for-quant-interviews.jemdoc / .html
     ├── numpy-for-quant-interviews-en.jemdoc / .html
+    ├── optimal-quota-allocation-under-random-resets.jemdoc / .html
     ├── pandas-for-quant-interviews.jemdoc / .html
     ├── pandas-for-quant-interviews-en.jemdoc / .html
     ├── python-for-quant-interviews.jemdoc / .html
@@ -43,7 +44,7 @@ blogs/
 | --- | --- | --- |
 | Quantitative Career Resources | Study Guides | Mathematics review, Python fundamentals, NumPy, pandas, scikit-learn, and algorithms for quantitative research interviews |
 | Quantitative Career Resources | Problem Sets | Assorted brainteasers, the general mathematics question bank, and the independently adapted book-based question banks |
-| Technical Notes | — | Operational guides and command references; currently the HKUST HPC Server Guide |
+| Technical Notes | — | Operational guides, command references, and self-contained mathematical or technical essays |
 
 The legacy `technical-notes/`, `book-based-question-banks/`, and `mathematical-problems-and-puzzles/` paths are retained so existing public URLs continue to work. Their interview-preparation articles are presented together under Quantitative Career Resources on the public Blog index.
 

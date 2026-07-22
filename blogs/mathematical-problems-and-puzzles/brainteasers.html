@@ -166,6 +166,28 @@
 <p>Therefore, the required probability is <strong>1/4</strong>.</p>
 </div>
 </details>
+<h2>Problem 10 ★</h2>
+<p>Independent samples are drawn repeatedly from the uniform distribution on the unit interval from 0 to 1. Let <i>N</i> be the first number of samples for which their running sum exceeds 2. What is the expected value of <i>N</i>?</p>
+<details class="answer">
+<summary>Show answer</summary>
+<div class="answer-content">
+<p>Let <i>X</i><sub>1</sub>, <i>X</i><sub>2</sub>, ... be independent Uniform[0, 1] random variables, and write <i>S</i><sub>n</sub> = <i>X</i><sub>1</sub> + ... + <i>X</i><sub>n</sub>. Define <i>N</i> as the smallest <i>n</i> for which <i>S</i><sub>n</sub> &gt; 2.</p>
+<p>For a positive integer-valued random variable, the tail-sum formula gives:</p>
+<p class="equation-line">E[<i>N</i>] = sum over <i>n</i> &gt;= 0 of P(<i>N</i> &gt; <i>n</i>).</p>
+<p>The event <i>N</i> &gt; <i>n</i> means that the process has not stopped after <i>n</i> samples, which is exactly the event <i>S</i><sub>n</sub> &lt;= 2. Therefore:</p>
+<p class="equation-line">E[<i>N</i>] = sum over <i>n</i> &gt;= 0 of P(<i>S</i><sub>n</sub> &lt;= 2).</p>
+<p>For <i>n</i> &gt;= 1, the vector (<i>X</i><sub>1</sub>, ..., <i>X</i><sub>n</sub>) is uniformly distributed on the unit cube [0, 1]<sup><i>n</i></sup>. Hence P(<i>S</i><sub>n</sub> &lt;= 2) is the volume of the part of that cube satisfying <i>x</i><sub>1</sub> + ... + <i>x</i><sub>n</sub> &lt;= 2.</p>
+<p>If the upper bounds <i>x</i><sub>i</sub> &lt;= 1 are temporarily ignored, this region is an <i>n</i>-dimensional simplex with volume 2<sup><i>n</i></sup>/<i>n</i>!. For any fixed <i>i</i>, the part with <i>x</i><sub>i</sub> &gt; 1 becomes, after shifting <i>x</i><sub>i</sub> down by 1, a simplex of volume 1/<i>n</i>!.</p>
+<p>There are <i>n</i> such excluded pieces. Two coordinates cannot both be strictly greater than 1 while their total sum is at most 2, except on a probability-zero boundary. Thus:</p>
+<p class="equation-line">P(<i>S</i><sub>n</sub> &lt;= 2) = (2<sup><i>n</i></sup> - <i>n</i>)/<i>n</i>!.</p>
+<p>For example, when <i>n</i> = 3, this probability is (8 - 3)/6 = 5/6.</p>
+<p>Substituting into the tail sum gives:</p>
+<p class="equation-line">E[<i>N</i>] = 1 + sum over <i>n</i> &gt;= 1 of (2<sup><i>n</i></sup> - <i>n</i>)/<i>n</i>!.</p>
+<p>Using the exponential-series identities sum of 2<sup><i>n</i></sup>/<i>n</i>! = <i>e</i><sup>2</sup> - 1 and sum of <i>n</i>/<i>n</i>! = <i>e</i>, where both sums start at <i>n</i> = 1, we obtain:</p>
+<p class="equation-line">E[<i>N</i>] = 1 + (<i>e</i><sup>2</sup> - 1) - <i>e</i> = <i>e</i><sup>2</sup> - <i>e</i>.</p>
+<p>Therefore, the expected number of samples is <strong><i>e</i><sup>2</sup> - <i>e</i> &approx; 4.6708</strong>.</p>
+</div>
+</details>
 </div>
 </body>
 </html>

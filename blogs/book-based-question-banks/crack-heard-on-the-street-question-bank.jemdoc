@@ -1,94 +1,893 @@
 # jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}, addjs{../blog-sidebar}
 = Heard on the Street
-[../../blog.html ← Blogs] \M /更新于 2026-07-20/
+[../../blog.html ← Blogs]
 
-本页依据 Timothy Crack 的 [https://github.com/manavkapadnis/ALL-ML-DS-cheatsheets/blob/master/Timothy%20Falcon%20Crack%20-%20Heard%20on%20the%20Street%2C%20Quantitative%20Questions%20from%20Wall%20Street%20Job%20Interviews%20%282014%2C%20Timothy%20Crack%29%20-%20libgen.lc.pdf /Heard on the Street/] 选取 20 个代表性题型，并沿用原书四个技术章节的结构重新命题。中文与英文题干并列，Solution 使用英文。
+本页是来自 Timothy Falcon Crack 的 [https://github.com/manavkapadnis/ALL-ML-DS-cheatsheets/blob/master/Timothy%20Falcon%20Crack%20-%20Heard%20on%20the%20Street%2C%20Quantitative%20Questions%20from%20Wall%20Street%20Job%20Interviews%20%282014%2C%20Timothy%20Crack%29%20-%20libgen.lc.pdf /Heard on the Street/] 一书的题目选集，请勿用于传播。
 
 ~~~
 {}{raw}
 <div class="page-toc" role="navigation" aria-labelledby="crack-toc-title">
-<div class="page-toc-title" id="crack-toc-title">目录</div>
+<div class="page-toc-title" id="crack-toc-title">题目目录</div>
 <ul>
-<li><a href="#crack-pure-quant">A. Pure Quantitative &amp; Logic</a></li>
+<li><a href="#crack-pure-quant">A. Purely Quantitative &amp; Logic</a></li>
 <li><a href="#crack-derivatives">B. Derivatives</a></li>
-<li><a href="#crack-financial-economics">C. Financial Economics</a></li>
+<li><a href="#crack-financial-economics">C. Other Financial Economics</a></li>
 <li><a href="#crack-statistics">D. Statistics &amp; Probability</a></li>
 </ul>
 </div>
 <div class="section-anchor" id="crack-pure-quant" aria-hidden="true"></div>
 ~~~
 
-== A. Pure Quantitative & Logic
+== A. Purely Quantitative & Logic
 
-=== C1 \[Hard\] Three Thousand Apples \/ 三千个苹果
-*中文：* A、B 两城相距 1000 英里。A 城有 3000 个苹果，卡车最多载 1000 个；只要车上有苹果，每行驶 1 英里司机就吃掉 1 个。允许中途卸货和往返搬运。最多能把多少苹果送到 B？
-
-*English:* Cities A and B are 1,000 miles apart. You have 3,000 apples, a truck capacity of 1,000, and the driver consumes one apple per mile whenever carrying apples. Intermediate caches and return trips are allowed. What is the maximum delivery?
-
+=== C001 · Q1.1 Alcohol and water / 酒精与水 （Page 9）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两只杯子最初分别装有等体积 $V$ 的纯酒精和纯水。从水杯取出 $Q$ 倒入酒精杯并混匀，再从混合液取出 $Q$ 倒回水杯，使两杯恢复等体积。最终酒精杯中的水浓度与水杯中的酒精浓度有什么关系？</p>
+<p><strong>English:</strong> Two vessels initially contain equal volume $V$ of pure alcohol and pure water. Transfer $Q$ of water to the alcohol, mix, and transfer $Q$ of the mixture back. Compare the final water concentration in the alcohol vessel with the alcohol concentration in the water vessel.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>While more than 2,000 apples remain, three forward loads and two return trips are needed per mile, costing five apples per mile. Move 200 miles to reduce 3,000 to 2,000. With two loads, the cost is three apples per mile; move another $1000/3$ miles to reduce 2,000 to 1,000. The last load then travels the remaining $1000-200-1000/3=1400/3$ miles. The continuous idealization delivers</p><p class="equation-line">$$1000-\frac{1400}{3}=\frac{1600}{3}=533\frac13.$$</p><p>If apples and mile-by-mile consumption must be integral, the deliverable whole-apple count is 533.</p>
+<p>They are equal. After mixing, the alcohol vessel contains a water fraction $Q/(V+Q)$. The amount of alcohol returned is $Q\,V/(V+Q)$, so its concentration in the final volume $V$ of the water vessel is also $Q/(V+Q)$. Equivalently, because the vessels again have equal volume, every unit of water missing from the water vessel must be matched by the same amount of alcohol now present there.</p>
 </div></details>
 ~~~
 
-=== C2 \[Core\] One Hundred Light Bulbs \/ 一百盏灯
-*中文：* 100 盏灯初始关闭。第 $k$ 个人切换所有编号为 $k$ 的倍数的灯。100 人依次操作后，哪些灯亮着？
-
-*English:* One hundred bulbs start off. Person $k$ toggles every bulb whose number is a multiple of $k$. Which bulbs remain on after all 100 people act?
-
+=== C002 · Q1.2 Two bells / 两口钟 （Page 9）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两口钟分别每分钟响 5 次和 4 次，同时开始后，下一次同时响要等多久？</p>
+<p><strong>English:</strong> One bell rings five times per minute and another four times per minute. If they ring together now, when do they next ring together?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Bulb $n$ is toggled once for each divisor of $n$. Divisors pair as $d$ and $n/d$, except when $n$ is a perfect square. Thus exactly the squares have an odd number of divisors. The illuminated bulbs are</p><p class="equation-line">$$1,4,9,16,25,36,49,64,81,100.$$</p>
+<p>The periods are $12$ and $15$ seconds. Their least common multiple is $60$ seconds, so they next coincide after one minute.</p>
 </div></details>
 ~~~
 
-=== C3 \[Core\] The Race to Fifty \/ 报数到 50
-*中文：* 两人轮流报递增整数。首位玩家可报 1 至 10；之后每个数必须比前一个大 1 至 10。先报出 50 者胜。你是否应先手？策略是什么？
-
-*English:* Players alternately call increasing integers. The first call is from 1 to 10; each later call must exceed the previous by 1 through 10. The first to call 50 wins. Should you move first, and what is the strategy?
-
+=== C003 · Q1.3 Sum from one to one hundred / 从一加到一百 （Page 9）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 计算 $1+2+\cdots+100$；并给出 $1+2+\cdots+n$ 的一般公式。</p>
+<p><strong>English:</strong> Find $1+2+\cdots+100$, and give the corresponding formula through an arbitrary positive integer $n$.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Move first and call <strong>6</strong>. Thereafter, if the opponent increases by $d\in\{1,\ldots,10\}$, increase by $11-d$. Your calls are $6,17,28,39,50$. Each pair of increments totals 11, so the opponent cannot avoid handing you the next target.</p>
+<p>Pair the first and last terms. Every pair sums to $n+1$, which gives</p>
+<p class="equation-line">$$\sum_{k=1}^{n}k=\frac{n(n+1)}2.$$</p>
+<p>For $n=100$, the sum is $50\cdot101=5050$.</p>
 </div></details>
 ~~~
 
-=== C4 \[Core\] Ants on a Ruler \/ 尺子上的蚂蚁
-*中文：* 许多蚂蚁随机落在 100 厘米长的尺子上，以 1 厘米每秒向左或向右直行；迎面相撞时两只都立即掉头。多久后可以保证全部离开尺子？
-
-*English:* Many ants occupy a 100-cm ruler, each moving left or right at 1 cm/s. When two collide head-on, both instantly reverse. How long guarantees that all ants have left?
-
+=== C004 · Q1.4 Broken clock face / 摔碎的钟面 （Page 9）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一个传统钟面摔成三块，每块上的数字之和相同。三块分别应包含哪些数字？</p>
+<p><strong>English:</strong> An analogue clock face breaks into three pieces whose displayed numbers have equal sums. Describe the three pieces.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>For indistinguishable ants, a collision followed by reversal is equivalent to the ants passing through each other and exchanging identities. Every trajectory is therefore a straight path to an endpoint, of length at most 100 cm. The sharp guarantee is <strong>100 seconds</strong>.</p>
+<p>The numbers total $78$, so each piece must total $26$. One valid geometric partition consists of the arcs $\{5,6,7,8\}$ and $\{11,12,1,2\}$, plus a band across the center containing $\{9,10,3,4\}$. Each set sums to $26$.</p>
 </div></details>
 ~~~
 
-=== C5 \[Core\] Eight Balls and a Balance \/ 八球找重球
-*中文：* 8 个外观相同的球中有 1 个较重。只有一架无砝码天平。如何在两次称量内找出重球？
-
-*English:* One of eight identical-looking balls is heavier. Using a balance scale without weights, identify it in at most two weighings.
-
+=== C005 · Q1.5 Twelve marbles / 十二颗弹珠 （Page 10）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 12 颗外观相同的弹珠中有一颗重量不同，但不知偏重还是偏轻。只用三次天平称量，找出它并判断轻重。</p>
+<p><strong>English:</strong> Among twelve apparently identical marbles, one is either heavier or lighter. Identify it and determine the direction of the difference using at most three balance-scale weighings.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Weigh three balls against three. If they balance, the heavy ball is among the remaining two; weigh them. If they do not balance, it is among the three on the heavier side; weigh two of those against each other. A tilt identifies the heavier one, while balance identifies the third.</p>
+<p>Three weighings are information-theoretically sufficient because $3^3=27$ outcomes can distinguish the $24$ heavy/light states. A concrete decision tree starts by weighing $1,2,3,4$ against $5,6,7,8$.</p>
+<p>If they balance, the odd marble is among $9$–$12$ and $1$–$8$ are known normal: weigh $9,10,11$ against $1,2,3$, then use the final weighing to isolate the odd member or test $12$. If the first weighing tips, only a heavy marble on the lower side or a light marble on the upper side is possible. Reweigh a carefully exchanged subset, for example $1,2,5$ against $3,6,9$ when $1$–$4$ were heavy, and use whether the direction persists, reverses, or balances to reduce the candidates to at most three; the last weighing identifies the marble and sign.</p>
 </div></details>
 ~~~
 
-=== C6 \[Core\] Two Uneven Fuses \/ 两根不均匀导火索
-*中文：* 两根导火索各自从一端烧完都恰需 60 分钟，但燃烧速度沿长度不均匀。只有火柴，没有钟。如何量出 45 分钟？
-
-*English:* Each of two nonuniform fuses takes exactly 60 minutes to burn from one end. With matches but no clock, how can you measure 45 minutes?
-
+=== C006 · Q1.6 Inscribed circle / 正方形内切圆 （Page 10）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 圆内切于正方形；在正方形一个角落恰好能放入一个 $5\times10$ 的矩形，矩形的内角顶点接触圆。求正方形边长。</p>
+<p><strong>English:</strong> A circle is inscribed in a square. A $5\times10$ rectangle fits in one corner with its inner vertex touching the circle. Find the square's side length.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>At time zero, light both ends of fuse A and one end of fuse B. Fuse A finishes after 30 minutes. At that instant light the other end of B. The remaining portion of B, which would have taken 30 minutes from one end, now burns from both ends in 15 minutes. Total elapsed time: <strong>45 minutes</strong>.</p>
+<p>Let the circle radius be $R$. The center, the corner, and the rectangle's inner vertex give</p>
+<p class="equation-line">$$R^2=(R-5)^2+(R-10)^2,$$</p>
+<p>so $R^2-30R+125=0$ and $R=5$ or $25$. Only $R=25$ fits the geometry. The square side is therefore $2R=50$.</p>
+</div></details>
+~~~
+
+=== C007 · Q1.7 Bug in a cubic room / 立方体房间里的虫子 （Page 10）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一只虫子位于立方体房间的一角，只能沿表面行走。怎样以最短路径到达空间对角的另一角？若边长为 1，路径多长？</p>
+<p><strong>English:</strong> A bug at one corner of a cubic room must walk along the surfaces to the opposite corner. Describe a shortest path and its length for a unit cube.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Unfold two adjacent faces into a $2\times1$ rectangle. The shortest surface route is the straight diagonal of that rectangle, of length $\sqrt{2^2+1^2}=\sqrt5$. On the cube it crosses the shared edge halfway along it. Any equivalent unfolding gives another shortest route.</p>
+</div></details>
+~~~
+
+=== C008 · Q1.8 The boy-stopping rule / 生到男孩为止 （Page 11）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 许多家庭每年生一个孩子，直到第一个男孩出生便停止；每个孩子男女概率各半。第 $t$ 年末所有已出生孩子中男孩比例的期望怎样变化？</p>
+<p><strong>English:</strong> Every family has one child per year until its first boy and then stops. Birth sexes are independent and equiprobable. How does the expected fraction of boys among all children evolve over time?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For every birth in every year, the unconditional probability of a boy is $1/2$; the stopping rule changes family sizes, not the sex probability of any birth. With many families the observed proportion is therefore close to $50\%$ in every year, and its expectation is $1/2$.</p>
+</div></details>
+~~~
+
+=== C009 · Q1.9 Outer layer of a cube / 立方体的外层 （Page 11）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一个 $10\times10\times10$ 大立方体由单位小立方体组成。最外层全部脱落后，共有多少个小立方体落下？</p>
+<p><strong>English:</strong> A $10\times10\times10$ cube consists of unit cubes. How many unit cubes belong to the outer layer?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Subtract the untouched $8\times8\times8$ interior:</p>
+<p class="equation-line">$$10^3-8^3=1000-512=488.$$</p>
+</div></details>
+~~~
+
+=== C010 · Q1.10 Three thousand apples / 三千个苹果 （Page 11）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两城相距 1000 英里，起点有 3000 个苹果，卡车最多载 1000 个；只要载有苹果，每行驶一英里司机就吃掉一个。允许沿途缓存和往返，最多能送到多少？</p>
+<p><strong>English:</strong> Move 3,000 apples over 1,000 miles using a truck of capacity 1,000. Whenever it carries apples, one apple is consumed per mile. Caching and return trips are allowed. Maximize delivery.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>While more than 2,000 remain, each net mile needs three loaded forward trips and two loaded returns, costing five apples. Travel $200$ miles to reduce the stock to $2,000$. With two loads, each net mile costs three apples, so travel another $1000/3$ miles to reduce it to $1,000$. The final load covers the remaining $1400/3$ miles, leaving</p>
+<p class="equation-line">$$1000-\frac{1400}{3}=\frac{1600}{3}=533\frac13.$$</p>
+<p>With indivisible apples, at most 533 whole apples arrive.</p>
+</div></details>
+~~~
+
+=== C011 · Q1.11 Clock hands at 3:15 / 三点一刻的钟表夹角 （Page 11）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 3:15 时，时针与分针的夹角是多少？</p>
+<p><strong>English:</strong> What is the angle between the hour and minute hands at 3:15?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The minute hand is at $90^\circ$. The hour hand has advanced one quarter of the $30^\circ$ interval from 3 to 4, so it is at $97.5^\circ$. The smaller angle is $7.5^\circ$.</p>
+</div></details>
+~~~
+
+=== C012 · Q1.12 First overlap after 3 p.m. / 三点后的首次重合 （Page 11）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 下午 3 点以后，时针和分针第一次完全重合是什么时候？</p>
+<p><strong>English:</strong> When is the first time after 3:00 p.m. that the clock hands coincide?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>At 3:00 the minute hand is $90^\circ$ behind. Its relative speed is $6-0.5=5.5^\circ$ per minute, so the catch-up time is $90/5.5=180/11$ minutes. The overlap occurs at about 3:16:21.8.</p>
+</div></details>
+~~~
+
+=== C013 · Q1.13 Bulb number sixty-four / 第六十四盏灯 （Page 11）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 100 盏灯初始关闭，第 $k$ 人切换所有编号为 $k$ 的倍数的灯。100 人操作后，第 64 盏灯亮还是灭？</p>
+<p><strong>English:</strong> One hundred bulbs start off; person $k$ toggles every multiple of $k$. Is bulb 64 on or off at the end?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A bulb is toggled once per positive divisor of its number. Divisors pair except for a perfect square, so only squares receive an odd number of toggles. Since $64=8^2$, bulb 64 is on.</p>
+</div></details>
+~~~
+
+=== C014 · Q1.14 All illuminated bulbs / 所有亮着的灯 （Page 12）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 延续上一题，最终共有多少盏灯亮着，分别是哪几盏？</p>
+<p><strong>English:</strong> In the same 100-bulb process, how many bulbs remain on and which are they?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Exactly the perfect squares through 100 remain on:</p>
+<p class="equation-line">$$1,4,9,16,25,36,49,64,81,100.$$</p>
+<p>There are ten.</p>
+</div></details>
+~~~
+
+=== C015 · Q1.15 Socks in the dark / 黑暗中拿袜子 （Page 12）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 抽屉中有 8 只红袜和 11 只蓝袜。关灯后至少拿出多少只，才能保证有一双同色袜？</p>
+<p><strong>English:</strong> A dark drawer contains eight red and eleven blue socks. How many must be removed to guarantee a same-color pair?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Three. The first two could be different colors, but the third must match one of them by the pigeonhole principle.</p>
+</div></details>
+~~~
+
+=== C016 · Q1.16 Race to fifty / 报数到五十 （Page 12）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两人轮流报递增整数。首个数字在 1 至 10 之间，此后每次比前一个大 1 至 10；先报到 50 者胜。是否先手，策略是什么？</p>
+<p><strong>English:</strong> Players alternately increase the current integer by 1 through 10; the first call is 1 through 10 and the first to say 50 wins. Should you start, and how?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Start with 6. Thereafter, if the opponent adds $d$, add $11-d$. Your successive targets are $6,17,28,39,50$, so every pair of increments totals 11 and you force the final target.</p>
+</div></details>
+~~~
+
+=== C017 · Q1.17 Safe combinations / 保险箱组合 （Page 12）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 保险箱有三个非零组合数，转盘数字为 0 至 40。每次从零开始，依次按规定方向拨到第一、第二、第三个数；拨对第三个数时门立即弹开。完全不知道组合时，最坏需要试多少组完整组合？</p>
+<p><strong>English:</strong> A safe has three nonzero combination numbers chosen from 0 through 40. Starting from zero, the dial follows fixed alternating directions and the door opens immediately upon reaching the correct third number. What is the maximum number of trials needed without prior information?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>There are $40^2=1600$ ordered possibilities for the first two numbers. For each pair, after dialing it, continue sweeping the final direction through all 40 nonzero positions; if the first two were correct, the door opens when the third is reached. Thus 1600 trials suffice in the exact mathematical model. A smaller figure requires an additional physical-tolerance assumption that the question does not specify.</p>
+</div></details>
+~~~
+
+=== C018 · Q1.18 Ninety coins / 九十枚硬币 （Page 13）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 90 枚硬币中有一枚重量不同，可能偏轻也可能偏重。每次使用天平收费 100 美元。怎样最小化最坏情况下的称量费用，并找出异常硬币及其轻重？如果不要求判断轻重，结论是否改变？</p>
+<p><strong>English:</strong> One of 90 coins is either heavy or light. Each balance-scale weighing costs USD 100. Minimize worst-case cost while identifying the coin and its sign. What changes if only its identity is required?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>There are $180$ signed states. Four weighings have only $3^4=81$ outcomes, so at least five are necessary; five are sufficient because $3^5=243$.</p>
+<p>A systematic construction assigns every coin a distinct balanced-ternary code $c_i\in\{-1,0,1\}^5$, with no two codes equal up to sign and with each coordinate balanced between the two pans. In weighing $j$, place coin $i$ left, off, or right according to $c_{ij}=1,0,-1$. The five-result vector equals $c_i$ for a heavy coin and $-c_i$ for a light coin. Hence the worst-case cost is USD 500. Merely dropping the heavy/light label still cannot fit 90 identities into $3^4=81$ outcomes, so five weighings remain necessary.</p>
+</div></details>
+~~~
+
+=== C019 · Q1.19 Liouville's theorem / 刘维尔定理 （Page 13）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 证明：若复函数 $f$ 在整个复平面上解析且有界，则 $f$ 必为常数。</p>
+<p><strong>English:</strong> Prove that every bounded entire complex-valued function is constant.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Suppose $|f(z)|\le M$. Cauchy's estimate on a circle of radius $R$ centered at any $z_0$ gives</p>
+<p class="equation-line">$$|f'(z_0)|\le \frac{M}{R}.$$</p>
+<p>Letting $R\to\infty$ yields $f'(z_0)=0$. Since $z_0$ was arbitrary, $f'\equiv0$ and $f$ is constant.</p>
+</div></details>
+~~~
+
+=== C020 · Q1.20 Ants on a ruler / 尺子上的蚂蚁 （Page 13）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 许多蚂蚁随机位于 100 厘米长的尺子上，以每秒 1 厘米向左或向右走；相撞时同时掉头。多久后能保证全部离开？</p>
+<p><strong>English:</strong> Ants move left or right at 1 cm/s on a 100-cm ruler and reverse direction on head-on collision. How long guarantees that all ants have left?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For indistinguishable ants, a collision followed by reversal is equivalent to the two ants passing through one another and exchanging identities. Every path is therefore a straight trip to an endpoint and lasts at most 100 seconds. This bound is attainable arbitrarily closely, so 100 seconds is the guarantee.</p>
+</div></details>
+~~~
+
+=== C021 · Q1.21 Eight lily pads / 八片睡莲叶 （Page 14）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一片睡莲叶每天面积翻倍，30 天覆盖池塘。如果起初有 8 片相同的睡莲叶，需要多少天？为什么把原题中的 30 攟成 3000 会不合理？</p>
+<p><strong>English:</strong> One lily pad doubles daily and covers a pond in 30 days. How long would eight identical initial pads take? Why would replacing 30 by 3,000 be physically dubious?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Eight pads equal one pad after three doublings, so they need $30-3=27$ days. A visible pad doubling for 3,000 days would exceed astronomical scales long before then; the mathematical growth rule is incompatible with a finite physical pond over that horizon.</p>
+</div></details>
+~~~
+
+=== C022 · Q1.22 Twenty-seven lily pads / 二十七片睡莲叶 （Page 14）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 池塘面积 6000 平方英尺，初始有 27 片、每片 1 平方英尺的睡莲叶，每天面积翻倍。第几天覆盖池塘？</p>
+<p><strong>English:</strong> A 6,000-square-foot pond starts with twenty-seven one-square-foot lily pads, each doubling daily. When is it covered?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>We need the least integer $n$ satisfying $27\cdot2^n\ge6000$. Since $27\cdot2^7=3456$ and $27\cdot2^8=6912$, the answer is day 8.</p>
+</div></details>
+~~~
+
+=== C023 · Q1.23 Fractions in decimal form / 分数化小数 （Page 14）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 不用计算器，写出 $13/16$ 与 $9/16$ 的小数形式。</p>
+<p><strong>English:</strong> Give the decimal equivalents of $13/16$ and $9/16$ without a calculator.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Since $1/16=0.0625$,</p>
+<p class="equation-line">$$\frac{13}{16}=0.8125,\qquad \frac9{16}=0.5625.$$</p>
+</div></details>
+~~~
+
+=== C024 · Q1.24 Snail on a pole / 蜗牛爬杆 （Page 14）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 蜗牛爬一根 10 英尺高的杆，每天向上 3 英尺，夜里下滑 1 英尺。它什么时候到达顶端？</p>
+<p><strong>English:</strong> A snail climbs 3 feet by day and slips 1 foot each night on a 10-foot pole. When does it reach the top?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>After four nights it starts day five at 8 feet. It then needs only 2 of its 3 daytime feet, so it reaches the top two-thirds of the way through day five and does not slide back.</p>
+</div></details>
+~~~
+
+=== C025 · Q1.25 Three light switches / 三个灯开关 （Page 14）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 门外三个开关分别控制密闭房间里的三盏白炽灯。只能在门外操作开关一次，然后进房一次，怎样确定对应关系？</p>
+<p><strong>English:</strong> Three outside switches control three incandescent bulbs in a closed room. You may manipulate the switches and then enter once. Identify every switch-to-bulb connection.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Turn switch 1 on for several minutes, turn it off, and turn switch 2 on. Enter: the lit bulb belongs to switch 2, the unlit but warm bulb to switch 1, and the unlit cold bulb to switch 3.</p>
+</div></details>
+~~~
+
+=== C026 · Q1.26 Three hats and a blind man / 三顶帽子与盲人 （Page 14）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 柜中有 3 顶蓝帽、2 顶红帽。三人各戴一顶；前两人依次看见另外两人后都说无法判断自己的颜色，第三人是盲人，却说自己知道。第三人的帽子是什么颜色？</p>
+<p><strong>English:</strong> Three men draw hats from three blue and two red hats. The first two sighted men, after observing the others in sequence, each say they cannot determine their own color. The third man is blind but can then determine his. What color is it?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Blue. The first man would know he was blue if he saw two red hats, so the second and third are not both red. If the third were red, the second would then infer that his own hat must be blue; because he remains uncertain, the third cannot be red. The blind third man can therefore conclude that his hat is blue.</p>
+</div></details>
+~~~
+
+=== C027 · Q1.27 Remainders one short / 差一的余数 （Page 14）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求最小正整数 $N$：除以 2 余 1、除以 3 余 2，依此类推，直到除以 10 余 9。</p>
+<p><strong>English:</strong> Find the smallest positive integer $N$ whose remainder on division by $k$ is $k-1$ for every $k=2,3,\ldots,10$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The conditions say $N+1$ is divisible by every integer from 2 through 10. Hence</p>
+<p class="equation-line">$$N=\operatorname{lcm}(2,3,\ldots,10)-1=2520-1=2519.$$</p>
+</div></details>
+~~~
+
+=== C028 · Q1.28 Motorcycles and a fly / 摩托车与苍蝇 （Page 15）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两辆摩托车相距 25 英里，以 20 和 30 英里每小时相向行驶；一只苍蝇以 40 英里每小时在两车间往返，直至相撞。苍蝇飞了多远？</p>
+<p><strong>English:</strong> Two motorcycles 25 miles apart approach at 20 and 30 mph. A fly travels back and forth between them at 40 mph until the motorcycles meet. How far does it fly?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The motorcycles close at 50 mph, so they meet after $25/50=1/2$ hour. The fly therefore covers $40\cdot(1/2)=20$ miles; no infinite-series calculation is needed.</p>
+</div></details>
+~~~
+
+=== C029 · Q1.29 Heron's formula / 海伦公式 （Page 15）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 证明边长为 $a,b,c$ 的三角形面积满足 $A=\sqrt{s(s-a)(s-b)(s-c)}$，其中 $s=(a+b+c)/2$。</p>
+<p><strong>English:</strong> Prove Heron's formula $A=\sqrt{s(s-a)(s-b)(s-c)}$ for a triangle with sides $a,b,c$ and semiperimeter $s$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $\gamma$ be the angle between sides $a$ and $b$. Then $A=ab\sin\gamma/2$ and the cosine rule gives $\cos\gamma=(a^2+b^2-c^2)/(2ab)$. Therefore</p>
+<p class="equation-line">$$16A^2=4a^2b^2-(a^2+b^2-c^2)^2=(a+b+c)(-a+b+c)(a-b+c)(a+b-c).$$</p>
+<p>Replacing the four factors by $2s,2(s-a),2(s-b),2(s-c)$ proves the result.</p>
+</div></details>
+~~~
+
+=== C030 · Q1.30 Nine constrained digits / 九个受约束数字 （Page 15）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $A$ 至 $I$ 是 1 至 9 的某个排列，并满足 $A+B+C+D=20$、$B+C+D+E+F=20$、$D+E+F+G+H=20$、$F+G+H+I=20$。能否唯一确定每个字母？</p>
+<p><strong>English:</strong> The symbols $A$ through $I$ permute the digits 1 through 9 and satisfy four consecutive sum constraints, each equal to 20. Are their values uniquely determined?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>No. Summing all digits gives 45, while the first and last four each sum to 20, so $E=5$. Subtracting equations gives $A=F+5$, $I=D+5$, and $B+C=G+H$. These conditions leave 96 permutations rather than one. For example, $(A,B,C,D,E,F,G,H,I)=(6,8,4,2,5,1,3,9,7)$ is valid, as are many others.</p>
+</div></details>
+~~~
+
+=== C031 · Q1.31 Random hotel keys / 随机分发房间钥匙 （Page 15）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $N$ 位客人的房间钥匙被随机重新分发。至少一人拿回自己原房间钥匙的概率是多少？$N$ 很大时趋于多少？</p>
+<p><strong>English:</strong> A random permutation assigns $N$ hotel-room keys to $N$ guests. What is the probability of at least one fixed point, and its large-$N$ limit?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Inclusion-exclusion gives the probability of no fixed point as</p>
+<p class="equation-line">$$\frac{D_N}{N!}=\sum_{k=0}^{N}\frac{(-1)^k}{k!}.$$</p>
+<p>Hence the requested probability is $1-D_N/N!$, tending to $1-e^{-1}\approx0.63212$.</p>
+</div></details>
+~~~
+
+=== C032 · Q1.32 Rock in a boat / 船里的石头 （Page 15）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 小船漂在泳池中，船里有一块体积很小但很重、密度大于水的石头。把石头扔进水里后，水位如何变化？</p>
+<p><strong>English:</strong> A dense rock sits in a floating boat. What happens to the pool level after the rock is thrown into the water?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The level falls. In the boat, the rock makes the boat displace water whose weight equals the rock's weight, volume $m/\rho_w$. Submerged, it displaces only its own volume $m/\rho_r$. Since $\rho_r>\rho_w$, the second volume is smaller.</p>
+</div></details>
+~~~
+
+=== C033 · Q1.33 Cheating husbands / 不忠丈夫推理 （Page 16）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 每位妻子都知道其他所有丈夫是否不忠，却不知道自己的丈夫；陌生人公开宣布“至少有一名不忠丈夫”。若妻子推断出真相，就在次日上午 10 点赶丈夫出门。第 10 天上午第一次有人被赶出，共有多少人？</p>
+<p><strong>English:</strong> Each wife knows which other husbands cheat but not whether her own does. After a public announcement that at least one cheats, the first expulsions occur on day 10. How many cheating husbands are expelled?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Ten. With one cheater, his wife sees none and acts on day 1. Inductively, if there are $n$ cheaters, each affected wife sees $n-1$ and waits to see whether they are expelled on day $n-1$. When that does not happen, all infer that their own husbands also cheat and act on day $n$.</p>
+</div></details>
+~~~
+
+=== C034 · Q1.34 Tower of Hanoi with sixty-four rings / 六十四环汉诺塔 （Page 16）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 三根柱子上，一根依次叠有 64 个由轻到重的环。每次移动一个环，且重环不能放在轻环上。把整塔移到另一根柱子最少几步？</p>
+<p><strong>English:</strong> Solve the Tower of Hanoi problem with 64 ordered rings. What is the minimum number of legal moves?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>If $T_n$ is the minimum, moving the largest ring requires moving $n-1$ rings away, moving the largest once, and moving the $n-1$ back: $T_n=2T_{n-1}+1$, $T_1=1$. Thus</p>
+<p class="equation-line">$$T_{64}=2^{64}-1=18{,}446{,}744{,}073{,}709{,}551{,}615.$$</p>
+</div></details>
+~~~
+
+=== C035 · Q1.35 A second-order ODE / 二阶常微分方程 （Page 16）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求微分方程 $u''+u'+u=1$ 的通解。</p>
+<p><strong>English:</strong> Solve the ordinary differential equation $u''+u'+u=1$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The characteristic roots of the homogeneous equation are $(-1\pm i\sqrt3)/2$, and $u_p=1$ is a particular solution. Hence</p>
+<p class="equation-line">$$u(x)=1+e^{-x/2}\left[A\cos\!\left(\frac{\sqrt3x}{2}\right)+B\sin\!\left(\frac{\sqrt3x}{2}\right)\right].$$</p>
+<p>Two initial conditions would be needed to determine $A$ and $B$.</p>
+</div></details>
+~~~
+
+=== C036 · Q1.36 Minimum-variance combination / 最小方差组合 （Page 16）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $X,Y$ 的标准差为 $\sigma_X,\sigma_Y$，相关系数为 $\rho$。在 $a+b=1$ 且 $0\le a,b\le1$ 下，怎样选择 $a,b$ 使 $aX+bY$ 的方差最小？</p>
+<p><strong>English:</strong> Choose nonnegative weights $a+b=1$ to minimize $\operatorname{Var}(aX+bY)$ given standard deviations $\sigma_X,\sigma_Y$ and correlation $\rho$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Substitute $b=1-a$ and differentiate the quadratic variance. The unconstrained minimizer is</p>
+<p class="equation-line">$$a^*=\frac{\sigma_Y^2-\rho\sigma_X\sigma_Y}{\sigma_X^2+\sigma_Y^2-2\rho\sigma_X\sigma_Y},\qquad b^*=1-a^*.$$</p>
+<p>The denominator is nonnegative. Under the no-short-sale constraint, clip $a^*$ to $[0,1]$ and set $b=1-a$.</p>
+</div></details>
+~~~
+
+=== C037 · Q1.37 Lighthouse beam / 灯塔光束 （Page 17）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 灯塔离直线海岸 $L=3$ 英里，光束每分钟转一圈。光点沿海岸的速度是多少？当光点距最近海岸点 $3L$ 时速度是多少？</p>
+<p><strong>English:</strong> A lighthouse lies $L=3$ miles from a straight coast and rotates once per minute. Find the speed of its spot along the coast, especially when the spot is $3L$ from the nearest coastal point.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>With $x=L\tan\theta$ and angular speed $\omega=2\pi$ radians per minute,</p>
+<p class="equation-line">$$\frac{dx}{dt}=L\omega\sec^2\theta=\frac{\omega(L^2+x^2)}{L}.$$</p>
+<p>The speed is not constant and diverges as the beam approaches parallel to the coast. At $x=3L$, it is $10L\omega=60\pi$ miles per minute, or $\pi$ miles per second.</p>
+</div></details>
+~~~
+
+=== C038 · Q1.38 Cubes on a chessboard / 棋盘上的立方体 （Page 17）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在 $20\times20$ 棋盘的西北角放 1 个方块，每向东或向南一格，堆高增加 1。所有格子的方块总数是多少？</p>
+<p><strong>English:</strong> On a $20\times20$ board, cell $(i,j)$ holds $i+j-1$ cubes. Find the total number of cubes.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For an $n\times n$ board,</p>
+<p class="equation-line">$$\sum_{i=1}^n\sum_{j=1}^n(i+j-1)=n^3.$$</p>
+<p>With $n=20$, the total is $8000$.</p>
+</div></details>
+~~~
+
+=== C039 · Q1.39 Escape from the dog / 逃离猎犬 （Page 17）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 你位于半径 $R$ 的圆形场地中心，速度为 $v$；猎犬只能沿边界跑，速度为 $4v$。怎样安全到达边界并逃出？</p>
+<p><strong>English:</strong> Starting at the center of a circular field of radius $R$, you run at speed $v$ while a dog runs around the boundary at $4v$. Give an escape strategy.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>First move to a circle of radius just below $R/4$. There your angular speed exceeds the dog's, so circle until the dog is diametrically opposite. Then sprint radially to the boundary. If your radius is $R/4-\varepsilon$, your remaining distance is $3R/4+\varepsilon$, while the dog must cover $\pi R$ at four times your speed. Escape is possible whenever $\varepsilon<(\pi-3)R/4$.</p>
+</div></details>
+~~~
+
+=== C040 · Q1.40 Gaussian integral / 高斯积分 （Page 17）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 证明 $\int_{-\infty}^{\infty}e^{-x^2}\,dx=\sqrt\pi$。</p>
+<p><strong>English:</strong> Prove that $\int_{-\infty}^{\infty}e^{-x^2}\,dx=\sqrt\pi$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $I$ denote the integral. Squaring and changing to polar coordinates gives</p>
+<p class="equation-line">$$I^2=\iint_{\mathbb R^2}e^{-(x^2+y^2)}\,dx\,dy=\int_0^{2\pi}\!\int_0^\infty e^{-r^2}r\,dr\,d\theta=2\pi\cdot\frac12=\pi.$$</p>
+<p>Since $I>0$, $I=\sqrt\pi$.</p>
+</div></details>
+~~~
+
+=== C041 · Q1.41 Integral of secant / 正割函数积分 （Page 17）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 计算 $\int\sec\theta\,d\theta$。</p>
+<p><strong>English:</strong> Evaluate $\int\sec\theta\,d\theta$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Multiply numerator and denominator by $\sec\theta+\tan\theta$:</p>
+<p class="equation-line">$$\int\sec\theta\,d\theta=\int\frac{\sec^2\theta+\sec\theta\tan\theta}{\sec\theta+\tan\theta}\,d\theta=\ln|\sec\theta+\tan\theta|+C.$$</p>
+</div></details>
+~~~
+
+=== C042 · Q1.42 An infinite series / 一个无穷级数 （Page 17）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 判断级数 $\sum_{n=1}^{\infty}e^{-\sqrt n}$ 是否收敛。</p>
+<p><strong>English:</strong> Does $\sum_{n=1}^{\infty}e^{-\sqrt n}$ converge?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Yes. The integral test applies, and with $u=\sqrt x$</p>
+<p class="equation-line">$$\int_1^\infty e^{-\sqrt x}\,dx=\int_1^\infty2u e^{-u}\,du<\infty.$$</p>
+<p>Therefore the positive series converges.</p>
+</div></details>
+~~~
+
+=== C043 · Q1.43 Ages with product thirty-six / 年龄乘积为三十六 （Page 18）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 三个孩子的年龄乘积为 36；知道年龄之和后仍不能唯一判断；最后得知“有一个年龄最大的孩子”。三个年龄是多少？</p>
+<p><strong>English:</strong> Three children's ages multiply to 36. Knowing their sum is still insufficient, but learning that there is a unique eldest child resolves the puzzle. Find the ages.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The factor triples have sums $21,16,14,13,13,11,10$. Only sum 13 is ambiguous, between $(1,6,6)$ and $(2,2,9)$. A unique eldest rules out $(1,6,6)$, so the ages are $2,2,9$.</p>
+</div></details>
+~~~
+
+=== C044 · Q1.44 Eight balls / 八颗球 （Page 18）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 八颗球中已知有一颗更重。怎样用天平找出它？</p>
+<p><strong>English:</strong> One of eight balls is known to be heavier. Find it with a balance scale.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Weigh three against three. If they balance, the heavy ball is among the two omitted; weigh them. Otherwise it is among the three on the heavy pan; weigh two of those, selecting the heavier one or the omitted third if they balance. Two weighings suffice.</p>
+</div></details>
+~~~
+
+=== C045 · Q1.45 Sums of squares and cubes / 平方和与立方和 （Page 18）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求 $\sum_{k=1}^n k^2$ 与 $\sum_{k=1}^n k^3$。</p>
+<p><strong>English:</strong> Give closed forms for $\sum_{k=1}^n k^2$ and $\sum_{k=1}^n k^3$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The standard identities are</p>
+<p class="equation-line">$$\sum_{k=1}^n k^2=\frac{n(n+1)(2n+1)}6,\qquad \sum_{k=1}^n k^3=\left[\frac{n(n+1)}2\right]^2.$$</p>
+<p>Both follow directly by induction.</p>
+</div></details>
+~~~
+
+=== C046 · Q1.46 Red-black card stopping / 红黑牌最优停止 （Page 18）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一副牌有 26 张红牌和 26 张黑牌，逐张不放回翻开；红牌收益 1 美元，黑牌损失 1 美元，可随时停止。最优策略及游戏价值是多少？四张牌（两红两黑）时又是多少？</p>
+<p><strong>English:</strong> A deck has 26 red and 26 black cards. Cards are drawn without replacement; red pays USD 1, black loses USD 1, and you may stop at any time. Find the optimal rule and value. Also consider the two-red, two-black version.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>There is no simple score-only threshold; solve by backward induction. If $s$ is current profit and $r,b$ cards remain, define</p>
+<p class="equation-line">$$V(r,b,s)=\max\left\{s,\frac{r}{r+b}V(r-1,b,s+1)+\frac{b}{r+b}V(r,b-1,s-1)\right\}.$$</p>
+<p>Use $V(0,b,s)=s$ and $V(r,0,s)=s+r$. Stop exactly when the first term is at least the continuation value. Dynamic programming gives $V(26,26,0)\approx2.624475549$ dollars. For two red and two black cards, the value is $2/3$ dollar.</p>
+</div></details>
+~~~
+
+=== C047 · Q1.47 The last coin / 最后一枚硬币 （Page 18）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两人在桌面上轮流放置大小相同、互不重叠的硬币，最后能放下一枚者获胜。桌面应具有什么形状特征？是否选择先手，怎样保证获胜，什么情况下策略失效？</p>
+<p><strong>English:</strong> Two players alternately place identical non-overlapping coins on a table, and the last player able to move wins. What geometric property should the table have, should you move first, what is the winning strategy, and when can it fail?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Use a centrally symmetric table—a circle, square, rectangle, or ellipse, for example—and move first at its center. After every opponent move, place a coin at the point obtained by a $180^\circ$ rotation about the center. The reflected location is legal: if it overlapped an earlier coin, the opponent's preceding coin would have overlapped that earlier coin's reflected partner. Moves therefore occur in pairs after the central move, so the first player makes the last move.</p>
+<p>The argument also needs the central opening to be available. On an annulus whose hole is wider than a coin, the first player cannot occupy the center; in that case the analogous pairing strategy starts by letting the opponent move first.</p>
+</div></details>
+~~~
+
+=== C048 · Q1.48 Mutilated chessboard / 残缺棋盘 （Page 18）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 从标准 $8\times8$ 国际象棋盘去掉两个对角格后，能否用 $31$ 块 $1\times2$ 多米诺骨牌完全覆盖？若去掉的是一黑一白两个格子呢？</p>
+<p><strong>English:</strong> Can an $8\times8$ chessboard with two opposite corner squares removed be tiled by 31 dominoes? What changes if one black and one white square are removed?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>No for opposite corners. They have the same color, so the mutilated board has 30 squares of one color and 32 of the other, whereas every domino covers one square of each color.</p>
+<p>If any one black and one white square are removed, a tiling does exist. One proof uses a Hamiltonian cycle through all 64 squares: deleting one square of each color breaks the cycle into two even-length paths, each of which can be paired into adjacent squares.</p>
+</div></details>
+~~~
+
+=== C049 · Q1.49 Prime squared minus one / 质数平方减一 （Page 19）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 证明：若质数 $p>3$，则 $p^2-1$ 能被 $24$ 整除。</p>
+<p><strong>English:</strong> Prove that $p^2-1$ is divisible by 24 for every prime $p>3$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Write $p^2-1=(p-1)(p+1)$. Since $p$ is odd, the two neighboring even integers include one multiple of four, so their product is divisible by eight. Among the three consecutive integers $p-1,p,p+1$, one is divisible by three; it cannot be $p$ because $p>3$ is prime. Thus the product is also divisible by three. Since $\gcd(8,3)=1$, it is divisible by $24$.</p>
+</div></details>
+~~~
+
+=== C050 · Q1.50 Buying an unknown-value company / 收购未知价值的公司 （Page 19）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一家公司对现任所有者的价值 $S$ 在 $[0,1]$ 上均匀分布；你只知道收购后其对你的价值会变为 $2S$。你报出价格 $B$，对方仅在 $S\le B$ 时出售。应如何报价？</p>
+<p><strong>English:</strong> A company is worth $S\sim U[0,1]$ to its current owner and $2S$ to you after acquisition. You bid $B$, and the owner accepts exactly when $S\le B$. What should you bid?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For $0\le B\le1$, the unconditional expected profit is</p>
+<p class="equation-line">$$\int_0^B(2s-B)\,ds=0.$$</p>
+<p>For $B>1$, acceptance is certain and the expected profit is $2E[S]-B=1-B<0$. Thus no bid has positive expected value. Every $B\in[0,1]$ ties at zero under risk neutrality; bidding zero is the safest choice because it avoids exposure without sacrificing expected profit. This is a winner's-curse problem: conditional on acceptance, the company is worth less than an unconditional estimate suggests.</p>
+</div></details>
+~~~
+
+=== C051 · Q1.51 A sixty-second fuse / 六十秒引线 （Page 19）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一根引线恰好烧完需要 60 秒，但燃烧速度沿长度不均匀。怎样量出 30 秒？</p>
+<p><strong>English:</strong> A fuse takes exactly 60 seconds to burn but burns at a nonuniform rate. How can it measure 30 seconds?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Light both ends simultaneously. Each end consumes some portion of the remaining burn time, so the two flame fronts meet after exactly 30 seconds even though they need not meet at the geometric midpoint.</p>
+</div></details>
+~~~
+
+=== C052 · Q1.52 Measuring forty-five seconds / 量出四十五秒 （Page 19）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 有两根各需 60 秒烧完、但燃烧速度都不均匀的引线。怎样量出 45 秒？</p>
+<p><strong>English:</strong> Two nonuniform fuses each take 60 seconds to burn. How can they measure 45 seconds?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>At time zero, light both ends of the first fuse and one end of the second. The first fuse finishes after 30 seconds. At that moment light the other end of the second fuse; its remaining 30 seconds of burn time are then consumed from both ends in 15 seconds. Total elapsed time is 45 seconds.</p>
+</div></details>
+~~~
+
+=== C053 · Q1.53 Walking one mile in every direction / 向各方向走一英里 （Page 19）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 从某点向南走一英里、向东走一英里、再向北走一英里后回到起点。起点可能在哪里？</p>
+<p><strong>English:</strong> Starting at some point, walk one mile south, one mile east, and one mile north, returning to the start. Where can the starting point be?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The familiar answer is the North Pole. There are also infinitely many solutions near the South Pole. Choose a latitude whose circumference is $1/n$ mile for any positive integer $n$, and start one mile north of it. After walking south, the eastward mile makes exactly $n$ circuits and returns to the same longitude; the final northward mile returns to the start. Nearby variants arise when the eastward leg makes an integer number of circuits after reaching the appropriate latitude.</p>
+</div></details>
+~~~
+
+=== C054 · Q1.54 Trailing zeros in one hundred factorial / 一百阶乘末尾的零 （Page 19）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $100!$ 的十进制表示末尾有多少个零？</p>
+<p><strong>English:</strong> How many trailing zeros are in the decimal representation of $100!$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Each zero comes from a factor $10=2\cdot5$, and factors of two are abundant. Count factors of five:</p>
+<p class="equation-line">$$\left\lfloor\frac{100}{5}\right\rfloor+\left\lfloor\frac{100}{25}\right\rfloor=20+4=24.$$</p>
+</div></details>
+~~~
+
+=== C055 · Q1.55 Ten bags of coins / 十袋硬币 （Page 19）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 十袋硬币中有一袋的每枚硬币比正常重量轻 $0.1$ 盎司。只称一次，怎样找出异常的一袋？</p>
+<p><strong>English:</strong> One of ten bags contains coins each 0.1 ounce lighter than normal. How can the bad bag be identified with one weighing?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Label the bags 1 through 10 and take $k$ coins from bag $k$. Compare the total weight with the normal weight of all 55 selected coins. A shortage of $0.1k$ ounce identifies bag $k$.</p>
+</div></details>
+~~~
+
+=== C056 · Q1.56 Paying seven days' wages / 七天工资 （Page 19）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一条七节金链要按天支付七天工资；每天结束时工人手中应恰好有当天累计应得的节数。最少切开几节，怎样支付？</p>
+<p><strong>English:</strong> A seven-link chain is used to pay seven days of wages, with the worker holding exactly the cumulative number of links owed after each day. What is the minimum cutting plan?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Cut two links so the pieces have values 1, 2, and 4. Pay using binary change: day 1 give 1; day 2 take back 1 and give 2; day 3 give 1; day 4 take back 1 and 2 and give 4; then reverse the pattern for days 5 through 7. Two cuts are necessary because three independently transferable pieces are needed to represent all totals from 0 through 7.</p>
+</div></details>
+~~~
+
+=== C057 · Q1.57 A missing integer / 缺失的整数 （Page 20）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 数组本应包含 $1$ 到 $100$，但恰好少了一个数。怎样在线性时间、常数额外空间内找出缺失值？</p>
+<p><strong>English:</strong> An array should contain the integers 1 through 100 but one is missing. Find it in linear time and constant extra space.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Subtract the observed sum from the known total:</p>
+<p class="equation-line">$$m=\frac{100\cdot101}{2}-\sum_i a_i=5050-\sum_i a_i.$$</p>
+<p>If overflow were a concern for a much larger range, XOR all expected and observed values; every present value cancels and leaves the missing one.</p>
+</div></details>
+~~~
+
+=== C058 · Q1.58 Mirrors and left-right reversal / 镜子为何左右颠倒 （Page 20）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 镜子为什么看似左右颠倒，却不把上下颠倒？</p>
+<p><strong>English:</strong> Why does a mirror appear to reverse left and right but not up and down?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A plane mirror reverses only the coordinate perpendicular to its surface: front and back. It does not intrinsically exchange left with right or top with bottom. The apparent left-right swap comes from mentally comparing the image with a person who has been rotated about a vertical axis to face us; choosing a different imagined rotation would produce a different apparent swap.</p>
+</div></details>
+~~~
+
+=== C059 · Q1.59 Two condoms and three partners / 两只安全套与三位伴侣 （Page 20）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 这是一个抽象的表面隔离谜题：三名男子与一名女子只有两只可区分正反面的保护套，怎样避免四人之间的体液交叉接触？</p>
+<p><strong>English:</strong> As an abstract surface-isolation puzzle, how could three men and one woman use only two distinguishable, reversible barriers without cross-contact among the four people?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Label the barriers $A$ and $B$. Man 1 wears $A$ inside $B$. Man 2 uses $B$ alone, whose inside remains uncontaminated by man 1. Man 3 wears $A$ inverted and puts $B$ over it. Tracking all four labeled surfaces shows that no surface exposed to one person is exposed to another.</p>
+<p>This is only a topology puzzle, not real-world sexual-health advice. Condoms must never be reused, reversed, layered, or handled this way in practice.</p>
+</div></details>
+~~~
+
+=== C060 · Q1.60 Lattice paths / 格点路径 （Page 20）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 从方格的一角走到对角，只能向右或向上，各走五步，共有多少条最短路径？</p>
+<p><strong>English:</strong> From one corner of a square grid to the opposite corner, a shortest route requires five right moves and five up moves. How many shortest routes are there?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A route is determined by choosing which five of the ten move positions are rightward:</p>
+<p class="equation-line">$$\binom{10}{5}=252.$$</p>
+</div></details>
+~~~
+
+=== C061 · Q1.61 Splitting a restaurant bill / 分摊餐费 （Page 20）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 六位朋友的午餐账单为 132.67 美元，加 20% 小费后平均分摊。每人应付多少？</p>
+<p><strong>English:</strong> Six friends split a USD 132.67 lunch bill after adding a 20% tip. How much should each person pay?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The unrounded share is</p>
+<p class="equation-line">$$\frac{132.67(1.20)}6=26.534.$$</p>
+<p>Currency must be rounded, so a practical exact split is four payments of USD 26.53 and two of USD 26.54, totaling USD 159.20. If everyone pays the same cent amount, USD 26.53 leaves two cents unpaid and USD 26.54 overpays by four cents.</p>
+</div></details>
+~~~
+
+=== C062 · Q1.62 Choosing the largest circular table / 选择最大圆桌 （Page 20）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 比萨店的小、中、大三种圆形比萨厚度与配料密度相同，价格满足 $P_L=P_M+P_S$。朋友桌上各有一张已切成六等份的比萨，并有一个方形外卖盒。怎样不直接量直径，判断买一张大比萨还是一中一小更划算？</p>
+<p><strong>English:</strong> Small, medium, and large circular pizzas have equal thickness and topping density, with $P_L=P_M+P_S$. One of each has been cut into sixths and a square takeout box is available. Without directly measuring diameters, determine whether one large or one medium plus one small gives more pizza.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Pizza value is proportional to area, so compare $D_L^2$ with $D_M^2+D_S^2$. Place one sixth-slice of the medium and one sixth-slice of the small so their straight diameter edges form perpendicular legs in a corner of the square box. Their outer endpoints define a hypotenuse of length $\sqrt{D_M^2+D_S^2}$. Compare that length with the large pizza's diameter using one of its sixth-slices. The large is better if $D_L$ is longer, one medium plus one small is better if it is shorter, and they tie if equal.</p>
+</div></details>
+~~~
+
+=== C063 · Q1.63 Sixth roots of sixty-four / 六十四的六次方根 （Page 20）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求方程 $x^6=64$ 的全部复数解。</p>
+<p><strong>English:</strong> Find all complex solutions of $x^6=64$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Since $64=2^6$, the six roots lie on the circle of radius two:</p>
+<p class="equation-line">$$x_k=2e^{ik\pi/3},\qquad k=0,1,\ldots,5.$$</p>
+</div></details>
+~~~
+
+=== C064 · Q1.64 Falling from the Empire State Building / 从帝国大厦坠落 （Page 20）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一块石头从帝国大厦顶端由静止落下，需要多久落地、落地速度多大？说明必须作出的假设。</p>
+<p><strong>English:</strong> A rock is dropped from the top of the Empire State Building. How long does it take to reach the ground and how fast is it moving? State the assumptions required.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The numerical answer is underdetermined without the building height and an air-resistance model. Ignoring drag, from rest at height $h$:</p>
+<p class="equation-line">$$t=\sqrt{\frac{2h}{g}},\qquad v=\sqrt{2gh}.$$</p>
+<p>For illustration, $h=400$ m and $g=9.81$ m/s$^2$ give $t\approx9.03$ s and $v\approx88.6$ m/s. Real drag lowers the terminal speed and makes mass, shape, and air density relevant.</p>
+</div></details>
+~~~
+
+=== C065 · Q1.65 A Gaussian tail integral / 高斯尾积分 （Page 21）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 当 $a>0$ 时，计算 $f(x)=\int_x^\infty e^{-at^2/2+bt}\,dt$。</p>
+<p><strong>English:</strong> For $a>0$, evaluate $f(x)=\int_x^\infty e^{-at^2/2+bt}\,dt$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Complete the square and substitute $u=\sqrt a\,(t-b/a)$:</p>
+<p class="equation-line">$$f(x)=e^{b^2/(2a)}\sqrt{\frac{2\pi}{a}}\,\Phi\!\left(\frac{b}{\sqrt a}-\sqrt a\,x\right),$$</p>
+<p>where $\Phi$ is the standard normal CDF.</p>
+</div></details>
+~~~
+
+=== C066 · Q1.66 A limit with square roots / 含根式的极限 （Page 21）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 计算 $\lim_{x\to\infty}(\sqrt{x^2+x}-x)$。</p>
+<p><strong>English:</strong> Evaluate $\lim_{x\to\infty}(\sqrt{x^2+x}-x)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Rationalize:</p>
+<p class="equation-line">$$\sqrt{x^2+x}-x=\frac{x}{\sqrt{x^2+x}+x}=\frac{1}{\sqrt{1+1/x}+1}\longrightarrow\frac12.$$</p>
+</div></details>
+~~~
+
+=== C067 · Q1.67 Derivative of x to the x / $x^x$ 的导数 （Page 21）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 对 $x>0$，求 $x^x$ 的导数。</p>
+<p><strong>English:</strong> Differentiate $x^x$ for $x>0$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Write $x^x=e^{x\ln x}$ and apply the chain rule:</p>
+<p class="equation-line">$$\frac{d}{dx}x^x=x^x(\ln x+1).$$</p>
+</div></details>
+~~~
+
+=== C068 · Q1.68 Average of consecutive primes / 相邻质数的平均数 （Page 21）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两个相邻质数的算术平均数可能仍是质数吗？</p>
+<p><strong>English:</strong> Can the arithmetic mean of two consecutive primes itself be prime?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>No. If the pair is $2,3$, the mean is $2.5$, not an integer. Every later consecutive pair consists of odd primes, so its mean is an integer strictly between them. If that integer were prime, the original pair would not be consecutive.</p>
 </div></details>
 ~~~
 
@@ -99,75 +898,812 @@
 
 == B. Derivatives
 
-=== C7 \[Core\] Zero-Volatility Call \/ 零波动率看涨期权
-*中文：* 无分红 Black–Scholes 市场中，$S_0=K=100$、连续复利率 $r=0.05$（即 5\%）、期限 1 年且波动率为 0。欧式看涨价值是多少？卖方如何对冲？
-
-*English:* In a non-dividend Black–Scholes market, $S_0=K=100$, the continuously compounded rate is $r=0.05$ (5\%), maturity is one year, and volatility is zero. What is the European call worth, and how should a short call be hedged?
-
+=== C069 · Q2.1 A zero-volatility call / 零波动率看涨期权 （Page 23）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在无分红的 Black--Scholes 世界中，股价与执行价均为 100 美元，无风险年利率为 5%，期限一年，波动率为零。欧式看涨期权值多少？若卖出该期权，如何对冲？</p>
+<p><strong>English:</strong> In a dividend-free Black--Scholes world, spot and strike are both USD 100, the one-year risk-free rate is 5%, and volatility is zero. Value the European call and hedge a short position.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>The stock grows deterministically at the risk-free rate under the model, so the call finishes in the money. Its value is</p><p class="equation-line">$$C_0=S_0-Ke^{-rT}=100(1-e^{-0.05})\approx4.8771.$$</p><p>Its delta is one. A short call is hedged by holding one share and borrowing $Ke^{-rT}$; the portfolio exactly delivers the terminal payoff.</p>
+<p>The terminal stock price is deterministic, $S_T=100e^{0.05}>100$, so the call is certain to be exercised:</p>
+<p class="equation-line">$$C_0=S_0-Ke^{-rT}=100(1-e^{-0.05})\approx4.8771.$$</p>
+<p>Its delta is one. Against a short call, buy one share and borrow $Ke^{-rT}$. At maturity the stock is delivered for $K$, which repays the loan exactly.</p>
 </div></details>
 ~~~
 
-=== C8 \[Core\] Equal Call and Put Values \/ 同价看涨与看跌
-*中文：* 同一无分红股票上的欧式看涨和看跌具有相同 $K,T$，且 $S_0=K$、$r=0$。看涨上行无限而看跌上行有限，为什么二者价格仍相等？
-
-*English:* A European call and put share $K,T$ on a non-dividend stock, with $S_0=K$ and $r=0$. The call has unlimited upside while the put does not. Why must their prices nevertheless be equal?
-
+=== C070 · Q2.2 Gamma and maturity / Gamma 与期限 （Page 23）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 除到期日外完全相同的两个标准期权，短期期权与长期期权谁的 Gamma 更高？</p>
+<p><strong>English:</strong> Two standard options are identical except for maturity. Does the shorter- or longer-dated option have higher gamma?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Put–call parity gives</p><p class="equation-line">$$C-P=S_0-Ke^{-rT}=0,$$</p><p>so $C=P$. The payoff ranges alone do not determine value: the risk-neutral probabilities and payoff magnitudes differ across states. Pointwise, call minus put equals $S_T-K$, and the prepaid forward value of that difference is zero here.</p>
+<p>There is no unconditional ordering. In Black--Scholes,</p>
+<p class="equation-line">$$\Gamma=\frac{e^{-q\tau}\phi(d_1)}{S\sigma\sqrt\tau}.$$</p>
+<p>Near the money, the $1/\sqrt\tau$ factor usually makes the shorter option's gamma larger. Far in or out of the money, however, the short option can have almost zero gamma while a longer option retains material gamma. Moneyness, volatility, rates, and dividends matter.</p>
 </div></details>
 ~~~
 
-=== C9 \[Medium\] Rebalancing a Long-Call Hedge \/ 多头看涨的对冲调整
-*中文：* 你持有一份看涨期权，并通过卖空 $\\Delta$ 股股票做 Delta 中性对冲。股价突然大跌后，一般应买入还是继续卖空股票？为什么？
-
-*English:* You own a call and delta-hedge it by shorting $\\Delta$ shares. After a sharp stock-price drop, should you generally buy or sell stock to rebalance, and why?
-
+=== C071 · Q2.3 Equal call and put values / 看涨与看跌同价 （Page 23）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 无分红且利率为零时，同期限、平值的欧式看涨与看跌期权，尽管到期收益图很不对称，为什么价格相同？</p>
+<p><strong>English:</strong> With no dividends and a zero interest rate, why do otherwise identical at-the-money European calls and puts have equal values despite their asymmetric payoff diagrams?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>A standard call has positive gamma, so its delta falls when the stock falls. The required short-stock hedge becomes smaller in magnitude; therefore <strong>buy back shares</strong>. A long-gamma rehedging rule buys after declines and sells after rises. Jumps, discrete trading, costs, and model error prevent perfect replication.</p>
+<p>Put--call parity gives</p>
+<p class="equation-line">$$C-P=S_0-Ke^{-rT}.$$</p>
+<p>Here $S_0=K$ and $r=0$, so $C=P$. The call's unbounded payoff does not imply a higher price: its favorable states are correspondingly less likely under the pricing distribution, and the stock-plus-put and call-plus-cash portfolios have identical terminal payoffs.</p>
 </div></details>
 ~~~
 
-=== C10 \[Medium\] Cash-or-Nothing Digital Call \/ 现金或无数字看涨
-*中文：* 到期若 $S_T>K$ 就支付固定金额 $H$，否则支付 0。Black–Scholes 模型下该欧式数字期权的价格是多少？它与普通看涨对执行价的导数有什么关系？
-
-*English:* A European digital call pays $H$ if $S_T>K$ and zero otherwise. What is its Black–Scholes price, and how is it related to the strike derivative of a vanilla call?
-
+=== C072 · Q2.4 Call delta as a function of spot / 看涨期权 Delta 曲线 （Page 23）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 画出标准欧式看涨期权的 Delta 随当前股价 $S$ 变化的图形，并说明形状。</p>
+<p><strong>English:</strong> Sketch and explain a standard European call's delta as a function of current stock price $S$.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Under the risk-neutral measure, with continuous dividend yield $q$,</p><p class="equation-line">$$D=He^{-r\tau}N(d_2),\qquad d_2=\frac{\log(S/K)+(r-q-\tfrac12\sigma^2)\tau}{\sigma\sqrt{\tau}}.$$</p><p>For a vanilla call $C(K)$ with the same maturity,</p><p class="equation-line">$$-\frac{\partial C}{\partial K}=e^{-r\tau}N(d_2),$$</p><p>so $D=-H\,\partial C/\partial K$ where differentiability holds.</p>
+<p>Under Black--Scholes with continuous dividend yield $q$,</p>
+<p class="equation-line">$$\Delta_c=e^{-q\tau}\Phi(d_1),\qquad d_1=\frac{\ln(S/K)+(r-q+\sigma^2/2)\tau}{\sigma\sqrt\tau}.$$</p>
+<p>It is an increasing sigmoid: near zero for deeply out-of-the-money calls, steepest around the strike, and approaching $e^{-q\tau}$ for deeply in-the-money calls. Without dividends the upper limit is one.</p>
 </div></details>
 ~~~
 
-=== C11 \[Core\] Early Exercise of a Call \/ 看涨期权提前行权
-*中文：* 对无分红股票，在非负利率与无摩擦市场中，为什么美式看涨不应提前行权？哪些现实因素可能改变结论？
-
-*English:* Why should an American call on a non-dividend stock not be exercised early under nonnegative rates and frictionless trading? What real-world features can alter the conclusion?
-
+=== C073 · Q2.5 At-the-money delta without dividends / 无分红平值 Delta （Page 24）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 无分红的 Black--Scholes 模型中，一年期平值欧式看涨期权在 $r=6\%$ 时，Delta 大于还是小于 $0.5$？</p>
+<p><strong>English:</strong> In a dividend-free Black--Scholes model, is the delta of a one-year at-the-money European call with $r=6\%$ above or below $0.5$?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Early exercise discards time value and pays $K$ sooner. Keeping or selling the option while investing the present value of $K$ weakly dominates. Hence $C_A=C_E$ under the assumptions. Dividends, negative rates, funding or short-sale constraints, transaction costs, and special contract terms can change the comparison.</p>
+<p>It is above $0.5$. At $S=K$ and $q=0$,</p>
+<p class="equation-line">$$d_1=\frac{(r+\sigma^2/2)\sqrt T}{\sigma}>0,$$</p>
+<p>so $\Delta=\Phi(d_1)>1/2$ for every $\sigma>0$.</p>
 </div></details>
 ~~~
 
-=== C12 \[Medium\] Smile and Gamma–Theta \/ 微笑与 Gamma–Theta
-*中文：* （a）为何不同执行价的隐含波动率形成微笑或偏斜？（b）为什么香草期权的 Gamma 与 Theta 经常符号相反？
-
-*English:* (a) Why does implied volatility vary by strike as a smile or skew? (b) Why do gamma and theta often have opposite signs for vanilla options?
-
+=== C074 · Q2.6 At-the-money delta with dividends / 有分红平值 Delta （Page 24）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 连续分红率为 $q=3\%$、无风险利率为 $r=6\%$ 时，一年期平值欧式看涨期权的 Delta 能否确定高于或低于 $0.5$？</p>
+<p><strong>English:</strong> With continuous dividend yield $q=3\%$ and risk-free rate $r=6\%$, can one determine whether a one-year at-the-money European call's delta is above or below $0.5$?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>(a) A constant-lognormal model cannot match market-implied skewness, heavy tails, jumps, stochastic volatility, leverage effects, and option supply-demand, so prices invert to strike-dependent implied volatilities. (b) The Black–Scholes PDE</p><p class="equation-line">$$\Theta+\frac12\sigma^2S^2\Gamma+rS\Delta-rV=0$$</p><p>shows that, after abstracting from delta and carry, long convexity is financed by time decay. The sign relation is a useful vanilla approximation, not a universal rule for every portfolio or exotic payoff.</p>
+<p>Not from those inputs alone. The delta is</p>
+<p class="equation-line">$$\Delta=e^{-qT}\Phi\!\left(\frac{(r-q+\sigma^2/2)\sqrt T}{\sigma}\right).$$</p>
+<p>Although the normal-CDF term exceeds $1/2$ here, multiplication by $e^{-qT}<1$ can put the final delta on either side of $0.5$; the answer depends on volatility.</p>
+</div></details>
+~~~
+
+=== C075 · Q2.7 Rebalancing after a stock plunge / 股价暴跌后的再对冲 （Page 24）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 你持有 MITCO 的看涨期权并已做 Delta 对冲；CEO 被捕后股价骤跌 10 美元。应如何调整对冲？</p>
+<p><strong>English:</strong> You are long a call on MITCO and delta-hedged. The stock suddenly falls USD 10 after its CEO is arrested. How should the hedge be adjusted?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A long call is hedged by shorting $\Delta$ shares. A price fall normally reduces the call delta, so the existing short-stock position is now too large. Buy back shares until the short position equals the new, smaller delta; finance the purchase by borrowing. This is the characteristic buy-low rebalancing gain of a long-gamma position.</p>
+</div></details>
+~~~
+
+=== C076 · Q2.8 Computing delta / 计算 Delta （Page 24）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何计算标准欧式看涨期权的 Delta？若期权没有闭式解，又该怎样计算？</p>
+<p><strong>English:</strong> How is a standard European call's delta calculated, and how can delta be obtained for an option without a closed-form price?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Delta is the spot derivative of value, $\Delta=\partial V/\partial S$. For a Black--Scholes call it is $e^{-q\tau}\Phi(d_1)$. With no closed form, differentiate the numerical valuation: use pathwise or likelihood-ratio Monte Carlo estimators, extract the hedge from a tree or PDE grid, apply algorithmic differentiation, or use a centered bump</p>
+<p class="equation-line">$$\Delta\approx\frac{V(S+h)-V(S-h)}{2h},$$</p>
+<p>with convergence and bump-size checks.</p>
+</div></details>
+~~~
+
+=== C077 · Q2.9 Interpreting d-one and d-two / 解读 $d_1$ 与 $d_2$ （Page 24）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 仔细解释无分红 Black--Scholes 欧式看涨公式中的 $\Phi(d_1)$ 与 $\Phi(d_2)$，并由此联系看跌公式与看涨看跌平价。</p>
+<p><strong>English:</strong> Carefully interpret $\Phi(d_1)$ and $\Phi(d_2)$ in the dividend-free Black--Scholes European call formula, and connect the result to the put formula and put--call parity.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>In</p>
+<p class="equation-line">$$C=S_0\Phi(d_1)-Ke^{-rT}\Phi(d_2),$$</p>
+<p>$\Phi(d_2)=Q(S_T>K)$ is the risk-neutral probability of exercise. The first term is the discounted risk-neutral value of the delivered stock, and $\Phi(d_1)$ is the exercise probability under the stock-numeraire measure; it is also the call delta when $q=0$. The put is</p>
+<p class="equation-line">$$P=Ke^{-rT}\Phi(-d_2)-S_0\Phi(-d_1),$$</p>
+<p>and subtracting gives $C-P=S_0-Ke^{-rT}$.</p>
+</div></details>
+~~~
+
+=== C078 · Q2.10 Digital options / 数字期权 （Page 24）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 到期时若 $S_T>K$ 就支付常数 $H$ 的欧式现金或无数字期权值多少？它与普通看涨期权有何关系？资产或无版本又如何？</p>
+<p><strong>English:</strong> Price a European cash-or-nothing option paying $H$ when $S_T>K$, relate it to a vanilla call, and give the asset-or-nothing counterpart.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Under Black--Scholes,</p>
+<p class="equation-line">$$D_{\rm cash}=He^{-r\tau}\Phi(d_2)=-H\frac{\partial C}{\partial K}.$$</p>
+<p>The strike derivative isolates an infinitesimal call spread. An asset-or-nothing digital pays $S_T\mathbf 1_{\{S_T>K\}}$ and is worth</p>
+<p class="equation-line">$$D_{\rm asset}=Se^{-q\tau}\Phi(d_1).$$</p>
+<p>They decompose the vanilla call: $C=D_{\rm asset}-(K/H)D_{\rm cash}$.</p>
+</div></details>
+~~~
+
+=== C079 · Q2.11 Digital-option vega / 数字期权的 Vega （Page 24）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 现金或无数字期权的价格怎样随波动率变化？Vega 的符号是否固定？</p>
+<p><strong>English:</strong> How does a cash-or-nothing digital option's price vary with volatility? Does its vega have a fixed sign?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Its vega need not be positive. Since $D=He^{-r\tau}\Phi(d_2)$,</p>
+<p class="equation-line">$$\frac{\partial D}{\partial\sigma}=He^{-r\tau}\phi(d_2)\frac{\partial d_2}{\partial\sigma},\qquad
+\frac{\partial d_2}{\partial\sigma}=-\frac{\ln(S/K)+(r-q)\tau}{\sigma^2\sqrt\tau}-\frac{\sqrt\tau}{2}.$$</p>
+<p>Thus the sign depends on forward moneyness. More volatility can either increase the probability of crossing an out-of-the-money strike or reduce the probability of remaining above an in-the-money strike.</p>
+</div></details>
+~~~
+
+=== C080 · Q2.12 Barrier-option delta / 障碍期权 Delta （Page 24）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 比较普通欧式看涨与障碍看涨（例如向下敲出看涨）的 Delta。</p>
+<p><strong>English:</strong> Compare the delta of a vanilla European call with that of a barrier call such as a down-and-out call.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A vanilla call has a smooth delta between zero and $e^{-q\tau}$. A barrier option also responds to the changing probability of activation or extinction, so its delta can be much larger in magnitude and change sharply near the barrier. A down-and-out call generally gains value rapidly as spot moves away from its lower barrier; an up-and-out call can even have negative delta near the upper barrier because a price rise increases knock-out risk. Continuous-model formulas may show singular behavior close to expiry and the barrier, while real discrete monitoring and gaps make the hedge imperfect.</p>
+</div></details>
+~~~
+
+=== C081 · Q2.13 Volatility that does not scale / 不按时间缩放的波动率 （Page 25）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 同一指数的日、周、月连续收益显示：由日或周波动率按平方根法则推算的月波动率，显著低于直接用月度数据估计的结果。要给一个月期欧式看涨定价，应如何处理？</p>
+<p><strong>English:</strong> Daily, weekly, and monthly log returns on the same index imply significantly different one-month volatilities: square-root-scaled daily and weekly estimates are below the direct monthly estimate. How should a one-month European call be priced?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The discrepancy rejects the independent, identically distributed constant-volatility assumption behind square-root-of-time scaling. Serial dependence, stochastic volatility, regime changes, or data problems may be present, so selecting the daily estimate merely because it has more observations is not justified.</p>
+<p>First validate alignment and returns, then estimate the one-month conditional distribution with a horizon-consistent model: for example an AR/GARCH or stochastic-volatility model, calibrated option-implied volatility, or nonparametric monthly simulation. Price by risk-neutral expectation or a calibrated tree/PDE/Monte Carlo method. If Black--Scholes must be quoted, use a defensible one-month forecast or implied volatility and disclose that the constant-volatility model is misspecified.</p>
+</div></details>
+~~~
+
+=== C082 · Q2.14 Time value of an American call / 美式看涨的时间价值 （Page 25）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 对无分红股票的普通美式看涨，画出 $C-\max(S-K,0)$ 随股价变化的图并解释；若把内在价值定义为 $\max(S-Ke^{-r\tau},0)$，图形有何不同？</p>
+<p><strong>English:</strong> For a vanilla American call on a non-dividend-paying stock, sketch $C-\max(S-K,0)$ against spot and explain it. What changes under the alternative intrinsic value $\max(S-Ke^{-r\tau},0)$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>With no dividends and nonnegative rates, early exercise is suboptimal, so the American call equals the European call. Under conventional intrinsic value, time value is positive, approaches zero as $S\downarrow0$, is largest around the strike, and tends to</p>
+<p class="equation-line">$$K(1-e^{-r\tau})$$</p>
+<p>as $S\to\infty$. Under discounted intrinsic value, the deep-in-the-money asymptote is instead zero; the curve is nonnegative and hump-shaped around the discounted strike.</p>
+</div></details>
+~~~
+
+=== C083 · Q2.15 Delta during the final decline / 临近到期下跌时的 Delta （Page 26）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 卖出的一年期欧式看涨还剩两个月，当前深度实值、复制组合 Delta 约为 $0.90$。若股价在最后两个月缓慢下跌，Delta 一定怎样变化，应该买入还是卖出股票？</p>
+<p><strong>English:</strong> A written one-year European call has two months left, is well in the money, and its replicating delta is about $0.90$. If spot declines gently through the last two months, must delta rise or fall, and does the hedge buy or sell stock?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The direction is ambiguous because both spot and remaining time change:</p>
+<p class="equation-line">$$d\Delta\approx\Gamma\,dS+\frac{\partial\Delta}{\partial t},dt.$$</p>
+<p>The price decline lowers delta. But if the option remains comfortably in the money, passage toward expiry pushes delta toward one and can dominate. If spot falls through the strike, delta ultimately tends toward zero. Therefore the seller's stock hedge may require buying or selling depending on the realized path; moneyness and time decay must be specified.</p>
+</div></details>
+~~~
+
+=== C084 · Q2.16 Jumps and no-arbitrage pricing / 跳跃与无套利定价 （Page 26）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 当标的价格含跳跃或跳扩散成分时，Black--Scholes/Merton 的无套利复制何时能、何时不能唯一确定看涨期权价格？Merton 跳扩散的定价结构是什么？</p>
+<p><strong>English:</strong> For an asset with jumps or jump diffusion, when can Black--Scholes/Merton replication determine a unique call price, and what is the structure of Merton's jump-diffusion price?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A stock and bond can span one Brownian shock but not an independent jump-size/count shock. The market is therefore generally incomplete, and no-arbitrage alone gives a range rather than a unique price. A unique price requires the jump risk to be spanned or a risk-neutral jump intensity and jump-size distribution to be specified, typically through preferences or calibration.</p>
+<p>With Poisson lognormal jumps, Merton's price is a Poisson-weighted mixture of Black--Scholes prices conditional on $n$ jumps:</p>
+<p class="equation-line">$$C=\sum_{n=0}^{\infty}e^{-\lambda_Q\tau}\frac{(\lambda_Q\tau)^n}{n!}\,C_{\rm BS}^{(n)},$$</p>
+<p>where each component uses the conditional drift and variance implied by $n$ jumps. The precise parameters must be risk-neutral ones.</p>
+</div></details>
+~~~
+
+=== C085 · Q2.17 Three call-price graphs / 三幅看涨价格图 （Page 26）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 比较三幅图：到期看涨收益对 $S_T$；到期前看涨价格对同到期日的期货价 $F(t,T)$；到期前看涨价格对现货价 $S_t$。它们有何关系？</p>
+<p><strong>English:</strong> Compare a call's terminal payoff against $S_T$, its pre-expiry value against the same-maturity futures price $F(t,T)$, and its pre-expiry value against spot $S_t$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>At expiry the graph is the kinked payoff $(S_T-K)^+$. Before expiry uncertainty smooths the kink into an increasing convex curve. With deterministic carry,</p>
+<p class="equation-line">$$F(t,T)=S_t e^{(r-q)\tau},$$</p>
+<p>so the pre-expiry graphs against futures and spot represent the same value under a horizontal rescaling. Against futures, the discounted slope tends from zero to $e^{-r\tau}$; against spot it tends from zero to $e^{-q\tau}$. As $t\uparrow T$, both smooth curves converge to the terminal payoff.</p>
+</div></details>
+~~~
+
+=== C086 · Q2.18 Changing the unit of time / 改变时间单位 （Page 27）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一年期与四年期欧式看涨的执行价相同。若两次都在公式中令 $T-t=1$，但第一次一个时间单位代表一年、第二次代表四年；一年单位的波动率为 $15\%$，四年单位应填多少？</p>
+<p><strong>English:</strong> A one-year and a four-year European call share a strike. If $T-t=1$ is entered for both, but one time unit means one year in the first case and four years in the second, what volatility corresponds to 15% per one-year unit?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Variance scales with elapsed time, so standard deviation scales with its square root:</p>
+<p class="equation-line">$$\sigma_{	ext{four-year unit}}=0.15\sqrt4=0.30.$$</p>
+<p>The rate inputs must likewise be expressed per four-year unit if the formula's clock is rescaled.</p>
+</div></details>
+~~~
+
+=== C087 · Q2.19 An arithmetic-Brownian call / 算术布朗运动看涨期权 （Page 27）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若标的满足算术布朗运动 $dS=\mu\,dt+\sigma_A\,dW$，在利率和分红均为零、期权平值时，欧式看涨价格是多少？</p>
+<p><strong>English:</strong> If the underlying follows arithmetic Brownian motion $dS=\mu\,dt+\sigma_A\,dW$, what is an at-the-money European call worth when rates and dividends are zero?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Under the risk-neutral measure the drift is zero, so $S_T-S_t\sim N(0,\sigma_A^2\tau)$. Therefore</p>
+<p class="equation-line">$$C=E[(S_T-S_t)^+]=\sigma_A\sqrt\tau\,E[Z^+]=\frac{\sigma_A\sqrt\tau}{\sqrt{2\pi}},$$</p>
+<p>the at-the-money Bachelier price.</p>
+</div></details>
+~~~
+
+=== C088 · Q2.20 Ten-second option estimate / 十秒钟估算期权 （Page 27）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 股价和执行价均为 100 美元，期限三个月，隐含波动率 $40\%$，利率与分红均为零。十秒内估算平值欧式看涨的价格；若是看跌又如何？</p>
+<p><strong>English:</strong> Spot and strike are USD 100, maturity is three months, implied volatility is 40%, and rates and dividends are zero. Estimate the at-the-money European call in ten seconds; what about the put?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The ATM rule of thumb is</p>
+<p class="equation-line">$$C\approx\frac{S\sigma\sqrt T}{\sqrt{2\pi}}=\frac{100(0.40)(0.5)}{2.5066}\approx7.98.$$</p>
+<p>The exact Black--Scholes value is about USD 7.97. Put--call parity with $r=0$ and $S=K$ makes the put worth the same.</p>
+</div></details>
+~~~
+
+=== C089 · Q2.21 One hundred versus two hundred days / 一百天与两百天 （Page 27）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 同一欧式看涨，100 天期限的报价为 100 美元。200 天期限的价格一定更高吗？</p>
+<p><strong>English:</strong> A 100-day European call is quoted at USD 100. Must the otherwise identical 200-day call cost more?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Under the standard assumptions of no dividends and nonnegative interest rates, yes: the longer call is at least as valuable. One can hold the shorter call and, after its expiry, retain the option to acquire exposure; equivalently Black--Scholes call value is nondecreasing in maturity under those carry assumptions. With dividends, negative rates, changing volatility, or different exercise/settlement terms, maturity alone does not determine the ordering.</p>
+</div></details>
+~~~
+
+=== C090 · Q2.22 Estimating an at-the-money call / 估算平值看涨 （Page 27）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一年后股价的条件标准差约为 10 美元，当前股价与执行价均为 100 美元，利率和分红为零。看涨价格更接近 1、5 还是 10 美元？若标准差为 20 美元呢？</p>
+<p><strong>English:</strong> An at-the-money one-year call has spot and strike USD 100, zero rates and dividends, and terminal-price standard deviation about USD 10. Is its value closer to USD 1, USD 5, or USD 10? What if the standard deviation is USD 20?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For an approximately symmetric ATM distribution,</p>
+<p class="equation-line">$$E[(S_T-S_0)^+]\approx\frac{\operatorname{sd}(S_T)}{\sqrt{2\pi}}.$$</p>
+<p>Thus a USD 10 standard deviation gives about USD 3.99, closer to USD 5; a USD 20 standard deviation gives about USD 7.98, closer to USD 10. The approximation is the ATM Bachelier/short-horizon rule and is sufficient for the choices.</p>
+</div></details>
+~~~
+
+=== C091 · Q2.23 One day of higher volatility / 一天的波动率上升 （Page 28）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一只剩余 100 天、隐含波动率 $20\%$ 的欧式看涨，只有明天的波动率会升到 $25\%$，随后恢复 $20\%$。若始终使用 $20\%$，延长期限多少天会产生相同的总方差增量？</p>
+<p><strong>English:</strong> A European call has 100 days left and 20% implied volatility. Tomorrow alone volatility will be 25%, then return to 20%. At a constant 20%, what maturity extension produces the same added total variance?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Match integrated variance. The exceptional day adds $0.25^2-0.20^2$ instead of the normal day's $0.20^2$. Hence the equivalent extra time is</p>
+<p class="equation-line">$$\Delta n=\frac{0.25^2-0.20^2}{0.20^2}=0.5625\text{ day}.$$</p>
+<p>So the effect is roughly half an extra trading day, assuming only total variance matters and all other inputs stay fixed.</p>
+</div></details>
+~~~
+
+=== C092 · Q2.24 Long straddle breakevens / 多头跨式的盈亏平衡点 （Page 28）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 以 5 美元买入执行价 25 美元的跨式组合，标的当前为 25 美元。到期希望价格怎样变化？</p>
+<p><strong>English:</strong> You pay USD 5 for a long straddle struck at USD 25 while spot is USD 25. What terminal price movement are you seeking?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The terminal profit is $|S_T-25|-5$. The breakevens are USD 20 and USD 30, and profit requires $S_T<20$ or $S_T>30$. The position seeks a large move in either direction and is long volatility and gamma.</p>
+</div></details>
+~~~
+
+=== C093 · Q2.25 Eurodollar futures versus forward / 欧洲美元期货与远期 （Page 28）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 六个月后按三个月 LIBOR 结算的欧洲美元期货与远期都报 5%，但前者逐日盯市、后者到期结算。应偏好哪个？是否必然错价？若做多一个、做空另一个，方向如何？</p>
+<p><strong>English:</strong> A six-month Eurodollar futures contract and a same-date forward on three-month LIBOR both quote 5%; the futures is marked daily and the forward settles at maturity. Which is preferable, is there necessarily mispricing, and which relative trade is appropriate?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>They are not economically identical because daily gains and losses are reinvested at rates correlated with the underlying rate. Under the usual positive rate correlation, the futures-implied rate exceeds the forward rate by a convexity adjustment. If both quote exactly 5% and the usual sign applies, prefer receiving the rate through the forward (long the forward rate) and paying it through the futures (short the futures rate). Equal quotes can therefore represent a relative mispricing, but the direction depends on contract quotation conventions, correlation, margin funding, and the size of the convexity adjustment.</p>
+</div></details>
+~~~
+
+=== C094 · Q2.26 What to simulate / 蒙特卡洛模拟什么 （Page 28）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 用蒙特卡洛给看涨期权定价，应模拟期权价格过程还是标的资产过程？</p>
+<p><strong>English:</strong> In Monte Carlo valuation of a call, should one simulate a GBM for the option or for the underlying?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Simulate the risk-neutral underlying process, compute the payoff on each path, and discount the sample mean. The option does not itself follow GBM: its volatility and drift depend on spot, time, and Greeks, and its terminal value is fixed by the payoff. For a vanilla European call, simulate $S_T$ directly rather than unnecessary intermediate steps.</p>
+</div></details>
+~~~
+
+=== C095 · Q2.27 Convexity in a bond rally / 债券上涨时的凸性 （Page 28）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 持有抵押贷款支持证券并预期债券市场上涨时，更希望拥有正凸性还是负凸性？</p>
+<p><strong>English:</strong> If you hold mortgage-backed securities and expect a bond-market rally, would you prefer positive or negative convexity?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Positive convexity. For a given initial duration, a positively convex bond gains more when yields fall and loses less when yields rise. Mortgage-backed securities often have negative convexity because falling rates accelerate refinancing and cap price appreciation, so a rally makes that embedded borrower option especially costly.</p>
+</div></details>
+~~~
+
+=== C096 · Q2.28 A stop-loss call hedge / 止损式看涨对冲 （Page 28）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 对冲空头看涨时，只在股价高于执行价时买一股、跌回执行价下方时卖出，有什么问题？</p>
+<p><strong>English:</strong> What is wrong with hedging a short call by owning one share only when spot is above the strike and selling it whenever spot falls below the strike?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>This treats the expiry payoff's discontinuous slope as if it were the pre-expiry delta. Before maturity, delta changes smoothly between zero and one. Repeated crossings force the rule to buy high and sell low, potentially an unbounded number of times; transaction costs, gaps, and discrete monitoring worsen the loss. Proper dynamic hedging holds the model delta and rebalances continuously in the ideal limit, with the option premium funding the expected gamma-rebalancing cost.</p>
+</div></details>
+~~~
+
+=== C097 · Q2.29 Time integral of Brownian motion / 布朗运动的时间积分 （Page 28）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 标准布朗运动 $W_t$ 的积分 $\int_0^T W_t\,dt$ 服从什么分布？</p>
+<p><strong>English:</strong> What is the distribution of $\int_0^T W_t\,dt$ for standard Brownian motion?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>It is a linear functional of a Gaussian process, hence Gaussian with mean zero. Its variance is</p>
+<p class="equation-line">$$\int_0^T\int_0^T\min(s,t)\,ds\,dt=\frac{T^3}{3}.$$</p>
+<p>Therefore $\int_0^T W_t\,dt\sim N(0,T^3/3)$.</p>
+</div></details>
+~~~
+
+=== C098 · Q2.30 Itô integral of Brownian motion / 布朗运动的 Itô 积分 （Page 29）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 计算标准布朗运动的 Itô 积分 $\int_0^T W_t\,dW_t$。</p>
+<p><strong>English:</strong> Evaluate the Itô integral $\int_0^T W_t\,dW_t$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Itô's formula for $W_t^2$ gives $d(W_t^2)=2W_t\,dW_t+dt$. Hence</p>
+<p class="equation-line">$$\int_0^T W_t\,dW_t=\frac{W_T^2-T}{2}.$$</p>
+<p>Its expectation is zero, as required for a square-integrable Itô integral.</p>
+</div></details>
+~~~
+
+=== C099 · Q2.31 One dollar at the first hitting time / 首次触及价格时支付一美元 （Page 29）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> IBM 当前为 75 美元。忽略分红、利率、税费与交易限制，构造一个在股价首次触及 100 美元时恰好支付 1 美元的证券，成本多少？</p>
+<p><strong>English:</strong> IBM trades at USD 75. Ignoring dividends, rates, taxes, and trading constraints, construct a security paying exactly USD 1 when IBM first reaches USD 100. What does it cost?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Buy $0.01$ share now for USD 0.75. Hold it until the first hitting time of USD 100, then sell it for exactly USD 1. Thus the replicating cost is USD 0.75. If the stock never hits USD 100, neither the derivative nor the liquidation pays; the argument uses zero carrying cost and continuous tradability.</p>
+</div></details>
+~~~
+
+=== C100 · Q2.32 A power call / 幂次看涨期权 （Page 29）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在 Black--Scholes 模型中，为到期收益 $(S_T^{\alpha}-X)^+$（$\alpha>0$）的欧式幂次看涨期权定价。</p>
+<p><strong>English:</strong> In Black--Scholes, price a European power call with payoff $(S_T^{\alpha}-X)^+$ for $\alpha>0$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $K_\alpha=X^{1/\alpha}$ and $\tau=T-t$. Define</p>
+<p class="equation-line">$$d_2=\frac{\ln(S/K_\alpha)+(r-q-\sigma^2/2)\tau}{\sigma\sqrt\tau},\qquad d_{1,\alpha}=d_2+\alpha\sigma\sqrt\tau.$$</p>
+<p>Truncated lognormal moments give</p>
+<p class="equation-line">$$V=e^{-r\tau}\left[S^\alpha e^{\alpha(r-q-\sigma^2/2)\tau+\alpha^2\sigma^2\tau/2}\Phi(d_{1,\alpha})-X\Phi(d_2)\right].$$</p>
+<p>Setting $\alpha=1$ recovers the ordinary Black--Scholes call.</p>
+</div></details>
+~~~
+
+=== C101 · Q2.33 The implied-volatility smile / 隐含波动率微笑 （Page 29）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 为什么把期权隐含波动率对执行价作图会出现微笑或偏斜？</p>
+<p><strong>English:</strong> Why does implied volatility plotted against strike exhibit a smile or skew?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A flat smile would require the Black--Scholes lognormal distribution with constant volatility. Markets exhibit fat tails, jumps, leverage effects, stochastic volatility, and correlations between spot and volatility; supply, demand, and crash insurance premia add further distortions. Different strikes therefore require different Black--Scholes volatilities to reproduce their market prices. Equity markets commonly show a downside skew rather than a symmetric smile.</p>
+</div></details>
+~~~
+
+=== C102 · Q2.34 Double-barrier knock-out / 双障碍敲出期权 （Page 29）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 同时具有向上敲出与向下敲出障碍的双障碍期权，价格是否等于单独向上敲出与单独向下敲出期权价格之和？</p>
+<p><strong>English:</strong> Is a double-barrier knock-out worth the sum of an up-and-out option and a down-and-out option?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>No. The double knock-out survives only if neither barrier is hit, whereas the sum counts states in which one single-barrier option survives and can also double-count states. Barrier events interact. Its value must be computed from the joint path event, or by an inclusion--exclusion/static-replication construction with the necessary overlap terms.</p>
+</div></details>
+~~~
+
+=== C103 · Q2.35 Deriving digital prices / 推导数字期权价格 （Page 29）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何用微积分从普通欧式看涨价格推导现金或无与资产或无数字期权的价格？</p>
+<p><strong>English:</strong> Use calculus to derive European cash-or-nothing and asset-or-nothing digital prices from vanilla call values.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Differentiate the call payoff with respect to strike:</p>
+<p class="equation-line">$$-\frac{\partial}{\partial K}(S_T-K)^+=\mathbf1_{\{S_T>K\}}.$$</p>
+<p>Therefore a unit cash digital is $-\partial C/\partial K=e^{-r\tau}\Phi(d_2)$. Since</p>
+<p class="equation-line">$$S_T\mathbf1_{\{S_T>K\}}=(S_T-K)^++K\mathbf1_{\{S_T>K\}},$$</p>
+<p>the asset digital equals $C-K\partial C/\partial K=Se^{-q\tau}\Phi(d_1)$.</p>
+</div></details>
+~~~
+
+=== C104 · Q2.36 An American out-in barrier call / 美式先敲入后敲出看涨 （Page 30）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一只美式看涨只有在价格先跌破下障碍而被敲入、从未升破上障碍而被敲出、且行权时实值，才有收益。如何为这种路径依赖期权定价？</p>
+<p><strong>English:</strong> How would you value an American call that must first hit a lower knock-in barrier, must never hit an upper knock-out barrier, and pays only upon in-the-money exercise?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Augment the state with a flag recording whether the lower barrier has been hit and an absorbing state for upper-barrier extinction. A lattice or finite-difference method then applies backward induction: value is zero after knock-out; before knock-in only continuation is allowed; after knock-in take the maximum of immediate exercise and continuation. Monte Carlo requires an American method such as least-squares regression plus careful barrier monitoring or Brownian-bridge corrections. There is generally no simple closed form.</p>
+</div></details>
+~~~
+
+=== C105 · Q2.37 A Gaussian gold digital / 正态金价数字期权 （Page 30）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 金价服从算术高斯过程，当前为 400 美元，美元波动率为每年 60 美元，利率为零。六个月后金价至少为 430 美元时支付 100 万美元的现金或无期权，现值多少？</p>
+<p><strong>English:</strong> Gold follows an arithmetic Gaussian process with spot USD 400, dollar volatility USD 60 per year, and zero rates. Value a six-month cash-or-nothing option paying USD 1 million if gold is at least USD 430.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Under the zero-rate risk-neutral process, the six-month standard deviation is $60\sqrt{0.5}$. Hence</p>
+<p class="equation-line">$$V=10^6\Phi\!\left(\frac{400-430}{60\sqrt{0.5}}\right)\approx10^6\Phi(-0.7071)\approx\$239{,}750.$$</p>
+</div></details>
+~~~
+
+=== C106 · Q2.38 A perpetual American put / 永续美式看跌 （Page 30）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在无分红 Black--Scholes 模型、$r>0$ 下，求执行价为 $K$ 的永续美式看跌期权价值与最优行权边界。</p>
+<p><strong>English:</strong> In dividend-free Black--Scholes with $r>0$, find the value and optimal exercise boundary of a perpetual American put with strike $K$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The negative root of the stationary pricing ODE is $\beta=-2r/\sigma^2$. Value matching and smooth pasting give</p>
+<p class="equation-line">$$S^*=\frac{\beta}{\beta-1}K,$$</p>
+<p>and</p>
+<p class="equation-line">$$P(S)=\begin{cases}
+K-S,&S\le S^*,\\[3pt]
+(K-S^*)\left(\dfrac{S}{S^*}\right)^\beta,&S>S^*.
+\end{cases}$$</p>
+<p>The holder exercises the first time spot falls to $S^*$.</p>
+</div></details>
+~~~
+
+=== C107 · Q2.39 Reverse-engineering a swap / 拆解互换现金流 （Page 30）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在一份利率互换中，A 向 B 支付 $L$，B 向 A 支付 $24\%-2L$，其中 $L$ 为三个月美元 LIBOR。把 A 的净头寸化成更简单的互换。</p>
+<p><strong>English:</strong> In a swap, A pays $L$ to B and receives $24\%-2L$, where $L$ is three-month USD LIBOR. Express A's net position more simply.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A's net receipt is</p>
+<p class="equation-line">$$(24\%-2L)-L=24\%-3L=3(8\%-L).$$</p>
+<p>Thus it is a swap on three times the original notional in which A receives fixed 8% and pays floating $L$.</p>
+</div></details>
+~~~
+
+=== C108 · Q2.40 Approximate at-the-money hedge / 平值期权的近似对冲 （Page 30）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 平值期权大约需要多少股标的来对冲？</p>
+<p><strong>English:</strong> Approximately how many shares are needed to hedge an at-the-money option?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>An ordinary short-dated at-the-money call has delta near $0.5$, so a short call is hedged by buying roughly half a share per option share. The exact value is $e^{-q\tau}\Phi(d_1)$ and need not equal $0.5$ when rates, dividends, volatility, or maturity are material. An at-the-money put has delta roughly $-0.5$.</p>
+</div></details>
+~~~
+
+=== C109 · Q2.41 Mean reversion and option value / 均值回复与期权价值 （Page 30）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若股价具有均值回复，与不具均值回复但短期波动相同的情形相比，期权价格通常怎样变化？</p>
+<p><strong>English:</strong> How does mean reversion in a stock price affect option value relative to a non-mean-reverting model with comparable short-run volatility?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>If the models are matched on current forward price and instantaneous volatility, mean reversion usually lowers long-horizon terminal variance. Convex option payoffs then have lower value. The conclusion is not unconditional: changing the long-run mean, forward curve, risk premium, or volatility calibration can reverse the comparison. One must compare risk-neutral terminal distributions, not attach a universal discount merely to the words “mean reversion.”</p>
+</div></details>
+~~~
+
+=== C110 · Q2.42 When hedging increases risk / 对冲何时增加风险 （Page 30）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 期权头寸的对冲在什么情况下反而会增加风险？</p>
+<p><strong>English:</strong> When can hedging an option position increase rather than reduce risk?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>When the hedge is based on a wrong model or mismatched instrument, it can introduce basis, volatility, correlation, liquidity, funding, jump, or operational risk. Rebalancing a very short-dated option can require large trades precisely when markets gap or spreads widen; a proxy hedge may move differently from the exposure. A hedge reduces a specified local sensitivity, not every risk, so its residual and newly introduced risks must be measured together.</p>
+</div></details>
+~~~
+
+=== C111 · Q2.43 Hedging a put without shorting stock / 无法卖空股票时对冲看跌 （Page 30）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 卖出一只股票的看跌期权后，既不能卖空任何股票，也不能使用股票期权，怎样对冲？</p>
+<p><strong>English:</strong> How can a written put on a stock be hedged when shorting stocks and using stock options are both prohibited?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A short put has positive delta, so the direct hedge requires short stock. If that is barred, short a sufficiently correlated permitted instrument—such as a single-stock future, sector or index future, total-return swap, or another liquid proxy—sized by estimated beta and contract multiplier. This is only a proxy hedge: idiosyncratic and basis risk remain, and if all short-equivalent derivatives are also prohibited there is no exact hedge.</p>
+</div></details>
+~~~
+
+=== C112 · Q2.44 Pizza for eight / 八人份比萨 （Page 30）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 直径 12 英寸的比萨够六人吃。保持人均面积不变，八人份比萨直径应为多少？</p>
+<p><strong>English:</strong> A 12-inch-diameter pizza feeds six people. What diameter gives the same amount per person to eight people?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Area must scale by $8/6$, and area is proportional to squared diameter:</p>
+<p class="equation-line">$$D=12\sqrt{\frac86}=8\sqrt3\approx13.86\text{ inches}.$$</p>
+<p>This is a convexity/scaling question: diameter does not scale linearly with servings.</p>
+</div></details>
+~~~
+
+=== C113 · Q2.45 When to short a put / 何时卖出看跌期权 （Page 30）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么市场观点或投资意图适合卖出 IBM 的看跌期权？</p>
+<p><strong>English:</strong> Under what view or investment objective would you want to be short an IBM put?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>When you are bullish or neutral on IBM, expect realized volatility to be below implied volatility, want positive time decay, and are willing and able to buy the stock at the strike. The position has limited premium income but potentially large downside loss, negative gamma and vega, and positive delta; “bullish” alone is not sufficient without risk capacity.</p>
+</div></details>
+~~~
+
+=== C114 · Q2.46 Forward prices of land / 土地的远期价格 （Page 31）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一块闲置的亚利桑那土地与一块能持续收取门票的佛罗里达海滩，现货价值都为 100 万美元。其他条件相同，哪块土地的远期价格更高？</p>
+<p><strong>English:</strong> An idle Arizona field and a Florida beach producing entrance-fee income are each worth USD 1 million spot. Other things equal, which has the higher forward price?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The idle Arizona land. A forward buyer receives no interim benefits, so the prepaid value of the beach is spot minus the present value of entrance fees. In simple carry notation, $F=(S_0-I)e^{rT}$ for known income $I$, whereas the idle land has $F=S_0e^{rT}$. The income-producing asset therefore has the lower forward price.</p>
+</div></details>
+~~~
+
+=== C115 · Q2.47 Historical volatility from thirty prices / 用三十天价格估计历史波动率 （Page 31）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 有 30 个代表性日度股价，怎样估计用于 Black--Scholes 的历史波动率？</p>
+<p><strong>English:</strong> Given 30 representative daily stock prices, how do you estimate historical volatility for Black--Scholes?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Form the 29 log returns $r_i=\ln(P_i/P_{i-1})$. Their sample standard deviation is</p>
+<p class="equation-line">$$s_d=\sqrt{\frac{1}{28}\sum_{i=1}^{29}(r_i-\bar r)^2}.$$</p>
+<p>Annualize as $\hat\sigma=s_d\sqrt{252}$ for 252 trading days. Adjust the factor for the actual sampling calendar and check splits, dividends, stale prices, and nonstationarity.</p>
+</div></details>
+~~~
+
+=== C116 · Q2.48 Repricing a top issuer on the swap curve / 用互换曲线重估顶级发行人债券 （Page 31）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 某顶级金融机构发行一只按自身融资曲线定价为 100 的债券，再用互换曲线折现同一组票息，价格会高于、等于还是低于 100？</p>
+<p><strong>English:</strong> A top financial issuer sets a bond's coupon so it prices at par on its own curve, then discounts the same cash flows on the swap curve. Is the resulting price above, at, or below par?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Under the convention behind the question, the issuer's unsecured bond curve lies above the swap curve. Discounting the fixed cash flows at the lower swap rates raises their present value, so the result is above 100. This is not a timeless universal ordering: collateralization, credit quality, tenor, and post-crisis multi-curve conventions can change the relationship.</p>
+</div></details>
+~~~
+
+=== C117 · Q2.49 Why the risk-free rate appears / 为什么使用无风险利率 （Page 31）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 怎样向不懂数学的人解释：Black--Scholes 推导为何用无风险利率，而不用股票的预期必要收益率？</p>
+<p><strong>English:</strong> Explain without mathematics why Black--Scholes uses the risk-free rate rather than the stock's required expected return.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The option's local stock risk can be canceled by holding the right number of shares against it. The resulting continuously rebalanced portfolio is locally riskless, so no-arbitrage requires it to earn the risk-free rate. The stock's expected return affects both the option and the hedge in exactly offsetting ways; it is not needed to price the replicated payoff.</p>
+</div></details>
+~~~
+
+=== C118 · Q2.50 Implied or historical volatility / 隐含还是历史波动率 （Page 31）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 预测未来波动率时，隐含波动率与历史波动率哪个更好？</p>
+<p><strong>English:</strong> Is implied or historical volatility generally better for forecasting future volatility?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Implied volatility is forward-looking and aggregates current market information, so it often forecasts better than a simple historical standard deviation. But it also contains volatility risk premia, liquidity effects, and model error. Historical models contribute persistence and regime information. A robust forecast compares out-of-sample performance and often combines implied and time-series measures rather than declaring one universally superior.</p>
+</div></details>
+~~~
+
+=== C119 · Q2.51 Ten-percent out-of-the-money call and put / 虚值百分之十的看涨与看跌 （Page 31）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 按 Black--Scholes，一只虚值 10% 的欧式看涨与一只虚值 10% 的欧式看跌，谁更贵？</p>
+<p><strong>English:</strong> Under Black--Scholes, which is more valuable: a European call 10% out of the money or a European put 10% out of the money?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The phrase “10% out of the money” is ambiguous unless the strike convention, rates, dividends, and maturity are specified. Under the book's natural no-dividend, zero-rate reciprocal-moneyness comparison, take $K_c=1.1S$ and $K_p=S/1.1$. Lognormal symmetry gives</p>
+<p class="equation-line">$$C(S,1.1S)=1.1\,P(S,S/1.1),$$</p>
+<p>so the call is worth 10% more in dollar terms. Under other conventions or nonzero carry, no universal answer follows from “10% OTM” alone.</p>
+</div></details>
+~~~
+
+=== C120 · Q2.52 Theta and gamma signs / Theta 与 Gamma 的符号 （Page 31）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 为什么期权的 Theta 与 Gamma 通常符号相反？它们是否永远相反？</p>
+<p><strong>English:</strong> Why do option theta and gamma usually have opposite signs, and must they always?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The Black--Scholes PDE is</p>
+<p class="equation-line">$$\Theta+(r-q)S\Delta+\tfrac12\sigma^2S^2\Gamma-rV=0.$$</p>
+<p>For a long vanilla option, $\Gamma>0$, and with modest carry the positive gamma term is financed by negative theta: time decay pays for convexity. Carry and discount terms can dominate, however. Deep-in-the-money puts at high rates, dividend effects, exotics, and portfolios can have theta and gamma of the same sign, so the relationship is typical rather than universal.</p>
+</div></details>
+~~~
+
+=== C121 · Q2.53 A one-period call / 单期看涨定价 （Page 31）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 无风险利率为零、无分红，股价现为 100；一年后只可能为 130 或 70，现实概率分别为 0.8 与 0.2。执行价 110 的欧式看涨值多少？</p>
+<p><strong>English:</strong> With zero rates and no dividends, a USD 100 stock will be either USD 130 or USD 70 in one year with physical probabilities 0.8 and 0.2. What is a one-year European call struck at USD 110 worth?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Use risk-neutral, not physical, probabilities. Let $q$ be the up-state pricing probability:</p>
+<p class="equation-line">$$100=130q+70(1-q)\quad\Rightarrow\quad q=\frac12.$$</p>
+<p>The call pays USD 20 in the up state and zero otherwise, so $C=0.5(20)=10$. The stated 0.8/0.2 probabilities concern expected return, not the no-arbitrage price.</p>
+</div></details>
+~~~
+
+=== C122 · Q2.54 A product call / 乘积看涨期权 （Page 31）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两个相关几何布朗运动资产 $S_1,S_2$ 上，到期收益为 $(S_{1,T}S_{2,T}-K)^+$ 的欧式乘积看涨如何定价？</p>
+<p><strong>English:</strong> Price a European product call with payoff $(S_{1,T}S_{2,T}-K)^+$ when $S_1$ and $S_2$ follow correlated geometric Brownian motions.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The product $Y=S_1S_2$ is lognormal with volatility</p>
+<p class="equation-line">$$\sigma_Y=\sqrt{\sigma_1^2+\sigma_2^2+2\rho\sigma_1\sigma_2}$$</p>
+<p>and risk-neutral forward</p>
+<p class="equation-line">$$F_Y=S_1S_2\exp\!\left[(2r-q_1-q_2+\rho\sigma_1\sigma_2)\tau\right].$$</p>
+<p>Therefore</p>
+<p class="equation-line">$$V=e^{-r\tau}\left[F_Y\Phi(d_1)-K\Phi(d_2)\right],$$</p>
+<p>where $d_1=[\ln(F_Y/K)+\tfrac12\sigma_Y^2\tau]/(\sigma_Y\sqrt\tau)$ and $d_2=d_1-\sigma_Y\sqrt\tau$.</p>
+</div></details>
+~~~
+
+=== C123 · Q2.55 Asian versus vanilla options / 亚式与普通期权 （Page 31）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 亚式期权通常比相应的普通欧式期权便宜还是更贵？</p>
+<p><strong>English:</strong> Are Asian options generally cheaper or more expensive than comparable vanilla European options?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A fixed-strike Asian option is generally cheaper because averaging reduces payoff variance, and convex option value rises with dispersion. This is a comparison under matched strike, maturity, and forward. Floating-strike Asians, unusual averaging windows, stochastic carry, or different calibration can invalidate a blanket ordering.</p>
+</div></details>
+~~~
+
+=== C124 · Q2.56 When American equals European / 美式何时等于欧式 （Page 32）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 普通美式看涨与看跌分别在什么条件下可按欧式期权处理？</p>
+<p><strong>English:</strong> When may a vanilla American call or put be treated as its European counterpart?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For a non-dividend-paying stock with nonnegative rates, early exercise of a call is never optimal, so American and European call values coincide. For a put, early exercise can be valuable when rates are positive; if rates are zero (and there are no other carry benefits or constraints), postponing exercise loses no interest and the American put equals the European put. Dividends, negative rates, borrow constraints, or discrete cash flows require separate analysis.</p>
+</div></details>
+~~~
+
+=== C125 · Q2.57 Nodes in binomial trees / 二叉树节点数 （Page 32）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 含 $N$ 个时间步的可重组二叉树与不可重组二叉树各有多少节点？</p>
+<p><strong>English:</strong> How many nodes are in an $N$-step recombining binomial tree and in a non-recombining binary tree?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>At level $n$, a recombining tree has $n+1$ nodes, so the total is</p>
+<p class="equation-line">$$\sum_{n=0}^N(n+1)=\frac{(N+1)(N+2)}2.$$</p>
+<p>A non-recombining binary tree has $2^n$ nodes at level $n$, totaling $2^{N+1}-1$.</p>
+</div></details>
+~~~
+
+=== C126 · Q2.58 Certain stock rise / 确信股价上涨时的工具选择 （Page 32）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 你合法掌握某外国股票必然上涨的消息，可做多股票、远期、期货或期权；利率与交易成本为零，汇率不变且无交易限制。只能做多时应选什么？</p>
+<p><strong>English:</strong> You legally know a foreign stock will rise and may go long the stock, a forward, futures, or options. Rates and costs are zero, FX is fixed, and trading is unrestricted. Which instrument should you choose?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>With no margin or collateral requirement, a long forward has zero initial cost and one-for-one upside, giving unbounded percentage leverage relative to invested cash. A futures contract is economically similar but may require margin and daily settlement. The stock ties up capital, and an option requires a premium and a view on strike and magnitude. Thus the idealized answer is the forward; in reality funding, margin, counterparty risk, position limits, and the size of the certain rise determine the choice.</p>
+</div></details>
+~~~
+
+=== C127 · Q2.59 Expected call price tomorrow / 明日看涨期权的期望价格 （Page 32）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一只看涨期权今天价格为 $c$，明天的期望价格是多少？</p>
+<p><strong>English:</strong> A call is priced at $c$ today. What is its expected price tomorrow?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The number $c$ alone is insufficient. Under the physical measure, the expected return depends on the option's exposure to priced stock and volatility risks. In a simple complete model its instantaneous expected return satisfies</p>
+<p class="equation-line">$$E[dC]=\left(rC+(\mu-r)S\Delta\right)dt,$$</p>
+<p>so a positive-beta call usually has an expected price above today's carried value, but the result requires $\mu$, delta, horizon, and model inputs. Under the risk-neutral measure only the discounted price is a martingale.</p>
+</div></details>
+~~~
+
+=== C128 · Q2.60 Positive expected return versus time decay / 正期望收益与时间损耗 （Page 32）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如果看涨期权明日的期望价格高于今日价格，怎样与负 Theta（时间损耗）相协调？</p>
+<p><strong>English:</strong> If a call's expected price tomorrow exceeds today's price, how can that coexist with negative theta?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Theta is the change from passage of time while holding spot and other state variables fixed; expected return averages over their random movement. Itô's formula gives</p>
+<p class="equation-line">$$E[dC]=\Theta\,dt+\Delta E[dS]+\frac12\Gamma E[(dS)^2]+\cdots.$$</p>
+<p>The positive expected delta exposure and gamma/variance contribution can more than offset negative theta. There is no contradiction because the two quantities condition on different experiments.</p>
 </div></details>
 ~~~
 
@@ -176,41 +1712,271 @@
 <div class="section-anchor" id="crack-financial-economics" aria-hidden="true"></div>
 ~~~
 
-== C. Financial Economics
+== C. Other Financial Economics
 
-=== C13 \[Core\] Forward Rate from Spot Rates \/ 由即期利率求远期利率
-*中文：* 年复利 5 年与 10 年即期利率分别为 10\% 和 15\%。5 年后开始、期限 5 年的远期年化利率是多少？
-
-*English:* With annual compounding, the five-year and ten-year spot rates are 10\% and 15\%. What is the annualized five-year forward rate beginning in year five?
-
+=== C129 · Q3.1 The St. Petersburg game / 圣彼得堡悖论 （Page 33）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 反复抛公平硬币，第一次正面出现在第 $k$ 次时支付 $2^k$ 美元。游戏的期望收益是多少？若客户要求立刻报出一次游戏的买卖价，该怎样处理？</p>
+<p><strong>English:</strong> Toss a fair coin until the first head; if it occurs on toss $k$, the payoff is $2^k$. What is the expected payoff, and how should one quote a bid--ask price for a single play?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>No arbitrage equates a ten-year investment with a five-year investment rolled into the forward:</p><p class="equation-line">$$ (1.15)^{10}=(1.10)^5(1+f_{5,10})^5.$$</p><p>Therefore</p><p class="equation-line">$$f_{5,10}=\left(\frac{1.15^{10}}{1.10^5}\right)^{1/5}-1\approx0.2023.$$</p><p>The forward rate is approximately <strong>20.23%</strong>. The numerical answer changes with the compounding convention, which must be stated.</p>
+<p>The formal expectation diverges:</p>
+<p class="equation-line">$$E[X]=\sum_{k=1}^{\infty}2^{-k}2^k=\sum_{k=1}^{\infty}1=\infty.$$</p>
+<p>That does not produce a usable finite quote. A real game has counterparty-wealth and payoff caps, and a single player's valuation depends on utility and risk limits. If payments are capped after $N$ tosses in the natural truncated version, the expectation is $N$ dollars; quote from the actual cap, credit terms, capital charge, and customer utility, not from the divergent idealization.</p>
 </div></details>
 ~~~
 
-=== C14 \[Core\] Why Bond Prices Are Convex \/ 债券价格为何凸
-*中文：* 画出普通无期权债券价格关于到期收益率的形状，并从现金流贴现公式解释其单调性与凸性。
-
-*English:* Describe the price–yield curve of an option-free bond and explain its monotonicity and convexity from the discounted-cash-flow formula.
-
+=== C130 · Q3.2 Four-year return volatility / 四年收益波动率 （Page 33）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若连续复利年收益率的标准差为 $10\%$，在独立同分布假设下，四年连续复利收益率的标准差是多少？</p>
+<p><strong>English:</strong> If annual continuously compounded returns have 10% standard deviation, what is the standard deviation of four-year log returns under independent identical increments?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>For annual cash flows $CF_t\ge0$,</p><p class="equation-line">$$P(y)=\sum_t\frac{CF_t}{(1+y)^t}.$$</p><p>For admissible $y$, each term has a negative first derivative and positive second derivative, so price decreases with yield and bends upward. Convexity means an equal yield decline produces a larger gain than the loss from an equal yield increase, locally. Embedded options can materially alter this shape.</p>
+<p>Variances add across independent years, so standard deviation scales with square-root time:</p>
+<p class="equation-line">$$\sigma_4=10\%\sqrt4=20\%.$$</p>
 </div></details>
 ~~~
 
-=== C15 \[Medium\] GARCH(1,1) \/ 条件波动率模型
-*中文：* 写出 GARCH(1,1) 的基本方程，解释各项，并给出有限无条件方差的典型条件。
-
-*English:* Write the basic GARCH(1,1) equations, interpret the terms, and state the usual condition for a finite unconditional variance.
-
+=== C131 · Q3.3 Five-year forward rate five years ahead / 五年后开始的五年远期利率 （Page 33）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 五年期即期年利率为 $10\%$，十年期即期年利率为 $15\%$。按年复利时，第 5 年至第 10 年的隐含五年远期年利率是多少？</p>
+<p><strong>English:</strong> The five-year spot rate is 10% and the ten-year spot rate is 15%, annually compounded. What annual forward rate is implied for years 5 through 10?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>A standard specification is</p><p class="equation-line">$$r_t=\mu+\varepsilon_t,\qquad \varepsilon_t=\sigma_t z_t,\qquad \sigma_t^2=\omega+\alpha\varepsilon_{t-1}^2+\beta\sigma_{t-1}^2,$$</p><p>with $\omega&gt;0$, $\alpha,\beta\ge0$, and standardized $z_t$. The shock term reacts to recent squared innovations and the lagged variance term creates persistence. If $\alpha+\beta&lt;1$, the covariance-stationary variance is $\omega/(1-\alpha-\beta)$ under standard assumptions.</p>
+<p>No-arbitrage requires</p>
+<p class="equation-line">$$(1.15)^{10}=(1.10)^5(1+f_{5,10})^5.$$</p>
+<p>Thus</p>
+<p class="equation-line">$$f_{5,10}=\left(\frac{1.15^{10}}{1.10^5}\right)^{1/5}-1=\frac{1.15^2}{1.10}-1\approx20.227\%.$$</p>
+</div></details>
+~~~
+
+=== C132 · Q3.4 Yield versus rate of return / 到期收益率与实际回报率 （Page 33）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 仔细区分债券的到期收益率与持有期回报率。</p>
+<p><strong>English:</strong> Carefully distinguish a bond's yield to maturity from its realized rate of return.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Yield to maturity is the single discount rate that equates today's price with promised future cash flows. It is an internal rate of return, conditional on no default, holding to maturity, and reinvesting coupons at that same yield. Realized return is the actual gain over a chosen holding period, including coupons, reinvestment income, sale price, default recovery, and price changes. The two coincide only when the yield's assumptions are realized.</p>
+</div></details>
+~~~
+
+=== C133 · Q3.5 Chaos theory and stock prediction / 混沌理论与股票预测 （Page 33）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是混沌理论？它能否用来可靠预测股票收益？</p>
+<p><strong>English:</strong> What is chaos theory, and can it be used to predict stock returns reliably?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Chaos is deterministic nonlinear dynamics with extreme sensitivity to initial conditions: nearby states can diverge rapidly even without random shocks. Detecting low-dimensional chaos in noisy, nonstationary market data is difficult, and measurement error limits forecast horizons. Nonlinear features may be useful empirically, but chaos theory by itself does not deliver reliable exploitable stock-return forecasts; any claim needs strict out-of-sample and trading-cost tests.</p>
+</div></details>
+~~~
+
+=== C134 · Q3.6 Bond price and yield convexity / 债券价格与收益率凸性 （Page 34）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 画出债券价格对到期收益率的曲线，并从经济与数学角度解释为什么它是凸的。</p>
+<p><strong>English:</strong> Sketch bond price against yield to maturity and explain economically and mathematically why the curve is convex.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For positive cash flows $CF_t$ and annual yield $y$,</p>
+<p class="equation-line">$$P(y)=\sum_t\frac{CF_t}{(1+y)^t},\quad P'(y)<0,quad P''(y)=\sum_t\frac{t(t+1)CF_t}{(1+y)^{t+2}}>0.$$</p>
+<p>The curve slopes downward and bows outward: an equal yield fall produces a larger price gain than the loss caused by an equal yield rise. Economically, lower yields increase both discount factors and the sensitivity of distant cash flows.</p>
+</div></details>
+~~~
+
+=== C135 · Q3.7 An empirical security market line / 经验证券市场线 （Page 34）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 经验平均收益对估计 Beta 的曲线与 CAPM 的证券市场线不一致。更可能观察到的是整体位于理论线之上、低 Beta 处更陡后趋于平行，还是整体位于理论线之下、起初更平后趋于平行？</p>
+<p><strong>English:</strong> If empirical average returns plotted against estimated beta differ from the CAPM security market line, which is more plausible: a curve above it and initially steeper, or one below it and initially flatter, each eventually becoming roughly parallel?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The first pattern is more plausible in the framing of the question. If securities carry omitted priced risks or are initially underpriced relative to CAPM, their average returns lie above the theoretical line; the impact can be proportionally stronger at low measured beta and flatten as market beta dominates. In real data, beta measurement error, omitted factors, leverage constraints, and sample selection can instead flatten the empirical SML, so this is a diagnosis under the proposed scenarios, not a universal empirical law.</p>
+</div></details>
+~~~
+
+=== C136 · Q3.8 Forward rate for the second year / 第二年的远期利率 （Page 34）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一年期即期年利率为 $7.15\%$，两年期即期年利率为 $7.60\%$。按年复利时，第二年的隐含远期利率是多少？</p>
+<p><strong>English:</strong> The one-year spot rate is 7.15% and the two-year spot rate is 7.60%, annually compounded. What is the implied forward rate for year two?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Set $(1.076)^2=(1.0715)(1+f)$:</p>
+<p class="equation-line">$$f=\frac{1.076^2}{1.0715}-1\approx8.052\%.$$</p>
+<p>The mental approximation is $7.60\%+(7.60\%-7.15\%)=8.05\%$.</p>
+</div></details>
+~~~
+
+=== C137 · Q3.9 Forward premium on bonds / 债券的远期升贴水 （Page 34）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一份六个月后交割的十年期无风险零息债券远期，债券以远期升水还是贴水交易？若改为票息率高于当前无风险利率的无风险附息债券，答案是否改变？</p>
+<p><strong>English:</strong> Does a six-month forward on a riskless ten-year zero-coupon bond trade at a forward premium or discount? What if the underlying is a riskless coupon bond whose coupon yield exceeds the risk-free rate?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>With positive carrying rates and no interim income, the zero-coupon bond has $F=S_0e^{rT}>S_0$, a forward premium. For a coupon bond, subtract the present value of coupons paid before delivery:</p>
+<p class="equation-line">$$F=(S_0-I)e^{rT}.$$</p>
+<p>If coupon income exceeds financing carry, the forward can be below spot—a forward discount.</p>
+</div></details>
+~~~
+
+=== C138 · Q3.10 Trading a steeper yield curve / 交易收益率曲线变陡 （Page 34）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 预期收益率曲线即将变陡，可能由短端下降、长端上升或两者共同造成。怎样构造债券交易？</p>
+<p><strong>English:</strong> You expect the yield curve to steepen through lower short rates, higher long rates, or both. How should you trade?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Use a duration- and preferably convexity-controlled steepener: go long short-maturity bonds and short long-maturity bonds, sizing notionals so initial market value and DV01 are approximately neutral. Then falling short yields raise the long leg and rising long yields hurt the short leg in your favor. DV01 neutrality isolates the slope view from a parallel rate move.</p>
+</div></details>
+~~~
+
+=== C139 · Q3.11 Duration and convexity / 久期与凸性 （Page 35）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 定义债券的久期与凸性，并说明它们的性质和用途。</p>
+<p><strong>English:</strong> Define bond duration and convexity, and describe their properties and uses.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Macaulay duration is the present-value-weighted average payment time. Modified duration is the negative proportional price slope, $D_{\rm mod}=-(1/P)\,dP/dy$. Convexity is the scaled second derivative, $\mathcal C=(1/P)\,d^2P/dy^2$ under the chosen yield convention. For a small yield change,</p>
+<p class="equation-line">$$\frac{\Delta P}{P}\approx-D_{\rm mod}\Delta y+\frac12\mathcal C(\Delta y)^2.$$</p>
+<p>They measure first- and second-order rate risk, support immunization and hedge sizing, and explain why duration alone becomes inaccurate for large moves.</p>
+</div></details>
+~~~
+
+=== C140 · Q3.12 The GARCH one-one model / GARCH(1,1) 模型 （Page 35）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 定性并形式化说明 GARCH(1,1) 模型，解释各项含义、估计方法与引入动机。</p>
+<p><strong>English:</strong> Describe the GARCH(1,1) model qualitatively and formally, explaining its terms, estimation, and motivation.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $r_t=\mu_t+\varepsilon_t$ with $\varepsilon_t=\sigma_t z_t$, where $z_t$ has mean zero and variance one. Then</p>
+<p class="equation-line">$$\sigma_t^2=\omega+\alpha\varepsilon_{t-1}^2+\beta\sigma_{t-1}^2,$$</p>
+<p>with $\omega>0$ and $\alpha,\beta\ge0$. Recent squared shocks create volatility news; lagged variance creates persistence. Usually $\alpha+\beta<1$ ensures covariance stationarity and long-run variance $\omega/(1-\alpha-\beta)$. Parameters are commonly estimated by maximum likelihood. The model was introduced to capture volatility clustering and time-varying conditional heteroskedasticity.</p>
+</div></details>
+~~~
+
+=== C141 · Q3.13 Halving a long-bond exposure / 将长期债券敞口减半 （Page 35）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 持有 1 亿美元的 30 年期债券，怎样把利率敞口限制为约 5000 万美元？</p>
+<p><strong>English:</strong> You hold USD 100 million of a 30-year bond. How can you reduce its interest-rate exposure to about USD 50 million?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Short duration exposure using Treasury-bond futures, swaps, or bonds. Size the hedge by DV01, not just face value:</p>
+<p class="equation-line">$$N=\frac{0.5\,\mathrm{DV01}_{\rm position}}{\mathrm{DV01}_{\rm hedge\ contract}}.$$</p>
+<p>For a perfectly matched same bond this reduces to shorting USD 50 million face. Futures require the conversion factor and cheapest-to-deliver adjustment; basis and curve-shape risks remain.</p>
+</div></details>
+~~~
+
+=== C142 · Q3.14 A Mexican Brady bond and US rates / 墨西哥 Brady 债券与美国利率 （Page 35）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 持有票息率 $8\%$、30 年期、面值 1000 美元的墨西哥 Brady 债券；墨西哥利率不变，美国利率上升 1 个百分点。债券价格会变多少？请明确假设。</p>
+<p><strong>English:</strong> You hold an 8% coupon, 30-year, USD 1,000-par Mexican Brady bond. Mexican rates do not change and US rates rise one percentage point. Estimate the price change, stating assumptions.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The data do not determine a unique change: one needs the bond's US-rate beta, duration, spread response, and collateral structure. For an interview estimate, assume a 25% pass-through from the Treasury move to the bond yield, price near par, yield 8%, and Macaulay duration about 15. Then $\Delta y=0.25\%$ and</p>
+<p class="equation-line">$$\Delta P\approx-\frac{D_{\rm Mac}}{1+y}P\Delta y=-\frac{15}{1.08}(1000)(0.0025)\approx-\$34.72.$$</p>
+<p>So the estimate is a decline of roughly USD 35, or 3.5%. Different pass-through assumptions give different answers.</p>
+</div></details>
+~~~
+
+=== C143 · Q3.15 Trading a flattening curve / 交易收益率曲线变平 （Page 35）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 预期曲线变平：短端上升、长端下降，但五年期附息国债收益率与五年期公司零息债收益率均不变，后者相对五年点的信用利差仍为 1%。怎样用公司零息债和国债获利？</p>
+<p><strong>English:</strong> You expect a curve flattening in which short rates rise and long rates fall, while a five-year coupon Treasury and a five-year corporate zero yield remain unchanged and the corporate spread stays at 1%. How can the corporate zero and Treasuries express the view?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A five-year zero has longer duration than a five-year coupon Treasury. Short the corporate zero and buy a portfolio of longer-maturity coupon Treasuries with the same initial value and duration. As the curve flattens, the longer Treasury yields fall and their prices rise, while the corporate zero's stipulated yield and price stay unchanged. Matching value and duration controls first-order parallel-shift exposure; credit and basis risks remain.</p>
+</div></details>
+~~~
+
+=== C144 · Q3.16 Why the forward rate exceeds twenty percent / 远期利率为何高于百分之二十 （Page 35）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 五年期利率为 $10\%$、十年期利率为 $15\%$ 时，第 5 至第 10 年的远期年利率约为 $20\%$。为什么按有效年利率精确计算会略高于 $20\%$？</p>
+<p><strong>English:</strong> With a five-year rate of 10% and a ten-year rate of 15%, the years-5-to-10 forward rate is roughly 20%. Why is the exact annually compounded rate slightly higher than 20%?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Simple averaging ignores compounding. Earning 10% first and 20% second produces a cross-product term $0.10\times0.20$ that differs from earning 15% in both periods. To make the compounded ten-year accumulation match, the later rate must exceed the linear estimate. Algebraically it is $1.15^2/1.10-1\approx20.227\%$. With continuously compounded rates, log accumulation is linear and the 20% interpolation would be exact.</p>
+</div></details>
+~~~
+
+=== C145 · Q3.17 A delayed coin-toss payoff / 延迟支付的抛硬币游戏 （Page 35）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 现在抛一枚公平硬币：正面则 18 个月后收 7 美元，反面则立即损失 2 美元。一年期利率为 $12\%$、两年期为 $18\%$。最多愿意付多少钱参与？</p>
+<p><strong>English:</strong> Toss a fair coin now: heads pays USD 7 in 18 months, tails costs USD 2 immediately. The one-year rate is 12% and the two-year rate 18%. What is the maximum fair entry price?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>An exact answer needs the 18-month discount factor. Using the question's interpolation, the second-year forward rate is about 24%, or 12% per half-year, so the 18-month discount factor is approximately $1/(1.12\cdot1.12)=1/1.2544$. The risk-neutral expected present payoff is therefore</p>
+<p class="equation-line">$$\frac12\frac{7}{1.2544}-\frac12(2)\approx\$1.79,$$</p>
+<p>about USD 1.80. A one-off risk-averse player may pay less; for repeated small independent plays, the risk-neutral value is appropriate.</p>
+</div></details>
+~~~
+
+=== C146 · Q3.18 An unidentified informed trader / 身份不明的内幕交易者 （Page 36）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 20 名交易员在封闭市场交易 100 只股票。监管者宣布其中一人掌握某只股票的内幕信息并已交易，但不公布其身份。之后交易量怎样变化？</p>
+<p><strong>English:</strong> Twenty traders form a closed market in 100 stocks. Regulators announce that one unidentified trader has inside information about one stock and has traded on it. What happens to volume?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Volume should fall. Any counterparty might be the informed trader and any order might concern the informed stock, so adverse-selection risk rises across the room. Liquidity providers widen bid--ask spreads or withdraw; other traders become reluctant to trade. Wider spreads and lower participation reduce liquidity and volume.</p>
+</div></details>
+~~~
+
+=== C147 · Q3.19 Minimum-variance weights / 最小方差权重 （Page 36）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两只股票期望收益相同，收益标准差分别为 $20\%$ 与 $30\%$，相关系数为 $0.5$。怎样配置才能最小化组合风险？</p>
+<p><strong>English:</strong> Two stocks have equal expected returns, standard deviations 20% and 30%, and correlation 0.5. What allocation minimizes portfolio risk?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For weight $w$ in stock 1, the minimum-variance weight is</p>
+<p class="equation-line">$$w^*=\frac{\sigma_2^2-\rho\sigma_1\sigma_2}{\sigma_1^2+\sigma_2^2-2\rho\sigma_1\sigma_2}=\frac{0.09-0.03}{0.04+0.09-0.06}=\frac67.$$</p>
+<p>Invest $6/7$ in the 20%-volatility stock and $1/7$ in the 30%-volatility stock. The resulting standard deviation is $\sqrt{0.0385714}\approx19.64\%$.</p>
+</div></details>
+~~~
+
+=== C148 · Q3.20 Minimum variance from variances / 根据方差求最小风险配置 （Page 36）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 与上一题相同，但两只股票的收益方差分别为 $0.10$ 与 $0.40$，相关系数仍为 $0.5$。最小方差配置是什么？</p>
+<p><strong>English:</strong> Repeat the preceding allocation problem when the return variances are 0.10 and 0.40 and correlation remains 0.5.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Here $\sigma_2=2\sigma_1$ and $\rho=\sigma_1/\sigma_2=0.5$. The unconstrained weight formula gives</p>
+<p class="equation-line">$$w_1^*=\frac{0.40-0.5\sqrt{0.10}\sqrt{0.40}}{0.10+0.40-2(0.5)\sqrt{0.10}\sqrt{0.40}}=1.$$</p>
+<p>Thus invest entirely in the lower-variance stock. At this correlation, adding the second stock provides no marginal variance reduction.</p>
 </div></details>
 ~~~
 
@@ -221,64 +1987,522 @@
 
 == D. Statistics & Probability
 
-=== C16 \[Core\] The Two-Headed Coin \/ 双面正硬币
-*中文：* 罐中有 999 枚公平硬币和 1 枚双面都是正面的硬币。随机取一枚并连续掷出 10 次正面。它是双面正硬币的后验概率是多少？
-
-*English:* A jar contains 999 fair coins and one double-headed coin. A randomly selected coin produces ten consecutive heads. What is the posterior probability that it is double-headed?
-
+=== C149 · Q4.1 Product of two uniforms / 两个均匀变量的乘积 （Page 37）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $X,Y$ 独立且均匀分布于 $(0,1]$，求 $P(XY>1/2)$。</p>
+<p><strong>English:</strong> Let $X$ and $Y$ be independent uniform random variables on $(0,1]$. Find $P(XY>1/2)$.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Bayes' rule gives</p><p class="equation-line">$$\frac{(1/1000)\cdot1}{(1/1000)\cdot1+(999/1000)\cdot2^{-10}}=\frac{1024}{2023}\approx0.5062.$$</p><p>Ten heads are strong evidence, but the prior odds against the special coin are 999 to 1.</p>
+<p>The admissible region has $x>1/2$ and $y>1/(2x)$, so</p>
+<p class="equation-line">$$P(XY>1/2)=\int_{1/2}^{1}\left(1-\frac{1}{2x}\right)dx=\frac12-\frac12\ln2\approx0.1534.$$</p>
 </div></details>
 ~~~
 
-=== C17 \[Core\] Disease Test and Base Rate \/ 疾病检测与基准率
-*中文：* 疾病患病率为 0.5\%；患者检测必为阳性，健康者假阳性率为 7\%。随机一人检测阳性，其患病概率是多少？
-
-*English:* Disease prevalence is 0.5\%. Sensitivity is 100\%, and the false-positive rate is 7\%. For a random person who tests positive, what is the disease probability?
-
+=== C150 · Q4.2 Fair price for one die roll / 单次掷骰子的公平票价 （Page 37）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 公平六面骰掷一次，向上点数为几就支付几美元。风险中性的公平票价是多少？</p>
+<p><strong>English:</strong> A fair die is rolled once and pays one dollar per pip shown. What is the risk-neutral fair ticket price?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>By Bayes' rule,</p><p class="equation-line">$$\Pr(D\mid+)=\frac{0.005}{0.005+0.995(0.07)}\approx0.0669.$$</p><p>Despite perfect sensitivity, most positives are false because the condition is rare.</p>
+<p>The expected payoff is</p>
+<p class="equation-line">$$\frac{1+2+3+4+5+6}{6}=\$3.50.$$</p>
+<p>A seller may add a margin or one-shot risk charge, but USD 3.50 is the actuarially fair value.</p>
 </div></details>
 ~~~
 
-=== C18 \[Medium\] Waiting for Consecutive Heads \/ 等待连续正面
-*中文：* 每次独立抛一枚正面概率为 $p$ 的硬币。等待连续 2 个正面和连续 3 个正面的期望抛掷次数分别是多少？
-
-*English:* Independent tosses have head probability $p$. What are the expected waiting times for two consecutive heads and for three consecutive heads?
-
+=== C151 · Q4.3 Four coins versus five / 四枚硬币对五枚硬币 （Page 37）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 对方抛四枚公平硬币，你抛五枚；你的正面数严格更多才获胜。获胜概率是多少？</p>
+<p><strong>English:</strong> Your opponent tosses four fair coins and you toss five. You win only with strictly more heads. What is your probability of winning?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Using states equal to the current run length and solving the first-step recurrences gives the general formula</p><p class="equation-line">$$\mathbb E[T_k]=\frac{1+p+\cdots+p^{k-1}}{p^k}.$$</p><p>Thus</p><p class="equation-line">$$\mathbb E[T_2]=\frac{1+p}{p^2},\qquad \mathbb E[T_3]=\frac{1+p+p^2}{p^3}.$$</p>
+<p>Pair four of your coins with the opponent's four. By symmetry, your four-coin total is equally likely to be above or below theirs, with ties in between. Your fifth coin breaks every tie in your favor with probability $1/2$. Hence</p>
+<p class="equation-line">$$P(\text{win})=\frac{1-P(\text{tie})}{2}+\frac{P(\text{tie})}{2}=\frac12.$$</p>
 </div></details>
 ~~~
 
-=== C19 \[Core\] Broken-Stick Triangle \/ 断棍成三角形
-*中文：* 在单位线段上独立均匀选两个断点。三段能组成三角形的概率是多少？
-
-*English:* Two independent uniform breakpoints split a unit stick into three pieces. What is the probability that the pieces form a triangle?
-
+=== C152 · Q4.4 Optimal stopping with three die rolls / 三次掷骰子的最优停止 （Page 37）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一枚公平骰子最多掷三次；第一次或第二次后可停止，否则必须接受第三次点数作为美元收益。最优停止策略与游戏价值是什么？若改成无须决策、直接支付三次点数的最大值，价值又是多少？</p>
+<p><strong>English:</strong> A fair die may be rolled up to three times. You may stop after roll one or two, otherwise the third roll is paid in dollars. Find the optimal stopping rule and value. As a comparison, what is the value if the maximum of three mandatory rolls is paid?</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>A triangle is possible iff every piece is shorter than $1/2$. In the unit-square representation of the two breakpoints, the failure regions where one piece is at least $1/2$ have total area $3/4$. Therefore the success probability is <strong>$1/4$</strong>.</p>
+<p>On roll two, continuing is worth $3.5$, so stop on 4, 5, or 6. Before roll two, the continuation value is</p>
+<p class="equation-line">$$\frac16(3.5+3.5+3.5+4+5+6)=4.25,$$</p>
+<p>so after roll one stop on 5 or 6. The initial value is</p>
+<p class="equation-line">$$\frac16(4.25+4.25+4.25+4.25+5+6)=\frac{14}{3}\approx4.6667.$$</p>
+<p>For the maximum of three unconditional rolls,</p>
+<p class="equation-line">$$E[M]=\sum_{m=1}^{6}m\left[\left(\frac m6\right)^3-\left(\frac{m-1}{6}\right)^3\right]=\frac{119}{24}\approx4.9583.$$</p>
 </div></details>
 ~~~
 
-=== C20 \[Core\] Meeting at the Station \/ 车站会面
-*中文：* 两人在 1 点至 2 点之间独立均匀到达，各等待 15 分钟但不超过 2 点。两人碰面的概率是多少？
-
-*English:* Two people independently arrive uniformly between 1:00 and 2:00 and each waits 15 minutes, never beyond 2:00. What is the probability that they meet?
-
+=== C153 · Q4.5 Correlation under affine changes / 仿射变换下的相关系数 （Page 38）
 ~~~
 {}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若 $\operatorname{Corr}(X,Y)=\rho$，则 $\operatorname{Corr}(X+5,Y)$ 与 $\operatorname{Corr}(5X,Y)$ 分别是多少？</p>
+<p><strong>English:</strong> If $\operatorname{Corr}(X,Y)=\rho$, find $\operatorname{Corr}(X+5,Y)$ and $\operatorname{Corr}(5X,Y)$.</p>
+</div>
 <details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Let arrival times $X,Y$ be measured in hours. They meet iff $|X-Y|\le1/4$. The two failure triangles in the unit square have total area $(3/4)^2$. Hence</p><p class="equation-line">$$\Pr(\text{meet})=1-\left(\frac34\right)^2=\frac7{16}.$$</p>
+<p>Both equal $\rho$. Adding a constant changes neither covariance nor standard deviation. Multiplying $X$ by positive five multiplies both $\operatorname{Cov}(X,Y)$ and $\sigma_X$ by five, so the ratio is unchanged. A negative multiplier would reverse the sign.</p>
 </div></details>
 ~~~
 
-*书目定位：* 本页覆盖原书 Chapter 1 的逻辑与定量题、Chapter 2 的衍生品题、Chapter 3 的金融经济学题，以及 Chapter 4 的统计与概率题；行为面试清单不纳入数学题库。
+=== C154 · Q4.6 The two-envelope paradox / 两信封悖论 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两个信封分别装有 $m$ 与 $2m$ 美元，你和对手各得一个。未查看或查看金额后，交换的期望收益各是多少？为什么“看到 $X$ 后有一半机会变成 $2X$、一半变成 $X/2$，所以应交换”的推理有问题？</p>
+<p><strong>English:</strong> Two envelopes contain $m$ and $2m$ dollars, one for you and one for an opponent. What is the expected gain from switching before or after observing the amount, and why is the familiar “half chance of $2X$, half chance of $X/2$” argument invalid?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Before observing either amount, symmetry makes both envelopes identically distributed, so switching has expected gain zero. After seeing $X$, one cannot assign equal probabilities to the alternatives $m=X$ and $m=X/2$ without a proper prior distribution for $m$. Those posterior probabilities depend on the prior; there is no uniform probability distribution over all positive scales.</p>
+<p>If both amounts are revealed, one player gains exactly what the other loses by exchanging; the transfer is zero-sum. Repeating the same information-free switch cannot create value. The apparent $X/4$ gain comes from applying incompatible probability models to different possible observed values.</p>
+</div></details>
+~~~
+
+=== C155 · Q4.7 Betting through a best-of-seven series / 七场四胜制的逐场下注 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> A、B 两队进行七场四胜制比赛。你有 100 美元，必须每场都以等额赔率对 A 下正数赌注，并要求 A 最终夺冠时资产恰为 200 美元、失败时恰为零。每场 A 获胜概率为 $70\%$。怎样逐场下注？</p>
+<p><strong>English:</strong> Teams A and B play a best-of-seven series. Starting with USD 100, you must make a positive even-money bet on A in every game and end with exactly USD 200 if A wins the series and USD 0 otherwise. A wins each game with probability 70%. How should the bets be set?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Replicate the binary series payoff by backward induction; the 70% belief is irrelevant to pathwise replication. Let $W(i,j)$ be required wealth when A and B have $i,j$ wins. Set $W(4,j)=200$ and $W(i,4)=0$. At each live state,</p>
+<p class="equation-line">$$W(i,j)=\frac{W(i+1,j)+W(i,j+1)}2,qquad b(i,j)=\frac{W(i+1,j)-W(i,j+1)}2.$$</p>
+<p>Bet $b(i,j)$ on A. Initially $W(0,0)=100$ and the first stake is USD 31.25. Reapplying the recursion after each result gives every later stake and guarantees the required terminal wealth.</p>
+</div></details>
+~~~
+
+=== C156 · Q4.8 Sharing one apple fairly / 公平分配一只苹果 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 三个孩子只有一个苹果，怎样仅用公平硬币让每人获得苹果的概率都为 $1/3$？</p>
+<p><strong>English:</strong> Three children share one apple. How can a fair coin select each child with probability exactly $1/3$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Toss twice. Assign $HH$, $HT$, and $TH$ to the three children. If $TT$ occurs, discard the result and repeat. Conditional on acceptance, the three assigned outcomes are equally likely.</p>
+</div></details>
+~~~
+
+=== C157 · Q4.9 Expected tosses for the apple / 分苹果所需的期望抛掷次数 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 使用上一题的两次抛掷并在 $TT$ 时重来的方案，期望需要抛多少次硬币？</p>
+<p><strong>English:</strong> Under the preceding two-toss scheme, restarting after $TT$, what is the expected number of coin tosses?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Each two-toss round succeeds with probability $3/4$, so the expected number of rounds is $1/(3/4)=4/3$. Each round uses two tosses:</p>
+<p class="equation-line">$$E[N]=2\cdot\frac43=\frac83.$$</p>
+</div></details>
+~~~
+
+=== C158 · Q4.10 Simulating one-third and two-thirds / 模拟三分之一与三分之二 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 怎样用公平硬币模拟概率分别为 $1/3$ 与 $2/3$ 的两个事件？</p>
+<p><strong>English:</strong> How can a fair coin simulate events with probabilities $1/3$ and $2/3$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Toss twice. Declare the $1/3$ event on $HH$, the $2/3$ event on $HT$ or $TH$, and restart on $TT$. Conditional on a non-restart, the three equally likely accepted outcomes give probabilities $1/3$ and $2/3$.</p>
+</div></details>
+~~~
+
+=== C159 · Q4.11 Rolling until not one / 掷到非一点为止 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 反复掷公平骰子，出现 1 就继续；第一次出现非 1 时，按该点数支付美元并结束。期望收益是多少？</p>
+<p><strong>English:</strong> Roll a fair die until the first result other than one, then receive that many dollars. What is the expected payoff?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Conditional on stopping, the terminal face is uniform on $\{2,3,4,5,6\}$. Thus</p>
+<p class="equation-line">$$E[X]=\frac{2+3+4+5+6}{5}=4.$$</p>
+<p>The random number of preceding ones does not change the distribution of the first non-one result.</p>
+</div></details>
+~~~
+
+=== C160 · Q4.12 Two kings / 两张国王 （Page 39）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 从标准 52 张牌中不放回抽两张，两张都是 K 的概率是多少？</p>
+<p><strong>English:</strong> Two cards are dealt without replacement from a standard 52-card deck. What is the probability both are kings?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p class="equation-line">$$P=\frac4{52}\frac3{51}=\frac1{221}.$$</p>
+</div></details>
+~~~
+
+=== C161 · Q4.13 Monty Hall / 蒙提霍尔问题 （Page 39）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 三扇门后只有一份奖品。主持人知道奖品位置，并保证在你选择后从另外两扇门中打开一扇空门，再允许你换到剩下的门。应该换吗？</p>
+<p><strong>English:</strong> One of three doors hides a prize. After your choice, a host who knows its location always opens an empty unchosen door and offers the remaining door. Should you switch?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Yes. The initial door has probability $1/3$ of holding the prize and the pair of unchosen doors has probability $2/3$. The host's guaranteed empty reveal concentrates that entire $2/3$ on the sole unopened alternative. Switching wins with probability $2/3$, versus $1/3$ for staying.</p>
+</div></details>
+~~~
+
+=== C162 · Q4.14 A random audience member opens a door / 观众随机开门 （Page 39）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若不是知情主持人，而是不知道奖品位置的观众随机打开另一扇门，并且这一次碰巧开到空门，是否应该换？区分“一次偶然开空”与“机制保证每次都开空”两种解释。</p>
+<p><strong>English:</strong> If an uninformed audience member randomly opens another door and happens to reveal an empty one, should you switch? Distinguish a one-off lucky reveal from a mechanism that always produces an empty reveal.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For a one-off random choice conditioned on having revealed an empty door, your original door and the other unopened door each have posterior probability $1/2$, so switching is neutral. If the repeated-game mechanism somehow guarantees an empty reveal every time, then it conveys no accidental-survival information and the usual Monty Hall probabilities remain $1/3$ versus $2/3$; switching is optimal. The door-opening protocol is part of the probability model.</p>
+</div></details>
+~~~
+
+=== C163 · Q4.15 Two jars of marbles / 两罐弹珠 （Page 40）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 把 50 颗白珠和 50 颗黑珠分入两个罐子；随后随机选一罐并最多抽一颗。怎样使抽到白珠的概率最大？若要最小化白珠概率又如何？</p>
+<p><strong>English:</strong> Split 50 white and 50 black marbles between two jars, then choose a jar uniformly and draw at most one marble. How is the probability of white maximized? What allocation minimizes it?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For the maximum, put one white marble alone in one jar and the other 99 marbles in the second:</p>
+<p class="equation-line">$$P(\text{white})=\frac12(1)+\frac12\left(\frac{49}{99}\right)=\frac{74}{99}.$$</p>
+<p>For the minimum, if an empty jar is allowed, put all marbles in one jar, giving $\tfrac12(0)+\tfrac12(\tfrac12)=1/4$. If both jars must be nonempty, put one black marble alone and all remaining marbles in the other, giving $25/99$. With an empty jar, minimizing white does not maximize black because choosing the empty jar yields neither color.</p>
+</div></details>
+~~~
+
+=== C164 · Q4.16 Three-person duel / 三人决斗 （Page 40）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 三人按 Mr. 10、Mr. 30、Mr. 60 的顺序循环射击，命中率分别为 $10\%,30\%,60\%$，直到只剩一人。Mr. 10 先手应射谁？若顺序改为 Mr. 10、Mr. 60、Mr. 30 呢？</p>
+<p><strong>English:</strong> Three shooters hit with probabilities 10%, 30%, and 60% in cyclic order Mr. 10, Mr. 30, Mr. 60 until one survives. Whom should Mr. 10 target first? What if the order is Mr. 10, Mr. 60, Mr. 30?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>In the original order, Mr. 10 should deliberately miss. Both stronger shooters regard each other as the main threat, so remaining harmless maximizes Mr. 10's chance of reaching a two-person duel after one is removed. Once only one opponent remains, he shoots at that opponent.</p>
+<p>With order Mr. 10, Mr. 60, Mr. 30, the optimal first action changes: Mr. 10 should shoot at Mr. 60. Exact survival probabilities follow from state-by-state recursions, but the key point is that turn order changes the continuation values; “always shoot the best marksman” and “always fire into the air” are not universal rules.</p>
+</div></details>
+~~~
+
+=== C165 · Q4.17 Two-point or three-point shot / 两分球还是三分球 （Page 40）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 球队落后两分，三分球命中率 $40\%$，两分球命中率 $70\%$；两分命中后进入加时，加时胜率为 $50\%$。应投哪一种？</p>
+<p><strong>English:</strong> Down two points at the buzzer, you make a three-pointer with probability 40% or a two-pointer with probability 70%; a made two sends the game to overtime with a 50% win chance. Which shot maximizes the chance of winning?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The three-pointer wins with probability $0.40$. The two-pointer wins only by making the shot and then winning overtime:</p>
+<p class="equation-line">$$0.70\times0.50=0.35.$$</p>
+<p>Take the three-pointer.</p>
+</div></details>
+~~~
+
+=== C166 · Q4.18 A five-section roulette wheel / 五格轮盘 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 公平五格轮盘有四格支付 1 美元、一格支付 5 美元，每次成本 1.50 美元。可重复玩时是否参与？只能玩一次时呢？</p>
+<p><strong>English:</strong> A fair five-section wheel pays USD 1 on four sections and USD 5 on one, at a cost of USD 1.50 per spin. Should you play repeatedly, and should you play exactly once?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The expected gross payoff is $(4\cdot1+5)/5=1.80$, so expected net profit is USD 0.30 per spin. A risk-neutral player should accept repeated independent plays. For one play, positive expectation alone does not settle the choice for a risk-averse person; compare expected utility of the USD -0.50 and USD 3.50 outcomes with utility of not playing. At these small stakes most players would still accept, but preferences matter.</p>
+</div></details>
+~~~
+
+=== C167 · Q4.19 A four-game parlay / 四场串关 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 假设四场比赛各自猜对概率为 $1/2$ 且相互独立，四场全中才赢。庄家给 10 赔 1 的净赔率，应下注吗？若为 25 赔 1 呢？</p>
+<p><strong>English:</strong> Assume four independent games are each predicted correctly with probability $1/2$, and all four must be correct. Should you take net odds of 10-to-1? What about 25-to-1?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The win probability is $1/16$. At net odds $a$ to one, expected profit per dollar staked is</p>
+<p class="equation-line">$$\frac1{16}a-\frac{15}{16}.$$</p>
+<p>For $a=10$ this is $-5/16$, so reject. For $a=25$ it is $10/16>0$, so a risk-neutral player accepts. Correlation or unequal game probabilities would require recomputing the joint win probability.</p>
+</div></details>
+~~~
+
+=== C168 · Q4.20 Standard deviation of five numbers / 五个数的标准差 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 数列 $(1,2,3,4,5)$ 的标准差是多少？说明采用总体还是样本定义。</p>
+<p><strong>English:</strong> What is the standard deviation of $(1,2,3,4,5)$? State whether the population or sample definition is used.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The mean is three and the sum of squared deviations is ten. Treating the five values as the population gives</p>
+<p class="equation-line">$$\sigma=\sqrt{10/5}=\sqrt2.$$</p>
+<p>Treating them as a sample and using Bessel's correction gives $s=\sqrt{10/4}=\sqrt{2.5}$. The question is ambiguous unless the convention is specified.</p>
+</div></details>
+~~~
+
+=== C169 · Q4.21 Russian roulette with adjacent bullets / 相邻子弹的俄罗斯轮盘 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 六膛左轮中有两发相邻子弹，随机转轮后第一次扣扳机为空。第二次射击前，应重新转轮还是保持当前位置直接转到下一膛？</p>
+<p><strong>English:</strong> A six-chamber revolver contains two adjacent bullets. After a random spin, the first trigger pull is empty. Before the next shot, is it safer to spin again or advance without spinning?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Do not spin. Given that the current chamber is one of the four empty chambers, exactly one of those four positions is immediately followed by a bullet, so the conditional firing probability is $1/4$. Spinning resets the bullet probability to $2/6=1/3$. Thus advancing without a new spin is safer.</p>
+</div></details>
+~~~
+
+=== C170 · Q4.22 A two-headed coin after ten heads / 连续十次正面后的双正面硬币 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 罐中有 999 枚公平硬币与一枚双正面硬币。随机取一枚，连续抛出十次正面。它是双正面硬币的后验概率是多少？</p>
+<p><strong>English:</strong> A jar contains 999 fair coins and one two-headed coin. A randomly selected coin produces ten heads in a row. What is the posterior probability it is the two-headed coin?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Bayes' rule gives</p>
+<p class="equation-line">$$P(D\mid H^{10})=\frac{(1/1000)\cdot1}{(1/1000)\cdot1+(999/1000)2^{-10}}=\frac{1024}{2023}\approx0.5062.$$</p>
+</div></details>
+~~~
+
+=== C171 · Q4.23 Water, earth, wind, and fire / 水土风火四张牌 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 水、土、风、火四张牌随机排列，依次翻开；在火出现前翻到水和土则获胜，火先出现则失败。获胜概率是多少？</p>
+<p><strong>English:</strong> Water, earth, wind, and fire cards are shuffled. You win if both water and earth appear before fire; fire appearing earlier ends the game. What is the win probability?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Ignore wind. Among the relative orderings of water, earth, and fire, each is equally likely. Winning requires fire to be last among those three, which occurs in two of the six orders:</p>
+<p class="equation-line">$$P(\text{win})=\frac{2}{6}=\frac13.$$</p>
+</div></details>
+~~~
+
+=== C172 · Q4.24 A non-zero-sum marble game / 非零和弹珠博弈 （Page 42）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> A、B 各自同时出红珠或蓝珠：同为红色时 A 从外部得到 3 美元，同为蓝色时 A 得 1 美元，颜色不同时 B 得 2 美元。扮演 A 还是 B 更好？</p>
+<p><strong>English:</strong> Players A and B simultaneously show red or blue. Matching red pays A USD 3, matching blue pays A USD 1, and a mismatch pays B USD 2, all from an outside source. Which role is better?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>If both colors are chosen independently with probability $1/2$, each role has expected payoff USD 1. B's payoff variance is 1, compared with A's 1.5, so a risk-averse player prefers B under that stipulated random play.</p>
+<p>The game is not zero-sum, however, so strategic choice gives a second interpretation. In the mixed Nash equilibrium, let $p$ be A's red probability and $q$ B's. A is indifferent when $3q=1-q$, hence $q=1/4$; B is indifferent when $2(1-p)=2p$, hence $p=1/2$. Equilibrium expected payoffs are</p>
+<p class="equation-line">$$E[A]=\frac34,qquad E[B]=1.$$</p>
+<p>Thus B has the higher equilibrium payoff. Against a known non-equilibrium strategy, however, the preferred role and best response can differ.</p>
+</div></details>
+~~~
+
+=== C173 · Q4.25 Learning a coin's head probability / 推断硬币的正面概率 （Page 42）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 制币机先从 $[0,1]$ 均匀抽取该硬币的正面概率 $P$。若第一次抛掷为正面，$P$ 的条件分布函数是什么？若抛 1000 次得到 750 次正面呢？</p>
+<p><strong>English:</strong> A machine draws a coin's head probability $P$ uniformly from $[0,1]$. What is the conditional CDF of $P$ after one head? What is it after 750 heads in 1,000 tosses?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A uniform prior is $\operatorname{Beta}(1,1)$. After one head, the posterior is $\operatorname{Beta}(2,1)$, so</p>
+<p class="equation-line">$$F_{P\mid H}(p)=p^2,qquad0\le p\le1.$$</p>
+<p>After 750 heads and 250 tails, the posterior is $\operatorname{Beta}(751,251)$ and</p>
+<p class="equation-line">$$F(p)=I_p(751,251),$$</p>
+<p>the regularized incomplete beta function.</p>
+</div></details>
+~~~
+
+=== C174 · Q4.26 Exponential of a normal variable / 正态变量的指数期望 （Page 42）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若 $X\sim N(0,\sigma^2)$，求 $E[e^X]$。</p>
+<p><strong>English:</strong> If $X\sim N(0,\sigma^2)$, find $E[e^X]$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The normal moment-generating function is $M_X(t)=\exp(\sigma^2t^2/2)$. At $t=1$:</p>
+<p class="equation-line">$$E[e^X]=e^{\sigma^2/2}.$$</p>
+</div></details>
+~~~
+
+=== C175 · Q4.27 One huge die roll or a million small rolls / 一次巨额掷骰还是百万次小额掷骰 （Page 42）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 游戏一只掷一次骰子，支付“点数乘 100 万美元”；游戏二掷 100 万次，每次支付“点数乘 1 美元”。风险厌恶者更偏好哪个？</p>
+<p><strong>English:</strong> Game One rolls once and pays USD 1 million per pip. Game Two rolls one million times and pays USD 1 per pip each time. Which does a risk-averse person prefer?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Both have expected payoff USD 3.5 million. Game Two has vastly lower variance relative to its scale: independent outcomes diversify, and its average concentrates near 3.5 by the law of large numbers. A risk-averse expected-utility maximizer therefore prefers Game Two; a risk-neutral player is indifferent.</p>
+</div></details>
+~~~
+
+=== C176 · Q4.28 Waiting for consecutive heads / 等待连续正面 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一枚硬币每次正面概率为 $p$。得到连续两个正面与连续三个正面分别需要多少次抛掷（期望值）？</p>
+<p><strong>English:</strong> A coin has head probability $p$. What are the expected toss counts until two consecutive heads and until three consecutive heads?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For a run of $r$ heads, state recursion by current run length gives</p>
+<p class="equation-line">$$E_r=\frac{1-p^r}{(1-p)p^r}=\frac{1+p+\cdots+p^{r-1}}{p^r}.$$</p>
+<p>Thus</p>
+<p class="equation-line">$$E_2=\frac{1+p}{p^2},qquad E_3=\frac{1+p+p^2}{p^3}.$$</p>
+<p>At $p=1$, both limits equal the required run length.</p>
+</div></details>
+~~~
+
+=== C177 · Q4.29 Margin of error for a poll / 民调误差范围 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 1000 人民调中有 $60\%$ 支持候选人 A。怎样计算这一估计的误差范围？</p>
+<p><strong>English:</strong> In a poll of 1,000 people, 60% support Candidate A. How is the estimate's margin of error calculated?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Under simple random sampling,</p>
+<p class="equation-line">$$\operatorname{SE}(\hat p)=\sqrt{\frac{0.6(0.4)}{1000}}\approx0.01549.$$</p>
+<p>A normal 95% margin is $1.96\operatorname{SE}\approx0.0304$, so the interval is about $60\%\pm3.04$ percentage points. Survey weighting, clustering, nonresponse, and finite-population effects may make the real margin larger.</p>
+</div></details>
+~~~
+
+=== C178 · Q4.30 A positive medical test / 阳性检测的后验概率 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 某病患病率为 $0.5\%$；患者检测必为阳性，未患病者有 $7\%$ 假阳性率。随机一人检测为阳性，实际患病概率是多少？</p>
+<p><strong>English:</strong> Disease prevalence is 0.5%; sensitivity is 100%, and the false-positive rate is 7%. Given a positive test for a random person, what is the disease probability?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Bayes' rule gives</p>
+<p class="equation-line">$$P(D\mid+)=\frac{0.005}{0.005+0.995(0.07)}\approx0.06693.$$</p>
+<p>So the posterior probability is about $6.69\%$, despite the positive result, because false positives arise from a much larger healthy population.</p>
+</div></details>
+~~~
+
+=== C179 · Q4.31 Allocating twenty thousand dollars / 分配两万美元 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 把 2 万美元以 1000 美元为单位分配到五只基金中，允许某只基金为零，共有多少种分配方式？</p>
+<p><strong>English:</strong> In how many ways can USD 20,000 be allocated among five funds in USD 1,000 increments, allowing zero in a fund?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>This is the number of nonnegative integer solutions to $x_1+\cdots+x_5=20$. Stars and bars gives</p>
+<p class="equation-line">$$\binom{20+5-1}{5-1}=\binom{24}{4}=10{,}626.$$</p>
+</div></details>
+~~~
+
+=== C180 · Q4.32 Chocolate chips in every cookie / 每块曲奇都有巧克力豆 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 将 $N$ 颗巧克力豆独立均匀地落入 100 份等量曲奇面团。最少需要多少颗，才能使每块曲奇至少一颗的概率达到 $90\%$？</p>
+<p><strong>English:</strong> Distribute $N$ chips independently and uniformly among 100 equal cookies. What is the smallest $N$ for which every cookie has at least one chip with probability at least 90%?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>By inclusion--exclusion, the exact coverage probability is</p>
+<p class="equation-line">$$P_N=\sum_{j=0}^{100}(-1)^j\binom{100}{j}\left(1-\frac{j}{100}\right)^N.$$</p>
+<p>Numerical evaluation gives $P_{682}<0.90$ and $P_{683}\ge0.90$, so the minimum is $N=683$. The coupon-collector approximation $100(\ln100-\ln[-\ln0.9])$ gives about 686, a useful mental check.</p>
+</div></details>
+~~~
+
+=== C181 · Q4.33 A stopped die game / 骰子停止游戏 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 反复掷公平骰子，出现 1、2、3 时分数加一并继续；出现 4 或 5 时获得累计分数，出现 6 时收益为零，随后游戏结束。期望收益是多少？</p>
+<p><strong>English:</strong> Roll a fair die repeatedly. A 1, 2, or 3 adds one point and continues; 4 or 5 stops and pays the accumulated score; 6 stops and pays zero. What is the expected payoff?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The number $N$ of scoring rolls before stopping has geometric-failure mean $(1/2)/(1/2)=1$. Conditional on stopping, the terminal face is independent of $N$ and is 4 or 5 with probability $2/3$. Therefore</p>
+<p class="equation-line">$$E[\text{payoff}]=E[N]\frac23=\frac23.$$</p>
+</div></details>
+~~~
+
+=== C182 · Q4.34 A pebble through four boxes / 四个盒子中的石子 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 石子从盒 1 开始。每轮第一次抛硬币把它送到盒 2 或 3；第二次抛掷正面则回盒 1，反面则进盒 4 并结束。到达盒 4 的期望抛掷次数是多少？</p>
+<p><strong>English:</strong> A pebble starts in Box 1. Each round's first coin toss sends it to Box 2 or 3; the second sends it back to Box 1 on heads or to terminal Box 4 on tails. What is the expected number of tosses to reach Box 4?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Every round consumes two tosses and succeeds with probability $1/2$ on its second toss. The expected number of rounds is two, hence the expected toss count is</p>
+<p class="equation-line">$$2\times\frac{1}{1/2}=4.$$</p>
+</div></details>
+~~~
+
+=== C183 · Q4.35 Breaking a stick into a triangle / 随机折棍组成三角形 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在一根棍上独立均匀选取两个断点，所得三段能组成三角形的概率是多少？</p>
+<p><strong>English:</strong> Two breakpoints are chosen independently and uniformly on a stick. What is the probability the three pieces can form a triangle?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Normalize the stick to length one. Three positive lengths form a triangle exactly when no piece exceeds $1/2$. In the unit-square representation of the two cut positions, the admissible region consists of four congruent central triangles with total area one quarter. Thus</p>
+<p class="equation-line">$$P(\text{triangle})=\frac14.$$</p>
+</div></details>
+~~~
+
+=== C184 · Q4.36 Expected longest, shortest, and middle pieces / 最长最短与中间段的期望长度 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 把单位长度的棍用两个独立均匀断点分成三段。最长、最短与居中长度那一段的期望长度分别是多少？</p>
+<p><strong>English:</strong> Two independent uniform cuts split a unit stick into three pieces. What are the expected lengths of the longest, shortest, and middle pieces?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The three spacings have the uniform $\operatorname{Dirichlet}(1,1,1)$ distribution. Integrating their order statistics over the simplex gives</p>
+<p class="equation-line">$$E[L_{\max}]=\frac{11}{18},\qquad E[L_{\min}]=\frac19.$$</p>
+<p>Since the pieces sum to one,</p>
+<p class="equation-line">$$E[L_{\rm mid}]=1-\frac{11}{18}-\frac19=\frac5{18}.$$</p>
+</div></details>
+~~~
+
+=== C185 · Q4.37 At least one child is a girl / 至少一个孩子是女孩 （Page 44）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 已知某人的两个孩子中至少一个是女孩，且性别独立、男女等可能。两个都是女孩的概率是多少？</p>
+<p><strong>English:</strong> A parent has two children and states that at least one is a girl. Assuming independent equally likely sexes, what is the probability both are girls?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Conditioning removes only $BB$ from the equally likely ordered outcomes $BB,BG,GB,GG$. One of the remaining three is $GG$, so the probability is $1/3$.</p>
+</div></details>
+~~~
+
+=== C186 · Q4.38 A girl answers the door / 女孩来开门 （Page 44）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 某人有两个孩子，你敲门后由他的女儿来开门。两个孩子都是女孩的概率是多少？与“至少一个是女孩”有何不同？</p>
+<p><strong>English:</strong> A parent has two children, and a daughter answers when you knock. What is the probability both children are girls, and how does this differ from merely being told that at least one is a girl?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The answer depends on the selection protocol. If either child is equally likely to answer independently of sex, observing a girl is equivalent to sampling a random child and seeing female; Bayes' rule gives $P(GG\mid\text{girl answers})=1/2$. If the parent deliberately sends a girl whenever the family has one, the event is only “at least one girl” and the answer is $1/3$. The distinction is how the evidence was generated.</p>
+</div></details>
+~~~
+
+=== C187 · Q4.39 Meeting at a station / 车站相会 （Page 44）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两人独立均匀地在下午 1 点至 2 点间到站，各自最多等 15 分钟，且不早于 1 点、也不晚于 2 点停留。两人相遇的概率是多少？</p>
+<p><strong>English:</strong> Two people arrive independently and uniformly between 1PM and 2PM, each waits at most 15 minutes, and neither waits outside that hour. What is the probability they meet?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Represent arrival times as a point in a $60\times60$ square. They meet when $|X-Y|\le15$. The failure region is two right triangles of leg 45, so</p>
+<p class="equation-line">$$P(\text{meet})=1-2\left(\frac{\tfrac12\,45^2}{60^2}\right)=1-\left(\frac34\right)^2=\frac7{16}.$$</p>
+</div></details>
+~~~

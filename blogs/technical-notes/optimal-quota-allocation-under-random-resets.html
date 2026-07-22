@@ -1,0 +1,355 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head>
+<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../blog-note.css" type="text/css" />
+<script src="../math-render.js" type="text/javascript"></script>
+<script src="../blog-sidebar.js" type="text/javascript"></script>
+<title>The Codex Quota Problem: How Much Should You Use Today?</title>
+</head>
+<body>
+<div id="layout-content">
+<div id="toptitle">
+<h1>The Codex Quota Problem: How Much Should You Use Today?</h1>
+<div id="subtitle"><a href="../../blog.html">← 返回 Blogs</a> · <i>更新于 2026-07-22</i></div>
+</div>
+<div class="page-lead"><strong>今天到底该用多少 Codex？</strong>假设当前周期还剩 100% 的 Codex 额度，你对未来七天的下一次 reset 时间有一个概率向量。用得太慢，额度可能在 reset 时白白清零；用得太快，又可能连续几天无 Codex 可用。这不是一道普通的“求期望”题，而是一个<strong>带随机终止、清零损失和连续缺额成本的有限时域控制问题</strong>。</div>
+<div class="study-callout"><strong>TL;DR：</strong>若先用对数效用做基准，今天可用“剩余 Codex 额度 ÷ 条件期望剩余天数”。若连续无额度的痛苦会超线性上升，则应用 Bellman 方程求反馈策略。在标准的外生 reset 模型下，<strong>最优策略通常是确定性纯策略，而不需要随机化</strong>；但它是每天根据剩余额度和新信息更新的反馈策略，不是一张锁死的七日计划表。</div>
+<p class="tex-fallback-note" role="status">MathJax 未能加载时，公式将以 TeX 源码显示。</p>
+<h2>1. Codex 额度问题：严格陈述</h2>
+<h3>1.1 一个可计算的七日模型</h3>
+<p>本文研究的是 Codex 使用策略，不试图猜测任何账户的官方配额规则。七日 reset 分布是模型的<strong>输入</strong>：你可以根据界面显示、历史 reset 记录和当前信息自行更新它。具体问题如下：</p>
+<ol>
+<li>每次 reset 后，当前 Codex 周期额度恢复为 $Q=1$，即 100%。</li>
+<li>下一次 reset 日为 $T\in\{1,\ldots,7\}$，其概率向量为 $p=(p_1,\ldots,p_7)$，且 $\sum_{t=1}^7p_t=1$。</li>
+<li>第 $t$ 天开始时，你观察当前剩余额度 $q_t$、是否已 reset、以及当天的新信息，然后选择当天 Codex 用量 $x_t\in[0,q_t]$。</li>
+<li>若当天结束后未 reset，则 $q_{t+1}=q_t-x_t$；若 reset，未使用的 $q_t-x_t$ 被清零，当前周期结束。</li>
+<li>每天使用 Codex 产生收益 $u_t(x_t)$；reset 时的剩余额度产生遗憾 $W(q_T-x_T)$；连续低用量则累积缺额成本 $C(z_{t+1})$。</li>
+</ol>
+<p>一个策略 $\pi$ 不只是七个数，而是从当前信息状态到当日用量的映射。我们要最大化</p>
+<div class="math-display">$$
+J(\pi)=
+\mathbb E^{\pi}\!\left[
+\sum_{t=1}^{T}\bigl(u_t(x_t)-C(z_{t+1})\bigr)
+-W(q_T-x_T)
+\right].
+$$</div>
+<p>这个目标把 Codex 实际带来的工作价值、reset 时没用完的浪费，以及连续无额度的痛苦放在同一个可计算的标尺上。</p>
+<h3>1.2 为什么不是“按 reset 期望值平分”</h3>
+<p>若仅以“重置前总共用掉多少”为目标，且当天用量没有上限、也没有边际收益递减，那么数学上的答案很无聊：<strong>第一天就用完全部 Codex 额度</strong>。因为第一天肯定会到来，任何延后都只会增加被提前 reset 截断的风险。</p>
+<p>这显然没有表达真实需求。一个合理的模型至少需要三个部件：</p>
+<ol>
+<li><strong>生产收益：</strong>今天使用 $x$ 单位额度带来的价值 $u(x)$，通常应是递增但凹的，即 $u'(x)&gt;0$ 且 $u''(x)&lt;0$。这表示一天内堆得越多，每一额外单位的价值越低。</li>
+<li><strong>清零遗憾：</strong>重置时剩下 $w$ 单位所产生的损失 $W(w)$。</li>
+<li><strong>缺额痛苦：</strong>当每日用量低于一个有效工作阈值 $m$ 时，痛苦会随连续天数非线性上升。</li>
+</ol>
+<p>因此，同一个 reset 概率向量可以导出完全不同的最优用量。一个强烈厌恶“断粮”的人会留下更多尾部储备；一个更在意 reset 浪费的人会更早使用。概率模型负责告诉我们<strong>会发生什么</strong>，效用与损失函数负责告诉我们<strong>在乎什么</strong>。</p>
+<h2>2. 时间线、生存概率与条件风险</h2>
+<h3>2.1 七日重置分布</h3>
+<p>设当前周期的重置日为随机变量</p>
+<div class="math-display">$$
+T\in\{1,2,\ldots,H\},\qquad H=7,
+$$</div>
+<p>并且</p>
+<div class="math-display">$$
+p_t=\Pr(T=t),\qquad p_t\ge 0,\qquad \sum_{t=1}^{H}p_t=1.
+$$</div>
+<p>本文采用一个明确的时间约定：第 $t$ 天开始时，在已知上一天结束前尚未重置的条件下，先决定当天用量 $x_t$；当天结束时可能重置。若实际系统是“日初重置”，只需把下面的下标整体平移一天，思路不变。</p>
+<h3>2.2 生存概率比原始概率更适合做决策</h3>
+<p>定义第 $t$ 天仍然能使用旧额度的生存概率</p>
+<div class="math-display">$$
+S_t=\Pr(T\ge t)=\sum_{k=t}^{H}p_k.
+$$</div>
+<p>特别地，$S_1=1$。在已经安全到达第 $t$ 天后，当天结束时重置的<strong>条件风险率</strong>（hazard rate）是</p>
+<div class="math-display">$$
+h_t=\Pr(T=t\mid T\ge t)=\frac{p_t}{S_t}.
+$$</div>
+<p>如果第 $t$ 天开始时仍未重置，那么未来第 $k$ 天仍可用旧额度的条件概率是</p>
+<div class="math-display">$$
+\widetilde S_{t,k}=\Pr(T\ge k\mid T\ge t)=\frac{S_k}{S_t},
+\qquad k=t,\ldots,H.
+$$</div>
+<p>对应的条件剩余周期期望为</p>
+<div class="math-display">$$
+\mathbb E[T-t+1\mid T\ge t]
+=\sum_{k=t}^{H}\widetilde S_{t,k}.
+$$</div>
+<p>这个 tail-sum identity 很有用：“还能用几天”的期望，恰好等于每个未来日仍存活概率的总和。</p>
+<h2>3. 一个可手算的闭式基准策略</h2>
+<h3>3.1 只考虑边际收益递减</h3>
+<p>先暂时不加显式的清零遗憾和连续缺额惩罚，只假设每日收益 $u(x)$ 为递增凹函数。在周期起点选择生存路径上的用量 $x_1,\ldots,x_H$，最大化</p>
+<div class="math-display">$$
+\max_{x_1,\ldots,x_H\ge0}
+\;\mathbb E\!\left[\sum_{t=1}^{T}u(x_t)\right]
+=\max_{x_1,\ldots,x_H\ge0}
+\;\sum_{t=1}^{H}S_tu(x_t)
+$$</div>
+<p>并满足</p>
+<div class="math-display">$$
+\sum_{t=1}^{H}x_t\le Q.
+$$</div>
+<p>拉格朗日一阶条件是</p>
+<div class="math-display">$$
+S_tu'(x_t^*)=\lambda.
+$$</div>
+<p>它的经济含义非常清楚：第 $t$ 天多使用一单位额度的边际价值，要乘上该日真的会到来的概率；最优分配使各天的“概率加权边际收益”相等。</p>
+<h3>3.2 CRRA 效用下的显式解</h3>
+<p>选用常见的常相对风险厌恶（CRRA）效用</p>
+<div class="math-display">$$
+u_\gamma(x)=
+\begin{cases}
+\dfrac{x^{1-\gamma}}{1-\gamma}, &amp; \gamma\ne1,\\[6pt]
+\log x, &amp; \gamma=1,
+\end{cases}
+\qquad \gamma&gt;0.
+$$</div>
+<p>可得闭式解</p>
+<div class="math-display">$$
+x_t^*
+=Q\,\frac{S_t^{1/\gamma}}
+{\sum_{j=1}^{H}S_j^{1/\gamma}}.
+$$</div>
+<p>参数 $\gamma$ 控制“前置使用”与“为未来留余量”之间的平衡：</p>
+<ul>
+<li>$0&lt;\gamma&lt;1$：分配更随生存概率下降，因而更激进、更前置；</li>
+<li>$\gamma=1$：对数效用基准，每天的用量正比于 $S_t$；</li>
+<li>$\gamma&gt;1$：更重视跨日平滑，尾部预留更多；</li>
+<li>$\gamma\to\infty$：趋近在所有可能到来的日子之间等额分配。</li>
+</ul>
+<h3>3.3 每天开始时的即时决策公式</h3>
+<p>到达第 $t$ 天时，假设旧额度还剩 $q_t$。把原始分布条件化到“已经活到今天”，则当天建议用量是</p>
+<div class="math-display">$$
+\boxed{
+x_t^*
+=\frac{q_t}
+{\displaystyle\sum_{k=t}^{H}
+\left(\frac{S_k}{S_t}\right)^{1/\gamma}}
+}.
+$$</div>
+<p>对数基准 $\gamma=1$ 时，它进一步化为</p>
+<div class="math-display">$$
+\boxed{
+x_t^*=\frac{q_t}
+{\mathbb E[T-t+1\mid T\ge t]}
+}.
+$$</div>
+<p>也就是：<strong>用当前剩余额度，除以条件期望剩余天数</strong>。这是一个很好的第一版实用规则，但它还没有精确表达“连续断粮特别难受”的非线性。</p>
+<h2>4. 完整模型：清零遗憾与连续缺额</h2>
+<h3>4.1 状态与损失函数</h3>
+<p>在第 $t$ 天开始时，记：</p>
+<ul>
+<li>$q$：当前剩余额度；</li>
+<li>$z$：累积缺额或“饥饿”状态；</li>
+<li>$x\in[0,q]$：当天决定使用的额度。</li>
+</ul>
+<p>设一天保持正常工作所需的最低用量为 $m$。一个平滑的缺额状态转移是</p>
+<div class="math-display">$$
+z^+=\rho z+(m-x)_+,
+\qquad (a)_+=\max(a,0),
+\qquad 0\le\rho\le1.
+$$</div>
+<p>当 $\rho$ 接近 1 时，前一天的缺额感会延续到今天。用凸函数</p>
+<div class="math-display">$$
+C(z^+)=\kappa (z^+)^\beta,
+\qquad \kappa&gt;0,\quad \beta&gt;1,
+$$</div>
+<p>对其惩罚，就能表达“第二天比第一天难受得多，第三天又更难受”。清零时剩余 $w$ 的遗憾可写成</p>
+<div class="math-display">$$
+W(w)=\lambda_w w^\alpha,
+\qquad \lambda_w\ge0,\quad \alpha\ge1.
+$$</div>
+<p>$\alpha=1$ 表示每浪费一单位都一样可惜；$\alpha&gt;1$ 表示在重置时留下特别大的余额会产生超线性遗憾。</p>
+<h3>4.2 Bellman 方程</h3>
+<p>设 $V_t(q,z)$ 是在“已经安全到达第 $t$ 天”的条件下，从当前状态开始所能获得的最大期望净收益。当天使用 $x$ 后，以概率 $h_t$ 重置，以概率 $1-h_t$ 进入下一天。于是</p>
+<div class="math-display">$$
+\boxed{
+\begin{aligned}
+V_t(q,z)=\max_{0\le x\le q}\Big\{\;&amp;
+u_t(x)-C\!\left(\rho z+(m-x)_+\right)\\
+&amp;+(1-h_t)V_{t+1}\!\left(q-x,\rho z+(m-x)_+\right)\\
+&amp;-h_tW(q-x)
+\Big\}.
+\end{aligned}
+}
+$$</div>
+<p>在最后一天 $h_H=1$。重置后开始新周期的价值对当天决策 $x$ 是一个常数，因此在方程中被省略；这不会改变最优决策。</p>
+<p>忽略阈值处的不可导性，内点最优解的边际平衡可概括为</p>
+<div class="math-display">$$
+\underbrace{u_t'(x)}_{\text{当天边际收益}}
++\underbrace{h_tW'(q-x)}_{\text{避免清零遗憾}}
++\underbrace{\text{缓解缺额的边际价值}}_{\text{避免连续断粮}}
+=\underbrace{(1-h_t)\,\partial_qV_{t+1}}_{\text{留给明天的影子价格}}.
+$$</div>
+<p>这个等式直接回答了“今天应该用多少”：一直用到今天的边际价值，恰好等于把这一单位留到明天的条件边际价值。</p>
+<h3>4.3 如果只在乎“连续断粮天数”</h3>
+<p>若心理成本主要由连续天数而非缺额大小决定，可把 $z$ 换成离散状态 $r$：</p>
+<div class="math-display">$$
+r^+=
+\begin{cases}
+0, &amp; x\ge m,\\
+r+1, &amp; x&lt;m,
+\end{cases}
+\qquad
+D(r^+)=c\,\frac{\eta^{r^+}-1}{\eta-1},
+\quad \eta&gt;1.
+$$</div>
+<p>此时第 $r$ 个连续缺额日的新增痛苦按 $\eta^{r-1}$ 增长。这比对“不够用”每天收取一个固定罚分，更贴合题设中的强烈非线性感受。</p>
+<h2>5. 最优策略是纯策略还是混合策略？</h2>
+<h3>5.1 先区分“固定计划”与“反馈策略”</h3>
+<p>把第 $t$ 天所有与决策有关的信息写成状态</p>
+<div class="math-display">$$
+s_t=(t,q_t,z_t,b_t),
+$$</div>
+<p>其中 $b_t$ 是给定当前信息后对 reset 时间的后验分布。三个容易混淆的概念是：</p>
+<ul>
+<li><strong>开环计划（open-loop plan）：</strong>第一天就写下 $(x_1,\ldots,x_7)$，之后不再根据新信息调整。</li>
+<li><strong>纯反馈策略（pure feedback policy）：</strong>对每个可能状态指定唯一用量，即 $x_t=\pi_t(s_t)$。</li>
+<li><strong>混合策略（mixed policy）：</strong>对每个状态指定一个用量分布 $\mu_t(\mathrm dx\mid s_t)$，然后真的随机抽取今天的 $x_t$。</li>
+</ul>
+<p><strong>纯策略不等于固定七日表。</strong>一个纯反馈策略可以在每天日初根据剩余 Codex 额度、新的 reset 概率和已经连续缺额的天数给出不同答案。它是确定性的，但不是僵化的。</p>
+<h3>5.2 标准模型下，随机化不会改善期望收益</h3>
+<p>在某个给定状态 $s$ 下，把“今天选 $x$ 所得即时净收益加上最优继续价值”记为 $\mathcal Q_t(s,x)$。若使用混合策略 $\mu$ 随机抽取 $x$，那么其价值是</p>
+<div class="math-display">$$
+\int \mathcal Q_t(s,x)\,\mu(\mathrm dx\mid s)
+\le
+\max_{0\le x\le q}\mathcal Q_t(s,x).
+$$</div>
+<p>在动作集紧致、价值函数连续等标准正则条件下，右边只需选一个最大化点</p>
+<div class="math-display">$$
+\pi_t^*(s)\in
+\operatorname*{arg\,max}_{0\le x\le q}
+\mathcal Q_t(s,x)
+$$</div>
+<p>就能达到。因此，在 reset 概率外生、目标是期望效用、且状态被正确观察的标准马尔可夫决策模型中，<strong>存在最优的确定性马尔可夫策略</strong>。混合策略最多只是在多个用量刚好并列最优时，在它们之间随机化；这不会严格提高价值。</p>
+<p>直觉上，若工作收益 $u(x)$ 是凹的，对同一平均用量进行无目的随机化还会因 Jensen 不等式损失价值：</p>
+<div class="math-display">$$
+\mathbb E[u(X)]\le u(\mathbb E[X]).
+$$</div>
+<p>而连续缺额损失是凸的时，额外波动又会放大左尾风险。所以，“今天随机用 10% 或 30%”一般不如直接选择当前状态下的最优点。</p>
+<h3>5.3 什么时候混合策略才真的有意义</h3>
+<div class="table-scroll">
+<table class="payoff-matrix" style="min-width: 760px;">
+<thead><tr><th>情形</th><th>是否需要随机化</th><th>原因</th></tr></thead>
+<tbody>
+<tr><td>reset 机制与使用历史无关</td><td>通常不需要</td><td>标准 MDP 中纯反馈策略已可最优</td></tr>
+<tr><td>reset hazard 是已知的 $h_t(s_t,x_t)$</td><td>通常仍不需要</td><td>这只是动作影响转移概率的受控 MDP，确定性反馈策略仍可最优</td></tr>
+<tr><td>调度方会观察并针对你的策略反应</td><td>可能需要</td><td>问题才变成策略互动或随机博弈</td></tr>
+<tr><td>存在精确的长期平均或机会约束</td><td>有时需要</td><td>约束 MDP 可能需要在两个纯策略间随机化以恰好命中约束</td></tr>
+<tr><td>想学习未知的 reset 规律</td><td>可用于实验</td><td>随机化可帮助识别行为与 reset 的关系，但这是学习设计，不是已知模型下的收益优化</td></tr>
+<tr><td>有一个会针对可预测行为的对手</td><td>可能需要</td><td>混合策略的价值来自不可预测性，而非单人决策本身</td></tr>
+</tbody>
+</table>
+</div>
+<p>因此，本文在主模型中采用<strong>纯、动态、反馈式策略</strong>。如果未来发现 Codex 的 reset hazard 会因已用额度而变化，则应将模型升级为 $h_t=h_t(s_t,x_t)$ 的受控风险模型；只有当这种反应具有策略性、对抗性，或决策还受到额外分布约束时，混合策略才可能带来严格价值。</p>
+<h2>6. 数值例子：从 reset 概率到每日 Codex 用量</h2>
+<h3>6.1 一个示例预测</h3>
+<p>下表仅为演示，不代表任何真实 Codex 账户的 reset 预测。假设未来七天的 reset 概率为</p>
+<div class="math-display">$$
+(p_1,\ldots,p_7)
+=(0.08,0.10,0.12,0.15,0.18,0.17,0.20).
+$$</div>
+<p>对初始额度 $Q=100$，闭式基准在不同 $\gamma$ 下给出如下生存路径用量：</p>
+<div class="table-scroll">
+<table class="payoff-matrix" style="min-width: 760px;">
+<thead><tr><th>日 $t$</th><th>$p_t$</th><th>$S_t$</th><th>$h_t$</th><th>$\gamma=0.5$</th><th>$\gamma=1$</th><th>$\gamma=2$</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>0.08</td><td>1.00</td><td>0.0800</td><td>28.67</td><td>21.93</td><td>18.19</td></tr>
+<tr><td>2</td><td>0.10</td><td>0.92</td><td>0.1087</td><td>24.26</td><td>20.18</td><td>17.44</td></tr>
+<tr><td>3</td><td>0.12</td><td>0.82</td><td>0.1463</td><td>19.28</td><td>17.98</td><td>16.47</td></tr>
+<tr><td>4</td><td>0.15</td><td>0.70</td><td>0.2143</td><td>14.05</td><td>15.35</td><td>15.22</td></tr>
+<tr><td>5</td><td>0.18</td><td>0.55</td><td>0.3273</td><td>8.67</td><td>12.06</td><td>13.49</td></tr>
+<tr><td>6</td><td>0.17</td><td>0.37</td><td>0.4595</td><td>3.92</td><td>8.11</td><td>11.06</td></tr>
+<tr><td>7</td><td>0.20</td><td>0.20</td><td>1.0000</td><td>1.15</td><td>4.39</td><td>8.13</td></tr>
+<tr><th>合计</th><th>1.00</th><th>—</th><th>—</th><th>100.00</th><th>100.00</th><th>100.00</th></tr>
+</tbody>
+</table>
+</div>
+<p>这个分布的期望周期长度为</p>
+<div class="math-display">$$
+\mathbb E[T]=\sum_{t=1}^{7}S_t=4.56\text{ 天}.
+$$</div>
+<p>因此，对数基准的第一天用量是 $100/4.56=21.93$。$\gamma=0.5$ 把更多额度放在前三天；$\gamma=2$ 则为第六、第七天留下显著更多的储备。</p>
+<h3>6.2 “今天没 reset”本身就是新信息</h3>
+<p>假设选用 $\gamma=1$，第一天用掉 21.93，并且当天结束后没有重置。第二天剩余 $q_2=78.07$。此时不应继续使用原始的无条件概率，而应当用 $T\ge2$ 条件化：</p>
+<div class="math-display">$$
+\mathbb E[T-1\mid T\ge2]
+=\sum_{k=2}^{7}\frac{S_k}{S_2}
+=\frac{3.56}{0.92}
+\approx3.8696.
+$$</div>
+<p>因此第二天的建议用量是</p>
+<div class="math-display">$$
+x_2^*=\frac{78.07}{3.8696}\approx20.18.
+$$</div>
+<p>这恰好与表中原计划一致。这种一致性来自条件概率和 CRRA 目标的结构。如果第二天获得了额外信息，使得对 $p_t$ 的预测也发生改变，则应当用新分布重新求解，而不是机械地遵守第一天的表格。</p>
+<p>还应注意，$\gamma=1$ 基准在这个例子中的期望清零余额约为 23.50，它并非在最小化浪费，而是在最大化概率加权的对数生产效用。若对浪费本身有额外厌恶，应在 Bellman 方程中调高 $\lambda_w$，而不应误以为一个 $\gamma$ 可以同时表达所有偏好。</p>
+<h2>7. 如何把 Codex 动态策略真正算出来</h2>
+<h3>7.1 后向归纳</h3>
+<p>当总额度已归一化为 100 份时，没有必要追求象征解。可把剩余额度 $q$ 离散为 0.5% 或 1% 的网格，然后从第七天向第一天做后向归纳：</p>
+<ol>
+<li>设定终端边界：$h_H=1$，并计算所有 $(q,z)$ 下第 $H$ 天的最优 $x$。</li>
+<li>对 $t=H-1,H-2,\ldots,1$ 依次向前，遍历每个状态 $(q,z)$。</li>
+<li>对每个候选 $x\in[0,q]$ 计算 Bellman 方程右端，保留价值最大的 $x$ 为策略 $\pi_t(q,z)$。</li>
+<li>每天开始时，根据当前的 $q_t,z_t$ 和更新后的概率分布，读取或重算 $x_t=\pi_t(q_t,z_t)$。</li>
+</ol>
+<p>七天时域非常短；即使额度网格比较细，这个问题也足以在本地快速求解。如果用离散连续缺额天数 $r$ 作状态，则状态空间更小。</p>
+<h3>7.2 避免“用一点点来钻阈值漏洞”</h3>
+<p>如果规则是“只要 $x&gt;0$ 就不算断粮”，优化器可能每天仅分配一个微小正数，形式上逃掉惩罚，实际却无法完成任务。因此应当：</p>
+<ul>
+<li>使用有实际含义的最低工作额度 $m$；或</li>
+<li>使用连续缺额状态 $z^+=\rho z+(m-x)_+$，让惩罚随缺额幅度平滑变化。</li>
+</ul>
+<p>这是优化建模中的一个普遍原则：必须把真正在乎的结果写进目标函数，不能只写一个易被钻空子的代理指标。</p>
+<h2>8. 参数如何校准</h2>
+<p>实用中，最难的并非 Bellman 方程，而是把主观感受变成参数。一个比较稳健的校准顺序是：</p>
+<ol>
+<li><strong>先校准 $u(x)$：</strong>记录每天使用 5%、10%、20% 额度实际能完成多少有价值任务。若后一半用量多用于低价值尝试，就说明凹性很强。</li>
+<li><strong>用分配比理解 $\gamma$：</strong>若某未来日的生存概率是今天的一半，其基准用量比例为 $2^{-1/\gamma}$。$\gamma=1$ 时是 $1/2$，$\gamma=2$ 时约为 $0.707$。</li>
+<li><strong>再校准 $m,\rho,\beta$：</strong>先设定一个真正能完成最小工作单元的日用量 $m$；再比较连续 1、2、3 天低于 $m$ 时的主观损失。</li>
+<li><strong>最后校准 $W$：</strong>询问自己，“重置时浪费 10% 额度”与“某一天少用多少”同样难以接受，以此做等价交换。</li>
+</ol>
+<p>清零余额已经通过“没有获得原本可得的生产收益”部分进入模型；$W$ 表示的是额外的心理遗憾或组织成本。校准时要避免对同一份浪费重复计罚。</p>
+<h2>9. reset 概率预测错了怎么办</h2>
+<p>策略对预测误差并不对称：高估提前重置概率容易过快用完，产生连续断粮；低估它则容易在重置时留下余额。当前者的损失非线性更大时，策略应对“长周期”情形保持更多储备。</p>
+<p>一个简单的稳健化方法，是将估计分布 $\widehat p$ 与“一直到第七天才重置”的保守分布 $e_H$ 混合：</p>
+<div class="math-display">$$
+p^{\mathrm{rob}}
+=(1-\varepsilon)\widehat p+\varepsilon e_H,
+\qquad 0\le\varepsilon\le1.
+$$</div>
+<p>$\varepsilon$ 越大，对长周期的保护越强。更正式的做法是在一个候选分布集合上求最坏情形期望效用，或给“未来连续 $k$ 天无有效额度”加一个硬概率约束。</p>
+<p>还可以直接加一个安全储备规则。若要确保今天之后每个可能存活日至少保留 $m$ 单位，当日用量须满足</p>
+<div class="math-display">$$
+x_t\le q_t-m(H-t),
+$$</div>
+<p>前提是当前余额足以覆盖这个储备。这种硬约束易于理解，但可能过度保守；动态惩罚则更灵活。</p>
+<h2>10. 一个可每天执行的 Codex 决策流程</h2>
+<ol>
+<li><strong>每天日初更新分布。</strong>根据新信息估计 $p_t,\ldots,p_H$，并严格条件于“目前尚未重置”。</li>
+<li><strong>计算 $S$ 和 $h$。</strong>生存概率用于闭式基准，hazard 用于动态规划。</li>
+<li><strong>先看闭式基准。</strong>用 $\gamma\in[1,2]$ 作为一个待校准的起点；若连续断粮明显比清零浪费更难忍受，应从区间的保守端开始。</li>
+<li><strong>再加真实偏好。</strong>用 $m,\rho,\beta$ 表达断粮风险，用 $\lambda_w,\alpha$ 表达额外清零遗憾，通过后向归纳求当日最优用量。</li>
+<li><strong>做历史回测。</strong>对过去的重置周期重播策略，同时记录产出、被清零余额、低于 $m$ 的天数、最长连续缺额天数。</li>
+<li><strong>使用滚动策略。</strong>只执行今天的 $x_t$，明天重新估计、重新优化，而不是一次性锁死七天计划。</li>
+</ol>
+<p>第三步的 $\gamma\in[1,2]$ 只是一个适合进行压力测试的初始区间，不是从概率向量中推导出来的“正确参数”。最终取值应由真实使用记录与主观交换关系决定。</p>
+<h2>11. 模型边界与可扩展方向</h2>
+<ul>
+<li><strong>任务价值会变：</strong>若某天有高价值工作，可使用日特定效用 $u_t(x)$，而非各天相同的 $u(x)$。</li>
+<li><strong>使用需求也是随机的：</strong>如果今天实际有多少任务不确定，可把需求加入状态或在日内再做一层决策。</li>
+<li><strong>预测会被观测更新：</strong>若能观察外部信号，则状态应包含对重置时间的当前后验分布，问题将成为一个小型贝叶斯控制问题。</li>
+<li><strong>跨周期价值：</strong>本文假设新额度一到就开始一个结构相同的新周期。如果未完成工作会跨周期累积，则应将任务队列一并放入状态。</li>
+<li><strong>概率可能依赖已用额度：</strong>若提前重置机制会参考用户的已用量，则 $h_t$ 不再是外生的，必须写成 $h_t(q,x,历史)$。</li>
+</ul>
+<h2>12. 结论：Codex 额度的理性用法</h2>
+<p>Codex 额度问题有三个层次的答案。</p>
+<p><strong>第一层是一个简洁、可解释的基准：</strong>把 reset 日概率转成生存概率，在 CRRA 边际收益下按 $S_t^{1/\gamma}$ 分配额度。对数基准特别直观：每天用“剩余 Codex 额度 ÷ 条件期望剩余天数”。</p>
+<p><strong>第二层完整表达真实感受：</strong>以剩余额度和累积缺额为状态，把 reset 遗憾、最低有效工作量和连续断粮的凸惩罚写进 Bellman 方程，每天滚动求解。</p>
+<p><strong>第三层说明策略形式：</strong>在标准模型中，最优策略可以选成纯反馈策略。不需要每天掷硬币决定用量，但必须在每天日初根据剩余额度、缺额状态和最新 reset 分布重新决策。</p>
+<p>真正的“最优 Codex 用量”不是由概率向量单独产生的，而是 reset 概率、边际工作价值和对缺额的主观厌恶共同决定的。数学的作用不是替代偏好，而是让这些偏好变得显式、可计算、可回测。</p>
+</div>
+</body>
+</html>
