@@ -1,0 +1,2645 @@
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../../blog-note}, addjs{../../math-render}, addjs{../../blog-sidebar}
+= 150 Most Frequently Asked Questions on Quant Interviews
+[../../../blog.html ← Blogs]
+
+本页是来自 Dan Stefanica、Rados Radoicic 与 Tai-Ho Wang 的 [https://www.fepress.org/150iqs-second-ed/ /150 Most Frequently Asked Questions on Quant Interviews/] 一书的题目选集，请勿用于传播。
+
+~~~
+{}{raw}
+<div class="page-toc" role="navigation" aria-labelledby="stefanica-toc-title">
+<div class="page-toc-title" id="stefanica-toc-title">题目目录</div>
+<ul>
+<li><a href="#stefanica-first-look">A. First Look</a></li>
+<li><a href="#stefanica-mathematics">B. Mathematics, Calculus &amp; Differential Equations</a></li>
+<li><a href="#stefanica-linear-algebra">C. Covariance, Correlation &amp; Linear Algebra</a></li>
+<li><a href="#stefanica-finance">D. Financial Instruments</a></li>
+<li><a href="#stefanica-cpp">E. C++ &amp; Data Structures</a></li>
+<li><a href="#stefanica-monte-carlo">F. Monte Carlo &amp; Numerical Methods</a></li>
+<li><a href="#stefanica-probability">G. Probability &amp; Stochastic Calculus</a></li>
+<li><a href="#stefanica-brainteasers">H. Brainteasers</a></li>
+</ul>
+</div>
+<div class="section-anchor" id="stefanica-first-look" aria-hidden="true"></div>
+~~~
+
+== A. First Look
+
+=== S001 · First Look Q1 Call-option convexity arbitrage / 看涨期权凸性套利 （Page 1）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 某不派息资产现价为 $\$22$，期限均为九个月、执行价分别为 $\$20$ 与 $\$25$ 的看涨期权价格为 $\$5.50$ 与 $\$1$。构造一个套利组合。</p>
+<p><strong>English:</strong> A non-dividend-paying asset is at $\$22$. Nine-month calls with strikes $\$20$ and $\$25$ trade at $\$5.50$ and $\$1$. Find an arbitrage.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Treat the stock as a zero-strike call. Buy one share and four $K=25$ calls, and short five $K=20$ calls. The initial cash flow is</p>
+<p class="equation-line">$$5(5.50)-22-4(1)=1.50>0.$$</p>
+<p>At expiry the payoff is $S_T$ for $S_T\le20$, $100-4S_T\ge0$ for $20&lt;S_T\le25$, and $0$ for $S_T&gt;25$. The portfolio therefore produces cash today and can never have a negative terminal payoff.</p>
+</div></details>
+~~~
+
+=== S002 · First Look Q2 Eigenvalues of a correlation matrix / 相关矩阵的特征值 （Page 1）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> （i）$n$ 个随机变量的相关矩阵，其特征值之和是多少？（ii）若该相关矩阵非奇异，其逆矩阵的特征值之和至少是多少？</p>
+<p><strong>English:</strong> (i) What is the sum of the eigenvalues of an $n\times n$ correlation matrix? (ii) Give a lower bound for the sum of the eigenvalues of its inverse when the correlation matrix is nonsingular.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The sum is the trace, hence $\sum_i\lambda_i=n$. Nonsingularity makes every $\lambda_i&gt;0$, and Cauchy–Schwarz gives</p>
+<p class="equation-line">$$\left(\sum_{i=1}^n\lambda_i\right)\left(\sum_{i=1}^n\lambda_i^{-1}\right)\ge n^2.$$</p>
+<p>Therefore $\sum_i\lambda_i^{-1}\ge n$, with equality exactly when all eigenvalues are $1$.</p>
+</div></details>
+~~~
+
+=== S003 · First Look Q3 Integrated Brownian motion / 布朗运动的时间积分 （Page 1）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 设 $W_t$ 为 Wiener 过程，$X_t=\int_0^t W_s\,ds$。求 $X_t$ 的分布，并判断 $\{X_t\}$ 是否为鞅。</p>
+<p><strong>English:</strong> Let $W_t$ be a Wiener process and $X_t=\int_0^t W_s\,ds$. Find the distribution of $X_t$ and decide whether $X_t$ is a martingale.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Stochastic Fubini gives $X_t=\int_0^t(t-s)\,dW_s$, so</p>
+<p class="equation-line">$$X_t\sim N\!\left(0,\int_0^t(t-s)^2ds\right)=N\!\left(0,\frac{t^3}{3}\right).$$</p>
+<p>It is not a martingale: for $u&gt;t$, $\mathbb E[X_u\mid\mathcal F_t]=X_t+(u-t)W_t$, which is generally different from $X_t$.</p>
+</div></details>
+~~~
+
+=== S004 · First Look Q4 Flipping blocks in a bit matrix / 翻转二进制矩阵方块 （Page 1）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一个 $8\times8$ 矩阵只含 $0$ 和 $1$。每次可选任意 $3\times3$ 或 $4\times4$ 子块，将其中所有位翻转。是否总能把任意初始矩阵变成全零矩阵？</p>
+<p><strong>English:</strong> An $8\times8$ matrix contains only zeroes and ones. Each move flips every bit in any chosen $3\times3$ or $4\times4$ block. Can every initial matrix be changed into the all-zero matrix?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>No. There are $6^2=36$ possible $3\times3$ blocks and $5^2=25$ possible $4\times4$ blocks. Because flips commute and repeating a flip cancels it, at most $2^{36+25}=2^{61}$ matrices are reachable from zero. There are $2^{64}$ binary $8\times8$ matrices, so at least one—and therefore many—cannot be reached. Reversibility gives the same conclusion for reducing arbitrary matrices to zero.</p>
+</div></details>
+~~~
+
+=== S005 · First Look Q5 Completing a correlation matrix / 补全相关矩阵 （Page 2）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求所有使下列矩阵成为相关矩阵的 $\rho$：
+$$\begin{pmatrix}1&0.6&-0.3\\0.6&1&\rho\\-0.3&\rho&1\end{pmatrix}.$$</p>
+<p><strong>English:</strong> Find every $\rho$ for which
+$$\begin{pmatrix}1&0.6&-0.3\\0.6&1&\rho\\-0.3&\rho&1\end{pmatrix}$$
+is a correlation matrix.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The matrix must be positive semidefinite. Its only binding principal-minor condition is</p>
+<p class="equation-line">$$\det R=0.55-0.36\rho-\rho^2\ge0.$$</p>
+<p>Hence</p>
+<p class="equation-line">$$\boxed{\frac{-9-4\sqrt{91}}{50}\le\rho\le\frac{-9+4\sqrt{91}}{50}} \approx[-0.9432,0.5832].$$</p>
+<p>The endpoints are included: they give valid singular correlation matrices.</p>
+</div></details>
+~~~
+
+=== S006 · First Look Q6 Sampling a narrow uniform interval / 均匀抽样命中小区间 （Page 2）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 至少要生成多少个相互独立的 $U[0,1]$ 随机变量，才能以不低于 $95\%$ 的概率保证至少有一个落在 $[0.70,0.72]$？</p>
+<p><strong>English:</strong> How many independent $U[0,1]$ variables are needed so that at least one lies in $[0.70,0.72]$ with probability at least $95\%$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For $N$ draws the hit probability is $1-0.98^N$. Thus</p>
+<p class="equation-line">$$N\ge\frac{\log(0.05)}{\log(0.98)}\approx148.28.$$</p>
+<p>The smallest integer is therefore $\boxed{149}$.</p>
+</div></details>
+~~~
+
+=== S007 · First Look Q7 The M&M cancellation game / M&M 配对消除游戏 （Page 2）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 袋中六种颜色的 M&amp;M 数量可视为均匀且无限。逐颗抽取：若新糖与桌上某颗同色，就吃掉这两颗；否则把新糖放在桌上。桌上同时出现六种颜色时结束。期望共吃掉多少颗？</p>
+<p><strong>English:</strong> M&amp;M colors are uniformly distributed among six colors. Draw repeatedly; a draw matching a color already on the table causes both candies of that color to be eaten, while a new color remains on the table. Stop when all six colors are present. What is the expected number eaten?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $A_n$ be the expected candies eaten while moving from $n$ displayed colors to $n+1$. For $1\le n\le5$, a match has probability $n/6$ and returns the process to $n-1$, so</p>
+<p class="equation-line">$$A_n=\frac n6(2+A_{n-1}+A_n),\qquad A_0=0.$$</p>
+<p>This gives $(A_1,\ldots,A_5)=(2/5,6/5,16/5,52/5,62)$. Hence the answer is</p>
+<p class="equation-line">$$\sum_{n=0}^5A_n=\boxed{\frac{386}{5}=77.2}.$$</p>
+</div></details>
+~~~
+
+=== S008 · First Look Q8 South, east, north / 向南、向东、向北 （Page 2）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在球形地球表面从某点出发，向南、向东、向北各走一英里后回到起点。若起点不是北极，它还可能在哪里？</p>
+<p><strong>English:</strong> On a spherical Earth, walk one mile south, one mile east, and one mile north and return to the starting point. Apart from the North Pole, where can the starting point be?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For every positive integer $k$, take a latitude near the South Pole whose circumference is $1/k$ mile, and start one mile north of it. The southward leg reaches that latitude, the eastward mile completes exactly $k$ circuits, and the northward leg retraces the first leg. Every point on each such starting latitude works.</p>
+</div></details>
+~~~
+
+=== S009 · First Look Q9 Ornstein–Uhlenbeck SDE / Ornstein–Uhlenbeck 随机微分方程 （Page 3）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求解
+$$dr_t=\lambda(\theta-r_t)\,dt+\sigma\,dW_t,\qquad \lambda&gt;0.$$</p>
+<p><strong>English:</strong> Solve the Ornstein–Uhlenbeck equation
+$$dr_t=\lambda(\theta-r_t)\,dt+\sigma\,dW_t,\qquad \lambda&gt;0.$$</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Multiplying by $e^{\lambda t}$ and integrating yields</p>
+<p class="equation-line">$$r_t=\theta+(r_0-\theta)e^{-\lambda t}+\sigma\int_0^t e^{-\lambda(t-s)}\,dW_s.$$</p>
+<p>Consequently $r_t$ is normal with mean $\theta+(r_0-\theta)e^{-\lambda t}$ and variance $\sigma^2(1-e^{-2\lambda t})/(2\lambda)$.</p>
+</div></details>
+~~~
+
+=== S010 · First Look Q10 A symmetric integral / 对称积分 （Page 3）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若积分存在，求
+$$\int_0^a\frac{f(x)}{f(x)+f(a-x)}\,dx.$$</p>
+<p><strong>English:</strong> Assuming the integral exists, evaluate
+$$\int_0^a\frac{f(x)}{f(x)+f(a-x)}\,dx.$$</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Substitute $x\mapsto a-x$. The transformed integrand is $f(a-x)/(f(a-x)+f(x))$. Adding the original and transformed integrals makes the integrand equal to $1$, so twice the required integral is $a$. The value is $\boxed{a/2}$.</p>
+</div></details>
+~~~
+
+=== S011 · First Look Q11 Signs of correlated normals / 相关正态变量的符号 （Page 3）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $X,Y$ 为相关系数 $\rho$ 的联合标准正态变量。求 $\mathbb E[\operatorname{sgn}(X)\operatorname{sgn}(Y)]$。</p>
+<p><strong>English:</strong> Let $X,Y$ be jointly standard normal with correlation $\rho$. Find $\mathbb E[\operatorname{sgn}(X)\operatorname{sgn}(Y)]$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The Gaussian quadrant formula is</p>
+<p class="equation-line">$$P(X&gt;0,Y&gt;0)=\frac14+\frac{\arcsin\rho}{2\pi}.$$</p>
+<p>Equal signs contribute $1$ and opposite signs contribute $-1$, hence</p>
+<p class="equation-line">$$\boxed{\mathbb E[\operatorname{sgn}(X)\operatorname{sgn}(Y)]=\frac{2}{\pi}\arcsin\rho}.$$</p>
+</div></details>
+~~~
+
+=== S012 · First Look Q12 Long gamma and short vega / 多 Gamma、空 Vega （Page 3）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何用期权构造一个 Gamma 为正、Vega 为负的组合？</p>
+<p><strong>English:</strong> How can an options portfolio be made long gamma but short vega?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Buy shorter-dated options and sell a suitable quantity of otherwise comparable longer-dated options. In Black–Scholes, $\nu=S^2\sigma T\Gamma$, so the longer maturity has more vega per unit of gamma. If $T_s&lt;T_\ell$, choose long and short quantities so that</p>
+<p class="equation-line">$$\frac{\Gamma_sT_s}{\Gamma_\ell T_\ell}q_s&lt;q_\ell&lt;\frac{\Gamma_s}{\Gamma_\ell}q_s.$$</p>
+<p>Then $q_s\Gamma_s-q_\ell\Gamma_\ell&gt;0$ while $q_s\nu_s-q_\ell\nu_\ell&lt;0$. Strikes and notionals must be selected using the actual Greeks.</p>
+</div></details>
+~~~
+
+=== S013 · First Look Q13 Ratio of geometric Brownian motions / 两个几何布朗运动之比 （Page 3）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 设
+$$\frac{dX_t}{X_t}=\mu_Xdt+\sigma_XdW_t,\qquad
+\frac{dY_t}{Y_t}=\mu_Ydt+\sigma_YdB_t,$$
+且 $d\langle W,B\rangle_t=\rho\,dt$。证明 $Z_t=X_t/Y_t$ 仍是几何布朗运动，并求其漂移与波动率。</p>
+<p><strong>English:</strong> Let $X_t$ and $Y_t$ be geometric Brownian motions with coefficients $(\mu_X,\sigma_X)$ and $(\mu_Y,\sigma_Y)$, driven by Brownian motions of correlation $\rho$. Show that $Z_t=X_t/Y_t$ is a geometric Brownian motion and identify its drift and volatility.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Itô's formula gives</p>
+<p class="equation-line">$$\frac{dZ_t}{Z_t}=
+\bigl(\mu_X-\mu_Y+\sigma_Y^2-\rho\sigma_X\sigma_Y\bigr)dt
++\sigma_XdW_t-\sigma_YdB_t.$$</p>
+<p>The last two terms equal $\sigma_Zd\widetilde W_t$, where</p>
+<p class="equation-line">$$\sigma_Z=\sqrt{\sigma_X^2+\sigma_Y^2-2\rho\sigma_X\sigma_Y}.$$</p>
+<p>Thus $Z$ is a GBM with the displayed drift and volatility.</p>
+</div></details>
+~~~
+
+=== S014 · First Look Q14 The k-th largest array element / 数组中第 k 大元素 （Page 4）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在未排序数组中找第 $k$ 大元素；重复值按排序后的位置计数，而不是按不同数值计数。</p>
+<p><strong>English:</strong> Find the $k$-th largest element of an unsorted array. Count positions in sorted order, not distinct values.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Run randomized Quickselect for zero-based target index $n-k$. Partition around a random pivot; recurse only into the side containing the target. Its expected running time is $O(n)$ and in-place extra space is $O(1)$, while the worst case is $O(n^2)$. A deterministic median-of-medians pivot gives worst-case $O(n)$.</p>
+</div></details>
+~~~
+
+=== S015 · First Look Q15 Sliding-window maximum / 滑动窗口最大值 （Page 4）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 给定数组与合法窗口长度 $k$，窗口每次右移一位；返回每个窗口中的最大值。</p>
+<p><strong>English:</strong> Given an array and a valid window size $k$, move the window one position at a time and return the maximum in every window.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Maintain a deque of indices whose values are decreasing. Before inserting index $i$, remove expired indices from the front and indices with values no larger than $a_i$ from the back. The front is then the current maximum. Every index enters and leaves once, so time is $O(n)$ and space is $O(k)$.</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="stefanica-mathematics" aria-hidden="true"></div>
+~~~
+
+== B. Mathematics, Calculus & Differential Equations
+
+=== S016 · Q2.1.1 The value of $i^i$ / $i^i$ 的值 （Page 33）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 设 $i=\sqrt{-1}$，求 $i^i$。</p>
+<p><strong>English:</strong> What is $i^i$, where $i=\sqrt{-1}$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Using the multivalued logarithm, $\log i=i(\pi/2+2\pi k)$, so</p>
+<p class="equation-line">$$i^i=e^{i\log i}=e^{-\pi/2-2\pi k},\qquad k\in\mathbb Z.$$</p>
+<p>The principal value is $\boxed{e^{-\pi/2}}$.</p>
+</div></details>
+~~~
+
+=== S017 · Q2.1.2 Compare two exponential constants / 比较两个指数常数 （Page 33）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $\pi^e$ 与 $e^\pi$ 哪个更大？</p>
+<p><strong>English:</strong> Which is larger, $\pi^e$ or $e^\pi$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The function $f(x)=\log x/x$ is decreasing for $x&gt;e$. Since $\pi&gt;e$, $\log\pi/\pi&lt;1/e$. Multiplication by $e\pi$ gives $e\log\pi&lt;\pi$, hence $\boxed{\pi^e&lt;e^\pi}$.</p>
+</div></details>
+~~~
+
+=== S018 · Q2.1.3 Exponential AM–GM inequality / 指数形式的均值不等式 （Page 33）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 证明对任意 $x,y\in\mathbb R$，
+$$\frac{e^x+e^y}{2}\ge e^{(x+y)/2}.$$</p>
+<p><strong>English:</strong> Show that $(e^x+e^y)/2\ge e^{(x+y)/2}$ for all real $x,y$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Apply AM–GM to the positive numbers $e^x$ and $e^y$:</p>
+<p class="equation-line">$$\frac{e^x+e^y}{2}\ge\sqrt{e^xe^y}=e^{(x+y)/2}.$$</p>
+<p>Equality holds exactly when $x=y$.</p>
+</div></details>
+~~~
+
+=== S019 · Q2.1.4 Solve $x^6=64$ / 求解六次方程 （Page 33）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在复数范围内求解 $x^6=64$。</p>
+<p><strong>English:</strong> Solve $x^6=64$ over the complex numbers.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The six roots are</p>
+<p class="equation-line">$$\boxed{x_k=2e^{i\pi k/3}},\qquad k=0,1,\ldots,5.$$</p>
+<p>The two real roots are $2$ and $-2$.</p>
+</div></details>
+~~~
+
+=== S020 · Q2.1.5 Differentiate $x^x$ / 求 $x^x$ 的导数 （Page 33）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求 $x^x$ 的导数。</p>
+<p><strong>English:</strong> Differentiate $x^x$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For $x&gt;0$, write $x^x=e^{x\log x}$. Therefore</p>
+<p class="equation-line">$$\boxed{\frac{d}{dx}x^x=x^x(\log x+1)}.$$</p>
+</div></details>
+~~~
+
+=== S021 · Q2.1.6 An infinite nested radical / 无限嵌套根式 （Page 33）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 计算
+$$\sqrt{2+\sqrt{2+\sqrt{2+\cdots}}}.$$</p>
+<p><strong>English:</strong> Evaluate $\sqrt{2+\sqrt{2+\sqrt{2+\cdots}}}$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>If the positive limit is $L$, then $L=\sqrt{2+L}$, so $L^2-L-2=0$ and $L=2$. The finite truncations increase and are bounded above by $2$, which justifies taking the limit. Thus the value is $\boxed{2}$.</p>
+</div></details>
+~~~
+
+=== S022 · Q2.1.7 An infinite power tower / 无限幂塔 （Page 33）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求 $x$，使无限幂塔满足
+$$x^{x^{x^{\cdot^{\cdot^\cdot}}}}=2.$$</p>
+<p><strong>English:</strong> Find $x$ such that the convergent infinite power tower $x^{x^{x^{\cdot^{\cdot^\cdot}}}}$ equals $2$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>If the tower has limit $L=2$, then $x^L=L$, giving $x^2=2$. The positive candidate is $x=\sqrt2$, and it lies in the convergence interval $[e^{-e},e^{1/e}]$. Hence $\boxed{x=\sqrt2}$.</p>
+</div></details>
+~~~
+
+=== S023 · Q2.1.8 Three infinite series / 三个无穷级数 （Page 33）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 判断下列级数的敛散性：
+$$\sum_{k=1}^{\infty}\frac1k,\qquad
+\sum_{k=1}^{\infty}\frac1{k^2},\qquad
+\sum_{k=2}^{\infty}\frac1{k\log k}.$$</p>
+<p><strong>English:</strong> Determine which of $\sum1/k$, $\sum1/k^2$, and $\sum_{k\ge2}1/(k\log k)$ converge.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The harmonic series diverges. The $p$-series with $p=2$ converges. The third diverges by the integral test because</p>
+<p class="equation-line">$$\int_2^N\frac{dx}{x\log x}=\log\log N-\log\log2\longrightarrow\infty.$$</p>
+</div></details>
+~~~
+
+=== S024 · Q2.1.9 An arctangent integral / 反正切积分 （Page 34）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 计算 $\int(1+x^2)^{-1}\,dx$。</p>
+<p><strong>English:</strong> Compute $\int dx/(1+x^2)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p class="equation-line">$$\boxed{\int\frac{dx}{1+x^2}=\arctan x+C}.$$</p>
+</div></details>
+~~~
+
+=== S025 · Q2.1.10 Two integrations by parts / 两个分部积分 （Page 34）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 计算 $\int x\log x\,dx$ 与 $\int xe^x\,dx$。</p>
+<p><strong>English:</strong> Compute $\int x\log x\,dx$ and $\int xe^x\,dx$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Integration by parts gives</p>
+<p class="equation-line">$$\boxed{\int x\log x\,dx=\frac{x^2}{2}\log x-\frac{x^2}{4}+C},$$</p>
+<p class="equation-line">$$\boxed{\int xe^x\,dx=e^x(x-1)+C}.$$</p>
+</div></details>
+~~~
+
+=== S026 · Q2.1.11 A logarithmic integration-by-parts formula / 对数分部积分公式 （Page 34）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 计算 $\int x^n\log x\,dx$。</p>
+<p><strong>English:</strong> Compute $\int x^n\log x\,dx$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For $n\ne-1$,</p>
+<p class="equation-line">$$\boxed{\int x^n\log x\,dx=
+x^{n+1}\left(\frac{\log x}{n+1}-\frac1{(n+1)^2}\right)+C}.$$</p>
+<p>For $n=-1$, the value is $\tfrac12(\log x)^2+C$.</p>
+</div></details>
+~~~
+
+=== S027 · Q2.1.12 Powers of logarithms / 对数幂的积分 （Page 34）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 对非负整数 $n$，计算 $\int(\log x)^n\,dx$。</p>
+<p><strong>English:</strong> For a nonnegative integer $n$, compute $\int(\log x)^n\,dx$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $I_n=\int(\log x)^n dx$. Integration by parts gives $I_n=x(\log x)^n-nI_{n-1}$ and $I_0=x$. Therefore</p>
+<p class="equation-line">$$\boxed{I_n=x\sum_{k=0}^{n}(-1)^k\frac{n!}{(n-k)!}(\log x)^{n-k}+C}.$$</p>
+</div></details>
+~~~
+
+=== S028 · Q2.1.13 A second-order ODE / 二阶常微分方程 （Page 34）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求解 $y''-4y'+4y=1$。</p>
+<p><strong>English:</strong> Solve $y''-4y'+4y=1$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The characteristic polynomial is $(r-2)^2$, and a constant particular solution is $1/4$. Thus</p>
+<p class="equation-line">$$\boxed{y(x)=(C_1+C_2x)e^{2x}+\frac14}.$$</p>
+</div></details>
+~~~
+
+=== S029 · Q2.1.14 The logistic ODE / Logistic 方程 （Page 34）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求所有满足 $f'(x)=f(x)(1-f(x))$ 的函数。</p>
+<p><strong>English:</strong> Find all solutions of $f'(x)=f(x)(1-f(x))$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The nonconstant solutions follow by separation:</p>
+<p class="equation-line">$$\boxed{f(x)=\frac{1}{1+Ce^{-x}}}.$$</p>
+<p>On any interval where the denominator is nonzero, this solves the equation. The constant solutions are $f\equiv0$ and $f\equiv1$; the latter is included by $C=0$.</p>
+</div></details>
+~~~
+
+=== S030 · Q2.1.15 Derive the Black–Scholes PDE / 推导 Black–Scholes 方程 （Page 34）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 推导 Black–Scholes 偏微分方程。</p>
+<p><strong>English:</strong> Derive the Black–Scholes PDE.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $dS_t=\mu S_tdt+\sigma S_tdW_t$ and $V=V(t,S)$. Itô's lemma gives</p>
+<p class="equation-line">$$dV=\left(V_t+\mu SV_S+\frac12\sigma^2S^2V_{SS}\right)dt+\sigma SV_SdW.$$</p>
+<p>In the delta-hedged portfolio $\Pi=V-V_SS$, the diffusion cancels. No arbitrage requires $d\Pi=r\Pi\,dt$. After cancellation of $\mu$ this becomes</p>
+<p class="equation-line">$$\boxed{V_t+\frac12\sigma^2S^2V_{SS}+rSV_S-rV=0}.$$</p>
+<p>With continuous dividend yield $q$, replace $rS V_S$ by $(r-q)S V_S$.</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="stefanica-linear-algebra" aria-hidden="true"></div>
+~~~
+
+== C. Covariance, Correlation & Linear Algebra
+
+=== S031 · Q2.2.1 Covariance matrices are positive semidefinite / 协方差矩阵半正定 （Page 35）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 证明任意协方差矩阵都是对称半正定矩阵，并说明相关矩阵为何也如此。</p>
+<p><strong>English:</strong> Show that every covariance matrix is symmetric positive semidefinite, and show the same for correlation matrices.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For a random vector $X$ with covariance matrix $\Sigma$ and any deterministic $a$,</p>
+<p class="equation-line">$$a^\top\Sigma a=\operatorname{Var}(a^\top X)\ge0.$$</p>
+<p>Also $\Sigma_{ij}=\operatorname{Cov}(X_i,X_j)=\Sigma_{ji}$. A correlation matrix is $R=D^{-1/2}\Sigma D^{-1/2}$, so $a^\top Ra=(D^{-1/2}a)^\top\Sigma(D^{-1/2}a)\ge0$.</p>
+</div></details>
+~~~
+
+=== S032 · Q2.2.2 Convert covariance to correlation / 从协方差矩阵得到相关矩阵 （Page 35）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 已知
+$$\Sigma=\begin{pmatrix}1&0.36&-1.44\\0.36&4&0.80\\-1.44&0.80&9\end{pmatrix},$$
+求相关矩阵。</p>
+<p><strong>English:</strong> Find the correlation matrix corresponding to
+$$\Sigma=\begin{pmatrix}1&0.36&-1.44\\0.36&4&0.80\\-1.44&0.80&9\end{pmatrix}.$$</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The standard deviations are $1,2,3$. Divide $\Sigma_{ij}$ by $\sigma_i\sigma_j$:</p>
+<p class="equation-line">$$\boxed{R=\begin{pmatrix}
+1&0.18&-0.48\\
+0.18&1&2/15\\
+-0.48&2/15&1
+\end{pmatrix}}.$$</p>
+</div></details>
+~~~
+
+=== S033 · Q2.2.3 Equicorrelation bounds / 等相关系数的范围 （Page 35）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一个 $n\times n$ 相关矩阵的所有非对角元素都等于 $\rho$。求 $\rho$ 的取值范围。</p>
+<p><strong>English:</strong> Every off-diagonal entry of an $n\times n$ correlation matrix equals $\rho$. Find the possible range of $\rho$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The eigenvalues are $1-\rho$ with multiplicity $n-1$ and $1+(n-1)\rho$ once. Positive semidefiniteness is therefore equivalent to</p>
+<p class="equation-line">$$\boxed{-\frac1{n-1}\le\rho\le1}.$$</p>
+</div></details>
+~~~
+
+=== S034 · Q2.2.4 How many eigenvalues and eigenvectors? / 特征值与特征向量有多少 （Page 35）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一个实 $n\times n$ 矩阵有多少个特征值、多少个特征向量？</p>
+<p><strong>English:</strong> How many eigenvalues and eigenvectors does a real $n\times n$ matrix have?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Over $\mathbb C$, the characteristic polynomial has exactly $n$ roots counted with algebraic multiplicity; nonreal roots of a real matrix occur in conjugate pairs. Over $\mathbb R$ there may be no real eigenvalue when $n$ is even. There are infinitely many eigenvectors whenever an eigenvalue exists, because every nonzero scalar multiple of an eigenvector is again an eigenvector. What is bounded by $n$ is the number of <em>linearly independent</em> eigenvectors; it equals $n$ exactly when the matrix is diagonalizable.</p>
+</div></details>
+~~~
+
+=== S035 · Q2.2.5 Matrix square root and Cholesky factor / 矩阵平方根与 Cholesky 分解 （Page 35）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 设
+$$A=\begin{pmatrix}2&-2\\-2&5\end{pmatrix}.$$
+（i）求 $M$ 使 $M^2=A$；（ii）求 $M$ 使 $A=MM^\top$。</p>
+<p><strong>English:</strong> For $A=\begin{pmatrix}2&-2\\-2&5\end{pmatrix}$, (i) find $M$ with $M^2=A$; (ii) find $M$ with $A=MM^\top$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The eigenvalues of $A$ are $1$ and $6$, with orthogonal eigenvectors $(2,1)^\top$ and $(1,-2)^\top$. Its principal square root is</p>
+<p class="equation-line">$$\boxed{A^{1/2}=\frac15\begin{pmatrix}
+4+\sqrt6&2-2\sqrt6\\
+2-2\sqrt6&1+4\sqrt6
+\end{pmatrix}}.$$</p>
+<p>A lower-triangular Cholesky factor is</p>
+<p class="equation-line">$$\boxed{M=\begin{pmatrix}\sqrt2&0\\-\sqrt2&\sqrt3\end{pmatrix}},\qquad A=MM^\top.$$</p>
+</div></details>
+~~~
+
+=== S036 · Q2.2.6 Apply a matrix from its eigenvectors / 利用特征向量计算矩阵作用 （Page 36）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $A$ 的特征值为 $2,-3$，对应特征向量分别为 $(1,2)^\top,(-1,3)^\top$。若 $v=(3,1)^\top$，求 $Av$。</p>
+<p><strong>English:</strong> Matrix $A$ has eigenvalues $2,-3$ with eigenvectors $(1,2)^\top,(-1,3)^\top$. For $v=(3,1)^\top$, find $Av$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Decompose $v=2(1,2)^\top-(-1,3)^\top$. Therefore</p>
+<p class="equation-line">$$Av=2\cdot2(1,2)^\top+(-3)(-1)(-1,3)^\top=\boxed{(1,17)^\top}.$$</p>
+</div></details>
+~~~
+
+=== S037 · Q2.2.7 Trace of $AB$ and $BA$ / $AB$ 与 $BA$ 的迹 （Page 36）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 对同阶方阵 $A,B$，证明 $\operatorname{tr}(AB)=\operatorname{tr}(BA)$。</p>
+<p><strong>English:</strong> For square matrices $A,B$ of the same size, prove $\operatorname{tr}(AB)=\operatorname{tr}(BA)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Expanding entries and exchanging the finite sums,</p>
+<p class="equation-line">$$\operatorname{tr}(AB)=\sum_i\sum_jA_{ij}B_{ji}
+=\sum_j\sum_iB_{ji}A_{ij}=\operatorname{tr}(BA).$$</p>
+</div></details>
+~~~
+
+=== S038 · Q2.2.8 Can a commutator equal the identity? / 矩阵交换子能否等于单位阵 （Page 36）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 是否存在 $n\times n$ 方阵 $A,B$，使 $AB-BA=I_n$？</p>
+<p><strong>English:</strong> Can $n\times n$ matrices $A,B$ satisfy $AB-BA=I_n$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>No over a field of characteristic zero. Taking traces gives $\operatorname{tr}(AB-BA)=0$, while $\operatorname{tr}(I_n)=n\ne0$, a contradiction.</p>
+</div></details>
+~~~
+
+=== S039 · Q2.2.9 Product of probability matrices / 概率矩阵的乘积 （Page 36）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若矩阵元素非负且每行之和为 $1$，称其为概率矩阵。证明两个概率矩阵的乘积仍是概率矩阵。</p>
+<p><strong>English:</strong> A probability matrix has nonnegative entries and every row sums to $1$. Show that the product of two probability matrices is again a probability matrix.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>If $A,B$ are such matrices, every entry of $AB$ is a sum of nonnegative products. With $\mathbf1$ the all-ones vector, $B\mathbf1=\mathbf1$ and hence $(AB)\mathbf1=A\mathbf1=\mathbf1$. Thus each row of $AB$ also sums to $1$.</p>
+</div></details>
+~~~
+
+=== S040 · Q2.2.10 Complete the correlation matrix again / 再论相关矩阵补全 （Page 36）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求所有使
+$$\begin{pmatrix}1&0.6&-0.3\\0.6&1&\rho\\-0.3&\rho&1\end{pmatrix}$$
+成为相关矩阵的 $\rho$。</p>
+<p><strong>English:</strong> Find all $\rho$ for which $\begin{pmatrix}1&0.6&-0.3\\0.6&1&\rho\\-0.3&\rho&1\end{pmatrix}$ is a correlation matrix.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Positive semidefiniteness requires $0.55-0.36\rho-\rho^2\ge0$. Therefore</p>
+<p class="equation-line">$$\boxed{\frac{-9-4\sqrt{91}}{50}\le\rho\le\frac{-9+4\sqrt{91}}{50}}.$$</p>
+<p>This is the same formal question as First Look Q5; the inclusive endpoints correspond to singular but valid correlation matrices.</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="stefanica-finance" aria-hidden="true"></div>
+~~~
+
+== D. Financial Instruments
+
+=== S041 · Q2.3.1 Put-option convexity arbitrage / 看跌期权凸性套利 （Page 37）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 其他条件相同、执行价为 $\$40,\$50,\$70$ 的看跌期权分别报价 $\$10,\$20,\$30$。是否存在套利？</p>
+<p><strong>English:</strong> Otherwise identical puts with strikes $\$40,\$50,\$70$ cost $\$10,\$20,\$30$. Is there an arbitrage?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Put prices must be convex in strike. Since $50=\tfrac23(40)+\tfrac13(70)$, no arbitrage requires $P(50)\le\tfrac23P(40)+\tfrac13P(70)=50/3$. It is instead $20$. Buy two $K=40$ puts and one $K=70$ put, and short three $K=50$ puts. This receives $\$10$ initially, while convexity of $(K-S_T)^+$ makes the terminal payoff nonnegative in every state.</p>
+</div></details>
+~~~
+
+=== S042 · Q2.3.2 One-period price of an ATM put / 单期模型中的平值看跌期权 （Page 37）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 股票现价 $\$50$，三个月后只可能为 $\$47$ 或 $\$52$；两种状态的真实概率各为 $50\%$。假设无股息、利率为零，平值看跌期权值多少？</p>
+<p><strong>English:</strong> A stock is $\$50$ and in three months will be either $\$47$ or $\$52$, each with physical probability $50\%$. With no dividends and zero rates, value an at-the-money put.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The risk-neutral up probability $q$ solves $50=52q+47(1-q)$, so $q=3/5$. The put pays $0$ up and $3$ down. Its no-arbitrage value is</p>
+<p class="equation-line">$$\boxed{(1-q)3=\frac65=\$1.20}.$$</p>
+<p>The physical $50/50$ probabilities are irrelevant to replication.</p>
+</div></details>
+~~~
+
+=== S043 · Q2.3.3 Physical probabilities and option value / 真实概率是否影响期权价格 （Page 37）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 股票现价 $\$50$，三个月后为 $\$60$ 或 $\$40$。平值看跌期权当前价格为 $\$4$。若真实上涨概率从 $50\%$ 改为 $75\%$，期权价值如何变化？</p>
+<p><strong>English:</strong> A $\$50$ stock will be $\$60$ or $\$40$ in three months, and its ATM put is quoted at $\$4$. If the physical up probability changes from $50\%$ to $75\%$, how does the put value change?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>It does not change merely because the physical probabilities change. No-arbitrage pricing uses the replicating portfolio, equivalently risk-neutral probabilities fixed by traded asset prices. In the stated zero-rate two-state model the unique risk-neutral up probability is $1/2$, which would imply a model value of $\$5$; thus the quoted $\$4$ is not consistent with that frictionless complete model, but changing only the physical probability still does not alter its arbitrage price.</p>
+</div></details>
+~~~
+
+=== S044 · Q2.3.4 Risk-neutral pricing / 风险中性定价 （Page 37）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是风险中性定价？</p>
+<p><strong>English:</strong> What is risk-neutral pricing?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>In an arbitrage-free market, choose an equivalent measure $Q$ under which discounted tradable asset prices are martingales. A replicable payoff $H$ then has price</p>
+<p class="equation-line">$$V_t=B_t\,\mathbb E^Q\!\left[\frac{H}{B_T}\middle|\mathcal F_t\right].$$</p>
+<p>The measure changes probabilities, not investor preferences. In a complete market $Q$ and the replicating price are unique.</p>
+</div></details>
+~~~
+
+=== S045 · Q2.3.5 Route to the Black–Scholes formula / Black–Scholes 公式的推导路线 （Page 37）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 简述如何得到 Black–Scholes 公式。</p>
+<p><strong>English:</strong> Briefly describe how to obtain the Black–Scholes formula.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Assume GBM dynamics, apply Itô's lemma to $V(t,S)$, delta hedge to remove diffusion risk, and impose the risk-free return to obtain the Black–Scholes PDE. Solve the PDE with terminal condition $V(T,S)=(S-K)^+$, or equivalently take the discounted risk-neutral expectation with $S_T$ lognormal. For a continuous dividend yield $q$,</p>
+<p class="equation-line">$$C=S_0e^{-qT}\Phi(d_1)-Ke^{-rT}\Phi(d_2),$$</p>
+<p class="equation-line">$$d_{1,2}=\frac{\log(S_0/K)+(r-q\pm\tfrac12\sigma^2)T}{\sigma\sqrt T}.$$</p>
+</div></details>
+~~~
+
+=== S046 · Q2.3.6 Price a three-month ATM put / 三个月平值看跌期权定价 （Page 37）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 标的现价 $\$40$、波动率 $30\%$，求三个月平值看跌期权价格。假设无股息、利率为零。</p>
+<p><strong>English:</strong> Price a three-month ATM put on a non-dividend-paying asset at $\$40$ with volatility $30\%$ and zero rates.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Here $S_0=K=40$, $T=0.25$, and $d_1=0.075$, $d_2=-0.075$. Thus</p>
+<p class="equation-line">$$P=40\bigl[\Phi(0.075)-\Phi(-0.075)\bigr]
+=40\bigl[2\Phi(0.075)-1\bigr]\approx\boxed{\$2.39}.$$</p>
+</div></details>
+~~~
+
+=== S047 · Q2.3.7 A stock doubles in one day / 股票一日翻倍 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 股票价格一天内翻倍，看涨期权价值会增加多少？</p>
+<p><strong>English:</strong> If a stock price doubles in one day, by how much does a call option on it increase?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>There is not enough information for a number: strike, maturity, volatility, rates, dividends, and the post-move implied volatility matter. For a small move, $\Delta C\approx\Delta\,\Delta S+\tfrac12\Gamma(\Delta S)^2$, but a doubling is not a small-move setting. Static no-arbitrage only gives broad bounds such as $0\le C\le S$ and, for a fixed parameter surface, a call's slope with respect to spot lies between $0$ and the prepaid-forward discount factor.</p>
+</div></details>
+~~~
+
+=== S048 · Q2.3.8 Bounds on delta / Delta 的取值范围 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 期权 Delta 的最小值和最大值是什么？</p>
+<p><strong>English:</strong> What are the smallest and largest values an option delta can take?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For standard European options on a non-dividend-paying asset, call delta lies in $[0,1]$ and put delta in $[-1,0]$. With continuous yield $q$, the bounds scale to $[0,e^{-qT}]$ and $[-e^{-qT},0]$. Arbitrary exotic or leveraged payoffs need not respect $[-1,1]$.</p>
+</div></details>
+~~~
+
+=== S049 · Q2.3.9 Delta of ATM calls and puts / 平值看涨与看跌的 Delta （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 平值看涨与平值看跌期权的 Delta 分别是多少？</p>
+<p><strong>English:</strong> What are the deltas of an at-the-money call and put?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>In Black–Scholes, $\Delta_C=e^{-qT}\Phi(d_1)$ and $\Delta_P=e^{-qT}(\Phi(d_1)-1)$. They are approximately $+1/2$ and $-1/2$ for an ATM-forward option with modest carry and volatility. They are not exactly those numbers for every definition of “ATM”; for $S=K$, $d_1=[(r-q)+\sigma^2/2]\sqrt T/\sigma$.</p>
+</div></details>
+~~~
+
+=== S050 · Q2.3.10 Put–call parity / 看涨看跌平价 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 写出并证明欧式期权的看涨看跌平价。</p>
+<p><strong>English:</strong> State and prove European put–call parity.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For equal strike and maturity,</p>
+<p class="equation-line">$$\boxed{C-P=S_0e^{-qT}-Ke^{-rT}}.$$</p>
+<p>At expiry, long call plus cash $K$ has payoff $\max(S_T,K)$; long put plus one share has the same payoff. Equal terminal payoffs must have equal current prices, which gives the identity.</p>
+</div></details>
+~~~
+
+=== S051 · Q2.3.11 Where call time value is largest / 看涨期权时间价值何处最大 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 证明欧式看涨期权的时间价值在平值附近最大。</p>
+<p><strong>English:</strong> Show that a European call's time value is largest at the money.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Under zero rates and dividends, time value is $C(S)-(S-K)^+$. Below $K$ its derivative is $\Delta_C&gt;0$; above $K$ its derivative is $\Delta_C-1&lt;0$. It therefore peaks at $S=K$. With nonzero carry, the precise peak depends on the convention for intrinsic value and is naturally stated near the ATM-forward level.</p>
+</div></details>
+~~~
+
+=== S052 · Q2.3.12 Implied volatility, smile and skew / 隐含波动率、微笑与偏斜 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是隐含波动率、波动率微笑和波动率偏斜？</p>
+<p><strong>English:</strong> What are implied volatility, a volatility smile, and a volatility skew?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Implied volatility is the volatility input that makes a pricing model match an observed option price. Plotting it against strike for a fixed maturity gives the smile: both wings may sit above the center. A skew is an asymmetric slope, commonly with lower-strike equity options carrying higher implied volatility. These shapes summarize departures from constant-volatility Black–Scholes assumptions.</p>
+</div></details>
+~~~
+
+=== S053 · Q2.3.13 Gamma and convexity / Gamma 与凸性 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是期权 Gamma？为何交易者有时偏好较小的 Gamma？为何普通欧式看涨、看跌期权的 Gamma 为正？</p>
+<p><strong>English:</strong> What is gamma? Why can small gamma be preferable, and why is gamma positive for plain-vanilla calls and puts?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Gamma is $\Gamma=\partial^2V/\partial S^2=\partial\Delta/\partial S$. Small absolute gamma makes delta more stable and reduces discrete-rehedging exposure and turnover. Vanilla call and put payoffs are convex in $S_T$; expectation and discounting preserve convexity, so their prices are convex in spot and gamma is nonnegative. In Black–Scholes, $\Gamma=e^{-qT}\phi(d_1)/(S\sigma\sqrt T)&gt;0$.</p>
+</div></details>
+~~~
+
+=== S054 · Q2.3.14 When call and put values coincide / 看涨与看跌何时同价 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 同标的、同行权价、同到期日的欧式看涨与看跌期权何时同价？</p>
+<p><strong>English:</strong> When do otherwise identical European calls and puts have equal value?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Put–call parity gives $C=P$ exactly when</p>
+<p class="equation-line">$$S_0e^{-qT}=Ke^{-rT},\qquad\text{equivalently}\qquad F_{0,T}=K.$$</p>
+<p>At the forward-money strike the discounted expected upside and downside around $K$ balance.</p>
+</div></details>
+~~~
+
+=== S055 · Q2.3.15 Scale volatility across horizons / 跨期限换算波动率 （Page 38）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若资产六个月收益的总波动率为 $30\%$，两年收益的总波动率是多少？</p>
+<p><strong>English:</strong> If an asset's six-month horizon volatility is $30\%$, what is its two-year horizon volatility?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Under independent, stationary increments, standard deviation scales with the square root of time:</p>
+<p class="equation-line">$$\sigma_{2\mathrm y}=30\%\sqrt{\frac{2}{0.5}}=\boxed{60\%}.$$</p>
+<p>If “$30\%$ volatility” were already an annualized quote, the annualized number would remain $30\%$; the question uses horizon volatility.</p>
+</div></details>
+~~~
+
+=== S056 · Q2.3.16 Value an interest-rate swap / 利率互换估值 （Page 39）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何给利率互换估值？</p>
+<p><strong>English:</strong> How do you value an interest-rate swap?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Value each remaining leg from the current discount and forward curves. For a receive-fixed swap,</p>
+<p class="equation-line">$$V=N\!\left[K\sum_i\alpha_iP(0,T_i)+P(0,T_n)-P(0,T_0)\right],$$</p>
+<p>with the last expression adjusted for the already-fixed next floating coupon when valuation is between reset dates. Equivalently, it is the value of a fixed-rate bond minus a floating-rate note; pay-fixed has the opposite sign.</p>
+</div></details>
+~~~
+
+=== S057 · Q2.3.17 Ten-year zero and a ten-basis-point move / 十年零息债与十个基点 （Page 39）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 十年期零息债收益率上升 $10$ 个基点，价格约变化多少？</p>
+<p><strong>English:</strong> By approximately how much does a ten-year zero-coupon bond price change when its yield rises by ten basis points?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Its modified duration is approximately $10$ under continuous compounding. Thus</p>
+<p class="equation-line">$$\frac{\Delta P}{P}\approx-D\,\Delta y=-10(0.001)=-1\%.$$</p>
+<p>Exactly under continuous compounding, $P_{\rm new}/P_{\rm old}=e^{-0.01}\approx0.99005$, a $0.995\%$ fall.</p>
+</div></details>
+~~~
+
+=== S058 · Q2.3.18 Bond price from duration / 用久期估算债券价格 （Page 39）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一只五年期债券价格为 $102$，久期为 $3.5$ 年。若收益率下降 $50$ 个基点，估算新价格。</p>
+<p><strong>English:</strong> A five-year bond priced at $102$ has duration $3.5$. Estimate its price after a fifty-basis-point yield decrease.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p class="equation-line">$$\Delta P\approx-PD\,\Delta y=-102(3.5)(-0.005)=1.785.$$</p>
+<p>The estimated new price is $\boxed{103.785}$. Convexity would refine this first-order estimate.</p>
+</div></details>
+~~~
+
+=== S059 · Q2.3.19 Forward contracts and forward prices / 远期合约与远期价格 （Page 39）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是远期合约？什么是远期价格？</p>
+<p><strong>English:</strong> What is a forward contract, and what is the forward price?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A forward is an agreement today to exchange an asset at time $T$ for a delivery price $K$. The forward price $F_{0,T}$ is the delivery price that makes a new contract worth zero. For an asset with continuous yield $q$ and deterministic rate $r$,</p>
+<p class="equation-line">$$\boxed{F_{0,T}=S_0e^{(r-q)T}}.$$</p>
+<p>The value later is not the same object as the forward price.</p>
+</div></details>
+~~~
+
+=== S060 · Q2.3.20 Treasury and commodity forwards / 国债与商品远期定价 （Page 39）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 国债远期与商品远期的价格如何确定？</p>
+<p><strong>English:</strong> How are forward prices determined for Treasury securities and commodities?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Cash-and-carry gives the future value of net spot carrying cost. If $I$ is the present value of coupons paid before delivery, a Treasury forward satisfies</p>
+<p class="equation-line">$$F_{0,T}=(S_0-I)e^{rT}.$$</p>
+<p>For a commodity, add the present value $U$ of storage and other costs and subtract the present value of convenience yield $Y$:</p>
+<p class="equation-line">$$F_{0,T}=(S_0+U-Y)e^{rT},$$</p>
+<p>or $S_0e^{(r+u-y)T}$ under continuous proportional rates.</p>
+</div></details>
+~~~
+
+=== S061 · Q2.3.21 Eurodollar futures / Eurodollar 期货 （Page 39）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是 Eurodollar 期货？</p>
+<p><strong>English:</strong> What is a Eurodollar futures contract?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Historically it was a cash-settled futures contract on the three-month USD LIBOR rate for a future accrual period, quoted as $100-L$, where $L$ is the annualized rate in percent. A one-basis-point move was worth $\$25$ per $\$1$ million notional. LIBOR cessation has moved current markets to SOFR futures, but this is the instrument meant by the book.</p>
+</div></details>
+~~~
+
+=== S062 · Q2.3.22 Forwards versus futures / 远期与期货的区别 （Page 39）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 远期合约与期货合约的主要区别是什么？</p>
+<p><strong>English:</strong> What are the main differences between forwards and futures?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Forwards are typically OTC, customizable, settled at maturity, and expose each party to bilateral counterparty risk. Futures are standardized and exchange-cleared, margined, marked to market daily, and usually more liquid. Daily settlement can make a futures price differ from a forward price when rates are stochastic and correlated with the underlying.</p>
+</div></details>
+~~~
+
+=== S063 · Q2.3.23 Scale VaR across time and confidence / 跨期限与置信度换算 VaR （Page 39）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 某组合五日 $98\%$ VaR 为 $\$10$ million。在独立正态收益与平方根时间规则下，十日 $99\%$ VaR 是多少？</p>
+<p><strong>English:</strong> A portfolio has five-day $98\%$ VaR of $\$10$ million. Under normal independent returns and square-root-of-time scaling, what is its ten-day $99\%$ VaR?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Scale both the horizon and the normal quantile:</p>
+<p class="equation-line">$$\operatorname{VaR}_{10,99\%}
+=10\,\text{m}\times\sqrt{\frac{10}{5}}\times
+\frac{\Phi^{-1}(0.99)}{\Phi^{-1}(0.98)}
+\approx\boxed{\$16.0\text{ million}}.$$</p>
+<p>This calculation is only as valid as the normal-i.i.d. approximation.</p>
+</div></details>
+~~~
+
+=== S064 · Q2.3.24 Two put prices / 两个看跌期权报价 （Page 39）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 同标的、同到期日的执行价 $\$30$ 与 $\$20$ 看跌期权分别报价 $\$6$ 与 $\$4$。能否仅凭这些报价构造套利？</p>
+<p><strong>English:</strong> Puts with strikes $\$30$ and $\$20$ cost $\$6$ and $\$4$, with the same underlying and maturity. Do these prices alone imply an arbitrage?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>No. The $20$–$30$ put spread costs $2$ and has payoff between $0$ and $10$, so monotonicity and the vertical-spread upper bound are respected. Convexity using the zero-strike put gives $P(20)\le(2/3)P(30)=4$, here exactly. Additional spot, rate, or other-strike information could add constraints, but the two quotes alone are arbitrage-consistent.</p>
+</div></details>
+~~~
+
+=== S065 · Q2.3.25 Implied versus realized volatility / 隐含波动率与实现波动率 （Page 40）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 以 $28\%$ 隐含波动率卖出一个月看跌期权，并持续做 Delta 对冲；到期后实现波动率为 $16\%$。赚了还是亏了？</p>
+<p><strong>English:</strong> You sell a one-month put at $28\%$ implied volatility and delta-hedge continuously. Realized volatility is $16\%$. Did you make or lose money?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>In the ideal diffusion model with consistent rates, no jumps, continuous frictionless hedging, and the same volatility definition, the short option earns because the sold variance exceeds realized variance. The hedged P&amp;L is approximately a gamma-weighted integral proportional to $\int(\sigma_{\rm imp}^2-\sigma_{\rm realized}^2)S_t^2\Gamma_t\,dt&gt;0$. A single realized-volatility statistic does not guarantee profit in real markets: jumps, skew moves, discrete hedging, transaction costs, and path-dependent gamma weighting can reverse it.</p>
+</div></details>
+~~~
+
+=== S066 · Q2.3.26 The zero-cost call replication fallacy / 零成本复制看涨期权的谬误 （Page 40）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 标的现价 $\$25$，看涨期权执行价 $\$30$。有人声称：价格每次上穿 $\$30$ 就以 $\$30$ 买一股，下穿时再以 $\$30$ 卖出，因此可零成本复制到期收益。错在哪里？</p>
+<p><strong>English:</strong> A proposed replication of a $K=\$30$ call buys one share whenever spot crosses above $\$30$ and sells it whenever spot crosses below, apparently always trading at $\$30$ and producing the call payoff for free. What is wrong?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A continuous diffusion can cross a level infinitely often; the indicator hedge $1_{\{S_t&gt;K\}}$ has unbounded turnover and is not an admissible finite-variation, self-financing strategy. Transaction costs explode in any realistic implementation. Mathematically, Tanaka's formula shows the missing term:</p>
+<p class="equation-line">$$(S_T-K)^+=(S_0-K)^++\int_0^T1_{\{S_t&gt;K\}}\,dS_t+\frac12L_T^K,$$</p>
+<p>where the positive local-time term $L_T^K/2$ is exactly what the informal argument ignores.</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="stefanica-cpp" aria-hidden="true"></div>
+~~~
+
+== E. C\+\+ & Data Structures
+
+=== S067 · Q2.4.1 Declare an array / 声明数组 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在 C++ 中如何声明数组？</p>
+<p><strong>English:</strong> How do you declare an array in C++?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>int raw[10]{};                 // built-in fixed-size array
+std::array&lt;int, 10&gt; fixed{};  // safer fixed-size container
+std::vector&lt;int&gt; dynamic(10); // runtime-sized container</code></pre>
+<p>The size of a built-in array must normally be a compile-time constant in standard C++.</p>
+</div></details>
+~~~
+
+=== S068 · Q2.4.2 Address of a variable / 取得变量地址 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何取得变量的地址？</p>
+<p><strong>English:</strong> How do you obtain the address of a variable?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>int x = 7;
+int* p = &amp;x;          // or std::addressof(x)</code></pre>
+<p>Dereferencing $p$ with <code>*p</code> accesses $x$.</p>
+</div></details>
+~~~
+
+=== S069 · Q2.4.3 Array of pointers / 指针数组 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何声明一个指针数组？</p>
+<p><strong>English:</strong> How do you declare an array of pointers?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>int* pointers[10]{};                 // ten pointers to int
+std::array&lt;int*, 10&gt; pointers2{};</code></pre>
+<p>Parentheses change the declaration: <code>int (*p)[10]</code> is instead a pointer to an array of ten integers.</p>
+</div></details>
+~~~
+
+=== S070 · Q2.4.4 Const pointer forms / const 指针的三种形式 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何声明常量指针、指向常量的指针，以及指向常量的常量指针？</p>
+<p><strong>English:</strong> How do you declare a const pointer, a pointer to const, and a const pointer to const?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>int* const fixed_pointer = &amp;x;             // pointer cannot change
+const int* pointer_to_const = &amp;x;          // pointee cannot change through it
+const int* const fixed_pointer_to_const = &amp;x; // neither can change</code></pre>
+<p><code>int const*</code> and <code>const int*</code> mean the same thing.</p>
+</div></details>
+~~~
+
+=== S071 · Q2.4.5 Dynamic array / 动态数组 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何声明动态数组？</p>
+<p><strong>English:</strong> How do you declare a dynamic array?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>std::vector&lt;int&gt; a(n);               // preferred
+auto a2 = std::make_unique&lt;int[]&gt;(n); // owning array pointer</code></pre>
+<p>Legacy <code>new int[n]</code> must be paired with <code>delete[]</code>; RAII containers and smart pointers prevent leaks and exception-safety errors.</p>
+</div></details>
+~~~
+
+=== S072 · Q2.4.6 Function signature / 函数签名 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> C++ 函数声明的一般形式是什么？</p>
+<p><strong>English:</strong> What is the general form of a C++ function signature?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>ReturnType function_name(ParameterType1 p1, ParameterType2 p2)
+    cv_qualifier ref_qualifier noexcept_specifier;</code></pre>
+<p>For overload resolution, the signature is determined by the function name and parameter-type list (plus relevant member/template qualifiers), not merely by the return type.</p>
+</div></details>
+~~~
+
+=== S073 · Q2.4.7 Pass by reference / 按引用传递 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何按引用传递参数？</p>
+<p><strong>English:</strong> How do you pass an argument by reference?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>void increment(int&amp; x) { ++x; }</code></pre>
+<p>The function receives an alias and can modify the caller's object. Use a pointer when null or reseating is part of the interface.</p>
+</div></details>
+~~~
+
+=== S074 · Q2.4.8 Read-only reference argument / 只读引用参数 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何通过引用传递只读参数？</p>
+<p><strong>English:</strong> How do you pass a read-only argument by reference?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>void print(const LargeObject&amp; value);</code></pre>
+<p>A const lvalue reference avoids a copy, prevents mutation through the parameter, and can bind to temporaries.</p>
+</div></details>
+~~~
+
+=== S075 · Q2.4.9 Pointer versus reference / 指针与引用 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 指针和引用有哪些重要区别？</p>
+<p><strong>English:</strong> What are the important differences between pointers and references?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A pointer is an object that can be null, reseated, copied, compared, and used in pointer arithmetic; access needs explicit dereferencing. A reference is an alias that must be bound at initialization and cannot later be reseated, so it normally expresses a required object. Neither construct guarantees lifetime safety: both can dangle.</p>
+</div></details>
+~~~
+
+=== S076 · Q2.4.10 Default parameter / 默认参数 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何为函数参数设置默认值？</p>
+<p><strong>English:</strong> How do you set a default value for a parameter?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>void log(std::string_view message, int level = 1);</code></pre>
+<p>After a parameter has a default, later parameters must also have defaults. Put the default in one visible declaration, normally the header, not again in the definition.</p>
+</div></details>
+~~~
+
+=== S077 · Q2.4.11 Template function / 函数模板 （Page 41）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何创建函数模板？</p>
+<p><strong>English:</strong> How do you create a function template?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>template&lt;typename T&gt;
+T maximum(const T&amp; a, const T&amp; b) {
+    return b &lt; a ? a : b;
+}</code></pre>
+<p>The compiler instantiates the function for types satisfying the operations used; modern C++ can state those requirements with a concept.</p>
+</div></details>
+~~~
+
+=== S078 · Q2.4.12 Pointer to a function / 函数指针 （Page 42）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何声明函数指针？</p>
+<p><strong>English:</strong> How do you declare a pointer to a function?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>double (*operation)(double, double) = &amp;add;
+using Operation = double (*)(double, double);</code></pre>
+<p><code>std::function</code> is more flexible when type-erased stateful callables are required, at some runtime cost.</p>
+</div></details>
+~~~
+
+=== S079 · Q2.4.13 Prevent implicit conversion / 禁止隐式类型转换 （Page 42）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何防止编译器利用类的构造函数做隐式转换？</p>
+<p><strong>English:</strong> How do you prevent implicit conversion through a class constructor?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>class Price {
+public:
+    explicit Price(double value) : value_(value) {}
+private:
+    double value_;
+};</code></pre>
+<p>The <code>explicit</code> specifier also applies to conversion operators and, in modern C++, may be conditional.</p>
+</div></details>
+~~~
+
+=== S080 · Q2.4.14 Uses of the static keyword / static 关键字的用途 （Page 42）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 说明 C++ 关键字 <code>static</code> 的各种用途。</p>
+<p><strong>English:</strong> Describe the uses of <code>static</code> in C++.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A block-scope static has static storage duration but local scope and is initialized once. A static data member is shared by all objects; a static member function has no <code>this</code> pointer. At namespace scope, <code>static</code> gives internal linkage, though an anonymous namespace is usually preferred. Static storage-duration objects live for the program's lifetime.</p>
+</div></details>
+~~~
+
+=== S081 · Q2.4.15 Can a static member function be const? / 静态成员函数能否为 const （Page 42）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 静态成员函数可以声明为 <code>const</code> 吗？</p>
+<p><strong>English:</strong> Can a static member function be const-qualified?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>No. A member-function <code>const</code> qualifier constrains the object reached through <code>this</code>. A static member function has no <code>this</code> pointer and is not invoked on a particular object.</p>
+</div></details>
+~~~
+
+=== S082 · Q2.4.16 Constructor initializer lists / 构造函数初始化列表 （Page 42）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 构造函数何时必须或应当使用初始化列表，而不是在函数体内赋值？</p>
+<p><strong>English:</strong> When is a constructor initializer list required or preferable to assignment in the constructor body?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>It is required for references, const members, base classes, and members without an accessible default constructor. It is generally preferable because it constructs each subobject directly instead of default-constructing and then assigning. Actual initialization order follows member declaration order, not list order.</p>
+</div></details>
+~~~
+
+=== S083 · Q2.4.17 Copy constructor and pointer members / 拷贝构造与指针成员 （Page 42）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是拷贝构造函数？类中有指针成员时，默认拷贝构造为什么可能出错？</p>
+<p><strong>English:</strong> What is a copy constructor, and why can the default copy constructor be dangerous for pointer data members?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A copy constructor typically has the form <code>T(const T&amp; other)</code>. The generated version copies members individually, so a raw owning pointer is shallow-copied: two objects then own the same allocation, causing aliasing, double deletion, or dangling pointers. Prefer value members and RAII smart pointers; otherwise implement the Rule of Five with a deep copy or explicitly disable copying.</p>
+</div></details>
+~~~
+
+=== S084 · Q2.4.18 Shallow-copy code output / 浅拷贝程序的输出 （Page 42）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 题中类 <code>A</code> 含有 <code>int* ptr</code>，并在析构函数中执行 <code>delete ptr</code>。主函数令 <code>aa.ptr = new int(2)</code>，把 <code>aa</code> 按值传入空函数 <code>foo</code>，随后输出 <code>*aa.ptr</code>。程序会输出什么？</p>
+<p><strong>English:</strong> Class <code>A</code> contains <code>int* ptr</code> and executes <code>delete ptr</code> in its destructor. Main sets <code>aa.ptr = new int(2)</code>, passes <code>aa</code> by value to an empty <code>foo</code>, and then prints <code>*aa.ptr</code>. What is the output?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>There is no defined output. The implicit copy constructor shallow-copies the pointer. Destruction of <code>foo</code>'s parameter frees the allocation, so the original object holds a dangling pointer; dereferencing it is undefined behavior, and its later destructor may double-delete it. It might print garbage, appear to print $2$, or crash—none is guaranteed.</p>
+</div></details>
+~~~
+
+=== S085 · Q2.4.19 Operator overloading / 运算符重载 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何重载运算符？</p>
+<p><strong>English:</strong> How do you overload an operator?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>struct Vec {
+    double x, y;
+    Vec&amp; operator+=(const Vec&amp; rhs) {
+        x += rhs.x; y += rhs.y; return *this;
+    }
+};
+Vec operator+(Vec lhs, const Vec&amp; rhs) {
+    return lhs += rhs;
+}</code></pre>
+<p>At least one operand must be a user-defined type. Preserve the conventional meaning and algebra of the operator.</p>
+</div></details>
+~~~
+
+=== S086 · Q2.4.20 Smart pointers / 智能指针 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是智能指针？</p>
+<p><strong>English:</strong> What are smart pointers?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Smart pointers are RAII ownership wrappers. <code>std::unique_ptr</code> expresses exclusive movable ownership; <code>std::shared_ptr</code> uses reference-counted shared ownership; <code>std::weak_ptr</code> observes a shared object without extending its lifetime and can break cycles. Prefer <code>std::make_unique</code> and <code>std::make_shared</code>.</p>
+</div></details>
+~~~
+
+=== S087 · Q2.4.21 Encapsulation / 封装 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是封装？</p>
+<p><strong>English:</strong> What is encapsulation?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Encapsulation groups state with the operations that maintain its invariants and hides implementation details behind a stable interface, using access control and abstraction. It reduces coupling: callers depend on behavior rather than data representation.</p>
+</div></details>
+~~~
+
+=== S088 · Q2.4.22 Polymorphism / 多态 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是多态？</p>
+<p><strong>English:</strong> What is polymorphism?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Polymorphism lets one interface represent multiple implementations. Runtime polymorphism uses virtual dispatch through a base pointer or reference. Compile-time polymorphism uses overloads, templates, and concepts. Value-oriented alternatives such as <code>std::variant</code> can avoid inheritance when the set of types is closed.</p>
+</div></details>
+~~~
+
+=== S089 · Q2.4.23 Inheritance / 继承 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是继承？</p>
+<p><strong>English:</strong> What is inheritance?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Inheritance defines a derived class from a base class, reusing or refining behavior and, with public inheritance, expressing an “is-a” substitutability relationship. Prefer composition for mere code reuse; public inheritance should respect the base contract and Liskov substitution.</p>
+</div></details>
+~~~
+
+=== S090 · Q2.4.24 Virtual and pure virtual functions / 虚函数与纯虚函数 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是虚函数和纯虚函数？何时使用纯虚函数？</p>
+<p><strong>English:</strong> What are virtual and pure virtual functions, and when do you use a pure virtual function?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A virtual function dispatches according to the dynamic type when called through a base pointer or reference. A pure virtual declaration such as <code>virtual double value() const = 0;</code> makes the class abstract and requires concrete derived classes to supply the interface, unless they remain abstract. Use <code>override</code> on overrides.</p>
+</div></details>
+~~~
+
+=== S091 · Q2.4.25 Virtual destructors and constructors / 虚析构函数与构造函数 （Page 43）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 为什么基类析构函数常要声明为虚函数？构造函数可以是虚函数吗？</p>
+<p><strong>English:</strong> Why are destructors often virtual in base classes? Can constructors be virtual?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>If an object may be deleted through a base pointer, the base destructor must be virtual so the derived destructor runs; otherwise behavior is undefined. Constructors cannot be virtual because dynamic type construction is not complete during base construction. A virtual <code>clone</code> or factory function supplies polymorphic construction.</p>
+</div></details>
+~~~
+
+=== S092 · Q2.4.26 Factorial function / 阶乘函数 （Page 44）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 编写函数计算正整数的阶乘。</p>
+<p><strong>English:</strong> Write a function that computes the factorial of a positive integer.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>std::uint64_t factorial(unsigned n) {
+    std::uint64_t result = 1;
+    for (unsigned k = 2; k &lt;= n; ++k) {
+        if (result &gt; UINT64_MAX / k) throw std::overflow_error("factorial");
+        result *= k;
+    }
+    return result;
+}</code></pre>
+<p>This also defines $0!=1$ and detects fixed-width overflow.</p>
+</div></details>
+~~~
+
+=== S093 · Q2.4.27 Maximum-sum subarray / 最大子数组和 （Page 44）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 编写函数，返回数组中元素和最大的连续子数组。</p>
+<p><strong>English:</strong> Write a function that returns a contiguous subarray having maximum sum.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Kadane's algorithm can retain the actual interval as well as its sum. The half-open interval <code>[begin,end)</code> returned below is nonempty:</p>
+<pre><code>struct MaxSubarray {
+    long long sum;
+    std::size_t begin;
+    std::size_t end;
+};
+
+MaxSubarray max_subarray(const std::vector&lt;long long&gt;&amp; a) {
+    if (a.empty()) throw std::invalid_argument("empty array");
+
+    long long ending_sum = a[0];
+    long long best_sum = a[0];
+    std::size_t ending_begin = 0;
+    std::size_t best_begin = 0;
+    std::size_t best_end = 1;
+
+    for (std::size_t i = 1; i &lt; a.size(); ++i) {
+        if (ending_sum &lt; 0) {
+            ending_sum = a[i];
+            ending_begin = i;
+        } else {
+            ending_sum += a[i];
+        }
+        if (ending_sum &gt; best_sum) {
+            best_sum = ending_sum;
+            best_begin = ending_begin;
+            best_end = i + 1;
+        }
+    }
+    return {best_sum, best_begin, best_end};
+}</code></pre>
+<p>The subarray is <code>a[begin]</code> through <code>a[end-1]</code>. Time is $O(n)$ and extra space is $O(1)$, excluding the returned view or copied elements.</p>
+</div></details>
+~~~
+
+=== S094 · Q2.4.28 Prime factors / 质因数分解 （Page 44）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 编写函数返回正整数的全部质因数（含重数）。</p>
+<p><strong>English:</strong> Write a function returning the prime factors of a positive integer, including multiplicities.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>std::vector&lt;std::uint64_t&gt; factors(std::uint64_t n) {
+    std::vector&lt;std::uint64_t&gt; out;
+    for (std::uint64_t p = 2; p &lt;= n / p; ++p)
+        while (n % p == 0) { out.push_back(p); n /= p; }
+    if (n &gt; 1) out.push_back(n);
+    return out;
+}</code></pre>
+<p>Trial division takes $O(\sqrt n)$ divisions in the worst case.</p>
+</div></details>
+~~~
+
+=== S095 · Q2.4.29 Swap two bits / 交换两个二进制位 （Page 44）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 编写函数，交换一个 $64$ 位整数的第 $i$ 位和第 $j$ 位。</p>
+<p><strong>English:</strong> Write a function that swaps bits $i$ and $j$ of a 64-bit integer.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>std::uint64_t swap_bits(std::uint64_t x, unsigned i, unsigned j) {
+    const auto different = ((x &gt;&gt; i) ^ (x &gt;&gt; j)) &amp; 1ULL;
+    return different ? x ^ ((1ULL &lt;&lt; i) | (1ULL &lt;&lt; j)) : x;
+}</code></pre>
+<p>Require $i,j&lt;64$ to avoid an invalid shift.</p>
+</div></details>
+~~~
+
+=== S096 · Q2.4.30 Reverse a singly linked list / 反转单链表 （Page 44）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 编写函数反转单链表。</p>
+<p><strong>English:</strong> Write a function that reverses a singly linked list.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>Node* reverse(Node* head) {
+    Node* previous = nullptr;
+    while (head) {
+        Node* next = head-&gt;next;
+        head-&gt;next = previous;
+        previous = head;
+        head = next;
+    }
+    return previous;
+}</code></pre>
+<p>Time is $O(n)$ and extra space is $O(1)$.</p>
+</div></details>
+~~~
+
+=== S097 · Q2.4.31 Balanced parentheses / 括号匹配 （Page 44）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 编写函数，判断字符串中的括号是否平衡。</p>
+<p><strong>English:</strong> Write a function that returns whether the parentheses in a string are balanced.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For one bracket type, scan with a counter: increment on <code>(</code>, decrement on <code>)</code>, reject if it becomes negative, and accept only if it ends at zero. For <code>()[]{}</code>, push opening brackets onto a stack and require every closer to match the top. Both versions are $O(n)$; the general version uses $O(n)$ worst-case space.</p>
+</div></details>
+~~~
+
+=== S098 · Q2.4.32 Height of a binary tree / 二叉树高度 （Page 44）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 编写函数返回任意二叉树的高度。</p>
+<p><strong>English:</strong> Write a function returning the height of an arbitrary binary tree.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>int height(const Node* node) {
+    if (!node) return 0;
+    return 1 + std::max(height(node-&gt;left), height(node-&gt;right));
+}</code></pre>
+<p>This convention counts nodes on the longest root-to-leaf path. Time is $O(n)$ and recursion space $O(h)$.</p>
+</div></details>
+~~~
+
+=== S099 · Q2.4.33 Fibonacci number / Fibonacci 数 （Page 44）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 编写 C++ 函数计算第 $n$ 个 Fibonacci 数。</p>
+<p><strong>English:</strong> Write a C++ function computing the $n$-th Fibonacci number.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>std::uint64_t fibonacci(unsigned n) {
+    if (n == 0) return 0;
+    std::uint64_t previous = 0;
+    std::uint64_t current = 1;
+    for (unsigned k = 1; k &lt; n; ++k) {
+        if (UINT64_MAX - previous &lt; current)
+            throw std::overflow_error("fibonacci");
+        const auto next = previous + current;
+        previous = current;
+        current = next;
+    }
+    return current;
+}</code></pre>
+<p>This uses $F_0=0,F_1=1$, runs in $O(n)$ time and $O(1)$ space. Fast doubling reduces time to $O(\log n)$.</p>
+</div></details>
+~~~
+
+=== S100 · Q2.4.34 Basic calculator / 基础表达式计算器 （Page 44）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 实现一个计算器，求只含非负整数、空格、加减号和圆括号的合法表达式之值；不可调用 <code>eval</code>。</p>
+<p><strong>English:</strong> Evaluate a valid expression containing nonnegative integers, spaces, plus and minus signs, and parentheses, without using <code>eval</code>.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<pre><code>long long calculate(std::string_view s) {
+    long long result = 0, number = 0, sign = 1;
+    std::vector&lt;long long&gt; stack;
+    for (char c : s) {
+        if (std::isdigit(static_cast&lt;unsigned char&gt;(c))) {
+            number = 10 * number + (c - '0');
+        } else if (c == '+' || c == '-') {
+            result += sign * number; number = 0;
+            sign = (c == '+') ? 1 : -1;
+        } else if (c == '(') {
+            stack.push_back(result); stack.push_back(sign);
+            result = 0; sign = 1;
+        } else if (c == ')') {
+            result += sign * number; number = 0;
+            const auto outer_sign = stack.back(); stack.pop_back();
+            const auto outer_value = stack.back(); stack.pop_back();
+            result = outer_value + outer_sign * result;
+        }
+    }
+    return result + sign * number;
+}</code></pre>
+<p>Each character is processed once, so time and worst-case stack space are $O(n)$.</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="stefanica-monte-carlo" aria-hidden="true"></div>
+~~~
+
+== F. Monte Carlo & Numerical Methods
+
+=== S101 · Q2.5.1 Estimate pi by Monte Carlo / 用 Monte Carlo 估计圆周率 （Page 47）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何用 Monte Carlo 模拟估计 $\pi$？该估计量的标准差是多少？</p>
+<p><strong>English:</strong> How would you estimate $\pi$ with Monte Carlo, and what is the estimator's standard deviation?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Draw $N$ independent points uniformly from $[0,1]^2$ and let $I_i=1_{\{X_i^2+Y_i^2\le1\}}$. Since $p=\mathbb E I_i=\pi/4$, use $\widehat\pi=4\bar I$. Then</p>
+<p class="equation-line">$$\operatorname{sd}(\widehat\pi)
+=4\sqrt{\frac{p(1-p)}N}
+=\frac{\sqrt{4\pi-\pi^2}}{\sqrt N}.$$</p>
+<p>Replacing $p$ by $\bar I$ gives an estimated standard error.</p>
+</div></details>
+~~~
+
+=== S102 · Q2.5.2 Generate independent standard normals / 生成独立标准正态样本 （Page 47）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 有哪些方法可以生成相互独立的标准正态随机样本？</p>
+<p><strong>English:</strong> What methods can generate independent standard-normal samples?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Common choices are inverse-transform sampling $Z=\Phi^{-1}(U)$, Box–Muller, the Marsaglia polar method, rejection methods, and the Ziggurat algorithm. Independence requires independent uniform inputs and a correct implementation; a pseudorandom generator supplies deterministic approximations to those inputs.</p>
+</div></details>
+~~~
+
+=== S103 · Q2.5.3 Simulate a GBM path / 模拟几何布朗运动路径 （Page 47）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何利用正态随机数生成几何布朗运动股票路径？</p>
+<p><strong>English:</strong> How do you generate a geometric Brownian-motion stock path from normal random numbers?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For $dS_t=\mu S_tdt+\sigma S_tdW_t$, the exact step over $\Delta t$ is</p>
+<p class="equation-line">$$S_{t+\Delta t}=S_t\exp\!\left[\left(\mu-\frac12\sigma^2\right)\Delta t+\sigma\sqrt{\Delta t}\,Z\right],\qquad Z\sim N(0,1).$$</p>
+<p>Use independent $Z$ values for independent increments.</p>
+</div></details>
+~~~
+
+=== S104 · Q2.5.4 Normal approximation from twelve uniforms / 十二个均匀变量近似正态 （Page 47）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何用十二个独立的 $U[0,1]$ 样本近似生成标准正态样本？</p>
+<p><strong>English:</strong> How can twelve independent $U[0,1]$ samples be used to approximate a standard normal?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Use</p>
+<p class="equation-line">$$Z=\sum_{i=1}^{12}U_i-6.$$</p>
+<p>It has mean $0$ and variance $12(1/12)=1$ and is roughly normal by the central limit theorem. It is bounded in $[-6,6]$, so it is unsuitable when accurate tails matter.</p>
+</div></details>
+~~~
+
+=== S105 · Q2.5.5 Monte Carlo convergence rate / Monte Carlo 收敛速度 （Page 47）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> Monte Carlo 方法的收敛速度是多少？</p>
+<p><strong>English:</strong> What is the convergence rate of Monte Carlo methods?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For independent finite-variance samples, the standard error is $\sigma/\sqrt N$, so the stochastic error is $O_p(N^{-1/2})$. Reducing error by a factor of ten therefore needs about one hundred times as many paths. This rate is largely dimension-independent but can be improved in constants by variance reduction.</p>
+</div></details>
+~~~
+
+=== S106 · Q2.5.6 Variance reduction / 方差缩减 （Page 47）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 列举常见的 Monte Carlo 方差缩减技术。</p>
+<p><strong>English:</strong> What Monte Carlo variance-reduction techniques do you know?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Antithetic variates, control variates, importance sampling, stratified sampling, Latin hypercube sampling, conditional Monte Carlo/Rao–Blackwellization, common random numbers for differences, moment matching, and quasi-Monte Carlo are standard choices. A sound answer explains why the chosen technique is unbiased or how any bias is controlled.</p>
+</div></details>
+~~~
+
+=== S107 · Q2.5.7 Correlated normal samples / 相关正态样本 （Page 47）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何生成相关系数为 $\rho$ 的两个标准正态变量？</p>
+<p><strong>English:</strong> How do you generate two standard-normal variables with correlation $\rho$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Generate independent $Z_1,Z_2\sim N(0,1)$ and set</p>
+<p class="equation-line">$$X=Z_1,\qquad Y=\rho Z_1+\sqrt{1-\rho^2}\,Z_2.$$</p>
+<p>Then both variances are $1$ and $\operatorname{Cov}(X,Y)=\rho$. For many variables, multiply an independent normal vector by a Cholesky factor of the target covariance matrix.</p>
+</div></details>
+~~~
+
+=== S108 · Q2.5.8 Newton method convergence / Newton 法的收敛阶 （Page 47）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> Newton 法的收敛阶是多少？</p>
+<p><strong>English:</strong> What is the order of convergence of Newton's method?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Near a simple root $x^\ast$, with $f'(x^\ast)\ne0$ and sufficient smoothness, Newton's method is quadratically convergent:</p>
+<p class="equation-line">$$|e_{k+1}|\approx\left|\frac{f''(x^\ast)}{2f'(x^\ast)}\right||e_k|^2.$$</p>
+<p>Multiple roots generally reduce the unmodified method to linear convergence.</p>
+</div></details>
+~~~
+
+=== S109 · Q2.5.9 Finite differences and trinomial trees / 有限差分与三叉树 （Page 48）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 哪一种有限差分方法对应三叉树？</p>
+<p><strong>English:</strong> Which finite-difference method corresponds to a trinomial tree?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The explicit forward-Euler time discretization. On a three-point spatial stencil, the value at a node is a weighted sum of the three neighboring values at the next option-time layer, just as in a trinomial risk-neutral recursion. In log-price coordinates the correspondence is especially direct.</p>
+</div></details>
+~~~
+
+=== S110 · Q2.5.10 LU and Cholesky decompositions / LU 与 Cholesky 分解的关系 （Page 48）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> LU 分解与 Cholesky 分解有什么关系？</p>
+<p><strong>English:</strong> What is the relationship between LU and Cholesky decompositions?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Both factor a matrix into triangular factors and turn a linear solve into forward and backward substitution. LU writes $A=LU$ (possibly after pivoting). For symmetric positive-definite $A$, Cholesky exploits symmetry and writes $A=LL^\top$ with positive diagonal, using about half the work and storage of general LU.</p>
+</div></details>
+~~~
+
+=== S111 · Q2.5.11 LU without pivoting / 不选主元的 LU 分解 （Page 48）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> （i）哪些矩阵存在不选主元的 LU 分解？（ii）对称正定矩阵是否一定存在这种分解？</p>
+<p><strong>English:</strong> (i) Which matrices admit LU factorization without pivoting? (ii) Does every symmetric positive-definite matrix do so?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A nonsingular square matrix has an $LU$ factorization with unit diagonal in $L$ and no row exchanges exactly when all leading principal minors are nonzero. Every symmetric positive-definite matrix satisfies the stronger condition that all leading principal minors are positive, so it does admit such an LU factorization—and also a Cholesky factorization.</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="stefanica-probability" aria-hidden="true"></div>
+~~~
+
+== G. Probability & Stochastic Calculus
+
+=== S112 · Q2.6.1 Exponential distribution / 指数分布 （Page 49）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是指数分布？其均值和方差是什么？</p>
+<p><strong>English:</strong> What is the exponential distribution, and what are its mean and variance?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For rate $\lambda&gt;0$,</p>
+<p class="equation-line">$$f(x)=\lambda e^{-\lambda x}1_{\{x\ge0\}},\qquad
+P(X&gt;x)=e^{-\lambda x}.$$</p>
+<p>It is memoryless, with $\boxed{\mathbb E[X]=1/\lambda}$ and $\boxed{\operatorname{Var}(X)=1/\lambda^2}$.</p>
+</div></details>
+~~~
+
+=== S113 · Q2.6.2 Competing exponentials / 两个指数等待时间 （Page 49）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $X,Y$ 相互独立且服从指数分布，均值分别为 $6,8$。求 $P(Y&gt;X)$。</p>
+<p><strong>English:</strong> Independent exponential variables $X,Y$ have means $6$ and $8$. Find $P(Y&gt;X)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The rates are $\lambda_X=1/6$ and $\lambda_Y=1/8$. Therefore</p>
+<p class="equation-line">$$P(Y&gt;X)=\int_0^\infty e^{-\lambda_Yx}\lambda_Xe^{-\lambda_Xx}dx
+=\frac{\lambda_X}{\lambda_X+\lambda_Y}=\boxed{\frac47}.$$</p>
+</div></details>
+~~~
+
+=== S114 · Q2.6.3 Poisson mean and variance / Poisson 分布的均值与方差 （Page 49）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> Poisson 分布的期望和方差是什么？</p>
+<p><strong>English:</strong> What are the mean and variance of a Poisson distribution?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>If $N\sim\operatorname{Poisson}(\lambda)$, then its probability generating function is $G(s)=e^{\lambda(s-1)}$. Differentiating at $s=1$ gives</p>
+<p class="equation-line">$$\boxed{\mathbb E[N]=\lambda,\qquad\operatorname{Var}(N)=\lambda}.$$</p>
+</div></details>
+~~~
+
+=== S115 · Q2.6.4 Mean radius in a unit disk / 单位圆盘内点的平均半径 （Page 49）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在单位圆盘内均匀选一点，该点到圆心距离的期望是多少？</p>
+<p><strong>English:</strong> A point is uniform in the unit disk. What is its expected distance from the center?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The radial CDF is $P(R\le r)=r^2$ for $0\le r\le1$, so $f_R(r)=2r$. Hence</p>
+<p class="equation-line">$$\mathbb E[R]=\int_0^1r(2r)\,dr=\boxed{\frac23}.$$</p>
+</div></details>
+~~~
+
+=== S116 · Q2.6.5 A conditional Gaussian quadrant probability / 条件正态象限概率 （Page 49）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $X,Y$ 联合正态，均值为 $0$、方差为 $1$，且 $\operatorname{Cov}(X,Y)=1/2$。求 $P(X&gt;0\mid Y&lt;0)$。</p>
+<p><strong>English:</strong> Jointly normal $X,Y$ have zero means, unit variances, and covariance $1/2$. Find $P(X&gt;0\mid Y&lt;0)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For correlation $\rho$, $P(X&gt;0,Y&lt;0)=1/4-\arcsin(\rho)/(2\pi)$. With $\rho=1/2$ this is $1/6$. Since $P(Y&lt;0)=1/2$,</p>
+<p class="equation-line">$$\boxed{P(X&gt;0\mid Y&lt;0)=\frac13}.$$</p>
+</div></details>
+~~~
+
+=== S117 · Q2.6.6 Product of lognormal variables / 对数正态变量的乘积 （Page 49）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 若 $X,Y$ 都是对数正态变量，乘积 $XY$ 是否一定仍为对数正态？</p>
+<p><strong>English:</strong> If $X$ and $Y$ are lognormal, must $XY$ also be lognormal?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Not from the marginal distributions alone. Since $\log(XY)=\log X+\log Y$, the product is lognormal when $(\log X,\log Y)$ are jointly normal; independence is a sufficient special case. Arbitrary dependence between two marginally normal logarithms need not make their sum normal.</p>
+</div></details>
+~~~
+
+=== S118 · Q2.6.7 Expected normal CDF of a normal variable / 正态变量代入正态分布函数的期望 （Page 49）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $X\sim N(\mu,\sigma^2)$，$\Phi$ 为标准正态分布函数。求 $\mathbb E[\Phi(X)]$。</p>
+<p><strong>English:</strong> Let $X\sim N(\mu,\sigma^2)$ and let $\Phi$ be the standard-normal CDF. Find $\mathbb E[\Phi(X)]$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For an independent $Z\sim N(0,1)$, $\Phi(X)=P(Z\le X\mid X)$. Thus</p>
+<p class="equation-line">$$\mathbb E[\Phi(X)]=P(Z-X\le0)
+=\boxed{\Phi\!\left(\frac{\mu}{\sqrt{1+\sigma^2}}\right)}.$$</p>
+</div></details>
+~~~
+
+=== S119 · Q2.6.8 Law of large numbers / 大数定律 （Page 50）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是大数定律？</p>
+<p><strong>English:</strong> What is the law of large numbers?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For i.i.d. variables with finite mean $\mu$, the sample mean converges to $\mu$. The weak law says $\bar X_n\to\mu$ in probability; the strong law says $\bar X_n\to\mu$ almost surely under standard integrability assumptions. It explains consistency, not the size or distribution of finite-sample error.</p>
+</div></details>
+~~~
+
+=== S120 · Q2.6.9 Central limit theorem / 中心极限定理 （Page 50）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是中心极限定理？</p>
+<p><strong>English:</strong> What is the central limit theorem?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For i.i.d. variables with mean $\mu$ and finite nonzero variance $\sigma^2$,</p>
+<p class="equation-line">$$\frac{\sum_{i=1}^nX_i-n\mu}{\sigma\sqrt n}\xrightarrow{d}N(0,1).$$</p>
+<p>It describes the asymptotic distribution of normalized sampling error; it is different from the law of large numbers.</p>
+</div></details>
+~~~
+
+=== S121 · Q2.6.10 Martingales and option pricing / 鞅与期权定价 （Page 50）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是鞅？它与期权定价有什么关系？</p>
+<p><strong>English:</strong> What is a martingale, and how is it related to option pricing?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>An adapted integrable process $M_t$ is a martingale if $\mathbb E[M_t\mid\mathcal F_s]=M_s$ for $s\le t$. In an arbitrage-free market there is an equivalent risk-neutral measure under which discounted tradable prices are martingales. Therefore a replicable derivative equals the discounted conditional expectation of its payoff, and its martingale representation identifies the hedge.</p>
+</div></details>
+~~~
+
+=== S122 · Q2.6.11 Why $(dW_t)^2=dt$ / 为什么写作 $(dW_t)^2=dt$ （Page 50）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 解释 Itô 引理非正式推导中使用的 $(dW_t)^2=dt$。</p>
+<p><strong>English:</strong> Explain the informal rule $(dW_t)^2=dt$ used in deriving Itô's lemma.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>It is shorthand for Brownian quadratic variation:</p>
+<p class="equation-line">$$\sum_i(W_{t_{i+1}}-W_{t_i})^2\longrightarrow t$$</p>
+<p>in probability as the partition mesh vanishes. Brownian increments are order $\sqrt{dt}$, so their squares accumulate at order $dt$, while terms such as $dt\,dW$ and $(dt)^2$ vanish. It is not an ordinary algebraic identity between infinitesimals.</p>
+</div></details>
+~~~
+
+=== S123 · Q2.6.12 Brownian covariance / 布朗运动协方差 （Page 50）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 对 Wiener 过程，求 $\mathbb E[W_tW_s]$。</p>
+<p><strong>English:</strong> For a Wiener process, find $\mathbb E[W_tW_s]$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Assume $s\le t$ and write $W_t=W_s+(W_t-W_s)$. The increment is independent of $W_s$ and has mean zero, so $\mathbb E[W_tW_s]=\mathbb E[W_s^2]=s$. Thus</p>
+<p class="equation-line">$$\boxed{\mathbb E[W_tW_s]=\min(s,t)}.$$</p>
+</div></details>
+~~~
+
+=== S124 · Q2.6.13 Variance of a sum of Brownian values / 两个布朗运动取值之和的方差 （Page 50）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 对 Wiener 过程，求 $\operatorname{Var}(W_t+W_s)$。</p>
+<p><strong>English:</strong> For a Wiener process, find $\operatorname{Var}(W_t+W_s)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p class="equation-line">$$\boxed{\operatorname{Var}(W_t+W_s)=t+s+2\min(s,t)}.$$</p>
+<p>This follows from $\operatorname{Var}(W_u)=u$ and $\operatorname{Cov}(W_t,W_s)=\min(s,t)$.</p>
+</div></details>
+~~~
+
+=== S125 · Q2.6.14 Brownian self-integral / 布朗运动的自身积分 （Page 50）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求 $\int_0^tW_s\,dW_s$ 及其期望。</p>
+<p><strong>English:</strong> Find $\int_0^tW_s\,dW_s$ and its expectation.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Itô's formula for $W_t^2$ gives $d(W_t^2)=2W_t\,dW_t+dt$. Hence</p>
+<p class="equation-line">$$\boxed{\int_0^tW_s\,dW_s=\frac12(W_t^2-t)},\qquad
+\boxed{\mathbb E\!\left[\int_0^tW_s\,dW_s\right]=0}.$$</p>
+</div></details>
+~~~
+
+=== S126 · Q2.6.15 Distribution of a Brownian self-integral / 布朗自身积分的分布 （Page 50）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求 $X=\int_0^1W_t\,dW_t$ 的分布。</p>
+<p><strong>English:</strong> Find the distribution of $X=\int_0^1W_t\,dW_t$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Since $W_1\sim N(0,1)$,</p>
+<p class="equation-line">$$X=\frac12(W_1^2-1)\ \stackrel d=\ \boxed{\frac12(\chi_1^2-1)}.$$</p>
+<p>It is not normal; its support is $[-1/2,\infty)$, mean $0$, and variance $1/2$.</p>
+</div></details>
+~~~
+
+=== S127 · Q2.6.16 A squared-Brownian Itô integral / 布朗运动平方的 Itô 积分 （Page 50）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求 $\int_0^tW_s^2\,dW_s$ 的均值与方差。</p>
+<p><strong>English:</strong> Find the mean and variance of $\int_0^tW_s^2\,dW_s$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The Itô integral has mean zero. By Itô isometry and $\mathbb E[W_s^4]=3s^2$,</p>
+<p class="equation-line">$$\operatorname{Var}\!\left(\int_0^tW_s^2\,dW_s\right)
+=\int_0^t3s^2\,ds=\boxed{t^3}.$$</p>
+</div></details>
+~~~
+
+=== S128 · Q2.6.17 Variance of an exponential Itô integral / 指数型 Itô 积分的方差 （Page 51）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求
+$$X=\int_0^1\sqrt t\,e^{W_t^2/8}\,dW_t$$
+的方差。</p>
+<p><strong>English:</strong> Find the variance of $X=\int_0^1\sqrt t\,e^{W_t^2/8}\,dW_t$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The mean is zero. Itô isometry and $W_t\sim N(0,t)$ give</p>
+<p class="equation-line">$$\operatorname{Var}(X)=\int_0^1t\,\mathbb E[e^{W_t^2/4}]dt
+=\int_0^1\frac{t}{\sqrt{1-t/2}}\,dt
+=\boxed{\frac23(8-5\sqrt2)}.$$</p>
+</div></details>
+~~~
+
+=== S129 · Q2.6.18 Exponential moment of Brownian motion / 布朗运动的指数矩 （Page 51）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求 $\mathbb E[e^{W_t}]$。</p>
+<p><strong>English:</strong> For a Wiener process, find $\mathbb E[e^{W_t}]$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Because $W_t\sim N(0,t)$ and a normal MGF is $\mathbb E[e^{uW_t}]=e^{u^2t/2}$,</p>
+<p class="equation-line">$$\boxed{\mathbb E[e^{W_t}]=e^{t/2}}.$$</p>
+</div></details>
+~~~
+
+=== S130 · Q2.6.19 A deterministic-integrand Itô integral / 确定性被积函数的 Itô 积分 （Page 51）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求 $\int_0^t s\,dW_s$ 的方差。</p>
+<p><strong>English:</strong> Find the variance of $\int_0^t s\,dW_s$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Itô isometry gives</p>
+<p class="equation-line">$$\boxed{\operatorname{Var}\!\left(\int_0^t s\,dW_s\right)=\int_0^t s^2ds=\frac{t^3}{3}}.$$</p>
+<p>The integral is normal because the integrand is deterministic.</p>
+</div></details>
+~~~
+
+=== S131 · Q2.6.20 Integrated Brownian motion again / 再论布朗运动时间积分 （Page 51）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 对 $X_t=\int_0^tW_s\,ds$，求其分布并判断是否为鞅。</p>
+<p><strong>English:</strong> For $X_t=\int_0^tW_s\,ds$, find its distribution and decide whether it is a martingale.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>As in First Look Q3, $X_t=\int_0^t(t-s)dW_s$, so $X_t\sim N(0,t^3/3)$. It is not a martingale because $\mathbb E[X_u\mid\mathcal F_t]=X_t+(u-t)W_t$ for $u&gt;t$.</p>
+</div></details>
+~~~
+
+=== S132 · Q2.6.21 Itô process / Itô 过程 （Page 51）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是 Itô 过程？</p>
+<p><strong>English:</strong> What is an Itô process?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>An Itô process has the form</p>
+<p class="equation-line">$$X_t=X_0+\int_0^t\mu_sds+\int_0^t\sigma_s\,dW_s,$$</p>
+<p>where the adapted coefficients satisfy the integrability conditions needed for the ordinary and Itô integrals. Informally, $dX_t=\mu_tdt+\sigma_tdW_t$.</p>
+</div></details>
+~~~
+
+=== S133 · Q2.6.22 Itô's lemma / Itô 引理 （Page 51）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 陈述 Itô 引理。</p>
+<p><strong>English:</strong> State Itô's lemma.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>If $dX_t=\mu_tdt+\sigma_tdW_t$ and $f\in C^{1,2}$, then</p>
+<p class="equation-line">$$df(t,X_t)=\left(f_t+\mu_tf_x+\frac12\sigma_t^2f_{xx}\right)dt+\sigma_tf_x\,dW_t.$$</p>
+<p>The multivariate form replaces the second derivative term by one half of the covariance-weighted Hessian trace.</p>
+</div></details>
+~~~
+
+=== S134 · Q2.6.23 Is $W_t^2$ a martingale? / $W_t^2$ 是否为鞅 （Page 51）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $X_t=W_t^2$ 是否为鞅？</p>
+<p><strong>English:</strong> Is $X_t=W_t^2$ a martingale?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>No. Itô's lemma gives $d(W_t^2)=2W_t\,dW_t+dt$, which contains positive drift. Equivalently, $\mathbb E[W_t^2\mid\mathcal F_s]=W_s^2+t-s$. The compensated process $\boxed{W_t^2-t}$ is a martingale.</p>
+</div></details>
+~~~
+
+=== S135 · Q2.6.24 A cubic Brownian martingale / 三次布朗鞅 （Page 52）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $N_t=W_t^3-3tW_t$ 是否为鞅？</p>
+<p><strong>English:</strong> Is $N_t=W_t^3-3tW_t$ a martingale?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Yes. Itô's product rule gives</p>
+<p class="equation-line">$$dN_t=3(W_t^2-t)\,dW_t,$$</p>
+<p>with no drift. The integrand is square-integrable over finite horizons, so $N_t$ is a true martingale there.</p>
+</div></details>
+~~~
+
+=== S136 · Q2.6.25 Girsanov's theorem / Girsanov 定理 （Page 52）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是 Girsanov 定理？</p>
+<p><strong>English:</strong> What is Girsanov's theorem?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>If an adapted $\theta_t$ satisfies a condition such as Novikov's and</p>
+<p class="equation-line">$$Z_T=\exp\!\left(-\int_0^T\theta_s\,dW_s-\frac12\int_0^T\theta_s^2ds\right),\qquad
+\frac{dQ}{dP}=Z_T,$$</p>
+<p>then $W_t^Q=W_t+\int_0^t\theta_sds$ is Brownian motion under $Q$. The theorem changes drift while preserving diffusion and underpins the risk-neutral measure change.</p>
+</div></details>
+~~~
+
+=== S137 · Q2.6.26 Martingale representation and hedging / 鞅表示与对冲 （Page 52）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是鞅表示定理？它与期权定价和对冲有什么关系？</p>
+<p><strong>English:</strong> What is the martingale representation theorem, and how does it relate to option pricing and hedging?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>In a Brownian filtration, every square-integrable martingale admits</p>
+<p class="equation-line">$$M_t=M_0+\int_0^t\phi_s\,dW_s.$$</p>
+<p>Under the risk-neutral measure, the discounted conditional value of a claim is such a martingale. When traded risky assets span the Brownian shocks, matching its integrand $\phi$ determines a self-financing replicating hedge and establishes market completeness.</p>
+</div></details>
+~~~
+
+=== S138 · Q2.6.27 A multiplicative-noise SDE / 乘性噪声随机微分方程 （Page 52）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求解 $dY_t=Y_t\,dW_t$。</p>
+<p><strong>English:</strong> Solve $dY_t=Y_t\,dW_t$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Apply Itô's lemma to $\log Y_t$, or use the stochastic exponential:</p>
+<p class="equation-line">$$\boxed{Y_t=Y_0\exp(W_t-\tfrac12t)}.$$</p>
+<p>This formula also covers negative $Y_0$ by multiplication; $Y_0=0$ gives the zero solution.</p>
+</div></details>
+~~~
+
+=== S139 · Q2.6.28 Solve two SDEs / 求解两个随机微分方程 （Page 52）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 求解：（i）$dY_t=\mu Y_tdt+\sigma Y_tdW_t$；（ii）$dX_t=\mu dt+(aX_t+b)dW_t$。</p>
+<p><strong>English:</strong> Solve (i) $dY_t=\mu Y_tdt+\sigma Y_tdW_t$; (ii) $dX_t=\mu dt+(aX_t+b)dW_t$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For (i),</p>
+<p class="equation-line">$$\boxed{Y_t=Y_0e^{(\mu-\sigma^2/2)t+\sigma W_t}}.$$</p>
+<p>For (ii), let $\Phi_t=e^{aW_t-a^2t/2}$. The linear-SDE variation formula gives</p>
+<p class="equation-line">$$\boxed{X_t=\Phi_t\!\left[X_0+\int_0^t\Phi_s^{-1}(\mu-ab)\,ds+
+\int_0^t\Phi_s^{-1}b\,dW_s\right]}.$$</p>
+<p>When $a=0$, this reduces to $X_t=X_0+\mu t+bW_t$.</p>
+</div></details>
+~~~
+
+=== S140 · Q2.6.29 Heston model / Heston 模型 （Page 52）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 什么是 Heston 随机波动率模型？</p>
+<p><strong>English:</strong> What is the Heston model?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Under a risk-neutral measure, a standard form is</p>
+<p class="equation-line">$$\frac{dS_t}{S_t}=(r-q)dt+\sqrt{v_t}\,dW_t^S,$$</p>
+<p class="equation-line">$$dv_t=\kappa(\theta-v_t)dt+\xi\sqrt{v_t}\,dW_t^v,\qquad
+d\langle W^S,W^v\rangle_t=\rho\,dt.$$</p>
+<p>The CIR variance process mean-reverts to $\theta$; $\rho$ produces leverage/skew. The Feller condition $2\kappa\theta\ge\xi^2$ helps keep variance strictly positive.</p>
+</div></details>
+~~~
+
+=== S141 · Q2.6.30 Normalize the Gaussian density / 验证正态密度积分为一 （Page 52）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 证明标准正态密度在实数轴上的积分为 $1$。</p>
+<p><strong>English:</strong> Show that the standard-normal density integrates to one.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $I=\int_{-\infty}^{\infty}e^{-x^2/2}dx$. Then, using polar coordinates,</p>
+<p class="equation-line">$$I^2=\iint_{\mathbb R^2}e^{-(x^2+y^2)/2}dxdy
+=\int_0^{2\pi}\int_0^\infty e^{-r^2/2}r\,dr\,d\theta=2\pi.$$</p>
+<p>Thus $I=\sqrt{2\pi}$ and $\int\phi(x)dx=I/\sqrt{2\pi}=1$.</p>
+</div></details>
+~~~
+
+=== S142 · Q2.6.31 Two-dimensional Brownian hitting probabilities / 二维布朗运动的击中概率 （Page 52）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 二维布朗运动从第一象限的 $(x,y)$ 出发。（i）先碰到 $y$ 轴而非 $x$ 轴的概率是多少？（ii）若 $r_1&lt;\sqrt{x^2+y^2}&lt;r_2$，先进入半径 $r_1$ 内圆而非离开半径 $r_2$ 外圆的概率是多少？</p>
+<p><strong>English:</strong> A planar Brownian motion starts at $(x,y)$ in the first quadrant. (i) Find the probability of hitting the $y$-axis before the $x$-axis. (ii) Between concentric radii $r_1&lt;r&lt;r_2$, find the probability of hitting the inner circle before the outer circle.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Hitting probabilities solve the Dirichlet problem. With $\theta=\operatorname{atan2}(y,x)$, the harmonic function on the quadrant with boundary values $0$ on the $x$-axis and $1$ on the $y$-axis is</p>
+<p class="equation-line">$$\boxed{P_y=\frac{2\theta}{\pi}}.$$</p>
+<p>Radial harmonic functions in two dimensions are affine in $\log r$, giving</p>
+<p class="equation-line">$$\boxed{P_{\rm inner}=\frac{\log(r_2/r)}{\log(r_2/r_1)}},\qquad r=\sqrt{x^2+y^2}.$$</p>
+</div></details>
+~~~
+
+=== S143 · Q2.6.32 Brownian motion under a changed measure / 换测度后的布朗运动分布 （Page 53）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在 $P$ 下 $B_t$ 为标准布朗运动。新测度 $\widetilde P$ 由
+$$\frac{d\widetilde P}{dP}=e^{-B_1-1/2}$$
+定义。求 $\widetilde P$ 下 $B_3$ 的密度。</p>
+<p><strong>English:</strong> Under $P$, $B_t$ is standard Brownian motion. Under $\widetilde P$ defined by $d\widetilde P/dP=e^{-B_1-1/2}$, find the density of $B_3$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The likelihood ratio tilts only the path through time $1$. By Girsanov's theorem, $\widetilde W_t=B_t+(t\wedge1)$ is Brownian motion under $\widetilde P$. Hence</p>
+<p class="equation-line">$$B_3=\widetilde W_3-1\sim N(-1,3),$$</p>
+<p>so the required density is</p>
+<p class="equation-line">$$\boxed{f(x)=\frac1{\sqrt{6\pi}}\exp\!\left[-\frac{(x+1)^2}{6}\right]}.$$</p>
+</div></details>
+~~~
+
+=== S144 · Q2.6.33 Brownian motion stopped at a horizontal line / 布朗运动击中水平线时的横坐标 （Page 53）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 二维标准布朗运动 $B_t=(B_t^1,B_t^2)$ 从原点出发，$\tau$ 为首次击中直线 $y=a$ 的时刻，$a&gt;0$。求 $B_\tau^1$ 的分布。</p>
+<p><strong>English:</strong> Planar standard Brownian motion starts at the origin. If $\tau$ is the first time it hits the line $y=a$, $a&gt;0$, find the distribution of $B_\tau^1$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The characteristic function follows by conditioning on $\tau$ and using the Laplace transform of the one-dimensional Brownian hitting time:</p>
+<p class="equation-line">$$\mathbb E[e^{iuB_\tau^1}]=\mathbb E[e^{-u^2\tau/2}]=e^{-a|u|}.$$</p>
+<p>This is a centered Cauchy distribution with scale $a$:</p>
+<p class="equation-line">$$\boxed{f(x)=\frac{a}{\pi(a^2+x^2)}}.$$</p>
+</div></details>
+~~~
+
+~~~
+{}{raw}
+<div class="section-anchor" id="stefanica-brainteasers" aria-hidden="true"></div>
+~~~
+
+== H. Brainteasers
+
+=== S145 · Q2.7.1 Flea jumps / 跳蚤前进一百英寸 （Page 55）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两点相距 $100$ 英寸。跳蚤每次只向前跳 $1$ 或 $2$ 英寸，共有多少种到达路径？</p>
+<p><strong>English:</strong> A flea travels $100$ inches, always forward, in jumps of either one or two inches. How many paths are possible?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $a_n$ be the number of ways to cover $n$ inches. The last jump gives $a_n=a_{n-1}+a_{n-2}$, with $a_0=a_1=1$. Hence $a_n=F_{n+1}$ and</p>
+<p class="equation-line">$$\boxed{a_{100}=F_{101}=573147844013817084101}.$$</p>
+</div></details>
+~~~
+
+=== S146 · Q2.7.2 Pancakes with golden and burnt sides / 两面煎饼 （Page 55）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 三张煎饼分别是“两面金黄”“两面焦黑”“一面金黄一面焦黑”。随机取一张并随机看到一面，已知所见为金黄色，另一面也是金黄色的概率是多少？</p>
+<p><strong>English:</strong> Three pancakes are golden/golden, burnt/burnt, and golden/burnt. A random pancake is drawn and a random side observed. Given that the observed side is golden, what is the probability the other side is golden?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>There are three equally likely golden faces among the possible observations: two belong to the golden/golden pancake and one to the mixed pancake. Therefore the conditional probability is $\boxed{2/3}$.</p>
+</div></details>
+~~~
+
+=== S147 · Q2.7.3 Alice tosses one extra coin / Alice 多抛一枚硬币 （Page 55）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> Alice 抛 $n+1$ 枚公平硬币，Bob 抛 $n$ 枚。Alice 正面数严格多于 Bob 的概率是多少？</p>
+<p><strong>English:</strong> Alice tosses $n+1$ fair coins and Bob tosses $n$. What is the probability Alice gets strictly more heads?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Compare their first $n$ tosses. The difference in head counts is symmetric. Conditioning on Alice's extra toss,</p>
+<p class="equation-line">$$P=\frac12P(D\ge0)+\frac12P(D\ge1)=\boxed{\frac12},$$</p>
+<p>because symmetry gives $P(D\ge0)+P(D\ge1)=1$.</p>
+</div></details>
+~~~
+
+=== S148 · Q2.7.4 Choose one of three desserts / 三选一甜点 （Page 55）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 如何用公平硬币以相同概率选择三种甜点之一？若硬币偏置且偏置未知又该如何？</p>
+<p><strong>English:</strong> How can a fair coin choose uniformly among three desserts? What if the coin has an unknown bias?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>With a fair coin, toss twice, map $HH,HT,TH$ to the three choices, and repeat on $TT$. With an unknown bias $0&lt;p&lt;1$, first create fair bits by von Neumann's method: toss in pairs, output $0$ on $HT$, $1$ on $TH$, and discard $HH,TT$. Use two such fair bits with the same three-of-four rejection rule. A deterministic coin with $p=0$ or $1$ cannot supply randomness.</p>
+</div></details>
+~~~
+
+=== S149 · Q2.7.5 Waiting for one head / 等待第一次正面 （Page 55）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 公平硬币平均抛多少次才首次出现正面？若每次正面概率为 $p$ 呢？</p>
+<p><strong>English:</strong> What is the expected number of tosses until the first head for a fair coin, and for a coin with head probability $p$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The waiting time is geometric on $\{1,2,\ldots\}$, so $\mathbb E[T]=1/p$. The fair-coin answer is therefore $\boxed{2}$, and the general answer is $\boxed{1/p}$.</p>
+</div></details>
+~~~
+
+=== S150 · Q2.7.6 Waiting for two consecutive heads / 等待连续两个正面 （Page 55）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 公平硬币平均要抛多少次才首次出现连续两个正面？若正面概率为 $25\%$ 呢？</p>
+<p><strong>English:</strong> What is the expected waiting time for two consecutive heads for a fair coin, and when $P(H)=25\%$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Use states $0$ and $1$ according to the current run of heads. Solving $E_0=1+pE_1+(1-p)E_0$ and $E_1=1+(1-p)E_0$ gives</p>
+<p class="equation-line">$$\boxed{E_0=\frac{1+p}{p^2}}.$$</p>
+<p>Thus the answers are $\boxed{6}$ for $p=1/2$ and $\boxed{20}$ for $p=1/4$.</p>
+</div></details>
+~~~
+
+=== S151 · Q2.7.7 No consecutive heads / 不出现连续正面 （Page 56）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 公平硬币抛 $n$ 次，始终不出现相邻两个正面的概率是多少？</p>
+<p><strong>English:</strong> A fair coin is tossed $n$ times. What is the probability that no two consecutive heads occur?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Valid binary strings satisfy $a_n=a_{n-1}+a_{n-2}$ with $a_0=1,a_1=2$, so $a_n=F_{n+2}$. Since all $2^n$ strings are equally likely,</p>
+<p class="equation-line">$$\boxed{P=\frac{F_{n+2}}{2^n}}.$$</p>
+</div></details>
+~~~
+
+=== S152 · Q2.7.8 Two eggs and one hundred floors / 两只蛋与一百层楼 （Page 56）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 有两只相同的蛋和一栋 $100$ 层楼，要确定蛋不会摔碎的最高楼层。最坏情况下最少需要多少次投掷？允许两只蛋都摔碎。</p>
+<p><strong>English:</strong> With two identical eggs and a 100-floor building, determine the highest safe floor. What is the minimum worst-case number of drops?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>With $m$ drops, use first-egg gaps $m,m-1,\ldots,1$, after which the second egg linearly searches the previous gap. Coverage is $m(m+1)/2$. Since $13\cdot14/2=91&lt;100$ but $14\cdot15/2=105$, the optimum is $\boxed{14}$ drops.</p>
+</div></details>
+~~~
+
+=== S153 · Q2.7.9 Ant across a cubic room / 立方体房间表面的最短路 （Page 56）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一只蚂蚁从 $10\times10\times10$ 房间的一角沿表面走到对角，最短路径多长？</p>
+<p><strong>English:</strong> An ant moves along the surfaces of a $10\times10\times10$ room from one corner to the opposite corner. What is the shortest distance?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Unfold two adjacent faces into a $20\times10$ rectangle. Its diagonal is a valid surface path and is shortest:</p>
+<p class="equation-line">$$\boxed{\sqrt{20^2+10^2}=10\sqrt5}.$$</p>
+</div></details>
+~~~
+
+=== S154 · Q2.7.10 Visible unit cubes / 外表面可见的小立方体 （Page 56）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 一个 $10\times10\times10$ 大立方体由 $1000$ 个单位立方体组成。外表面能看到多少个单位立方体？</p>
+<p><strong>English:</strong> A $10\times10\times10$ cube consists of 1,000 unit cubes. How many unit cubes are visible on the outside?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Subtract the completely interior $8\times8\times8$ block:</p>
+<p class="equation-line">$$\boxed{10^3-8^3=488}.$$</p>
+</div></details>
+~~~
+
+=== S155 · Q2.7.11 Escape from a circular field / 逃离圆形场地 （Page 56）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> Mulder 被困在半径为 $R$ 的圆形场地内；围栏外的外星人只能沿边界活动，但速度是 Mulder 的四倍。Mulder 能否先到达一处无人把守的边界点？</p>
+<p><strong>English:</strong> Mulder is inside a circular field. An alien constrained to the fence runs four times as fast. Can Mulder reach an unguarded boundary point first?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Yes. Move near the center and circle at radius just below $R/4$; Mulder's angular speed then exceeds the alien's, so he can place himself diametrically opposite it. Sprint radially outward. His time is just over $3R/(4v)$, while the alien needs half the circumference at speed $4v$, namely $\pi R/(4v)$. Since $\pi&gt;3$, Mulder arrives first.</p>
+</div></details>
+~~~
+
+=== S156 · Q2.7.12 Unequal subway arrivals / 地铁两个方向为何不是各一半 （Page 56）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 两个相反方向的列车班次频率相同，但你随机到站时有一个方向的车先到达的概率为 $80\%$，另一个只有 $20\%$。可能是什么原因？</p>
+<p><strong>English:</strong> Opposite-direction trains have the same stated frequency, yet one direction arrives first $80\%$ of the time. What could explain this?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Equal average frequency does not imply evenly interlaced arrivals. Trains may be bunched or the two timetables offset asymmetrically. A random observer is more likely to land in a long waiting interval—the inspection paradox—so the direction following most of the long gaps can arrive first $80\%$ of the time even when counts per hour agree.</p>
+</div></details>
+~~~
+
+=== S157 · Q2.7.13 Amoeba extinction / 变形虫最终灭绝概率 （Page 57）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 每只变形虫每分钟以相等概率死亡、不变、分裂为两只或三只；各只独立重复。最终全部灭绝的概率是多少？</p>
+<p><strong>English:</strong> Each amoeba independently has $0,1,2,$ or $3$ descendants after a minute, each with probability $1/4$. What is the eventual extinction probability?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For a Galton–Watson process, extinction probability is the smallest $q\in[0,1]$ satisfying</p>
+<p class="equation-line">$$q=\frac{1+q+q^2+q^3}{4}.$$</p>
+<p>The roots in $[0,1]$ are $\sqrt2-1$ and $1$; because the mean offspring count is $3/2&gt;1$, choose the smaller root: $\boxed{\sqrt2-1}$.</p>
+</div></details>
+~~~
+
+=== S158 · Q2.7.14 Random subsets and containment / 随机子集的包含关系 （Page 57）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 从含 $n$ 个元素的集合中独立、均匀地随机选择两个子集 $A,B$。求 $P(A\subseteq B)$。</p>
+<p><strong>English:</strong> Choose two subsets $A,B$ independently and uniformly from an $n$-element set. Find $P(A\subseteq B)$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For each element, the four membership states $(0,0),(0,1),(1,0),(1,1)$ are equally likely. Containment excludes only $(1,0)$. Independence across elements gives</p>
+<p class="equation-line">$$\boxed{P(A\subseteq B)=\left(\frac34\right)^n}.$$</p>
+</div></details>
+~~~
+
+=== S159 · Q2.7.15 Guess the larger hidden number / 猜所见数字是大是小 （Page 57）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> Alice 在两张纸上写下 $[0,1]$ 内两个不同实数。Bob 随机查看一张后，要猜所见的是较大还是较小者。能否使正确率严格超过一半？</p>
+<p><strong>English:</strong> Alice writes two distinct reals in $[0,1]$. Bob sees one chosen at random and must say whether it is the larger or smaller. Can he beat probability $1/2$?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Yes. Independently draw a threshold $T\sim U[0,1]$. If the observed value exceeds $T$, guess “larger”; otherwise guess “smaller.” For fixed values $a&lt;b$, the success probability is</p>
+<p class="equation-line">$$\frac12+\frac12P(a&lt;T&lt;b)=\frac12+\frac{b-a}{2}&gt;\frac12.$$</p>
+</div></details>
+~~~
+
+=== S160 · Q2.7.16 Digits of $125^{100}$ without logarithms / 不用对数求位数 （Page 57）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 不使用 $\log_{10}2$ 或 $\log_{10}5$ 的数值，求 $125^{100}$ 有多少位。</p>
+<p><strong>English:</strong> Without numerical values of $\log_{10}2$ or $\log_{10}5$, how many digits does $125^{100}$ have?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Since $125^{100}=10^{300}/2^{300}$, bound $2^{300}$. From $2^{10}=1024&gt;10^3$, $2^{300}&gt;10^{90}$. Also $2^{30}=1{,}073{,}741{,}824&lt;1.1\times10^9$, so $2^{300}&lt;1.1^{10}10^{90}&lt;10^{91}$. Therefore</p>
+<p class="equation-line">$$10^{209}&lt;125^{100}&lt;10^{210},$$</p>
+<p>and the number has $\boxed{210}$ digits.</p>
+</div></details>
+~~~
+
+=== S161 · Q2.7.17 Alternating weights of all subsets / 所有子集的交错权重之和 （Page 57）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 对 $\{1,\ldots,2013\}$ 的每个子集，将元素升序排列并以 $+,-,+,-,\ldots$ 交替加总为其权重。求所有子集权重之和。</p>
+<p><strong>English:</strong> Sort each subset of $\{1,\ldots,2013\}$ and sum its elements with signs $+,-,+,-,\ldots$. Find the sum of these weights over all subsets.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For any element $k&gt;1$, pairing choices of lower elements makes its total signed coefficient $(1-1)^{k-1}=0$. Element $1$ is always positive whenever selected, and the $2012$ larger elements can be chosen arbitrarily. Thus the total is $\boxed{2^{2012}}$.</p>
+</div></details>
+~~~
+
+=== S162 · Q2.7.18 Product-three game / 三数乘积为一的游戏 （Page 58）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> Alice 与 Bob 轮流从 $1/16,1/8,1/4,1/2,1,2,4,8,16$ 中取一个未被取过的数；先得到三个乘积为 $1$ 的数者获胜，Alice 先手。她能否保证获胜？</p>
+<p><strong>English:</strong> Players alternately choose from $1/16,1/8,1/4,1/2,1,2,4,8,16$ without replacement. The first to own three numbers whose product is one wins. Can first player Alice force a win?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Map each number $2^k$ to exponent $k\in\{-4,\ldots,4\}$. The eight triples summing to zero form the eight winning lines of a $3\times3$ magic-square representation, so the game is ordinary tic-tac-toe. Optimal first play is the center, $1$, but optimal defense can force a draw. Alice cannot guarantee a win.</p>
+</div></details>
+~~~
+
+=== S163 · Q2.7.19 Handshakes among five couples / 五对夫妇握手 （Page 58）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> Jones 夫妇邀请另外四对夫妇。聚会后 Jones 先生询问其余九人握手人数，九个答案各不相同；夫妻之间不握手，也没有重复握手。Jones 太太握了几个人的手？</p>
+<p><strong>English:</strong> Five couples attend a party. Mr. Jones asks the other nine people how many hands they shook; all nine answers differ. Spouses do not shake hands. How many people did Mrs. Jones shake?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The nine distinct answers must be $0,1,\ldots,8$. The person reporting $0$ is married to the person reporting $8$; removing them leaves pairs $1$ with $7$, $2$ with $6$, and $3$ with $5$. The remaining unpaired answer is $4$, which belongs to Mrs. Jones. Thus she shook $\boxed{4}$ hands.</p>
+</div></details>
+~~~
+
+=== S164 · Q2.7.20 Replicate a World Series bet / 用单场投注复制系列赛投注 （Page 58）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 七场四胜制世界大赛中，每场都可按等赔率投注。若希望复制“以 $\$100$ 押 Yankees 最终夺冠”的盈亏，第一场应下注多少？</p>
+<p><strong>English:</strong> In a best-of-seven World Series with even-odds bets available on each game, replicate a $\$100$ even-money bet on the Yankees winning the series. How much should be bet on game one?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>After a first-game win, the Yankees need at least three wins in the next six fair games, whose probability is $1-(1+6+15)/64=21/32$. The conditional value of a payoff $+100$ for a series win and $-100$ for a loss is $100(2\cdot21/32-1)=31.25$; after a first loss it is $-31.25$. Thus bet $\boxed{\$31.25}$ on the Yankees in game one, then rebalance after each game.</p>
+</div></details>
+~~~
+
+=== S165 · Q2.7.21 Three heavy colored balls / 找出三颗重球 （Page 58）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 红、绿、黄各有两颗球，每种颜色恰有一重一轻，所有重球同重、轻球同重。最少几次天平称量能找出三颗重球？</p>
+<p><strong>English:</strong> There are two red, two green, and two yellow balls; in each color exactly one is heavy. All heavy balls have one weight and all light balls another. How many balance weighings identify all three heavy balls?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Two weighings suffice and one cannot. Label the balls $R_1,R_2,G_1,G_2,Y_1,Y_2$. First weigh $\{R_1,G_1\}$ against $\{R_2,Y_1\}$.</p>
+<p>If balanced, weigh $G_1$ against $Y_1$; the heavier one is heavy, and the first balance determines the other two colors. If the left side is heavier, weigh $\{G_1,Y_1\}$ against $\{G_2,Y_2\}$; balance or either direction identifies the green/yellow pair, while $R_1$ is heavy. The right-heavy first outcome is symmetric, with $R_2$ heavy. Thus two weighings resolve all eight possible heavy/light assignments.</p>
+</div></details>
+~~~
+
+=== S166 · Q2.7.22 Moving treasure among ten rooms / 十个房间中移动的宝藏 （Page 59）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 十个房间排成一行，宝藏每晚必移到相邻房间；每天只能检查一个房间。给出保证找到宝藏的策略。</p>
+<p><strong>English:</strong> Ten rooms lie in a row. Each night a ghost moves the treasure to an adjacent room, and one room can be checked each day. Give a strategy guaranteed to find it.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Check rooms $2,3,\ldots,9$ on days $1$–$8$, then rooms $9,8,\ldots,2$ on days $9$–$16$. During each sweep, your checked-room parity changes exactly as the treasure's parity does. One sweep catches one possible initial parity; repeating room $9$ switches the alignment, and the reverse sweep catches the other. The treasure is found within $\boxed{16}$ days.</p>
+</div></details>
+~~~
+
+=== S167 · Q2.7.23 Comparisons for extrema / 寻找最大值与最小值的比较次数 （Page 59）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 在 $n$ 个互不相同的数中找最大值至少需要多少次比较？同时找最大值和最小值呢？</p>
+<p><strong>English:</strong> How many comparisons are needed to find the maximum among $n$ distinct numbers, and to find both maximum and minimum?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The maximum needs exactly $n-1$ comparisons because every nonmaximum must lose once. For both extrema, compare numbers in pairs, then find the maximum among pair winners and minimum among pair losers. The optimum worst-case count is</p>
+<p class="equation-line">$$\boxed{\left\lceil\frac{3n}{2}\right\rceil-2}.$$</p>
+</div></details>
+~~~
+
+=== S168 · Q2.7.24 Random walk on cube vertices / 立方体顶点上的随机游走 （Page 59）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 从立方体某顶点出发，每次等概率跳到三个相邻顶点之一。到达对角顶点的期望步数是多少？</p>
+<p><strong>English:</strong> From a cube vertex, jump uniformly to a neighboring vertex. What is the expected number of jumps to reach the opposite vertex?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let $E_k$ be the expected remaining time when the Hamming distance from the start is $k$, with target $k=3$. Then</p>
+<p class="equation-line">$$E_0=1+E_1,\quad E_1=1+\tfrac13E_0+\tfrac23E_2,\quad
+E_2=1+\tfrac23E_1,\quad E_3=0.$$</p>
+<p>Solving gives $E_1=9$ and $\boxed{E_0=10}$.</p>
+</div></details>
+~~~
+
+=== S169 · Q2.7.25 Decreasing uniform sequence / 连续递减的均匀样本 （Page 59）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 依次生成 $U[0,1]$ 样本，只要继续递减就继续；第一次出现比前一个更大的数时停止。（i）平均共生成多少个数（含使过程停止的最后一个）？（ii）所见最小值的期望是多少？</p>
+<p><strong>English:</strong> Draw uniforms from $[0,1]$ while they decrease, stopping on the first increase. (i) What is the expected total number drawn, including the stopping draw? (ii) What is the expected smallest value observed?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>To draw at least $n$ values, the first $n-1$ must be in decreasing order, an event of probability $1/(n-1)!$. Hence $\mathbb E[N]=\sum_{n\ge1}1/(n-1)!=\boxed{e}$.</p>
+<p>The density that $x$ is the last value in the decreasing run is $e^{1-x}(1-x)$ on $(0,1)$. Therefore</p>
+<p class="equation-line">$$\mathbb E[\min]=\int_0^1xe^{1-x}(1-x)\,dx=\boxed{3-e}.$$</p>
+</div></details>
+~~~
+
+=== S170 · Q2.7.26 Donors needed to reach a target / 募款达到目标所需人数 （Page 59）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 每位捐款者的金额独立服从均值 $\$20$K 的指数分布，累计达到至少 $\$100$K 时停止。求所需人数的分布、均值和方差。</p>
+<p><strong>English:</strong> Independent donations are exponential with mean $\$20$K. Stop when the total first reaches at least $\$100$K. Find the distribution, mean, and variance of the donor count.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Exponential interarrival amounts identify a Poisson process in the money coordinate with rate $1/20$ per thousand dollars. The number completed strictly before $\$100$K is $\operatorname{Poisson}(5)$, so the crossing donor count is</p>
+<p class="equation-line">$$\boxed{N=1+\operatorname{Poisson}(5)},\qquad
+\boxed{\mathbb E[N]=6,\ \operatorname{Var}(N)=5}.$$</p>
+</div></details>
+~~~
+
+=== S171 · Q2.7.27 Gambler's ruin from one / 从位置一开始的随机游走 （Page 60）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 对称随机游走从 $1$ 出发，每步左右各移一格，到达 $0$ 或 $3$ 即停止。（i）期望步数；（ii）在 $3$ 而非 $0$ 结束的概率。</p>
+<p><strong>English:</strong> A symmetric random walk starts at $1$ and stops at $0$ or $3$. Find (i) its expected duration and (ii) the probability it ends at $3$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>For fair gambler's ruin on $\{0,\ldots,N\}$ from $i$, the hit probability is $i/N$ and expected time is $i(N-i)$. With $i=1,N=3$, the answers are</p>
+<p class="equation-line">$$\boxed{\mathbb E[\tau]=2,\qquad P(X_\tau=3)=\frac13}.$$</p>
+</div></details>
+~~~
+
+=== S172 · Q2.7.28 Smaller part of a broken stick / 折断木棍的较短段 （Page 60）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 长度为 $1$ 的木棍在均匀随机位置折断，较短一段的期望长度是多少？</p>
+<p><strong>English:</strong> A unit stick breaks at a uniform point. What is the expected length of the shorter piece?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>If $U\sim U[0,1]$, the shorter length is $\min(U,1-U)$. By symmetry,</p>
+<p class="equation-line">$$\mathbb E[\min(U,1-U)]=2\int_0^{1/2}u\,du=\boxed{\frac14}.$$</p>
+</div></details>
+~~~
+
+=== S173 · Q2.7.29 Three stick pieces forming a triangle / 三段木棍组成三角形 （Page 60）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> （i）单位木棍在两个独立均匀位置折断，三段能组成三角形的概率是多少？（ii）先随机折一次，再只把较长段随机折一次，概率又是多少？</p>
+<p><strong>English:</strong> (i) Break a unit stick at two independent uniform points. What is the probability the pieces form a triangle? (ii) Break once, then break only the longer piece uniformly. What is the probability?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Three positive pieces summing to $1$ form a triangle exactly when every piece is below $1/2$. In the two-cut unit square this region has probability $\boxed{1/4}$.</p>
+<p>For the sequential rule, let $h&lt;1/2$ be the first shorter piece; its density is $2$. Conditional success probability is $h/(1-h)$. Hence</p>
+<p class="equation-line">$$2\int_0^{1/2}\frac{h}{1-h}\,dh=\boxed{2\log2-1}.$$</p>
+</div></details>
+~~~
+
+=== S174 · Q2.7.30 Why manhole covers are round / 井盖为什么是圆的 （Page 60）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 井盖为什么通常是圆的？</p>
+<p><strong>English:</strong> Why is a manhole cover round?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>A circular cover has constant width in every direction, so it cannot fall through its own circular opening. It can also be rolled and needs no rotational alignment. By contrast, a square cover can pass through a square opening along the longer diagonal orientation.</p>
+</div></details>
+~~~
+
+=== S175 · Q2.7.31 Clock hands meet again / 时针分针再次重合 （Page 60）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 十二点之后，时针与分针第一次再次重合是什么时候？</p>
+<p><strong>English:</strong> When do the hour and minute hands first meet again after 12:00?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>The minute hand gains on the hour hand at $360-30=330$ degrees per hour. To gain $360$ degrees requires</p>
+<p class="equation-line">$$t=\frac{360}{330}=\frac{12}{11}\text{ hours}.$$</p>
+<p>Thus they meet at approximately $\boxed{1{:}05{:}27.27}$.</p>
+</div></details>
+~~~
+
+=== S176 · Q2.7.32 Three switches and three bulbs / 三个开关与三个灯泡 （Page 61）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 三个开关在一个房间，分别控制另一个房间的三个灯泡。只允许进入灯泡房一次，如何辨认对应关系？</p>
+<p><strong>English:</strong> Three switches control three bulbs in another room. With only one visit to the bulb room, identify every switch.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Turn switch A on for several minutes, then turn it off. Turn B on and enter the other room. The lit bulb belongs to B; the unlit but warm bulb belongs to A; the unlit cold bulb belongs to C.</p>
+</div></details>
+~~~
+
+=== S177 · Q2.7.33 Missing digit of $2^{29}$ / $2^{29}$ 缺少的数字 （Page 61）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 已知 $2^{29}$ 是九位数，且九个数字互不相同。不直接计算 $2^{29}$，求 $0$ 至 $9$ 中没有出现的数字。</p>
+<p><strong>English:</strong> The nine digits of $2^{29}$ are all distinct. Without computing $2^{29}$, find the missing decimal digit.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Let the missing digit be $x$. The digit sum is $45-x$, and digit sums preserve residues modulo $9$. Since $2^6\equiv1\pmod9$, $2^{29}\equiv2^5\equiv5\pmod9$. Thus $45-x\equiv5\pmod9$, so $x\equiv4\pmod9$. The only digit is $\boxed{4}$.</p>
+</div></details>
+~~~
+
+=== S178 · Q2.7.34 Ants colliding on a segment / 线段上相撞的蚂蚁 （Page 61）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> Bob 从一端依次放出 $50$ 只蚂蚁向 Alice，Alice 从另一端放出 $20$ 只向 Bob；相撞时双方反向。最终各有多少只到达两端？共发生多少次碰撞？</p>
+<p><strong>English:</strong> Bob sends 50 ants toward Alice and Alice sends 20 toward Bob along a segment. Ants reverse direction on collision. How many reach each endpoint, and how many collisions occur?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Two identical ants bouncing is equivalent to passing through while exchanging identities. Therefore $\boxed{20}$ ants reach Bob and $\boxed{50}$ reach Alice. Every right-moving ant meets every left-moving ant exactly once, so there are $\boxed{50\cdot20=1000}$ collisions.</p>
+</div></details>
+~~~
+
+=== S179 · Q2.7.35 Expected number of permutation groups / 随机置换的期望分组数 （Page 61）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $20$ 人各写姓名入袋，再每人随机抽一张；把每人与其所抽到的人归入同组，等价于随机置换的循环分解。期望有多少组？</p>
+<p><strong>English:</strong> Twenty people draw the twenty names uniformly without replacement; groups are the cycles of the resulting random permutation. What is the expected number of groups?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>In a uniform permutation of $n$ elements, the expected number of $k$-cycles is $1/k$. Thus</p>
+<p class="equation-line">$$\boxed{\mathbb E[C_{20}]=H_{20}=\sum_{k=1}^{20}\frac1k\approx3.59774}.$$</p>
+</div></details>
+~~~
+
+=== S180 · Q2.7.36 Repeated digit sums of $2019!$ / $2019!$ 的多次数字和 （Page 62）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $A$ 为 $2019!$ 的各位数字和，$B$ 为 $A$ 的各位数字和，$C$ 为 $B$ 的各位数字和。求 $C$。</p>
+<p><strong>English:</strong> Let $A$ be the digit sum of $2019!$, $B$ the digit sum of $A$, and $C$ the digit sum of $B$. Find $C$.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Since $2019!&lt;10^{8076}$, it has at most $8076$ digits, so $A\le9(8076)=72684$. Hence $B\le45$ and $C\le13$. Digit sums preserve residue modulo $9$, and $2019!$ is divisible by $9$, so the positive integer $C$ is divisible by $9$. Therefore $\boxed{C=9}$.</p>
+</div></details>
+~~~
+
+=== S181 · Q2.7.37 Consecutive composite integers / 连续的合数 （Page 62）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 构造 $2019$ 个连续的正整数，使它们都不是质数。</p>
+<p><strong>English:</strong> Find 2019 consecutive positive integers, none of which is prime.</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Use</p>
+<p class="equation-line">$$\boxed{2020!+2,\ 2020!+3,\ \ldots,\ 2020!+2020}.$$</p>
+<p>There are $2019$ consecutive numbers, and $2020!+k$ is divisible by $k$ for every $2\le k\le2020$.</p>
+</div></details>
+~~~
+
+=== S182 · Q2.7.38 Find a genuine coin in two weighings / 两次称量找出真币 （Page 62）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> $100$ 枚硬币中恰有 $4$ 枚较轻的假币；真币同重、假币同重。如何仅用两次天平称量保证找出至少一枚真币？</p>
+<p><strong>English:</strong> Exactly four of 100 coins are lighter fakes. How can two balance weighings guarantee identification of at least one genuine coin?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Split the coins into $A,B,C$ of sizes $33,33,34$ and weigh $A$ against $B$.</p>
+<p>If they differ, the heavier 33-pile contains at most one fake. Weigh any two of its coins: if equal, both are genuine; if unequal, the heavier coin is genuine.</p>
+<p>If $A=B$, their fake counts are equal, so $(f_A,f_B,f_C)$ is $(0,0,4),(1,1,2)$, or $(2,2,0)$. Move one coin $r$ from $A$ to $B$ and weigh $B\cup\{r\}$ against $C$. If the left is heavier, $r$ is genuine; if the left is lighter, every coin in $C$ is genuine; if balanced, $r$ is the sole fake originally in $A$, so any remaining coin in $A$ is genuine.</p>
+</div></details>
+~~~
+
+=== S183 · Q2.7.39 Nonstandard dice with standard sums / 与标准骰子同和分布的非标准骰子 （Page 62）
+~~~
+{}{raw}
+<div class="bilingual-question">
+<p><strong>中文:</strong> 能否设计一对彼此不同、也不同于标准骰子的公平六面骰；每面标正整数，但两骰点数和的分布与两枚标准骰完全相同？</p>
+<p><strong>English:</strong> Can two non-identical fair six-sided dice with positive-integer labels, neither standard, have exactly the same sum distribution as two standard dice?</p>
+</div>
+<details class="answer"><summary>Solution</summary><div class="answer-content">
+<p>Yes—the Sicherman dice:</p>
+<p class="equation-line">$$\boxed{(1,2,2,3,3,4)\quad\text{and}\quad(1,3,4,5,6,8)}.$$</p>
+<p>Their generating polynomials multiply to</p>
+<p class="equation-line">$$\bigl(x+x^2+x^3+x^4+x^5+x^6\bigr)^2,$$</p>
+<p>so every sum from $2$ through $12$ has exactly the standard multiplicity.</p>
+</div></details>
+~~~

@@ -1,0 +1,4045 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head>
+<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../../blog-note.css" type="text/css" />
+<script src="../../math-render.js" type="text/javascript"></script>
+<script src="../../blog-sidebar.js" type="text/javascript"></script>
+<title>Quantitative Research Interview Mathematics Review</title>
+</head>
+<body>
+<div id="layout-content">
+<div id="toptitle">
+<h1>Quantitative Research Interview Mathematics Review</h1>
+<div id="subtitle"><a href="../../../blog.html">← Blogs</a> &middot; <i>更新于 2026-07-21</i></div>
+</div>
+<div class="language-switch" role="navigation" aria-label="语言"><span class="active" aria-current="page">中文</span><a href="quant-math-review-en.html" hreflang="en">English</a></div>
+<div class="page-lead"><p>这是一份面向量化研究笔试与面试的高覆盖复习清单。它用于快速检查知识缺口，不替代系统教材。每个知识点至少要做到：能定义、能写假设、能推导核心公式、能算一个小例子、能指出一个失效场景。带有“点击展开”的知识点附有详细讲解，默认收起以保持提纲清晰。</p></div>
+<p><b>优先级：</b> P0 = 必须脱稿推导并使用；P1 = 高频考点；P2 = 岗位相关加分项。标准英文术语保留在括号中，便于直接应对英文面试。</p>
+<h2>0. 高频复习顺序</h2>
+<p>建议按以下顺序复习：</p>
+<ol>
+<li><p><b>P0 回归：</b> 推导 OLS；诊断多重共线性；比较删变量、PCA、SVD、Ridge、Lasso；解释异方差与数据泄漏。</p>
+</li>
+<li><p><b>P0 概率统计：</b> 条件概率、期望、方差与协方差、常见分布、估计、置信区间、假设检验。</p>
+</li>
+<li><p><b>P0 机器学习：</b> 偏差—方差、正则化、验证、线性与逻辑回归、树模型、集成学习、PCA、评估指标。</p>
+</li>
+<li><p><b>P0 组合与算法：</b> 排列组合、递推、状态设计、动态规划、图上的游走。</p>
+</li>
+<li><p><b>P0 线性代数：</b> 秩、投影、特征值、SVD、半正定协方差矩阵、条件数。</p>
+</li>
+<li><p><b>P1 时间序列与量化研究：</b> 收益率、平稳性、自相关、滚动特征、时间感知验证、交易成本、多重检验。</p>
+</li>
+</ol>
+<h2>1. 概率论</h2>
+<h3>1.1 样本空间、事件与计数 [P0]</h3>
+<ul>
+<li><p>□ 样本空间、事件、补集、并、交；德摩根律。</p>
+</li>
+<li><p>□ 概率公理、单调性、有限与可列可加性。</p>
+</li>
+<li><p>□ 加法公式：$P(A\cup B)=P(A)\mathplus{}P(B)-P(A\cap B)$。</p>
+</li>
+<li><p>□ 乘法原理、排列、组合、多项式系数；区分有序与无序、可区分与不可区分。</p>
+</li>
+<li><p>□ 有放回与无放回抽样；圆排列；抽屉原理；隔板法。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-inclusion-exclusion">
+<summary><span class="concept-label">□ 容斥原理（Inclusion–Exclusion Principle）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 它解决什么问题？</h4>
+<p>当若干集合彼此重叠时，直接把各集合大小相加会重复计数。容斥原理通过“加单个、减两两交集、加三重交集……”把每个属于并集的对象最终恰好计算一次。对有限集合 $A_1,\ldots,A_n$，</p>
+<div class="math-display">$$
+\left|\bigcup_{i=1}^n A_i\right|
+=\sum_i|A_i|-\sum_{i&lt;j}|A_i\cap A_j|
++\sum_{i&lt;j&lt;k}|A_i\cap A_j\cap A_k|-\cdots
++(-1)^{n+1}\left|\bigcap_{i=1}^n A_i\right|.
+$$</div>
+<p>把集合大小换成概率就得到概率版本。特别地，</p>
+<div class="math-display">$$
+P(A\cup B\cup C)=P(A)+P(B)+P(C)
+-P(A\cap B)-P(A\cap C)-P(B\cap C)+P(A\cap B\cap C).
+$$</div>
+<h4>2. 为什么交替加减？</h4>
+<p>设某个结果同时属于恰好 $r$ 个集合。第一轮单集合求和把它算了 $\binom r1$ 次，第二轮减去 $\binom r2$ 次，依次交替。它最终的系数是</p>
+<div class="math-display">$$
+\binom r1-\binom r2+\binom r3-\cdots+(-1)^{r+1}\binom rr=1,
+$$</div>
+<p>因为 $(1-1)^r=0$。所以并集中的每个结果都只留下一个副本，不在并集中的结果始终计数为零。</p>
+<h4>3. 面试中的标准使用步骤</h4>
+<ol>
+<li>先定义“坏事件” $A_i$，通常目标是计算一个坏事件都不发生的数量或概率。</li>
+<li>计算任意指定交集 $A_{i_1}\cap\cdots\cap A_{i_j}$。若问题有对称性，同一阶交集通常大小相同。</li>
+<li>按交集阶数交替加减；若求“一个都没有”，再用总数减去并集。</li>
+<li>用小规模例子检查符号、边界和结果是否落在合理范围内。</li>
+</ol>
+<h4>4. 例子：错排</h4>
+<p>把 $n$ 个元素排列，令 $A_i$ 表示“第 $i$ 个元素仍在原位”。指定 $j$ 个元素固定后，其余元素有 $(n-j)!$ 种排法，因此</p>
+<div class="math-display">$$
+D_n=n!-\binom n1(n-1)!+\binom n2(n-2)!-\cdots+(-1)^n
+=n!\sum_{j=0}^n\frac{(-1)^j}{j!}.
+$$</div>
+<p>所以随机排列没有固定点的概率为 $D_n/n!$，并在 $n\to\infty$ 时趋近 $e^{-1}$。</p>
+<p class="concept-check"><strong>常见误区：</strong>交集概率不能在没有独立性的情况下写成概率乘积；只保留前几项通常只是 Bonferroni 上下界而非精确答案；求“恰好发生若干个事件”时还要额外处理组合系数。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
+<li><p>□ “等可能”必须落实到正确的原子结果；两枚骰子的点数和并不等可能。</p>
+</li>
+</ul>
+<p><b>检查：</b> 能否不用背公式，直接数出生日碰撞、错排、固定点、逆序对和盒子占用问题？</p>
+<h3>1.2 条件概率、独立性与 Bayes [P0]</h3>
+<ul>
+<li><p>□ 条件概率：$P(A\mid B)=\frac{P(A\cap B)}{P(B)}$，其中 $P(B)&gt;0$。</p>
+</li>
+<li><p>□ 乘法公式：$P(A\cap B)=P(A\mid B)P(B)$。</p>
+</li>
+<li><p>□ 全概率公式：若 ${B_i}$ 构成划分，则 $P(A)=\sum_i P(A\mid B_i)P(B_i)$。</p>
+</li>
+<li><p>□ Bayes 公式：</p>
+</li>
+</ul>
+<div class="math-display">$$
+P(B_j\mid A)=\frac{P(A\mid B_j)P(B_j)}{\sum_i P(A\mid B_i)P(B_i)}.
+$$</div>
+<ul>
+<li><p>□ 两两独立不等于相互独立；独立也不等于互斥。</p>
+</li>
+<li><p>□ 条件独立与边际独立可以彼此不成立。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-bayes-reasoning-traps">
+<summary><span class="concept-label">□ 基准率忽视、检察官谬误、Monty Hall、假阳性率</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 共同核心：不要把条件概率方向写反</h4>
+<p>这些问题都在提醒：</p>
+<div class="math-display">$$
+P(A\mid B)\ne P(B\mid A).
+$$</div>
+<p>Bayes 公式把 likelihood、基准率和 posterior 联系起来：</p>
+<div class="math-display">$$
+P(A\mid B)
+=\frac{P(B\mid A)P(A)}
+{P(B\mid A)P(A)+P(B\mid A^c)P(A^c)}.
+$$</div>
+<p>最稳妥的做法通常不是直接代小数，而是假设有 10,000 人或 1,000 个案件，用自然频数把各分支人数写出来。</p>
+<h4>2. 基准率忽视与假阳性率</h4>
+<p>基准率忽视是只关注“检测有多准”或 $P(+\mid D)$，却忽略疾病本来有多罕见的 $P(D)$。例如患病率为 $1\%$，灵敏度为 $99\%$，特异度为 $95\%$。在 10,000 人中：</p>
+<ul>
+<li>100 人患病，其中约 99 人检测阳性；</li>
+<li>9,900 人未患病，假阳性率为 $5\%$，所以约 495 人检测阳性。</li>
+</ul>
+<p>因此阳性预测值为</p>
+<div class="math-display">$$
+P(D\mid+)
+=\frac{99}{99+495}
+=\frac16
+\approx16.7\%.
+$$</div>
+<p>检测的 sensitivity 很高，阳性者真正患病的概率仍可能不高，因为健康人群基数巨大。务必区分：</p>
+<div class="math-display">$$
+\underbrace{P(+\mid D^c)}_{\text{false-positive rate}}
+\qquad\text{与}\qquad
+\underbrace{P(D^c\mid+)}_{\text{false-discovery probability}}.
+$$</div>
+<h4>3. 检察官谬误</h4>
+<p>检察官谬误把“无辜者出现这份证据的概率很小”误说成“出现证据后被告无辜的概率很小”：</p>
+<div class="math-display">$$
+P(E\mid I)\quad\text{被误当成}\quad P(I\mid E).
+$$</div>
+<p>例如随机 DNA 匹配概率为百万分之一，并不等于嫌疑人无辜概率为百万分之一。posterior 还取决于事前有多少潜在匹配者、嫌疑人如何被找到、证据生成过程以及其他案情。如果在一个包含数百万人数据库中搜索，至少出现一个偶然匹配并不惊人，这还涉及 multiple comparisons。</p>
+<p>正确表达应比较似然比 $P(E\mid G)/P(E\mid I)$，再与先验 odds 结合，而不是把一个 likelihood 直接称为有罪概率。</p>
+<h4>4. Monty Hall 为什么换门是 $2/3$？</h4>
+<p>三扇门中一扇有车。你先选一扇，选中的门一开始有车概率是 $1/3$，另外两扇合计有车概率是 $2/3$。主持人知道答案、总会从另外两扇中打开一扇羊门、并总会提供换门机会。主持人的操作不会把最初的 $1/3$ 重新平均；它把“另外两扇”的 $2/3$ 概率集中到唯一未打开的门：</p>
+<div class="math-display">$$
+P(\text{stay wins})=\frac13,\qquad
+P(\text{switch wins})=\frac23.
+$$</div>
+<p>也可按最初选择枚举：若第一次选中车（概率 $1/3$），换门输；若第一次选中羊（概率 $2/3$），主持人被迫打开另一扇羊门，换门赢。</p>
+<p>这个结论依赖主持人的 protocol。若主持人不知道车在哪里、可能随机打开车门、或只在某些情况下提供换门，条件概率必须按新的行为规则重算。</p>
+<h4>5. 统一解题步骤</h4>
+<ol>
+<li>明确目标是哪个 posterior，例如 $P(D\mid+)$，不要只写文字“准确率”。</li>
+<li>列出 prior/base rate：$P(D)$ 与 $P(D^c)$。</li>
+<li>写出各分支 likelihood：$P(+\mid D)$ 与 $P(+\mid D^c)$。</li>
+<li>用全概率计算证据总概率，或直接画树状图／使用自然频数。</li>
+<li>检查信息提供者的选择机制；Monty Hall 和数据库搜索都不能忽略 selection protocol。</li>
+</ol>
+<p class="concept-check"><strong>常见误区：</strong>灵敏度不是阳性预测值；假阳性率不是“阳性中有多少是假”；罕见证据不自动等于高有罪概率；Monty Hall 的 $2/3$ 依赖主持人知情且固定遵守规则；选择性报告、数据库筛选和多重搜索会改变证据的条件分布。</p>
+</div>
+</details>
+</li>
+</ul>
+<p><b>检查：</b> 患病率 $1%$、灵敏度 $99%$、特异度 $95%$ 时，阳性者真正患病的概率是否能在一分钟内算出？</p>
+<h3>1.3 随机变量与常见分布 [P0]</h3>
+<ul>
+<li><p>□ PMF、PDF、CDF；离散变量与连续变量。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-survival-function">
+<summary><span class="concept-label">□ 生存函数（Survival Function）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 定义与直觉</h4>
+<p>生存函数描述随机变量超过某个阈值的概率：</p>
+<div class="math-display">$$
+S(x)=P(X&gt;x)=1-F(x).
+$$</div>
+<p>在寿命问题中，它表示“活过 $x$”；在等待时间问题中，它表示“等到 $x$ 仍未发生”；在金融中也可表示损失超过某一水平的尾概率。对连续变量，$P(X=x)=0$，所以使用 $&gt;$ 或 $\ge$ 没有区别；离散变量中二者不同，必须确认采用 $P(X&gt;x)$ 还是 $P(X\ge x)$ 的约定。</p>
+<h4>2. 从生存函数恢复密度与危险率</h4>
+<p>若 $X$ 连续且可微，则</p>
+<div class="math-display">$$
+f(x)=F'(x)=-S'(x).
+$$</div>
+<p>危险率（hazard rate）不是“立刻失败的概率”，而是已经生存到 $x$ 后的瞬时失败强度：</p>
+<div class="math-display">$$
+h(x)=\frac{f(x)}{S(x)}.
+$$</div>
+<p>累计危险率定义为</p>
+<div class="math-display">$$
+H(x)=\int_0^x h(u)\,\mathrm du=-\log S(x),
+\qquad
+S(x)=e^{-H(x)}.
+$$</div>
+<p>因此给定 hazard 就能恢复整个分布。Exponential 分布的 $h(x)=\lambda$ 为常数；hazard 随时间上升或下降时，模型就不再具有无记忆性。</p>
+<h4>3. 尾积分公式</h4>
+<p>若 $X\ge0$，则期望可以直接由生存函数得到：</p>
+<div class="math-display">$$
+\mathbb E[X]=\int_0^\infty P(X&gt;t)\,\mathrm dt
+=\int_0^\infty S(t)\,\mathrm dt.
+$$</div>
+<p>这是连续版的尾和公式。对非负整数变量，</p>
+<div class="math-display">$$
+\mathbb E[X]=\sum_{k=1}^{\infty}P(X\ge k).
+$$</div>
+<p>这两个公式在等待时间、最大值和停止时间问题中常比直接对 PMF/PDF 求和积分更方便。</p>
+<h4>4. 剩余寿命与条件概率</h4>
+<p>已知 $X&gt;s$ 后，再等待超过 $t$ 的条件概率是</p>
+<div class="math-display">$$
+P(X&gt;s+t\mid X&gt;s)=\frac{S(s+t)}{S(s)}.
+$$</div>
+<p>只有当这个比值对所有 $s$ 都等于 $S(t)$ 时才具有无记忆性。生存分析中存在右删失时，虽然不知道完整寿命，仍知道样本至少生存到删失时刻，因此生存函数比普通均值更自然。</p>
+<p class="concept-check"><strong>常见误区：</strong>生存函数是尾概率而不是密度；hazard 可以大于 1，因为它是瞬时 rate 而非概率；离散情形要分清 $P(X&gt;x)$ 与 $P(X\ge x)$；只有非负变量才能直接使用上述尾积分公式。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-variable-transformations-extrema">
+<summary><span class="concept-label">□ 变量变换、一维 Jacobian，以及和、最小值、最大值的分布</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 单调变换：概率不变，密度要按长度缩放</h4>
+<p>设连续变量 $X$ 的密度为 $f_X$，$Y=g(X)$，且 $g$ 严格单调、可微。令 $x=g^{-1}(y)$，则</p>
+<div class="math-display">$$
+f_Y(y)=f_X\!\left(g^{-1}(y)\right)
+\left|\frac{\mathrm d}{\mathrm dy}g^{-1}(y)\right|.
+$$</div>
+<p>绝对值中的导数就是一维 Jacobian。直觉是同一小段概率质量必须守恒：</p>
+<div class="math-display">$$
+f_Y(y)\,\mathrm dy\approx f_X(x)\,\mathrm dx.
+$$</div>
+<p>若 $g$ 递增，也可先写 $F_Y(y)=F_X(g^{-1}(y))$ 再求导；若 $g$ 递减，不等号方向会反转，因此直接记含绝对值的密度公式更稳妥。</p>
+<h4>2. 非一一变换：必须把所有原像相加</h4>
+<p>若方程 $g(x)=y$ 有多个根 $x_1,\ldots,x_m$，则</p>
+<div class="math-display">$$
+f_Y(y)=\sum_{j=1}^m
+\frac{f_X(x_j)}{|g'(x_j)|},
+$$</div>
+<p>求和只包含位于 $X$ 支持集内的根。例如 $X\sim\operatorname{Uniform}(-1,1)$、$Y=X^2$。对 $0&lt;y&lt;1$，原像为 $\pm\sqrt y$，所以</p>
+<div class="math-display">$$
+f_Y(y)
+=\frac{1/2}{2\sqrt y}+\frac{1/2}{2\sqrt y}
+=\frac1{2\sqrt y}.
+$$</div>
+<h4>3. 独立变量之和：卷积</h4>
+<p>若连续变量 $X,Y$ 独立，$Z=X+Y$，则</p>
+<div class="math-display">$$
+f_Z(z)=\int_{-\infty}^{\infty}
+f_X(x)f_Y(z-x)\,\mathrm dx.
+$$</div>
+<p>实际积分上下限由 $x$ 同时落在 $X$ 的支持集、$z-x$ 落在 $Y$ 的支持集决定。离散变量对应</p>
+<div class="math-display">$$
+P(X+Y=k)=\sum_jP(X=j)P(Y=k-j).
+$$</div>
+<p>独立性使联合密度分解成乘积；若不独立，必须使用联合密度 $f_{X,Y}(x,z-x)$。</p>
+<h4>4. 最小值与最大值：优先写 CDF 或生存函数</h4>
+<p>若 $X_1,\ldots,X_n$ i.i.d.，CDF 为 $F$，记 $M=\max_iX_i$、$m=\min_iX_i$，则</p>
+<div class="math-display">$$
+P(M\le x)=F(x)^n,\qquad
+P(m&gt;x)=[1-F(x)]^n.
+$$</div>
+<p>若存在密度 $f$，求导得到</p>
+<div class="math-display">$$
+f_M(x)=nF(x)^{n-1}f(x),\qquad
+f_m(x)=n[1-F(x)]^{n-1}f(x).
+$$</div>
+<p>独立但不同分布时，把 $F(x)^n$ 换成 $\prod_iF_i(x)$，把 $[1-F(x)]^n$ 换成 $\prod_i[1-F_i(x)]$。</p>
+<h4>5. 解题流程</h4>
+<ol>
+<li>先写清原变量支持集，并求新变量的可能取值范围。</li>
+<li>判断变换是否单调／一一；不是一一时列出全部原像。</li>
+<li>和用卷积，最大值用“全部不超过”，最小值用“全部超过”。</li>
+<li>最后检查密度非负且积分为 1，CDF 在边界处为 0 和 1。</li>
+</ol>
+<p class="concept-check"><strong>常见误区：</strong>Jacobian 必须取绝对值；非一一变换不能漏根；卷积和极值的乘积公式依赖独立性；积分区域由支持集决定，不能机械使用 $(-\infty,\infty)$ 后忽略密度实际为零的范围。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
+<li><p>□ 联合分布、边际分布、条件分布；支持集决定积分区域。</p>
+</li>
+<li><p>□ Bernoulli$(p)$：$\mathbb E X=p$，$\operatorname{Var}(X)=p(1-p)$。</p>
+</li>
+<li><p>□ Binomial$(n,p)$：$\mathbb E X=np$，$\operatorname{Var}(X)=np(1-p)$。</p>
+</li>
+<li><p>□ Geometric：必须说明等待次数从 $0$ 还是 $1$ 开始。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-negative-binomial">
+<summary><span class="concept-label">□ Negative Binomial（负二项分布）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 两种常见计数约定</h4>
+<p>进行相互独立、成功概率为 $p$ 的 Bernoulli 试验，直到出现第 $r$ 次成功。若 $X$ 表示第 $r$ 次成功前出现的<strong>失败次数</strong>，则 $X=0,1,2,\ldots$，且</p>
+<div class="math-display">$$
+P(X=k)=\binom{k+r-1}{k}p^r(1-p)^k.
+$$</div>
+<p>组合数的含义是：最后一次试验必须成功，而前 $k+r-1$ 次中要安排 $r-1$ 次成功和 $k$ 次失败。此约定下</p>
+<div class="math-display">$$
+\mathbb E[X]=\frac{r(1-p)}p,\qquad
+\operatorname{Var}(X)=\frac{r(1-p)}{p^2}.
+$$</div>
+<p>若 $T$ 表示达到第 $r$ 次成功所需的<strong>总试验次数</strong>，则 $T=X+r$，支持集为 $r,r+1,\ldots$，</p>
+<div class="math-display">$$
+P(T=t)=\binom{t-1}{r-1}p^r(1-p)^{t-r},
+\qquad
+\mathbb E[T]=\frac rp.
+$$</div>
+<h4>2. 与 Geometric 分布的关系</h4>
+<p>Negative Binomial 是 $r$ 个独立 Geometric 等待块之和。若每个 Geometric 变量记录一次成功前的失败数，则</p>
+<div class="math-display">$$
+X=G_1+\cdots+G_r,
+\qquad
+G_i\sim\operatorname{Geometric}(p).
+$$</div>
+<p>$r=1$ 时就是 Geometric 分布。这个表示立即给出均值与方差，也说明“等到多个成功”对应离散时间的 Negative Binomial，类似连续时间中“等到多个 Poisson 到达”对应 Gamma/Erlang。</p>
+<h4>3. 作为过度离散计数模型</h4>
+<p>Negative Binomial 也可由 Poisson rate 的异质性产生。若</p>
+<div class="math-display">$$
+\Lambda\sim\operatorname{Gamma}(r,\beta),
+\qquad
+Y\mid\Lambda\sim\operatorname{Poisson}(\Lambda),
+$$</div>
+<p>其中 Gamma 使用 rate 参数化，则边际上的 $Y$ 为 Negative Binomial，成功参数 $p=\beta/(\beta+1)$。混合不同个体的 Poisson rates 后，</p>
+<div class="math-display">$$
+\operatorname{Var}(Y)&gt;\mathbb E[Y],
+$$</div>
+<p>因此它常用于方差明显大于均值的 count data。Poisson 是 rate 固定的模型；Negative Binomial 允许未观测异质性或聚集。</p>
+<h4>4. 小例子</h4>
+<p>一枚硬币每次成功概率 $p=0.4$，直到第 3 次成功。第 3 次成功前恰好出现 2 次失败的概率为</p>
+<div class="math-display">$$
+P(X=2)=\binom42(0.4)^3(0.6)^2=0.13824.
+$$</div>
+<p>期望失败数为 $3(0.6)/0.4=4.5$，期望总试验数为 $3/0.4=7.5$。</p>
+<p class="concept-check"><strong>常见误区：</strong>不同教材和软件可能记录 failures、total trials 或 successes before failures，甚至交换 $p$ 的含义；写答案前必须声明支持集和 PMF。方差公式取决于参数化，不能只凭“Negative Binomial$(r,p)$”猜约定。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-hypergeometric">
+<summary><span class="concept-label">□ Hypergeometric（超几何分布）：无放回抽样与有限总体修正</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 模型与 PMF</h4>
+<p>总体有 $N$ 个对象，其中 $K$ 个属于“成功”类、$N-K$ 个属于“失败”类。等概率无放回抽取 $n$ 个，令 $X$ 为样本中的成功数，则</p>
+<div class="math-display">$$
+X\sim\operatorname{Hypergeometric}(N,K,n),
+$$</div>
+<div class="math-display">$$
+P(X=k)=
+\frac{\binom Kk\binom{N-K}{n-k}}{\binom Nn}.
+$$</div>
+<p>分母是所有大小为 $n$ 的样本数；分子先从 $K$ 个成功对象中选 $k$ 个，再从其余对象中选 $n-k$ 个。可行范围不是自动的 $0\le k\le n$，而是</p>
+<div class="math-display">$$
+\max\{0,n-(N-K)\}\le k\le\min\{n,K\}.
+$$</div>
+<h4>2. 均值、方差与有限总体修正</h4>
+<p>令总体成功比例 $p=K/N$，则</p>
+<div class="math-display">$$
+\mathbb E[X]=np,
+\qquad
+\operatorname{Var}(X)
+=np(1-p)\frac{N-n}{N-1}.
+$$</div>
+<p>与 $\operatorname{Binomial}(n,p)$ 相比，额外因子</p>
+<div class="math-display">$$
+\frac{N-n}{N-1}
+$$</div>
+<p>叫 finite-population correction。无放回导致抽取结果负相关：抽到一个成功对象后，剩余总体的成功比例下降，因此方差小于独立有放回抽样。当 $n=N$ 时整个总体都被观察，$X=K$ 不再随机，方差正好为 0。</p>
+<h4>3. 指示变量推导均值</h4>
+<p>令 $I_j$ 表示第 $j$ 个被抽对象是否成功，则 $X=\sum_{j=1}^nI_j$。每个位置的边际成功概率仍为 $K/N$，所以即使各次抽取不独立，</p>
+<div class="math-display">$$
+\mathbb E[X]=\sum_{j=1}^n\mathbb E[I_j]
+=n\frac KN.
+$$</div>
+<p>方差不能直接相加，因为 $I_i,I_j$ 负相关；把协方差项保留下来就会得到有限总体修正。</p>
+<h4>4. 与 Binomial 的区别和近似</h4>
+<ul>
+<li><strong>Hypergeometric：</strong>有限总体、无放回、各次抽取依赖。</li>
+<li><strong>Binomial：</strong>有放回或每次成功概率固定、各次试验独立。</li>
+</ul>
+<p>当抽样比例 $n/N$ 很小，总体组成几乎不被前几次抽取改变，Hypergeometric 可近似为 $\operatorname{Binomial}(n,K/N)$，有限总体修正也接近 1。</p>
+<h4>5. 小例子</h4>
+<p>从一副 52 张牌中无放回抽 5 张，恰好有 2 张 A 的概率为</p>
+<div class="math-display">$$
+\frac{\binom42\binom{48}3}{\binom{52}5}.
+$$</div>
+<p>这里 $N=52,K=4,n=5,k=2$。这类模型也用于抽样质检、库存审计和 Fisher exact test。</p>
+<p class="concept-check"><strong>常见误区：</strong>不要把无放回抽样当作独立 Bernoulli；必须检查 $k$ 的可行支持集；有限总体修正针对的是方差而非均值；参数 $K$ 是总体成功数，$n$ 是样本量，二者最容易写反。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-poisson-distribution">
+<summary><span class="concept-label">□ Poisson 分布（泊松分布）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 它描述什么？</h4>
+<p>若 $X$ 表示一个固定时间段、空间区域或其他 exposure 内发生的事件数，并且事件近似独立、平均发生率稳定、在极短区间内同时发生两个或更多事件的概率可以忽略，则常用</p>
+<div class="math-display">$$
+X\sim\operatorname{Poisson}(\lambda),\qquad
+P(X=k)=e^{-\lambda}\frac{\lambda^k}{k!},\quad k=0,1,2,\ldots,\quad \lambda&gt;0.
+$$</div>
+<p>参数 $\lambda$ 是该 exposure 内的<strong>期望事件数</strong>，不是概率，所以可以大于 1。若单位时间平均发生率为 $r$，观察时间为 $t$，通常 $\lambda=rt$。概率质量之和为 1，是因为</p>
+<div class="math-display">$$
+\sum_{k=0}^{\infty}e^{-\lambda}\frac{\lambda^k}{k!}
+=e^{-\lambda}e^\lambda=1.
+$$</div>
+<h4>2. 为什么均值和方差都等于 $\lambda$？</h4>
+<p>泊松 PMF 有一个很有用的移位关系：对 $k\ge1$，</p>
+<div class="math-display">$$
+kP(X=k)=\lambda P(X=k-1).
+$$</div>
+<p>因此把求和指标平移一次即可得到</p>
+<div class="math-display">$$
+\mathbb E[X]
+=\sum_{k=1}^{\infty}kP(X=k)
+=\lambda\sum_{j=0}^{\infty}P(X=j)
+=\lambda.
+$$</div>
+<p>同理，使用二阶阶乘矩，</p>
+<div class="math-display">$$
+\mathbb E[X(X-1)]=\lambda^2,
+\qquad
+\operatorname{Var}(X)
+=\mathbb E[X(X-1)]+\mathbb E[X]-(\mathbb E[X])^2
+=\lambda.
+$$</div>
+<p>所以标准差为 $\sqrt{\lambda}$，而相对波动 $\sqrt{\lambda}/\lambda=1/\sqrt{\lambda}$ 会随平均事件数增加而下降。</p>
+<h4>3. 可加性、条件分配与稀释</h4>
+<p>若 $X_i\sim\operatorname{Poisson}(\lambda_i)$ 相互独立，则</p>
+<div class="math-display">$$
+\sum_{i=1}^m X_i\sim
+\operatorname{Poisson}\!\left(\sum_{i=1}^m\lambda_i\right).
+$$</div>
+<p>可以用概率生成函数 $G_X(s)=\exp\{\lambda(s-1)\}$ 一行验证。反过来，若把每个 Poisson 事件独立地以概率 $p$ 标记为 A，则 A 类事件数服从 $\operatorname{Poisson}(p\lambda)$，其余事件数服从 $\operatorname{Poisson}((1-p)\lambda)$，而且二者独立，这叫 <em>thinning</em>（稀释）。</p>
+<p>另一个常用结论是：若独立的 $X_i\sim\operatorname{Poisson}(\lambda_i)$，在给定总数 $N=\sum_iX_i=n$ 后，$(X_1,\ldots,X_m)$ 服从参数为</p>
+<div class="math-display">$$
+\left(n;\frac{\lambda_1}{\sum_j\lambda_j},\ldots,
+\frac{\lambda_m}{\sum_j\lambda_j}\right)
+$$</div>
+<p>的 Multinomial 分布。直观上，总事件数由 Poisson 决定，而已知总数后，每个事件按各来源的相对强度进行分类。</p>
+<h4>4. 为什么可以近似 Binomial？</h4>
+<p>若 $X_n\sim\operatorname{Binomial}(n,p_n)$，单次事件很稀有，即 $n\to\infty$、$p_n\to0$，但平均事件数 $np_n\to\lambda$，那么对固定的 $k$，</p>
+<div class="math-display">$$
+\begin{aligned}
+P(X_n=k)
+&amp;=\binom nk p_n^k(1-p_n)^{n-k}\\
+&amp;\longrightarrow
+\frac{\lambda^k}{k!}e^{-\lambda}.
+\end{aligned}
+$$</div>
+<p>核心近似分别是 $\binom nk\sim n^k/k!$、$p_n^k\sim(\lambda/n)^k$ 和 $(1-p_n)^n\to e^{-\lambda}$。因此“大量近似独立的机会，每次成功概率很小”时，Binomial 计数可用 Poisson$(np)$ 近似。若事件概率不小、试验依赖或个体成功率差异很大，这个近似就会变差。</p>
+<h4>5. 与 Poisson 过程和 Exponential 分布的关系</h4>
+<p>Poisson 分布描述<strong>固定区间内的计数</strong>；Poisson 过程描述计数随时间如何演化。若 $(N(t))_{t\ge0}$ 是速率为 $r$ 的齐次 Poisson 过程，则</p>
+<div class="math-display">$$
+N(t)\sim\operatorname{Poisson}(rt),
+\qquad
+N(t+s)-N(t)\sim\operatorname{Poisson}(rs),
+$$</div>
+<p>且不相交时间区间的增量独立。相邻事件之间的等待时间则独立服从 $\operatorname{Exponential}(r)$。记忆方法是：<strong>Poisson 数次数，Exponential 等时间</strong>。</p>
+<h4>6. 小例子</h4>
+<p>某系统平均每分钟收到 2.5 个请求，假设请求构成齐次 Poisson 过程。4 分钟内的请求数 $X$ 满足 $X\sim\operatorname{Poisson}(10)$，因此</p>
+<div class="math-display">$$
+P(X=8)=e^{-10}\frac{10^8}{8!}\approx0.1126.
+$$</div>
+<p>30 秒内没有请求时，参数是 $\lambda=2.5\times0.5=1.25$，故 $P(X=0)=e^{-1.25}\approx0.2865$。先按 observation window 调整 $\lambda$，是这类题最关键的一步。</p>
+<p class="concept-check"><strong>常见误区：</strong>可加性要求计数独立；$\lambda$ 是期望计数而非概率；“均值等于方差”是 Poisson 模型的特征。真实数据若有聚集、相互影响、速率随时间变化或个体异质性，常出现方差明显大于均值的 overdispersion，此时应考虑 Negative Binomial、混合 Poisson 或非齐次过程，而不是机械使用 Poisson。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-poisson-process-to-distribution">
+<summary><span class="concept-label">□ 从 Poisson 过程推导 Poisson 分布</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 先分清速率与分布参数</h4>
+<p>设 $(N(t))_{t\ge0}$ 是速率为 $r$ 的齐次 Poisson 过程，$N(t)$ 表示时刻 $t$ 以前发生的事件数。这里 $r$ 是<strong>单位时间平均事件数</strong>，而长度为 $t$ 的区间对应的 Poisson 分布参数是 $rt$。我们要从过程的局部性质推出</p>
+<div class="math-display">$$
+P(N(t)=k)=e^{-rt}\frac{(rt)^k}{k!},
+\qquad k=0,1,2,\ldots,
+$$</div>
+<p>也就是 $N(t)\sim\operatorname{Poisson}(rt)$。若教材直接把过程速率记为 $\lambda$，同一个结论就写成 $N(t)\sim\operatorname{Poisson}(\lambda t)$；不要把速率 $\lambda$ 与固定区间内的均值 $\lambda t$ 混为一谈。</p>
+<h4>2. 极短时间内会发生什么？</h4>
+<p>齐次 Poisson 过程具有独立、平稳增量。对很短的时间长度 $h$，还满足</p>
+<div class="math-display">$$
+\begin{aligned}
+P(N(t+h)-N(t)=0)&amp;=1-rh+o(h),\\
+P(N(t+h)-N(t)=1)&amp;=rh+o(h),\\
+P(N(t+h)-N(t)\ge2)&amp;=o(h),
+\end{aligned}
+$$</div>
+<p>其中 $o(h)/h\to0$。直观上，一次事件的概率与区间长度近似成正比，而在极短区间里同时出现两个或更多事件是更高阶的小概率。接下来令</p>
+<div class="math-display">$$
+p_k(t)=P(N(t)=k).
+$$</div>
+<h4>3. 先求没有事件的概率</h4>
+<p>要使 $[0,t+h]$ 内没有事件，前 $t$ 时间和最后的长度 $h$ 都必须没有事件。利用独立增量，</p>
+<div class="math-display">$$
+p_0(t+h)=p_0(t)\bigl(1-rh\bigr)+o(h).
+$$</div>
+<p>移项、除以 $h$，再令 $h\to0$，得到</p>
+<div class="math-display">$$
+p_0'(t)=-rp_0(t),\qquad p_0(0)=1.
+$$</div>
+<p>因此</p>
+<div class="math-display">$$
+p_0(t)=e^{-rt}.
+$$</div>
+<p>所以 Poisson PMF 中的指数因子 $e^{-rt}$，本质上就是长度为 $t$ 的区间内完全没有事件的概率。</p>
+<h4>4. 对一般的 $k$ 写第一步递推</h4>
+<p>若 $k\ge1$，要使 $N(t+h)=k$，一阶精度下只有两种主要情况：</p>
+<ul>
+<li>前 $t$ 时间已有 $k$ 次事件，最后的 $h$ 内没有新事件；</li>
+<li>前 $t$ 时间已有 $k-1$ 次事件，最后的 $h$ 内恰好发生一次。</li>
+</ul>
+<p>最后的短区间发生两次或更多事件只贡献 $o(h)$，所以</p>
+<div class="math-display">$$
+p_k(t+h)
+=p_k(t)(1-rh)+p_{k-1}(t)rh+o(h).
+$$</div>
+<p>整理后得到 Kolmogorov forward equations：</p>
+<div class="math-display">$$
+p_k'(t)=-rp_k(t)+rp_{k-1}(t),
+\qquad p_k(0)=0.
+$$</div>
+<p>乘以积分因子 $e^{rt}$，</p>
+<div class="math-display">$$
+\frac{\mathrm d}{\mathrm dt}\!\left(e^{rt}p_k(t)\right)
+=r e^{rt}p_{k-1}(t).
+$$</div>
+<p>已经知道 $p_0(t)=e^{-rt}$。若归纳假设</p>
+<div class="math-display">$$
+p_{k-1}(t)=e^{-rt}\frac{(rt)^{k-1}}{(k-1)!},
+$$</div>
+<p>那么从 $0$ 积分到 $t$：</p>
+<div class="math-display">$$
+\begin{aligned}
+e^{rt}p_k(t)
+&amp;=\int_0^t r\frac{(rs)^{k-1}}{(k-1)!}\,\mathrm ds\\
+&amp;=\frac{(rt)^k}{k!}.
+\end{aligned}
+$$</div>
+<p>因此对所有 $k\ge0$，</p>
+<div class="math-display">$$
+\boxed{P(N(t)=k)=e^{-rt}\frac{(rt)^k}{k!}}.
+$$</div>
+<h4>5. 同一个结论的 Binomial 极限直觉</h4>
+<p>把 $[0,t]$ 分成 $n$ 个长度为 $t/n$ 的小区间。每个小区间内发生一次事件的概率近似为 $rt/n$，发生两次以上的概率可以忽略，而不同小区间由独立增量相互独立。因此</p>
+<div class="math-display">$$
+N(t)\approx\operatorname{Binomial}\!\left(n,\frac{rt}{n}\right).
+$$</div>
+<p>对固定的 $k$，令 $n\to\infty$：</p>
+<div class="math-display">$$
+\begin{aligned}
+P(N(t)=k)
+&amp;\approx
+\binom nk\left(\frac{rt}{n}\right)^k
+\left(1-\frac{rt}{n}\right)^{n-k}\\
+&amp;\longrightarrow
+\frac{(rt)^k}{k!}e^{-rt}.
+\end{aligned}
+$$</div>
+<p>这里 $\binom nk\sim n^k/k!$ 产生了 $1/k!$，而 $(1-rt/n)^n\to e^{-rt}$ 产生了指数因子。换句话说，Poisson 计数可以看成“无限多个极短区间中的稀有 Bernoulli 事件之和”。</p>
+<p class="concept-check"><strong>推导路线：</strong>独立平稳增量与短时间概率 $\Rightarrow$ 递推微分方程 $\Rightarrow$ $p_0(t)=e^{-rt}$ $\Rightarrow$ 逐层求出 $p_k(t)$。微分方程推导给出精确证明；小区间 Binomial 极限则提供最直观的理解。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
+<li><p>□ Uniform$(a,b)$：几何概率、位置—尺度变换。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-exponential-distribution">
+<summary><span class="concept-label">□ Exponential$(\lambda)$（指数分布）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 定义：等待下一次事件多久</h4>
+<p>若 $T\sim\operatorname{Exponential}(\lambda)$，其中 $\lambda&gt;0$ 是单位时间的发生率，则对 $t\ge0$，</p>
+<div class="math-display">$$
+f_T(t)=\lambda e^{-\lambda t},\qquad
+F_T(t)=1-e^{-\lambda t},\qquad
+P(T&gt;t)=e^{-\lambda t}.
+$$</div>
+<p>生存函数 $P(T&gt;t)$ 往往比 CDF 更好用：它直接表示等待时间超过 $t$ 的概率。均值和方差为</p>
+<div class="math-display">$$
+\mathbb E[T]=\frac1\lambda,\qquad
+\operatorname{Var}(T)=\frac1{\lambda^2}.
+$$</div>
+<p>因此 $\lambda$ 是 <strong>rate</strong>，不是平均等待时间；rate 越大，等待越短。危险率（hazard rate）</p>
+<div class="math-display">$$
+h(t)=\frac{f_T(t)}{P(T&gt;t)}=\lambda
+$$</div>
+<p>是常数，表示在“已经等到 $t$ 仍未发生”的条件下，下一瞬间发生事件的强度不随已等待时间改变。</p>
+<h4>2. 无记忆性究竟是什么意思？</h4>
+<p>对任意 $s,t\ge0$，</p>
+<div class="math-display">$$
+\begin{aligned}
+P(T&gt;s+t\mid T&gt;s)
+&amp;=\frac{P(T&gt;s+t)}{P(T&gt;s)}\\
+&amp;=\frac{e^{-\lambda(s+t)}}{e^{-\lambda s}}
+=e^{-\lambda t}
+=P(T&gt;t).
+\end{aligned}
+$$</div>
+<p>也就是说，已等待 $s$ 之后的剩余等待时间，在条件 $T&gt;s$ 下仍服从同一个 $\operatorname{Exponential}(\lambda)$。它不是说过去没有发生过，而是说<strong>过去等待了多久不会改变未来的条件分布</strong>。在非退化连续分布中，指数分布是唯一具有这种性质的分布。</p>
+<h4>3. 独立指数变量的最小值：竞争风险</h4>
+<p>设 $T_i\sim\operatorname{Exponential}(\lambda_i)$ 相互独立，$T_{\min}=\min_iT_i$。利用生存函数相乘，</p>
+<div class="math-display">$$
+P(T_{\min}&gt;t)
+=\prod_iP(T_i&gt;t)
+=\exp\!\left(-t\sum_i\lambda_i\right),
+$$</div>
+<p>所以</p>
+<div class="math-display">$$
+T_{\min}\sim\operatorname{Exponential}(\Lambda),
+\qquad
+\Lambda=\sum_i\lambda_i.
+$$</div>
+<p>第 $i$ 个时钟最先响的概率为</p>
+<div class="math-display">$$
+P(T_i=T_{\min})=\frac{\lambda_i}{\sum_j\lambda_j}.
+$$</div>
+<p>最先发生的时间与“哪个时钟先响”相互独立。这一结论常用于故障竞争、订单到达和连续时间 Markov 链。注意：<strong>最小值</strong>仍是指数分布，但最大值通常不是。</p>
+<h4>4. 与 Poisson 过程、Gamma 分布和模拟的联系</h4>
+<p>在速率为 $\lambda$ 的齐次 Poisson 过程中，下一次到达的等待时间是 $\operatorname{Exponential}(\lambda)$，因为</p>
+<div class="math-display">$$
+P(T&gt;t)=P(N(t)=0)=e^{-\lambda t}.
+$$</div>
+<p>连续等待 $k$ 次到达的总时间是 $k$ 个独立指数变量之和，服从 Erlang（整数形状的 Gamma）分布，而不是指数分布。若 $U\sim\operatorname{Uniform}(0,1)$，逆变换法给出</p>
+<div class="math-display">$$
+T=-\frac{\log U}{\lambda}
+\sim\operatorname{Exponential}(\lambda).
+$$</div>
+<p>若 $a&gt;0$，则 $aT\sim\operatorname{Exponential}(\lambda/a)$；时间单位改变时不要忘记同步改变 rate。</p>
+<h4>5. 小例子</h4>
+<p>两台独立服务器的完成率分别为每分钟 2 次和 3 次。下一次完成时间服从 $\operatorname{Exponential}(5)$，平均等待 $1/5$ 分钟；第二台服务器先完成的概率为 $3/(2+3)=3/5$。</p>
+<p class="concept-check"><strong>常见误区：</strong>不要把 rate $\lambda$ 与均值 $1/\lambda$ 混淆；独立指数变量的和通常是 Gamma，而不是 Exponential；无记忆性不表示设备不会老化，而是指数模型本身假设 hazard 恒定，若真实 hazard 随时间变化就不应机械套用。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-gamma-beta-dirichlet">
+<summary><span class="concept-label">□ Gamma、Erlang、Beta 与 Dirichlet 分布</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. Gamma：正数上的等待时间与 rate 参数</h4>
+<p>这里统一采用 shape–rate 参数化：若 $X\sim\operatorname{Gamma}(\alpha,\beta)$，其中 shape $\alpha&gt;0$、rate $\beta&gt;0$，则</p>
+<div class="math-display">$$
+f_X(x)=\frac{\beta^\alpha}{\Gamma(\alpha)}
+x^{\alpha-1}e^{-\beta x},\qquad x&gt;0,
+$$</div>
+<div class="math-display">$$
+\mathbb E[X]=\frac{\alpha}{\beta},\qquad
+\operatorname{Var}(X)=\frac{\alpha}{\beta^2}.
+$$</div>
+<p>有些书使用 scale $\theta=1/\beta$，并写成 $\operatorname{Gamma}(\alpha,\theta)$；看到 Gamma 时必须先确认第二个参数是 rate 还是 scale。若 $X_i\sim\operatorname{Gamma}(\alpha_i,\beta)$ 相互独立且 rate 相同，则</p>
+<div class="math-display">$$
+\sum_iX_i\sim\operatorname{Gamma}\!\left(\sum_i\alpha_i,\beta\right).
+$$</div>
+<h4>2. Erlang：Gamma 的整数形状特例</h4>
+<p>当 $\alpha=k$ 为正整数时，Gamma 分布也叫 Erlang 分布。若 $T_1,\ldots,T_k$ 是独立的 $\operatorname{Exponential}(\lambda)$ 等待时间，则</p>
+<div class="math-display">$$
+S_k=T_1+\cdots+T_k\sim\operatorname{Erlang}(k,\lambda)
+=\operatorname{Gamma}(k,\lambda).
+$$</div>
+<p>在速率为 $\lambda$ 的 Poisson 过程中，$S_k$ 正是第 $k$ 次事件的到达时间，并满足</p>
+<div class="math-display">$$
+P(S_k\le t)=P(N(t)\ge k).
+$$</div>
+<p>因此 Poisson 负责“固定时间内发生几次”，Erlang 负责“等到第 $k$ 次需要多久”。当 $k=1$ 时就退化为 Exponential。</p>
+<h4>3. Beta：$[0,1]$ 上的概率与比例</h4>
+<p>若 $P\sim\operatorname{Beta}(\alpha,\beta)$，则</p>
+<div class="math-display">$$
+f_P(p)=\frac{p^{\alpha-1}(1-p)^{\beta-1}}{B(\alpha,\beta)},
+\qquad 0&lt;p&lt;1,
+$$</div>
+<div class="math-display">$$
+B(\alpha,\beta)=\frac{\Gamma(\alpha)\Gamma(\beta)}
+{\Gamma(\alpha+\beta)},\qquad
+\mathbb E[P]=\frac{\alpha}{\alpha+\beta},
+$$</div>
+<div class="math-display">$$
+\operatorname{Var}(P)
+=\frac{\alpha\beta}
+{(\alpha+\beta)^2(\alpha+\beta+1)}.
+$$</div>
+<p>$\alpha$ 与 $\beta$ 可以理解为对成功和失败的先验强度：两者之和越大，分布越集中。若 $\alpha=\beta=1$，Beta 就是 Uniform$(0,1)$；两参数都大于 1 时通常单峰，而都小于 1 时质量更靠近 0 与 1。</p>
+<h4>4. Dirichlet：Beta 在概率单纯形上的推广</h4>
+<p>设 $\mathbf P=(P_1,\ldots,P_K)$，$P_i\ge0$ 且 $\sum_iP_i=1$。若 $\mathbf P\sim\operatorname{Dirichlet}(\alpha_1,\ldots,\alpha_K)$，令 $\alpha_0=\sum_i\alpha_i$，则</p>
+<div class="math-display">$$
+f(\mathbf p)
+=\frac{\Gamma(\alpha_0)}{\prod_i\Gamma(\alpha_i)}
+\prod_{i=1}^Kp_i^{\alpha_i-1},
+$$</div>
+<div class="math-display">$$
+\mathbb E[P_i]=\frac{\alpha_i}{\alpha_0},\qquad
+\operatorname{Var}(P_i)
+=\frac{\alpha_i(\alpha_0-\alpha_i)}
+{\alpha_0^2(\alpha_0+1)},
+$$</div>
+<div class="math-display">$$
+\operatorname{Cov}(P_i,P_j)
+=-\frac{\alpha_i\alpha_j}
+{\alpha_0^2(\alpha_0+1)},\qquad i\ne j.
+$$</div>
+<p>协方差为负并不神秘：总和固定为 1，一个分量上升会挤压其他分量。每个边际分布满足 $P_i\sim\operatorname{Beta}(\alpha_i,\alpha_0-\alpha_i)$；$K=2$ 时 Dirichlet 就等价于 Beta。</p>
+<h4>5. Beta–Gamma 结构与共轭先验</h4>
+<p>若 $G_1\sim\operatorname{Gamma}(\alpha,\rho)$、$G_2\sim\operatorname{Gamma}(\beta,\rho)$ 独立且 rate 相同，则</p>
+<div class="math-display">$$
+\frac{G_1}{G_1+G_2}\sim\operatorname{Beta}(\alpha,\beta),
+\qquad
+G_1+G_2\sim\operatorname{Gamma}(\alpha+\beta,\rho),
+$$</div>
+<p>而这个比例与总和相互独立。推广到多个独立 Gamma 变量并用总和归一化，就得到 Dirichlet。</p>
+<p>这些分布之所以在 Bayesian inference 中常见，是因为后验仍属于同一家族：</p>
+<ul>
+<li>Bernoulli/Binomial likelihood 配 Beta prior：观察到 $s$ 次成功、$f$ 次失败后，$\operatorname{Beta}(\alpha,\beta)$ 更新为 $\operatorname{Beta}(\alpha+s,\beta+f)$；</li>
+<li>Categorical/Multinomial likelihood 配 Dirichlet prior：第 $i$ 类观察到 $n_i$ 次后，$\alpha_i$ 更新为 $\alpha_i+n_i$；</li>
+<li>Poisson rate 配 Gamma prior：若总 exposure 为 $T$、总计数为 $S$，则 $\operatorname{Gamma}(\alpha,\beta)$ 更新为 $\operatorname{Gamma}(\alpha+S,\beta+T)$。</li>
+</ul>
+<h4>6. 小例子</h4>
+<p>对硬币正面概率使用 $\operatorname{Beta}(2,2)$ prior。观察到 8 次正面、2 次反面后，posterior 为 $\operatorname{Beta}(10,4)$，后验均值为 $10/14\approx0.714$。它不是样本比例 $8/10$，因为 prior 相当于加入了平滑。</p>
+<p class="concept-check"><strong>常见误区：</strong>Gamma 的 rate 与 scale 参数化必须先确认；Erlang 只指整数 shape；Beta 的 $\alpha,\beta$ 不是区间端点；Dirichlet 分量不能被当成独立变量，因为它们的和固定为 1。共轭性带来计算方便，但不代表这个 prior 一定最符合实际。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-normal-distributions">
+<summary><span class="concept-label">□ Normal 与 Multivariate Normal（正态与多元正态）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 一维正态与标准化</h4>
+<p>若 $X\sim N(\mu,\sigma^2)$，其中 $\sigma&gt;0$ 是标准差，则</p>
+<div class="math-display">$$
+f_X(x)=\frac1{\sqrt{2\pi}\sigma}
+\exp\!\left[-\frac{(x-\mu)^2}{2\sigma^2}\right].
+$$</div>
+<p>分布关于 $\mu$ 对称，$\mathbb E[X]=\mu$、$\operatorname{Var}(X)=\sigma^2$。标准化</p>
+<div class="math-display">$$
+Z=\frac{X-\mu}{\sigma}\sim N(0,1)
+$$</div>
+<p>把任何一维正态问题化为标准正态 CDF $\Phi$。经验上，距离均值 $1,2,3$ 个标准差内的概率约为 $68\%,95\%,99.7\%$；这适合快速检查数量级，不代替精确计算。</p>
+<h4>2. 仿射变换、线性组合与可加性</h4>
+<p>若 $X\sim N(\mu,\sigma^2)$，则对常数 $a,b$，</p>
+<div class="math-display">$$
+aX+b\sim N(a\mu+b,a^2\sigma^2).
+$$</div>
+<p>若 $X$ 与 $Y$ 联合正态，则任何线性组合 $aX+bY$ 都是正态；其方差必须保留协方差项：</p>
+<div class="math-display">$$
+\operatorname{Var}(aX+bY)
+=a^2\operatorname{Var}(X)+b^2\operatorname{Var}(Y)
++2ab\operatorname{Cov}(X,Y).
+$$</div>
+<p>特别地，独立正态变量之和仍为正态，均值相加、方差相加。CLT 说明许多独立小影响之和会近似正态，但这不表示所有现实变量本身都应被建模为正态。</p>
+<h4>3. 多元正态的定义与几何</h4>
+<p>随机向量 $\mathbf X\in\mathbb R^d$ 服从 $N_d(\boldsymbol\mu,\boldsymbol\Sigma)$，最实用的定义是：对任意固定向量 $\mathbf a$，$\mathbf a^{\mathsf T}\mathbf X$ 都是一维正态。这里</p>
+<div class="math-display">$$
+\mathbb E[\mathbf X]=\boldsymbol\mu,\qquad
+\operatorname{Cov}(\mathbf X)=\boldsymbol\Sigma,
+$$</div>
+<p>$\boldsymbol\Sigma$ 必须对称半正定。若它正定，则密度为</p>
+<div class="math-display">$$
+f(\mathbf x)=
+\frac{\exp\!\left[-\tfrac12(\mathbf x-\boldsymbol\mu)^{\mathsf T}
+\boldsymbol\Sigma^{-1}(\mathbf x-\boldsymbol\mu)\right]}
+{(2\pi)^{d/2}|\boldsymbol\Sigma|^{1/2}}.
+$$</div>
+<p>等密度面由 Mahalanobis distance 决定，是由 $\boldsymbol\Sigma$ 控制方向和伸缩的椭球。若 $\mathbf Y=A\mathbf X+\mathbf b$，则</p>
+<div class="math-display">$$
+\mathbf Y\sim N(A\boldsymbol\mu+\mathbf b,\,
+A\boldsymbol\Sigma A^{\mathsf T}).
+$$</div>
+<p>因此边际分布、资产组合收益 $\mathbf w^{\mathsf T}\mathbf X$ 和线性回归中的高斯误差都可以直接用矩阵运算处理。</p>
+<h4>4. 零协方差何时等于独立？</h4>
+<p>一般情况下，独立推出零协方差，但零协方差不推出独立。特殊之处在于：若 $(X,Y)$ <strong>联合正态</strong>，则</p>
+<div class="math-display">$$
+\operatorname{Cov}(X,Y)=0
+\quad\Longleftrightarrow\quad
+X\ \text{与}\ Y\ \text{独立}.
+$$</div>
+<p>仅仅知道两个边际都正态仍然不够。例如 $X\sim N(0,1)$，$S$ 独立且以相同概率取 $\pm1$，令 $Y=SX$。则 $Y\sim N(0,1)$ 且 $\operatorname{Cov}(X,Y)=\mathbb E[SX^2]=0$，但 $Y$ 永远等于 $X$ 或 $-X$，所以二者明显依赖，也不联合正态。</p>
+<h4>5. 条件正态公式</h4>
+<p>将均值和协方差分块：</p>
+<div class="math-display">$$
+\begin{pmatrix}\mathbf X_A\\ \mathbf X_B\end{pmatrix}
+\sim N\!\left(
+\begin{pmatrix}\boldsymbol\mu_A\\ \boldsymbol\mu_B\end{pmatrix},
+\begin{pmatrix}
+\boldsymbol\Sigma_{AA}&amp;\boldsymbol\Sigma_{AB}\\
+\boldsymbol\Sigma_{BA}&amp;\boldsymbol\Sigma_{BB}
+\end{pmatrix}
+\right).
+$$</div>
+<p>若 $\boldsymbol\Sigma_{BB}$ 可逆，则给定 $\mathbf X_B=\mathbf b$ 后，</p>
+<div class="math-display">$$
+\mathbf X_A\mid\mathbf X_B=\mathbf b
+\sim N\!\left(
+\boldsymbol\mu_A+
+\boldsymbol\Sigma_{AB}\boldsymbol\Sigma_{BB}^{-1}
+(\mathbf b-\boldsymbol\mu_B),\,
+\boldsymbol\Sigma_{AA}-
+\boldsymbol\Sigma_{AB}\boldsymbol\Sigma_{BB}^{-1}
+\boldsymbol\Sigma_{BA}
+\right).
+$$</div>
+<p>条件均值对观测值是线性的；条件协方差是 Schur complement，不依赖具体观测值，并且不会大于原边际不确定性。二维情形可记为</p>
+<div class="math-display">$$
+X\mid Y=y\sim N\!\left(
+\mu_X+\rho\frac{\sigma_X}{\sigma_Y}(y-\mu_Y),\,
+\sigma_X^2(1-\rho^2)
+\right).
+$$</div>
+<h4>6. 生成、二次型与面试应用</h4>
+<p>若 $\boldsymbol\Sigma=LL^{\mathsf T}$ 是 Cholesky 分解，$\mathbf Z\sim N_d(\mathbf0,I)$，则</p>
+<div class="math-display">$$
+\mathbf X=\boldsymbol\mu+L\mathbf Z
+\sim N_d(\boldsymbol\mu,\boldsymbol\Sigma).
+$$</div>
+<p>正定情形下，Mahalanobis 二次型满足</p>
+<div class="math-display">$$
+(\mathbf X-\boldsymbol\mu)^{\mathsf T}
+\boldsymbol\Sigma^{-1}
+(\mathbf X-\boldsymbol\mu)\sim\chi_d^2.
+$$</div>
+<p>这连接了多元正态、置信椭球与异常值检测。对组合权重 $\mathbf w$，若收益向量近似多元正态，则组合均值和方差分别为 $\mathbf w^{\mathsf T}\boldsymbol\mu$ 与 $\mathbf w^{\mathsf T}\boldsymbol\Sigma\mathbf w$。</p>
+<p class="concept-check"><strong>常见误区：</strong>$N(\mu,\sigma^2)$ 的第二个参数通常是方差而非标准差；边际正态不等于联合正态；只有联合正态时零协方差才保证独立；$\boldsymbol\Sigma$ 可以半正定并导致退化分布，此时不存在普通的 $d$ 维密度，不能直接套用含 $\boldsymbol\Sigma^{-1}$ 的公式。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
+<li><p>□ Lognormal、Pareto 与重尾分布：高阶矩可能不存在，不能机械套用高斯直觉。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-chi-square-t-f">
+<summary><span class="concept-label">□ $\chi^2$、Student $t$、$F$：经典方差估计与检验的抽样分布</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 三个分布来自同一条构造链</h4>
+<p>从相互独立的标准正态变量开始：</p>
+<div class="math-display">$$
+Z_1,\ldots,Z_\nu\overset{\mathrm{i.i.d.}}{\sim}N(0,1).
+$$</div>
+<p>平方和产生 Chi-square；标准正态除以独立 Chi-square 的均方根产生 $t$；两个独立 Chi-square 各自除以自由度后作比产生 $F$：</p>
+<div class="math-display">$$
+\sum_{i=1}^{\nu}Z_i^2\sim\chi_\nu^2,
+$$</div>
+<div class="math-display">$$
+\frac{Z}{\sqrt{V/\nu}}\sim t_\nu,
+\qquad Z\sim N(0,1),\quad V\sim\chi_\nu^2,\quad Z\perp V,
+$$</div>
+<div class="math-display">$$
+\frac{U/d_1}{V/d_2}\sim F_{d_1,d_2},
+\qquad U\sim\chi_{d_1}^2,\quad V\sim\chi_{d_2}^2,\quad U\perp V.
+$$</div>
+<p>自由度可以理解为形成随机平方和时剩余的独立方向数。</p>
+<h4>2. Chi-square：正态平方和与样本方差</h4>
+<p>若 $Q\sim\chi_\nu^2$，则 $Q\ge0$，</p>
+<div class="math-display">$$
+\mathbb E[Q]=\nu,\qquad
+\operatorname{Var}(Q)=2\nu,
+\qquad
+\chi_\nu^2=\operatorname{Gamma}\!\left(\frac\nu2,\frac12\right)
+$$</div>
+<p>其中 Gamma 使用 shape–rate 参数化。自由度小时分布明显右偏，自由度增大后逐渐接近正态。</p>
+<p>若 $X_1,\ldots,X_n\overset{\mathrm{i.i.d.}}{\sim}N(\mu,\sigma^2)$，样本方差</p>
+<div class="math-display">$$
+S^2=\frac1{n-1}\sum_{i=1}^n(X_i-\bar X)^2
+$$</div>
+<p>满足</p>
+<div class="math-display">$$
+\frac{(n-1)S^2}{\sigma^2}\sim\chi_{n-1}^2.
+$$</div>
+<p>损失一个自由度是因为残差满足 $\sum_i(X_i-\bar X)=0$。这个枢轴量给出正态总体方差的置信区间：</p>
+<div class="math-display">$$
+P\!\left(
+\chi^2_{\alpha/2,n-1}
+\le\frac{(n-1)S^2}{\sigma^2}
+\le\chi^2_{1-\alpha/2,n-1}
+\right)=1-\alpha.
+$$</div>
+<p>Chi-square 也用于分类计数的拟合优度和列联表独立性检验；这些通常是大样本近似，需要期望格数不能过小。</p>
+<h4>3. Student $t$：未知方差带来的额外不确定性</h4>
+<p>若总体正态但 $\sigma$ 未知，用 $S$ 代替 $\sigma$。正态样本有关键性质：$\bar X$ 与 $S^2$ 独立，因此</p>
+<div class="math-display">$$
+T=\frac{\bar X-\mu}{S/\sqrt n}\sim t_{n-1}.
+$$</div>
+<p>$t_\nu$ 关于 0 对称，但尾部比标准正态更厚，因为分母 $S$ 本身随机。自由度越小，方差估计越不稳定、尾部越厚；当 $\nu\to\infty$，$t_\nu$ 趋近 $N(0,1)$。</p>
+<p>$t$ 分布用于未知方差下的均值置信区间、单样本／配对／双样本 $t$ 检验，以及线性回归单个系数的 studentized 检验。若 $\nu&gt;2$，</p>
+<div class="math-display">$$
+\operatorname{Var}(t_\nu)=\frac{\nu}{\nu-2}.
+$$</div>
+<h4>4. $F$：两个独立方差尺度的比</h4>
+<p>$F_{d_1,d_2}$ 只取非负值并通常右偏。它有两个重要关系：</p>
+<div class="math-display">$$
+\frac1{F_{d_1,d_2}}\sim F_{d_2,d_1},
+\qquad
+t_\nu^2\sim F_{1,\nu}.
+$$</div>
+<p>若两个独立正态样本方差为 $S_1^2,S_2^2$，在 $H_0:\sigma_1^2=\sigma_2^2$ 下，适当排序后 $S_1^2/S_2^2$ 服从 $F$ 分布。ANOVA 则比较</p>
+<div class="math-display">$$
+F=\frac{\text{between-group mean square}}
+{\text{within-group mean square}},
+$$</div>
+<p>若各组均值确实相同，分子分母都估计同一误差方差，比例应接近 1；过大的 $F$ 为反对原假设的证据。回归中的整体显著性和 nested-model joint test 也是“新增解释平方和／残差均方”的 $F$ 比率。</p>
+<h4>5. 如何快速选择？</h4>
+<ul>
+<li>正态总体<strong>方差本身</strong>或分类计数偏差：考虑 $\chi^2$。</li>
+<li>均值／回归系数，误差方差未知并由样本估计：考虑 $t$。</li>
+<li>两个方差尺度的比、ANOVA 或多个回归限制的联合检验：考虑 $F$。</li>
+</ul>
+<p>三者都不是“原始数据必须服从该分布”，而是某个经过标准化的 statistic 在假设成立时具有该 sampling distribution。</p>
+<h4>6. 假设与常见陷阱</h4>
+<p>小样本精确的 $t$、方差 Chi-square 和经典 $F$ 结论依赖正态误差；方差比 $F$ 检验对非正态和异常值尤其敏感。ANOVA 还要检查独立性与方差齐性；不齐时考虑 Welch ANOVA。列联表 Chi-square 是渐近检验，稀疏小样本可考虑 Fisher exact test。</p>
+<p class="concept-check"><strong>常见误区：</strong>自由度不是样本量的同义词；$S$ 替代 $\sigma$ 后不能继续使用标准正态临界值；$t^2$ 与 $F_{1,\nu}$ 等价但双侧 $t$ 与单侧 $F$ 的 p-value 表达要对应；检验统计量大不等于效应量大；先明确 numerator／denominator 自由度的顺序。</p>
+</div>
+</details>
+</li>
+</ul>
+<h3>1.4 期望、方差与协方差 [P0]</h3>
+<ul>
+<li><p>□ 期望线性性不需要独立：$\mathbb E(aX\mathplus{}bY\mathplus{}c)=a\mathbb E X\mathplus{}b\mathbb E Y\mathplus{}c$。</p>
+</li>
+<li><p>□ 指示变量法：$\mathbb E(\sum_i I_i)=\sum_i P(I_i=1)$。</p>
+</li>
+<li><p>□ 尾和公式：非负整数变量满足 $\mathbb E X=\sum_{k=1}^{\infty}P(X\ge k)$。</p>
+</li>
+<li><p>□ $\operatorname{Var}(X)=\mathbb E(X^2)-(\mathbb E X)^2$。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-covariance-correlation">
+<summary><span class="concept-label">□ 协方差与相关系数（Covariance and Correlation）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 协方差衡量共同的线性变动</h4>
+<p>若二阶矩存在，</p>
+<div class="math-display">$$
+\operatorname{Cov}(X,Y)
+=\mathbb E[(X-\mathbb E X)(Y-\mathbb E Y)]
+=\mathbb E[XY]-\mathbb E[X]\mathbb E[Y].
+$$</div>
+<p>协方差为正表示两者倾向同向偏离各自均值，为负表示倾向反向偏离；接近 0 只表示没有明显的<strong>线性</strong>共同变动。它的量纲是 $X$ 与 $Y$ 单位的乘积，因此数值大小不能跨不同尺度直接比较。</p>
+<h4>2. 双线性与和的方差</h4>
+<div class="math-display">$$
+\operatorname{Cov}(aX+b,cY+d)=ac\,\operatorname{Cov}(X,Y),
+$$</div>
+<div class="math-display">$$
+\operatorname{Cov}(X,X)=\operatorname{Var}(X).
+$$</div>
+<p>因此</p>
+<div class="math-display">$$
+\operatorname{Var}\!\left(\sum_i a_iX_i\right)
+=\sum_i a_i^2\operatorname{Var}(X_i)
++2\sum_{i&lt;j}a_ia_j\operatorname{Cov}(X_i,X_j).
+$$</div>
+<p>只有当交叉协方差为 0 时，和的方差才等于各方差之和；独立是充分条件，但不是必要条件。</p>
+<h4>3. 相关系数把尺度标准化</h4>
+<p>当 $\sigma_X,\sigma_Y&gt;0$ 时，Pearson correlation 为</p>
+<div class="math-display">$$
+\rho_{X,Y}
+=\operatorname{Corr}(X,Y)
+=\frac{\operatorname{Cov}(X,Y)}{\sigma_X\sigma_Y},
+\qquad -1\le\rho_{X,Y}\le1.
+$$</div>
+<p>界限来自 Cauchy–Schwarz。正比例缩放和平移不改变相关系数；乘以负数会翻转符号。$|\rho|=1$ 当且仅当两个中心化变量几乎处处成比例，也就是存在精确仿射关系 $Y=aX+b$。</p>
+<h4>4. 零相关不等于独立</h4>
+<p>若 $X,Y$ 独立且二阶矩存在，则 $\operatorname{Cov}(X,Y)=0$。反过来通常不成立。例如 $X\sim N(0,1)$、$Y=X^2$，则</p>
+<div class="math-display">$$
+\operatorname{Cov}(X,Y)=\mathbb E[X^3]-\mathbb E[X]\mathbb E[X^2]=0,
+$$</div>
+<p>但 $Y$ 完全由 $X$ 决定。相关系数只捕捉线性依赖，可能漏掉 U 形、周期性或其他非线性关系。只有在联合正态等特殊结构下，零协方差才推出独立。</p>
+<h4>5. 协方差矩阵</h4>
+<p>对随机向量 $\mathbf X$，协方差矩阵</p>
+<div class="math-display">$$
+\boldsymbol\Sigma
+=\mathbb E[(\mathbf X-\boldsymbol\mu)
+(\mathbf X-\boldsymbol\mu)^{\mathsf T}]
+$$</div>
+<p>对称且半正定，因为对任意 $\mathbf a$，</p>
+<div class="math-display">$$
+\mathbf a^{\mathsf T}\boldsymbol\Sigma\mathbf a
+=\operatorname{Var}(\mathbf a^{\mathsf T}\mathbf X)\ge0.
+$$</div>
+<p>这就是组合方差公式。若矩阵不是半正定，它不可能是合法的协方差矩阵。</p>
+<h4>6. 样本估计与条件分解</h4>
+<p>常用无偏样本协方差为</p>
+<div class="math-display">$$
+\widehat{\operatorname{Cov}}(X,Y)
+=\frac1{n-1}\sum_{i=1}^n
+(x_i-\bar x)(y_i-\bar y).
+$$</div>
+<p>给定第三个变量 $Z$ 时，全协方差公式为</p>
+<div class="math-display">$$
+\operatorname{Cov}(X,Y)
+=\mathbb E[\operatorname{Cov}(X,Y\mid Z)]
++\operatorname{Cov}(\mathbb E[X\mid Z],\mathbb E[Y\mid Z]).
+$$</div>
+<p>总体相关可能来自组内共同变化，也可能仅来自不同组均值的变化；这也是 Simpson's paradox 的重要来源。</p>
+<p class="concept-check"><strong>常见误区：</strong>相关不等于因果；零相关不等于独立；相关系数对异常值很敏感；若某变量方差为 0，相关系数没有定义；样本相关看起来很高也可能来自共同趋势、选择偏差或小样本噪声。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
+<li><p>□ 和的方差：</p>
+</li>
+</ul>
+<div class="math-display">$$
+\operatorname{Var}\!\left(\sum_i X_i\right)=\sum_i\operatorname{Var}(X_i)
++2\sum_{i&lt;j}\operatorname{Cov}(X_i,X_j).
+$$</div>
+<ul>
+<li><p>□ 全期望：$\mathbb E X=\mathbb E(\mathbb E(X\mid Y))$。</p>
+</li>
+<li><p>□ 全方差：</p>
+</li>
+</ul>
+<div class="math-display">$$
+\operatorname{Var}(X)=\mathbb E\!\left[\operatorname{Var}(X\mid Y)\right]
++\operatorname{Var}\!\left(\mathbb E(X\mid Y)\right).
+$$</div>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-core-probability-inequalities">
+<summary><span class="concept-label">□ Jensen、Cauchy–Schwarz、Markov 与 Chebyshev 不等式</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. Jensen：先平均再做凸变换会更小</h4>
+<p>若 $\varphi$ 为凸函数，且相关期望存在，则</p>
+<div class="math-display">$$
+\varphi(\mathbb E[X])\le\mathbb E[\varphi(X)].
+$$</div>
+<p>若 $\varphi$ 凹，方向反转。几何上，凸函数的图像位于任意割线下方。常用例子：</p>
+<div class="math-display">$$
+(\mathbb E[X])^2\le\mathbb E[X^2],
+\qquad
+\mathbb E[\log X]\le\log\mathbb E[X]\quad(X&gt;0).
+$$</div>
+<p>若 $\varphi$ 严格凸，等号通常要求 $X$ 几乎处处为常数；更一般地，$X$ 必须落在 $\varphi$ 呈线性的区域。</p>
+<h4>2. Cauchy–Schwarz：内积不能超过长度乘积</h4>
+<p>对二阶矩有限的 $X,Y$，</p>
+<div class="math-display">$$
+|\mathbb E[XY]|
+\le\sqrt{\mathbb E[X^2]\mathbb E[Y^2]}.
+$$</div>
+<p>把 $X,Y$ 换成中心化变量，就得到</p>
+<div class="math-display">$$
+|\operatorname{Cov}(X,Y)|
+\le\sigma_X\sigma_Y,
+$$</div>
+<p>从而 $|\rho|\le1$。等号当且仅当 $X$ 与 $Y$ 在 $L^2$ 中线性相关，即存在常数 $c$ 使 $X=cY$ 几乎处处成立（退化情形另行处理）。</p>
+<h4>3. Markov：只知道非负变量的均值时控制尾部</h4>
+<p>若 $X\ge0$ 且 $a&gt;0$，</p>
+<div class="math-display">$$
+P(X\ge a)\le\frac{\mathbb E[X]}a.
+$$</div>
+<p>证明只有一行：$X\ge a\,\mathbf1_{\{X\ge a\}}$，两边取期望。它几乎不需要分布信息，因此适用面广，但通常较松。若右侧大于 1，应与概率上界 1 取较小者。</p>
+<h4>4. Chebyshev：知道均值和方差时控制双侧偏离</h4>
+<p>若 $\mathbb E[X]=\mu$、$\operatorname{Var}(X)=\sigma^2&lt;\infty$，则对 $t&gt;0$，</p>
+<div class="math-display">$$
+P(|X-\mu|\ge t)\le\frac{\sigma^2}{t^2}.
+$$</div>
+<p>它就是对非负变量 $(X-\mu)^2$ 使用 Markov：</p>
+<div class="math-display">$$
+P((X-\mu)^2\ge t^2)
+\le\frac{\mathbb E[(X-\mu)^2]}{t^2}.
+$$</div>
+<p>写成标准差单位就是 $P(|X-\mu|\ge k\sigma)\le1/k^2$。不要求正态、对称或独立，只要求方差有限。</p>
+<h4>5. 如何选择？</h4>
+<ul>
+<li>函数经过期望：先检查凸凹性，考虑 Jensen。</li>
+<li>出现乘积、协方差或内积：考虑 Cauchy–Schwarz。</li>
+<li>非负变量、只知道一阶矩：使用 Markov。</li>
+<li>围绕均值的双侧偏离、知道方差：使用 Chebyshev。</li>
+</ul>
+<p>例如 i.i.d. 样本均值满足 $\operatorname{Var}(\bar X_n)=\sigma^2/n$，所以</p>
+<div class="math-display">$$
+P(|\bar X_n-\mu|\ge\varepsilon)
+\le\frac{\sigma^2}{n\varepsilon^2},
+$$</div>
+<p>这给出弱大数定律的一条直接证明。若知道 MGF 或变量有界，Chernoff/Hoeffding 通常给出更强的指数尾界。</p>
+<p class="concept-check"><strong>常见误区：</strong>Jensen 的方向取决于凸凹性；Markov 必须用于非负变量；Chebyshev 需要有限方差；这些是不依赖具体分布的最坏情形保证，界很松并不表示推导错误。</p>
+</div>
+</details>
+</li>
+</ul>
+<h3>1.5 次序统计量与几何概率 [P1]</h3>
+<ul>
+<li><p>□ 最小值、最大值：先写 CDF；例如 $P(\max_i X_i\le x)=F(x)^n$。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-kth-order-statistic">
+<summary><span class="concept-label">□ 连续分布第 $k$ 个次序统计量密度（Density of the $k$-th Order Statistic）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 定义与结论</h4>
+<p>设 $X_1,\ldots,X_n$ 独立同分布，来自连续分布，其 CDF 为 $F$、密度为 $f$。排序后记为 $X_{(1)}\le\cdots\le X_{(n)}$。第 $k$ 个次序统计量的密度是</p>
+<div class="math-display">$$
+f_{X_{(k)}}(x)=
+\frac{n!}{(k-1)!(n-k)!}
+[F(x)]^{k-1}[1-F(x)]^{n-k}f(x).
+$$</div>
+<h4>2. 公式怎样推出来？</h4>
+<p>要让 $X_{(k)}$ 落在很短的区间 $[x,x+\mathrm dx]$，近似需要：</p>
+<ul>
+<li>恰好 $k-1$ 个样本小于 $x$，贡献 $F(x)^{k-1}$；</li>
+<li>恰好一个样本落在 $[x,x+\mathrm dx]$，贡献 $f(x)\,\mathrm dx$；</li>
+<li>其余 $n-k$ 个样本大于 $x$，贡献 $[1-F(x)]^{n-k}$；</li>
+<li>决定哪批样本扮演这三种角色，共有 $\frac{n!}{(k-1)!1!(n-k)!}$ 种。</li>
+</ul>
+<p>把这些因子相乘，再除以 $\mathrm dx$ 并令 $\mathrm dx\to0$，就得到密度公式。等价地，可以先写</p>
+<div class="math-display">$$
+P(X_{(k)}\le x)=\sum_{j=k}^n\binom nj[F(x)]^j[1-F(x)]^{n-j},
+$$</div>
+<p>因为 $X_{(k)}\le x$ 当且仅当至少 $k$ 个样本不超过 $x$，然后对 $x$ 求导。</p>
+<h4>3. Beta 变换与常用特例</h4>
+<p>概率积分变换给出 $F(X_{(k)})\sim\operatorname{Beta}(k,n+1-k)$。因此若 $U_i\sim\operatorname{Uniform}(0,1)$，</p>
+<div class="math-display">$$
+U_{(k)}\sim\operatorname{Beta}(k,n+1-k),\qquad
+\mathbb E[U_{(k)}]=\frac{k}{n+1},\qquad
+\operatorname{Var}(U_{(k)})=\frac{k(n+1-k)}{(n+1)^2(n+2)}.
+$$</div>
+<p>令 $k=1$ 或 $k=n$，可立即得到</p>
+<div class="math-display">$$
+f_{X_{(1)}}(x)=n[1-F(x)]^{n-1}f(x),\qquad
+f_{X_{(n)}}(x)=n[F(x)]^{n-1}f(x).
+$$</div>
+<h4>4. 小例子</h4>
+<p>若有 $n=5$ 个 Uniform$(0,1)$ 样本，第二小值的密度为</p>
+<div class="math-display">$$
+f_{U_{(2)}}(x)=\frac{5!}{1!3!}x(1-x)^3=20x(1-x)^3,\qquad 0&lt;x&lt;1,
+$$</div>
+<p>且 $\mathbb E[U_{(2)}]=2/6=1/3$。密度积分为 1，可作为快速自检。</p>
+<p class="concept-check"><strong>适用条件：</strong>上面的简洁公式依赖 i.i.d. 与连续性；连续性使并列值概率为零。若样本不独立、不同分布或含离散质量点，必须重新处理联合分布与 ties。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-uniform-order-statistic-mean">
+<summary><span class="concept-label">□ Uniform$(0,1)$ 第 $k$ 个次序统计量：$\mathbb E[U_{(k)}]=k/(n+1)$</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 结论与完整分布</h4>
+<p>设 $U_1,\ldots,U_n$ i.i.d. 服从 Uniform$(0,1)$，排序后为</p>
+<div class="math-display">$$
+U_{(1)}\le U_{(2)}\le\cdots\le U_{(n)}.
+$$</div>
+<p>则</p>
+<div class="math-display">$$
+U_{(k)}\sim\operatorname{Beta}(k,n+1-k),
+$$</div>
+<div class="math-display">$$
+\mathbb E[U_{(k)}]=\frac{k}{n+1},\qquad
+\operatorname{Var}(U_{(k)})
+=\frac{k(n+1-k)}{(n+1)^2(n+2)}.
+$$</div>
+<p>分母是 $n+1$ 而不是 $n$，因为 $n$ 个随机点把区间连同两端一起分成了 $n+1$ 段。</p>
+<h4>2. 用 Beta 密度直接推导</h4>
+<p>第 $k$ 个次序统计量的密度为</p>
+<div class="math-display">$$
+f_{U_{(k)}}(u)
+=\frac{n!}{(k-1)!(n-k)!}
+u^{k-1}(1-u)^{n-k},\qquad 0&lt;u&lt;1.
+$$</div>
+<p>这是 $\operatorname{Beta}(k,n+1-k)$ 密度。利用 Beta 函数递推，</p>
+<div class="math-display">$$
+\begin{aligned}
+\mathbb E[U_{(k)}]
+&amp;=\frac{B(k+1,n+1-k)}{B(k,n+1-k)}\\
+&amp;=\frac{k}{n+1}.
+\end{aligned}
+$$</div>
+<h4>3. 更直观的 spacings 证明</h4>
+<p>补上端点 $U_{(0)}=0,U_{(n+1)}=1$，定义相邻间隔</p>
+<div class="math-display">$$
+D_i=U_{(i)}-U_{(i-1)},\qquad i=1,\ldots,n+1.
+$$</div>
+<p>向量 $(D_1,\ldots,D_{n+1})$ 在 $\sum_iD_i=1,D_i\ge0$ 的单纯形上均匀，即服从 $\operatorname{Dirichlet}(1,\ldots,1)$。各段对称且总长度为 1，所以</p>
+<div class="math-display">$$
+\mathbb E[D_i]=\frac1{n+1}.
+$$</div>
+<p>又因为 $U_{(k)}=D_1+\cdots+D_k$，期望线性性立即给出</p>
+<div class="math-display">$$
+\mathbb E[U_{(k)}]=\frac{k}{n+1}.
+$$</div>
+<h4>4. CDF 与一般连续分布</h4>
+<p>$U_{(k)}\le u$ 当且仅当至少 $k$ 个样本落在 $[0,u]$，因此</p>
+<div class="math-display">$$
+P(U_{(k)}\le u)
+=\sum_{j=k}^n\binom nj u^j(1-u)^{n-j}.
+$$</div>
+<p>若 $X_i$ 来自一般连续 CDF $F$，则 $F(X_{(k)})$ 具有同样的 Beta 分布。不过</p>
+<div class="math-display">$$
+\mathbb E[X_{(k)}]
+\ne F^{-1}\!\left(\frac{k}{n+1}\right)
+$$</div>
+<p>通常并不严格相等；右侧只是常用的分位数位置近似，因为非线性函数不能随意穿过期望。</p>
+<h4>5. 快速例子</h4>
+<p>若 $n=9$，第三小值的期望为 $3/10=0.3$；最小值期望为 $1/10$，最大值期望为 $9/10$。对称性也给出 $\mathbb E[U_{(k)}]+\mathbb E[U_{(n+1-k)}]=1$。</p>
+<p class="concept-check"><strong>常见误区：</strong>$U_{(k)}$ 的括号表示第 $k$ 小，不是 $U$ 的函数或幂；公式要求 i.i.d. Uniform$(0,1)$；分母是 $n+1$；对一般分布不能把 $F^{-1}$ 与期望直接交换。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-broken-stick-simplex">
+<summary><span class="concept-label">□ 区间长度、断棍、单纯形与二维面积比</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 几何概率何时等于面积比？</h4>
+<p>若随机点在区域 $R$ 上均匀分布，事件对应子区域 $A\subseteq R$，则</p>
+<div class="math-display">$$
+P((X,Y)\in A)=\frac{\operatorname{Area}(A)}
+{\operatorname{Area}(R)}.
+$$</div>
+<p>关键是联合密度在所选坐标中为常数。若密度不均匀，必须积分；若换了变量，还必须带 Jacobian，不能只凭图形面积。</p>
+<h4>2. 随机切点产生的区间长度</h4>
+<p>在 $[0,1]$ 上独立均匀取 $m$ 个切点，排序为</p>
+<div class="math-display">$$
+0=U_{(0)}&lt;U_{(1)}&lt;\cdots&lt;U_{(m)}&lt;U_{(m+1)}=1.
+$$</div>
+<p>相邻长度</p>
+<div class="math-display">$$
+L_i=U_{(i)}-U_{(i-1)},\qquad i=1,\ldots,m+1
+$$</div>
+<p>满足 $L_i\ge0,\sum_iL_i=1$，并且</p>
+<div class="math-display">$$
+(L_1,\ldots,L_{m+1})
+\sim\operatorname{Dirichlet}(1,\ldots,1).
+$$</div>
+<p>也就是说，这个长度向量在概率单纯形上均匀。每段边际上是 $\operatorname{Beta}(1,m)$，期望为 $1/(m+1)$，但各段并不独立，因为它们的和固定为 1。</p>
+<h4>3. 经典断棍三角形问题</h4>
+<p>在一根单位长度的棍子上随机取两个切点，得到长度 $L_1,L_2,L_3$。三段能组成非退化三角形当且仅当最长一段小于 $1/2$：</p>
+<div class="math-display">$$
+\max(L_1,L_2,L_3)&lt;\frac12.
+$$</div>
+<p>长度向量在二维单纯形 $L_i\ge0,\sum_iL_i=1$ 上均匀。事件 $L_i\ge1/2$ 对应一个边长缩小为原来 $1/2$ 的角落三角形，其面积比例为 $(1/2)^2=1/4$。三个坏区域除边界外互不相交，所以</p>
+<div class="math-display">$$
+P(\text{能组成三角形})
+=1-3\cdot\frac14=\frac14.
+$$</div>
+<h4>4. 一个切点与最长区间</h4>
+<p>若只有一个切点 $U\sim\operatorname{Uniform}(0,1)$，两段为 $U$ 与 $1-U$。较长一段的期望是</p>
+<div class="math-display">$$
+\mathbb E[\max(U,1-U)]
+=2\int_{1/2}^1u\,\mathrm du
+=\frac34.
+$$</div>
+<p>对多个切点，最大间隔可以用 inclusion–exclusion 或单纯形截取来求分布；各间隔的依赖性使“把它们当独立 Beta”成为常见错误。</p>
+<h4>5. 二维可行域例子</h4>
+<p>若 $U,V$ 独立 Uniform$(0,1)$，事件 $U+V\le1$ 是单位正方形下方的直角三角形，因此</p>
+<div class="math-display">$$
+P(U+V\le1)=\frac{1/2}{1}=\frac12.
+$$</div>
+<p>处理“两个到达时间相距不超过 $c$”“三段满足三角形不等式”等题时，先画支持集，再把不等式变成直线或曲线围成的可行域。标准 $d$ 维单纯形 $\{x_i\ge0,\sum_{i=1}^dx_i\le1\}$ 的体积为 $1/d!$。</p>
+<p class="concept-check"><strong>常见误区：</strong>原始切点独立，但排序后的间隔不独立；必须包含区间两端形成的间隔；只有联合分布均匀时才能直接用面积／体积比；从切点坐标变到长度坐标时要确认支持集、维数与 Jacobian。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
+<li><p>□ 生日问题与 Poisson 近似；极值与尾部直觉。</p>
+</li>
+</ul>
+<h3>1.6 大数、中心极限定理与集中不等式 [P1]</h3>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-laws-large-numbers">
+<summary><span class="concept-label">□ 弱大数与强大数：样本均值为何收敛，分别是哪种收敛</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 两个定律在说什么？</h4>
+<p>设 $X_1,X_2,\ldots$ 是同分布观测，均值为 $\mu$，样本均值为 $\bar X_n=n^{-1}\sum_{i=1}^nX_i$。大数定律的核心不是“样本均值等于总体均值”，而是随着样本量增加，偏离 $\mu$ 的可能性逐渐消失。</p>
+<p><strong>弱大数定律（WLLN）</strong>给出依概率收敛：</p>
+<div class="math-display">$$
+\bar X_n\xrightarrow{P}\mu
+\quad\Longleftrightarrow\quad
+\forall\varepsilon&gt;0,\quad
+P(|\bar X_n-\mu|&gt;\varepsilon)\to0.
+$$</div>
+<p>它逐个考察 $n$：当 $n$ 很大时，出现明显误差的概率很小，但没有直接描述一条无限样本路径最终会怎样。</p>
+<p><strong>强大数定律（SLLN）</strong>给出几乎必然收敛：</p>
+<div class="math-display">$$
+P\!\left(\lim_{n\to\infty}\bar X_n=\mu\right)=1.
+$$</div>
+<p>它说除去一个概率为零的异常路径集合，沿每一条剩余的无限样本路径，样本均值最终都会靠近并停留在 $\mu$ 附近。几乎必然收敛蕴含依概率收敛，所以强大数通常比弱大数更强；反向一般不成立。</p>
+<h4>2. 为什么平均会稳定？Chebyshev 的直接证明</h4>
+<p>若 $X_i$ i.i.d.，且 $\mathbb E[X_i]=\mu$、$\operatorname{Var}(X_i)=\sigma^2&lt;\infty$，独立性使方差相加：</p>
+<div class="math-display">$$
+\mathbb E[\bar X_n]=\mu,
+\qquad
+\operatorname{Var}(\bar X_n)=\frac{\sigma^2}{n}.
+$$</div>
+<p>于是 Chebyshev 不等式给出</p>
+<div class="math-display">$$
+P(|\bar X_n-\mu|&gt;\varepsilon)
+\le \frac{\sigma^2}{n\varepsilon^2}\to0,
+$$</div>
+<p>这就证明了一个常用版本的弱大数定律。直觉是独立噪声有正有负，求和的标准差只按 $\sqrt n$ 增长，而平均时除以 $n$，所以样本均值的典型波动按 $1/\sqrt n$ 缩小。</p>
+<h4>3. 常用条件与一个例子</h4>
+<p>对 i.i.d. 变量，有限方差是上述简洁 WLLN 证明的充分条件，但不是最弱条件；经典强大数定律只需 $\mathbb E|X_1|&lt;\infty$。若 $X_i\sim\operatorname{Bernoulli}(p)$，则 $\bar X_n$ 就是成功频率，大数定律说明长期频率收敛到 $p$，而不是保证每一段短样本都接近 $p$。</p>
+<h4>4. 不要和 CLT 混淆</h4>
+<ul>
+<li><strong>LLN：</strong>回答 $\bar X_n$ 收敛到哪里，给出一致性层面的结论；</li>
+<li><strong>CLT：</strong>把误差放大 $\sqrt n$ 后，描述其近似分布，常用于标准误和置信区间；</li>
+<li>LLN 本身通常不给有限样本误差概率，也不给“多大 $n$ 才够”的统一答案。</li>
+</ul>
+<p class="concept-check"><strong>常见误区：</strong>若变量是 Cauchy 分布，总体均值不存在，样本均值不会按通常方式稳定；强依赖、结构突变或非平稳也会破坏朴素结论。“几乎必然”不是“每一条路径都成立”，概率为零的异常路径仍可存在；有限样本的连续成功或失败也不违反大数定律。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
+<li><p>□ CLT：</p>
+</li>
+</ul>
+<div class="math-display">$$
+\frac{\sqrt n(\bar X_n-\mu)}{\sigma}
+\xrightarrow{d}N(0,1).
+$$</div>
+<ul>
+<li><p>□ 标准误通常按 $1\mathord/\sqrt n$ 缩放；依赖、重尾和非平稳会破坏朴素使用。</p>
+</li>
+<li><p>□ Slutsky、Delta method、连续映射定理的使用直觉。</p>
+</li>
+<li><p>□ Hoeffding 与 Chernoff 界 [P2]；理解“指数尾界”而非只背形式。</p>
+</li>
+</ul>
+<h3>1.7 随机过程 [P1；衍生品岗位为 P0]</h3>
+<ul>
+<li><p>□ 离散时间 Markov 链、转移矩阵、Chapman–Kolmogorov。</p>
+</li>
+<li><p>□ 平稳分布 $\pi^{\mathsf T}=\pi^{\mathsf T}P$；不可约、非周期与收敛。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-random-walk">
+<summary><span class="concept-label">□ 随机游走（Random Walk）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 基本模型</h4>
+<p>一维简单随机游走写成</p>
+<div class="math-display">$$
+S_n=S_0+\sum_{t=1}^n X_t,\qquad
+P(X_t=1)=p,\qquad P(X_t=-1)=q=1-p,
+$$</div>
+<p>其中步长独立同分布。给定当前状态后，下一步不再依赖更早历史，所以 $(S_n)$ 是 Markov 链。若 $S_0=i$，则</p>
+<div class="math-display">$$
+\mathbb E[S_n]=i+n(p-q),\qquad
+\operatorname{Var}(S_n)=4npq.
+$$</div>
+<p>$p=q=1/2$ 时没有漂移，$(S_n)$ 本身是鞅；$p\ne q$ 时，$S_n-n(p-q)$ 是鞅。</p>
+<h4>2. 面试中最重要的方法：第一步分析</h4>
+<p>不要先枚举整条路径。若 $h_i$ 是从状态 $i$ 出发最终命中某目标的概率，先按第一步条件化：</p>
+<div class="math-display">$$
+h_i=p\,h_{i+1}+q\,h_{i-1}.
+$$</div>
+<p>若 $e_i$ 是到达目标前的期望步数，当前这一步需要计入，因此</p>
+<div class="math-display">$$
+e_i=1+p\,e_{i+1}+q\,e_{i-1}.
+$$</div>
+<p>再加入吸收边界条件，就把随机路径问题转化成二阶差分方程。命中概率方程是齐次的，而期望时间方程多了常数 1，这是最容易漏掉的地方。</p>
+<h4>3. 分布与长期行为</h4>
+<p>若 $S_0=0$，要在 $n$ 步后位于 $j$，必须有 $(n+j)/2$ 次向上，因此只有 $n$ 与 $j$ 同奇偶时概率非零：</p>
+<div class="math-display">$$
+P(S_n=j)=\binom{n}{(n+j)/2}p^{(n+j)/2}q^{(n-j)/2}.
+$$</div>
+<p>无限直线上的一维公平随机游走会以概率 1 返回原点，但期望返回时间是无穷大；有非零漂移的游走则会向漂移方向逃逸。这个区别说明“几乎必然发生”并不保证“期望等待时间有限”。</p>
+<h4>4. 解题路线</h4>
+<ol>
+<li>明确状态空间、步长分布、起点、边界和停止规则。</li>
+<li>问固定时刻的位置时用二项计数；问是否先碰到某处时用第一步递推。</li>
+<li>问越界路径数或最大值时考虑反射原理；问停止时的概率或期望时考虑鞅与可选停时。</li>
+<li>最后检查奇偶性、边界值以及概率是否位于 $[0,1]$。</li>
+</ol>
+<p class="concept-check"><strong>常见误区：</strong>$S_n=a$ 只说明第 $n$ 步位于 $a$，不说明这是第一次到达；在无限状态空间中，命中概率为 1 也不意味着平均命中时间有限。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-gamblers-ruin">
+<summary><span class="concept-label">□ 赌徒破产（Gambler's Ruin）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 模型与胜率</h4>
+<p>资本位于 $\{0,1,\ldots,N\}$，从 $i$ 出发。每局以概率 $p$ 赢 1、以概率 $q=1-p$ 输 1；到 0 或 $N$ 就停止。令</p>
+<div class="math-display">$$
+u_i=P_i(\tau_N&lt;\tau_0).
+$$</div>
+<p>第一步分析给出 $u_i=p\,u_{i+1}+q\,u_{i-1}$，边界为 $u_0=0,u_N=1$。解这个差分方程得到</p>
+<div class="math-display">$$
+u_i=
+\begin{cases}
+\dfrac{i}{N}, &amp; p=q=\dfrac12,\\[6pt]
+\dfrac{1-(q/p)^i}{1-(q/p)^N}, &amp; p\ne q.
+\end{cases}
+$$</div>
+<h4>2. 为什么公平情形是 $i/N$？</h4>
+<p>当 $p=q=1/2$ 时，递推式等价于 $u_{i+1}-u_i=u_i-u_{i-1}$，所以相邻差为常数，$u_i$ 必为线性函数。连接边界点 $(0,0)$ 与 $(N,1)$ 就得到 $u_i=i/N$。也可以对有界停止时刻应用可选停时：</p>
+<div class="math-display">$$
+i=\mathbb E_i[S_\tau]=0\cdot(1-u_i)+N u_i.
+$$</div>
+<h4>3. 期望停止时间</h4>
+<p>令 $e_i=\mathbb E_i[\tau_0\wedge\tau_N]$。它满足 $e_0=e_N=0$ 和 $e_i=1+p e_{i+1}+q e_{i-1}$，因此</p>
+<div class="math-display">$$
+e_i=
+\begin{cases}
+i(N-i), &amp; p=q=\dfrac12,\\[6pt]
+\dfrac{i}{q-p}-\dfrac{N}{q-p}
+\dfrac{1-(q/p)^i}{1-(q/p)^N}, &amp; p\ne q.
+\end{cases}
+$$</div>
+<h4>4. 小例子</h4>
+<p>公平游戏中从 $i=3$ 出发，破产线为 0、目标为 $N=10$：先到 10 的概率为 $3/10$，期望停止时间为 $3(10-3)=21$ 局。胜率不高并不意味着游戏很快结束，这两个量要分别计算。</p>
+<p class="concept-check"><strong>常见误区：</strong>偏置情形不能继续使用 $i/N$；若每局盈亏不是 $\pm1$，状态与边界可能发生 overshoot，递推和边界条件都要重写；使用可选停时时必须核对停止时刻与鞅的条件。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-reflection-principle">
+<summary><span class="concept-label">□ 反射原理（Reflection Principle）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 核心思想</h4>
+<p>反射原理把“路径曾经越过边界”这种带历史约束的问题，一一映射成没有路径约束、只限制终点的问题。设公平简单随机游走从 0 出发，$M_n=\max_{0\le t\le n}S_t$。固定整数 $a&gt;0$ 与终点 $b&lt;a$，考虑所有满足 $M_n\ge a,S_n=b$ 的路径。</p>
+<p>对每条路径找到第一次到达 $a$ 的时刻 $T$，保留 $T$ 以前的部分，并把之后的每一步上下翻转，即令 $S'_t=2a-S_t$（$t\ge T$）。新路径终点变为 $2a-b&gt;a$。这个变换做两次会回到原路径，因此是一一对应：</p>
+<div class="math-display">$$
+P(M_n\ge a,\,S_n=b)=P(S_n=2a-b),\qquad b&lt;a.
+$$</div>
+<h4>2. 最大值分布</h4>
+<p>把所有 $b&lt;a$ 的终点求和，并加上本来就以 $S_n\ge a$ 结束的路径，可得</p>
+<div class="math-display">$$
+P(M_n\ge a)=P(S_n\ge a)+P(S_n&gt;a).
+$$</div>
+<p>离散游走有奇偶格点限制，所以右边是两个略有差别的尾概率。对 Brownian motion，终点连续、没有格点修正，于是得到更熟悉的形式</p>
+<div class="math-display">$$
+P\!\left(\sup_{0\le s\le t}B_s\ge a\right)=2P(B_t\ge a)
+=2\left[1-\Phi\!\left(\frac{a}{\sqrt t}\right)\right].
+$$</div>
+<h4>3. 为什么必须从“第一次”碰到边界后反射？</h4>
+<p>第一次命中时路径恰好位于 $a$，反射后的前后两段能无缝连接；同时每条越界路径都有唯一切点，使映射可逆。若随便选一个越界时刻，映射可能不是一一对应，计数就会重复或遗漏。</p>
+<h4>4. 常见应用</h4>
+<ul>
+<li>计算随机游走最大值、越界概率和首达时间分布；</li>
+<li>计数始终不跌破 0 的格路径，推导 Ballot theorem 与 Catalan 数；</li>
+<li>Brownian barrier probability 以及 barrier option 的基础直觉。</li>
+</ul>
+<p class="concept-check"><strong>检查：</strong>先确认步长对称；有漂移时，反射后路径的概率权重通常不同，不能直接按“路径条数相等”处理。离散情形还必须检查终点与步数的奇偶性。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-first-passage-time">
+<summary><span class="concept-label">□ 首达时间（First-Passage Time）</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 定义</h4>
+<p>过程 $(X_t)$ 第一次进入集合 $A$ 的时间定义为</p>
+<div class="math-display">$$
+\tau_A=\inf\{t\ge0:X_t\in A\}.
+$$</div>
+<p>对随机游走常写 $\tau_a=\inf\{n\ge0:S_n=a\}$。若研究从状态 $i$ 出发后“第一次返回” $i$，必须排除时刻 0，写成 $\tau_i^+=\inf\{n\ge1:S_n=i\}$。首达时间是随机变量；命中概率、分布和期望是三个不同问题。</p>
+<h4>2. 公平随机游走命中正整数 $a$</h4>
+<p>设 $S_0=0$ 且每步等概率为 $\pm1$。由 Ballot／反射论证，若 $m\ge a$ 且 $m$ 与 $a$ 同奇偶，</p>
+<div class="math-display">$$
+P(\tau_a=m)=\frac{a}{m}P(S_m=a)
+=\frac{a}{m}\binom{m}{(m+a)/2}2^{-m};
+$$</div>
+<p>其他 $m$ 的概率为 0。因事件 $\{\tau_a\le n\}$ 等价于 $\{M_n\ge a\}$，也可以先用反射原理求 CDF，再作差得到 PMF。</p>
+<h4>3. 一个容易忽略的结论</h4>
+<p>一维公平随机游走最终会以概率 1 到达任意固定整数 $a$，但</p>
+<div class="math-display">$$
+P(\tau_a&lt;\infty)=1,\qquad \mathbb E[\tau_a]=\infty.
+$$</div>
+<p>首达时间的尾部太重，所以“几乎必然有限”与“期望有限”并不矛盾。若把游走限制在有限区间 $[0,N]$ 并在边界吸收，期望停止时间才是有限的，公平情形为 $i(N-i)$。</p>
+<h4>4. 连续时间对应</h4>
+<p>对从 0 出发的标准 Brownian motion，$a&gt;0$ 的首达时间满足</p>
+<div class="math-display">$$
+P(\tau_a\le t)=2\left[1-\Phi\!\left(\frac{a}{\sqrt t}\right)\right],
+\qquad
+f_{\tau_a}(t)=\frac{a}{\sqrt{2\pi t^3}}
+\exp\!\left(-\frac{a^2}{2t}\right),\qquad t&gt;0.
+$$</div>
+<h4>5. 常用求法</h4>
+<ul>
+<li><strong>第一步分析：</strong>为命中概率或期望时间写递推／边值问题；</li>
+<li><strong>反射原理：</strong>把“截至时刻 $n$ 已命中”转成最大值或终点尾概率；</li>
+<li><strong>尾和公式：</strong>离散非负时间满足 $\mathbb E\tau=\sum_{n\ge0}P(\tau&gt;n)$；</li>
+<li><strong>生成函数或鞅：</strong>处理完整分布、Laplace transform 或更复杂边界。</li>
+</ul>
+<p class="concept-check"><strong>常见误区：</strong>不要把 $P(S_n=a)$ 当成 $P(\tau_a=n)$，因为前者包含更早到达后又返回的路径；使用可选停时推期望前，必须先确认相关可积性或有界性条件。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-poisson-process">
+<summary><span class="concept-label">□ Poisson 过程：独立平稳增量、稀释、叠加、到达间隔</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 定义与计数分布</h4>
+<p>$N(t)$ 表示时刻 $t$ 以前的累计事件数。速率为 $\lambda&gt;0$ 的齐次 Poisson 过程满足 $N(0)=0$，并具有：</p>
+<ul>
+<li><strong>独立增量：</strong>不相交时间区间内的事件数相互独立；</li>
+<li><strong>平稳增量：</strong>区间内的事件数只取决于区间长度，不取决于起点；</li>
+<li>对 $h\downarrow0$，一次到达的概率是 $\lambda h+o(h)$，两次或以上到达的概率是 $o(h)$。</li>
+</ul>
+<p>这些性质推出：任意 $s,t\ge0$，</p>
+<div class="math-display">$$
+N(t+s)-N(t)\sim\operatorname{Poisson}(\lambda s),
+\qquad
+\mathbb E[N(t)]=\operatorname{Var}(N(t))=\lambda t.
+$$</div>
+<p>这里 $\lambda$ 是单位时间的速率，$\lambda t$ 才是长度为 $t$ 的区间里的 Poisson 参数。</p>
+<h4>2. 到达间隔与第 $k$ 次到达</h4>
+<p>令 $T_k$ 为第 $k$ 次到达时刻，$W_k=T_k-T_{k-1}$ 为相邻到达间隔。由于</p>
+<div class="math-display">$$
+P(W_1&gt;t)=P(N(t)=0)=e^{-\lambda t},
+$$</div>
+<p>$W_1,W_2,\ldots$ 独立同分布为 $\operatorname{Exponential}(\lambda)$。因此</p>
+<div class="math-display">$$
+T_k=\sum_{i=1}^kW_i\sim\operatorname{Gamma}(k,\lambda),
+\qquad
+{T_k\le t\}=\{N(t)\ge k\},
+$$</div>
+<p>其中 Gamma 使用 shape–rate 参数化。这个等价关系让“第几次到达要等多久”和“固定时间内来了多少次”可以互相转换。</p>
+<h4>3. 稀释（thinning）</h4>
+<p>把每次到达独立地以概率 $p$ 标为 A，否则标为 B，则 A、B 两条计数过程不仅各自仍为 Poisson 过程，而且彼此独立：</p>
+<div class="math-display">$$
+N_A(t)\sim\operatorname{Poisson}(p\lambda t),
+\qquad
+N_B(t)\sim\operatorname{Poisson}((1-p)\lambda t).
+$$</div>
+<p>例如订单以每分钟 5 单到达，其中 40% 是买单且标签独立，则买单速率为 2，卖单速率为 3。若标签概率依赖拥堵状态或各事件的标签相互依赖，简单稀释结论不再自动成立。</p>
+<h4>4. 叠加（superposition）</h4>
+<p>若 $N_1,\ldots,N_m$ 是相互独立、速率分别为 $\lambda_1,\ldots,\lambda_m$ 的 Poisson 过程，则总过程</p>
+<div class="math-display">$$
+N(t)=\sum_{j=1}^mN_j(t)
+$$</div>
+<p>仍是 Poisson 过程，速率为 $\sum_j\lambda_j$。在一次总到达发生时，其来源为第 $j$ 条过程的概率是 $\lambda_j/\sum_ell\lambda_ell$。独立性是这里的关键假设。</p>
+<h4>5. 给定总次数后的到达位置</h4>
+<p>条件于 $N(t)=n$，区间 $(0,t)$ 内的 $n$ 个到达时刻与 $n$ 个独立 Uniform$(0,t)$ 变量的次序统计量同分布。这一性质常用于“已知今天共来 $n$ 单，最后一单何时来”或把连续时间问题化为 Uniform 次序统计量。</p>
+<h4>6. 非齐次扩展与解题检查</h4>
+<p>若瞬时速率随时间变化为 $\lambda(u)$，累计强度为 $\Lambda(t)=\int_0^t\lambda(u)\,du$，则非齐次 Poisson 过程满足 $N(t)\sim\operatorname{Poisson}(\Lambda(t))$，但增量通常不再平稳。</p>
+<p class="concept-check"><strong>常见误区：</strong>Poisson 分布描述固定区间的计数，Poisson 过程描述整条时间路径；速率与区间均值不要混淆；“平均每分钟两次”本身不足以推出 Poisson 过程，还需要独立增量等结构；叠加需要过程独立，稀释需要逐事件独立分类。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-martingales-optional-stopping">
+<summary><span class="concept-label">□ 鞅、停时与可选停时定理的条件</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. Filtration 与鞅</h4>
+<p>Filtration $(\mathcal F_n)_{n\ge0}$ 表示随时间积累的信息：$\mathcal F_n$ 包含截至时刻 $n$ 已知的所有事件，且 $\mathcal F_n\subseteq\mathcal F_{n+1}$。过程 $(M_n)$ 是关于该 filtration 的鞅，需要：</p>
+<ol>
+<li>$M_n$ 对 $\mathcal F_n$ 可测，即当前值由当前信息确定（adapted）；</li>
+<li>$\mathbb E|M_n|&lt;\infty$；</li>
+<li>公平游戏条件</li>
+</ol>
+<div class="math-display">$$
+\mathbb E[M_{n+1}\mid\mathcal F_n]=M_n.
+$$</div>
+<p>若条件期望大于等于 $M_n$，是 submartingale；小于等于是 supermartingale。公平随机游走 $S_n$ 是鞅；若步长均值为 $\mu$，则 $S_n-n\mu$ 是鞅。</p>
+<h4>2. 什么是停时？</h4>
+<p>随机时刻 $T$ 是 stopping time，当且仅当对每个 $n$，</p>
+<div class="math-display">$$
+{T\le n\}\in\mathcal F_n.
+$$</div>
+<p>意思是到时刻 $n$ 已有的信息足以判断是否已经停止，不能偷看未来。首次到达某个集合的时间是停时；“最后一次到达 0 的时刻”通常不是，因为必须看未来才能确认它是最后一次。</p>
+<p>给定停时 $T$，停止过程</p>
+<div class="math-display">$$
+M_{n\wedge T}
+$$</div>
+<p>表示到 $T$ 之前照常运行，之后冻结在 $M_T$。在基本可积条件下，停止过程仍是鞅。</p>
+<h4>3. 有界停时的 Optional Sampling Theorem</h4>
+<p>若 $S\le T$ 都是有界停时，且 $(M_n)$ 是鞅，则</p>
+<div class="math-display">$$
+\mathbb E[M_T\mid\mathcal F_S]=M_S.
+$$</div>
+<p>特别地，取 $S=0$ 得</p>
+<div class="math-display">$$
+\mathbb E[M_T]=\mathbb E[M_0].
+$$</div>
+<p>“可以按照过去信息选择何时停，但不能改变公平游戏的期望”是它的直觉。关键不是 $T$ 随机，而是停止规则不能看未来，并且需要足够的有界性／可积性。</p>
+<h4>4. 无界停时下常用的充分条件</h4>
+<p>对可能无界的 $T$，不能直接把 $n$ 换成 $T$。以下是常用且彼此不同的<strong>充分条件</strong>；满足其中一组通常即可令 $\mathbb E[M_T]=\mathbb E[M_0]$：</p>
+<ul>
+<li><strong>$T$ 有界：</strong>存在确定常数 $N$ 使 $T\le N$；</li>
+<li><strong>期望停时有限且增量有界：</strong>$\mathbb E[T]&lt;\infty$，并存在 $C$ 使 $|M_{n+1}-M_n|\le C$；</li>
+<li><strong>停止族一致可积：</strong>$\{M_{n\wedge T}:n\ge0\}$ uniformly integrable，例如存在可积变量 $Y$ 使 $|M_{n\wedge T}|\le Y$ 对所有 $n$ 成立。</li>
+</ul>
+<p>第三条保证可以把</p>
+<div class="math-display">$$
+\mathbb E[M_{n\wedge T}]=\mathbb E[M_0]
+$$</div>
+<p>中的极限 $n\to\infty$ 与期望交换。这里只列常用充分条件，不是所有版本的完整必要条件。</p>
+<h4>5. 为什么“几乎必然停下”仍然不够？</h4>
+<p>令 $S_n$ 为从 0 出发的公平简单随机游走，$T=\inf\{n:S_n=1\}$。一维公平随机游走最终会到达 1，所以 $T&lt;\infty$ 几乎必然，且</p>
+<div class="math-display">$$
+S_T=1.
+$$</div>
+<p>若不检查条件就套用可选停时，会错误地得到 $\mathbb E[S_T]=\mathbb E[S_0]=0$。实际问题在于 $\mathbb E[T]=\infty$，而 $\{S_{n\wedge T}\}$ 也不一致可积。几乎必然有限并不能替代定理的尾部／可积性条件。</p>
+<h4>6. 合法应用：公平赌徒破产</h4>
+<p>公平随机游走从 $i\in\{1,\ldots,N-1\}$ 出发，在 0 或 $N$ 停止。令 $T=\tau_0\wedge\tau_N$。停止过程始终位于 $[0,N]$，因此一致可积，可选停时合法：</p>
+<div class="math-display">$$
+i=\mathbb E_i[S_T]
+=0\cdot P_i(\tau_0&lt;\tau_N)
++N\cdot P_i(\tau_N&lt;\tau_0).
+$$</div>
+<p>于是 $P_i(\tau_N&lt;\tau_0)=i/N$。这里先证明停止值有界，再使用定理；不能只因为答案看起来像“公平游戏”就跳过条件。</p>
+<h4>7. 面试检查清单</h4>
+<ol>
+<li>明确 filtration，并验证过程 adapted、可积以及条件期望等式。</li>
+<li>验证 $T$ 真的是停时，而不是依赖未来的最后时刻。</li>
+<li>先对 $T\wedge n$ 使用定理，再说明为什么可以令 $n\to\infty$。</li>
+<li>明确引用哪一组充分条件：有界停时、有限期望加有界增量，或一致可积。</li>
+<li>检查是否存在 overshoot、无穷期望停时或无界下注。</li>
+</ol>
+<p class="concept-check"><strong>常见误区：</strong>“$T&lt;\infty$ a.s.” 本身不够；加倍下注策略使用不断增大的 stake，通常破坏财富下界、可积性或一致可积条件；有漂移的过程不是鞅，必须先中心化或构造正确的指数鞅；可选停时不是制造正期望收益的漏洞。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-brownian-motion">
+<summary><span class="concept-label">□ Brownian motion、二次变差与 Itô 直觉 [P2]</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 标准布朗运动的定义</h4>
+<p>标准布朗运动（Brownian motion，也叫 Wiener process）是连续时间随机过程 $(B_t)_{t\ge0}$，满足：</p>
+<ol>
+<li>$B_0=0$；</li>
+<li><strong>独立增量：</strong>不相交时间区间上的增量相互独立；</li>
+<li><strong>平稳 Gaussian 增量：</strong>对 $0\le s&lt;t$，</li>
+</ol>
+<div class="math-display">$$
+B_t-B_s\sim N(0,t-s);
+$$</div>
+<ol start="4">
+<li>样本路径以概率 1 连续。</li>
+</ol>
+<p>因此 $B_t\sim N(0,t)$，即</p>
+<div class="math-display">$$
+\mathbb E[B_t]=0,
+\qquad
+\operatorname{Var}(B_t)=t,
+\qquad
+\operatorname{Cov}(B_s,B_t)=\min(s,t).
+$$</div>
+<p>最后一个公式可由 $B_t=B_s+(B_t-B_s)$ 得到：当 $s&lt;t$ 时，新增量与 $B_s$ 独立，所以协方差只留下 $\operatorname{Var}(B_s)=s$。注意 $B_s$ 与 $B_t$ 并不独立；独立的是未来增量 $B_t-B_s$ 与过去。</p>
+<h4>2. 从随机游走到布朗运动的直觉</h4>
+<p>把公平随机游走的时间步长缩小，并把空间按平方根缩放，就会趋近布朗运动。粗略地说，在长度为 $\Delta t$ 的极短时间内，</p>
+<div class="math-display">$$
+\Delta B\sim N(0,\Delta t),
+\qquad
+|\Delta B|\text{ 的典型量级是 }\sqrt{\Delta t}.
+$$</div>
+<p>这也解释自相似性：</p>
+<div class="math-display">$$
+(B_{ct})_{t\ge0}\overset d=(\sqrt c\,B_t)_{t\ge0}.
+$$</div>
+<p>布朗运动是 Markov 过程，也是鞅：给定截至时刻 $s$ 的信息，$\mathbb E[B_t\mid\mathcal F_s]=B_s$。路径虽然连续，却以概率 1 处处不可微，因为时间缩小为 $\Delta t$ 时，斜率的典型大小 $|\Delta B|/\Delta t$ 反而像 $1/\sqrt{\Delta t}$ 一样发散。</p>
+<h4>3. 二次变差为何等于时间？</h4>
+<p>把 $[0,t]$ 划分为许多小区间，布朗运动的一次变差和会因剧烈抖动而发散，但平方增量之和却收敛：</p>
+<div class="math-display">$$
+[B]_t
+=\lim_{\lVert\Pi\rVert\to0}
+\sum_i(B_{t_{i+1}}-B_{t_i})^2
+=t.
+$$</div>
+<p>原因是每个增量平方的期望为 $\Delta t_i$，相加得到 $t$。用随机微分的记号，这个量级关系写成</p>
+<div class="math-display">$$
+dB_t=O(\sqrt{dt}),
+\qquad
+(dB_t)^2=dt,
+\qquad
+dB_t\,dt=0,
+\qquad
+(dt)^2=0.
+$$</div>
+<p>这些是保留到 $dt$ 量级的计算规则，不是普通无穷小的代数恒等式。正是 $(dB_t)^2$ 与 $dt$ 同阶，使随机微积分不同于普通微积分。</p>
+<h4>4. Itô 公式：为什么多出二阶项？</h4>
+<p>若 $f(t,x)$ 足够光滑，对 $f(t,B_t)$ 作 Taylor 展开。因为 $dB_t$ 是 $\sqrt{dt}$ 量级，二阶项 $(dB_t)^2$ 不能丢掉。Itô 公式是</p>
+<div class="math-display">$$
+df(t,B_t)
+=f_t(t,B_t)\,dt
++f_x(t,B_t)\,dB_t
++\frac12f_{xx}(t,B_t)\,dt.
+$$</div>
+<p>最重要的小例子取 $f(x)=x^2$：</p>
+<div class="math-display">$$
+d(B_t^2)=2B_t\,dB_t+dt,
+\qquad
+B_t^2=2\int_0^tB_s\,dB_s+t.
+$$</div>
+<p>Itô 积分的期望为 0，因此 $\mathbb E[B_t^2]=t$。若错误地套用普通链式法则而漏掉 $dt$，就会得出 $\mathbb E[B_t^2]=0$ 的矛盾结果。</p>
+<h4>5. 加漂移、波动率与几何布朗运动</h4>
+<p>过程 $X_t=x_0+\mu t+\sigma B_t$ 满足</p>
+<div class="math-display">$$
+dX_t=\mu\,dt+\sigma\,dB_t,
+\qquad
+X_t-X_s\sim N(\mu(t-s),\sigma^2(t-s)).
+$$</div>
+<p>在金融中常见的 geometric Brownian motion 写成 $dS_t=\mu S_tdt+\sigma S_tdB_t$。对 $\log S_t$ 使用 Itô 公式得到</p>
+<div class="math-display">$$
+S_t=S_0\exp\!\left[\left(\mu-\frac12\sigma^2\right)t+\sigma B_t\right].
+$$</div>
+<p>指数中的 $-\sigma^2/2$ 就来自 Itô 二阶修正；它保证 $\mathbb E[S_t]=S_0e^{\mu t}$。</p>
+<h4>6. 最大值、反射原理与首达时间</h4>
+<p>令 $M_t=\sup_{0\le s\le t}B_s$，$a&gt;0$，反射原理给出</p>
+<div class="math-display">$$
+P(M_t\ge a)=2P(B_t\ge a)
+=2\left[1-\Phi\!\left(\frac a{\sqrt t}\right)\right].
+$$</div>
+<p>因此首次到达 $a$ 的时间 $\tau_a=\inf\{t\ge0:B_t=a\}$ 满足 $P(\tau_a\le t)=P(M_t\ge a)$。它以概率 1 有限，但 $\mathbb E[\tau_a]=\infty$；“最终必达”不代表平均等待时间有限。</p>
+<p class="concept-check"><strong>常见误区：</strong>连续路径不等于可微路径；$B_t$ 的方差随时间增长，因此它本身不平稳，平稳的是增量；$dB_t/dt$ 不是普通随机变量；$(dB_t)^2=dt$ 是二次变差规则；金融资产价格也不是因为写成布朗运动就自动符合真实市场，漂移、波动率、跳跃和非平稳性仍需检验。</p>
+</div>
+</details>
+</li>
+</ul>
+<h2>2. 统计学与计量基础</h2>
+<h3>2.1 样本、估计量与抽样分布 [P0]</h3>
+<ul>
+<li><p>□ 总体、样本、参数、统计量；i.i.d. 假设具体意味着什么。</p>
+</li>
+<li><p>□ 无偏性、一致性、效率、充分性；$\operatorname{MSE}=\operatorname{Var}\mathplus{}\operatorname{Bias}^2$。</p>
+</li>
+<li><p>□ 样本均值、样本方差、样本协方差；为何样本方差除以 $n-1$。</p>
+</li>
+<li><p>□ 正态样本下均值与样本方差独立；$t$ 与 $\chi^2$ 分布来源。</p>
+</li>
+<li><p>□ Bootstrap、Block Bootstrap、Jackknife、Permutation test。</p>
+</li>
+<li><p>□ 稳健统计：Median、MAD、Trimmed mean、Winsorization。</p>
+</li>
+</ul>
+<h3>2.2 MLE、MAP 与 Bayesian 更新 [P0]</h3>
+<ul>
+<li><p>□ Likelihood 与 probability 的区别；log-likelihood、score、Hessian。</p>
+</li>
+<li><p>□ MLE：写支持集、取对数、求导、检查边界、验证极值。</p>
+</li>
+<li><p>□ Fisher information 与 Cramér–Rao 下界；MLE 渐近正态。</p>
+</li>
+<li><p>□ MAP：</p>
+</li>
+</ul>
+<div class="math-display">$$
+\hat\theta_{\mathrm{MAP}}=\arg\max_\theta\{\log p(D\mid\theta)+\log p(\theta)\}.
+$$</div>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-conjugate-priors">
+<summary><span class="concept-label">□ Beta–Binomial、Gamma–Poisson、Normal–Normal 共轭</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. “共轭”到底是什么意思？</h4>
+<p>若先验 $p(\theta)$ 与似然 $p(D\mid\theta)$ 相乘后，后验 $p(\theta\mid D)$ 仍属于和先验相同的分布族，就称这组先验—似然<strong>共轭</strong>。它的价值是更新只需修改少数超参数，而不是每次重新做数值积分。Bayes 公式始终是</p>
+<div class="math-display">$$
+p(\theta\mid D)\propto p(D\mid\theta)p(\theta).
+$$</div>
+<h4>2. Beta–Binomial：概率的伪计数更新</h4>
+<p>若成功概率 $p\sim\operatorname{Beta}(\alpha,\beta)$，观察 $n$ 次 Bernoulli 试验中有 $x$ 次成功，则</p>
+<div class="math-display">$$
+p\mid x\sim\operatorname{Beta}(\alpha+x,\,\beta+n-x).
+$$</div>
+<p>$\alpha$ 与 $\beta$ 可直观地看作成功和失败的先验伪计数。后验均值和下一次成功的后验预测概率相同：</p>
+<div class="math-display">$$
+\mathbb E[p\mid x]
+=P(X_{n+1}=1\mid x)
+=\frac{\alpha+x}{\alpha+\beta+n}.
+$$</div>
+<p>若预测未来 $m$ 次中的成功数，积分掉 $p$ 后得到 Beta–Binomial 分布；它比固定 $p$ 的 Binomial 多包含参数不确定性。</p>
+<h4>3. Gamma–Poisson：事件速率的更新</h4>
+<p>采用 shape–rate 参数化：$\lambda\sim\operatorname{Gamma}(a,b)$，其密度正比于 $\lambda^{a-1}e^{-b\lambda}$。若第 $i$ 个观测的暴露量为 $t_i$，且 $X_i\mid\lambda\sim\operatorname{Poisson}(\lambda t_i)$，则</p>
+<div class="math-display">$$
+\lambda\mid x_1,\ldots,x_n
+\sim\operatorname{Gamma}\!\left(a+\sum_i x_i,\ b+\sum_i t_i\right).
+$$</div>
+<p>形状参数累加事件数，rate 参数累加总暴露时间。后验均值为 $(a+\sum_i x_i)/(b+\sum_i t_i)$。对未来暴露量再积分掉 $\lambda$，预测计数服从 Negative Binomial；这也解释了为何混合 Poisson 速率会产生 overdispersion。</p>
+<h4>4. Normal–Normal：精度加权平均</h4>
+<p>设观测方差 $\sigma^2$ 已知，$X_i\mid\mu\sim N(\mu,\sigma^2)$，先验 $\mu\sim N(m_0,s_0^2)$。令精度为方差倒数，则</p>
+<div class="math-display">$$
+s_n^2=\left(\frac1{s_0^2}+\frac n{\sigma^2}\right)^{-1},
+\qquad
+m_n=s_n^2\left(\frac{m_0}{s_0^2}+\frac{n\bar x}{\sigma^2}\right),
+$$</div>
+<p>且 $\mu\mid D\sim N(m_n,s_n^2)$。后验均值是先验均值与样本均值按各自精度加权的平均：数据越多或噪声越小，样本均值权重越大。下一次观测的后验预测分布为</p>
+<div class="math-display">$$
+X_{n+1}\mid D\sim N(m_n,\,\sigma^2+s_n^2),
+$$</div>
+<p>其中第一项是新观测噪声，第二项是对 $\mu$ 的剩余不确定性。若 $\sigma^2$ 也未知，单独的 Normal 先验不再完整共轭，常用 Normal–Inverse-Gamma。</p>
+<h4>5. 一眼识别与检查</h4>
+<ul>
+<li>未知 Bernoulli/Binomial 概率 $p$：想到 Beta；</li>
+<li>未知 Poisson/Exponential 速率 $\lambda$：想到 Gamma；</li>
+<li>已知方差下的未知 Normal 均值：想到 Normal 与精度加权。</li>
+</ul>
+<p class="concept-check"><strong>常见误区：</strong>Gamma 必须先声明 rate 还是 scale 参数化；共轭是计算便利性，不表示先验一定符合真实信念；后验预测需要对参数积分，不能只把参数替换为后验均值；Normal–Normal 的简单公式依赖观测方差已知。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
+<li><p>□ 后验预测分布、credible interval 与 confidence interval 的区别。</p>
+</li>
+</ul>
+<h3>2.3 置信区间与假设检验 [P0]</h3>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-confidence-intervals">
+<summary><span class="concept-label">□ 频率学置信区间是“构造程序的长期覆盖率”，不是固定参数的后验概率</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 先区分 parameter、estimate 与 standard error</h4>
+<p>总体参数 $\theta$ 是固定但未知的，例如总体均值 $\mu$；样本估计量 $\hat\theta$ 会随抽样改变。standard error 描述的不是原始数据有多分散，而是<strong>估计量在重复抽样中有多分散</strong>：</p>
+<div class="math-display">$$
+\operatorname{SE}(\hat\theta)
+=\sqrt{\operatorname{Var}(\hat\theta)}.
+$$</div>
+<p>很多大样本置信区间都具有</p>
+<div class="math-display">$$
+\text{estimate}\ \pm\ \text{critical value}\times\operatorname{SE}
+$$</div>
+<p>的形式。中间是点估计，两边的 margin of error 同时反映抽样噪声和希望达到的置信水平。</p>
+<h4>2. 95% confidence 的正确含义</h4>
+<p>设每次重新抽样都按同一个规则构造区间 $C(X)$。95% coverage 表示</p>
+<div class="math-display">$$
+P_\theta\{\theta\in C(X)\}=0.95.
+$$</div>
+<p>随机的是样本和由它产生的区间；在频率学框架中，固定参数 $\theta$ 不随机。得到某个具体区间后，它要么包含真值，要么不包含，不能严格解释成“$\theta$ 有 95% 概率位于这个已经算出的区间”。后一句是 Bayesian credible interval 在给定先验和模型下才可能表达的 posterior probability。</p>
+<h4>3. 均值区间的小例子</h4>
+<p>若 $n=25$，样本均值 $\bar x=10$，样本标准差 $s=2$，总体方差未知。近似正态且观测独立时使用 $t_{24}$：</p>
+<div class="math-display">$$
+\bar x\pm t_{0.975,24}\frac{s}{\sqrt n}
+=10\pm2.064\frac{2}{5}
+=10\pm0.826,
+$$</div>
+<p>所以 95% CI 约为 $[9.174,10.826]$。解释应是：这个构造程序在假设成立的重复实验中约有 95% 的区间覆盖 $\mu$。</p>
+<h4>4. 区间宽度由什么决定？</h4>
+<ul>
+<li>更高置信水平需要更大 critical value，区间更宽；</li>
+<li>噪声或个体差异越大，SE 越大，区间更宽；</li>
+<li>独立样本下 SE 通常按 $1/\sqrt n$ 缩小；若想把 margin of error 减半，样本量通常要增至约四倍；</li>
+<li>相关、聚类、时间序列依赖或错误模型会使朴素 SE 与 coverage 失真，必须使用相应的 cluster/HAC/bootstrap 方法。</li>
+</ul>
+<h4>5. 与双侧检验的对应</h4>
+<p>在模型、SE 和近似完全一致时，双侧显著性水平 $\alpha$ 的检验拒绝 $H_0:\theta=\theta_0$，等价于 $(1-\alpha)$ CI 不包含 $\theta_0$。例如匹配的 95% CI 不包含 0，通常对应双侧 $p&lt;0.05$。若检验与区间采用不同方差估计、不同校正或不同方向，这种对应会失效。</p>
+<p class="concept-check"><strong>常见误区：</strong>95% 不是“95% 样本落在区间里”；CI 不是 prediction interval；较窄只代表在模型下更精确，不保证偏差更小；做完实验后不能因为区间不好看就更换置信水平或分析方法。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-hypothesis-testing-foundations">
+<summary><span class="concept-label">□ $H_0$、$H_1$、检验统计量、拒绝域、p-value、显著性水平</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 一次检验的六个组成部分</h4>
+<ol>
+<li><strong>Estimand：</strong>先说清要研究哪个参数，例如均值差 $\Delta=\mu_A-\mu_B$。</li>
+<li><strong>Null $H_0$：</strong>作为基准模型，常写 $\Delta=0$。</li>
+<li><strong>Alternative $H_1$：</strong>双侧为 $\Delta\ne0$；有充分事前依据时才用单侧 $\Delta&gt;0$ 或 $\Delta&lt;0$。</li>
+<li><strong>Test statistic：</strong>把估计量与 null 值的距离按 SE 标准化，例如 $T=(\hat\Delta-0)/\operatorname{SE}(\hat\Delta)$。</li>
+<li><strong>Null distribution 与 rejection region：</strong>知道 $H_0$ 下 $T$ 如何分布，事先选显著性水平 $\alpha$，再划出最极端的 $\alpha$ 尾部。</li>
+<li><strong>Decision：</strong>观测值落入拒绝域便 reject $H_0$；否则只能说 fail to reject，不能说“接受并证明 $H_0$”。</li>
+</ol>
+<h4>2. p-value 到底是什么？</h4>
+<p>p-value 是<strong>假设 $H_0$ 成立</strong>时，观察到当前统计量或更不利于 $H_0$ 的结果的概率。双侧检验可概括为</p>
+<div class="math-display">$$
+p=P_{H_0}\bigl(|T|\ge |T_{\mathrm{obs}}|\bigr).
+$$</div>
+<p>它不是 $P(H_0\mid\text{data})$，也不是“结果由偶然造成的概率”，更不是效应为零的概率。p-value 小，表示数据与 $H_0$ 所预测的分布不相容；它不直接说明效应大小或研究质量。</p>
+<h4>3. 一个数值判断例子</h4>
+<p>若大样本 $z=2.10$，双侧 p-value 约为</p>
+<div class="math-display">$$
+p=2\{1-\Phi(2.10)\}\approx0.036.
+$$</div>
+<p>所以在 $\alpha=0.05$ 下拒绝，在 $\alpha=0.01$ 下不拒绝。数据本身相同，decision 会随事先设定的容错标准改变；不能把 $0.05$ 当成自然界中的真假分界线。</p>
+<h4>4. 单侧还是双侧？</h4>
+<p>双侧检验会同时防备正负两个方向，通常是默认选择。单侧检验把全部 $\alpha$ 放在一个尾部，若效应恰好朝预设方向，它有更高 power；代价是反方向的巨大效应也不能按该检验拒绝。方向必须在看数据之前决定，且反方向确实不构成同类结论时才合理。</p>
+<p class="concept-check"><strong>标准口述：</strong>“在 $H_0$ 与模型假设成立时，这么极端或更极端的数据出现概率为 p；由于 p 小于预先设定的 $\alpha$，我们拒绝 $H_0$。”不要说“$H_0$ 为真的概率是 p”或“结果有 $1-p$ 概率可复现”。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-errors-power-sample-size">
+<summary><span class="concept-label">□ Type I 与 Type II error、power、样本量权衡</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 真相与决策是两个维度</h4>
+<div class="table-scroll">
+<table class="concept-table">
+<thead><tr><th></th><th>不拒绝 $H_0$</th><th>拒绝 $H_0$</th></tr></thead>
+<tbody>
+<tr><th>$H_0$ 为真</th><td>正确</td><td>Type I error / false positive</td></tr>
+<tr><th>$H_1$ 为真</th><td>Type II error / false negative</td><td>正确发现</td></tr>
+</tbody>
+</table>
+</div>
+<p>显著性水平控制</p>
+<div class="math-display">$$
+\alpha=P(\text{reject }H_0\mid H_0\text{ true}),
+$$</div>
+<p>而在某个真实效应 $\theta$ 下，</p>
+<div class="math-display">$$
+\beta(\theta)=P_\theta(\text{fail to reject }H_0),
+\qquad
+\operatorname{Power}(\theta)=1-\beta(\theta).
+$$</div>
+<p>power 必须针对某个具体 effect size 定义；不能脱离“真实差异多大”只说一项研究的 power 是多少。</p>
+<h4>2. 哪些因素提高 power？</h4>
+<ul>
+<li>真实效应 $|\theta-\theta_0|$ 更大；</li>
+<li>样本量更大，使 SE 下降；</li>
+<li>观测噪声更小，或通过配对、分层、有效协变量提高设计效率；</li>
+<li>把 $\alpha$ 放宽会提高 power，但同时增加 Type I error；</li>
+<li>事先合理设定的单侧检验在目标方向上更有 power，但不能事后改方向。</li>
+</ul>
+<h4>3. 样本量为什么取决于最小重要效应？</h4>
+<p>以已知标准差的双侧单样本均值检验为粗略例子。若希望显著性水平为 $\alpha$，在真实差异至少为 $\delta$ 时达到 power $1-\beta$，则</p>
+<div class="math-display">$$
+n\approx
+\left(
+\frac{(z_{1-\alpha/2}+z_{1-\beta})\sigma}{\delta}
+\right)^2.
+$$</div>
+<p>要检测的 $\delta$ 减半，所需 $n$ 大约变成四倍。因此设计研究时应先定义 minimum detectable/economically meaningful effect，而不是只说“尽可能多收数据”。实际设计还需考虑双样本分配、失访、聚类、重复测量与 multiple testing。</p>
+<h4>4. 低 power 与高 power 各有什么风险？</h4>
+<p>低 power 不仅容易漏掉真实效应；在“只有显著结果才被报告”的选择机制下，偶然过关的估计还常夸大效应。反过来，样本极大时微不足道的效应也可得到极小 p-value，所以高 power 不能替代 effect size 与成本收益判断。</p>
+<p class="concept-check"><strong>常见误区：</strong>$\alpha$ 不是“所有拒绝中有多少是错的”，后者涉及 FDR；fail to reject 不是证明无效应。数据出来后根据观察到的 p-value 计算 post-hoc/observed power 通常没有额外信息，应直接报告估计值和置信区间。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-z-t-paired-welch">
+<summary><span class="concept-label">□ 单样本与双样本 $z$、$t$ 检验；配对检验；Welch 检验</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 先用设计判断“一个样本、两个独立样本还是配对样本”</h4>
+<ul>
+<li><strong>One-sample：</strong>一个样本均值与基准 $\mu_0$ 比较。</li>
+<li><strong>Independent two-sample：</strong>A/B 两组由不同且相互独立的单位组成。</li>
+<li><strong>Paired：</strong>同一个体前后测量，或一一匹配的对象；分析单位是每对的差 $D_i=X_i-Y_i$。</li>
+</ul>
+<p>“有两列数据”并不自动意味着 independent two-sample。忽略配对会丢掉共同个体带来的相关性，通常增大 SE；把独立样本误当配对则会构造不存在的差值。</p>
+<h4>2. z 与 t 的核心区别</h4>
+<p>总体标准差 $\sigma$ 已知时，单样本统计量为</p>
+<div class="math-display">$$
+Z=\frac{\bar X-\mu_0}{\sigma/\sqrt n}\sim N(0,1)
+\quad(H_0).
+$$</div>
+<p>实际中 $\sigma$ 几乎总是未知，用样本标准差 $s$ 估计后：</p>
+<div class="math-display">$$
+T=\frac{\bar X-\mu_0}{s/\sqrt n}\sim t_{n-1}
+$$</div>
+<p>在独立正态样本下精确成立。$t$ 分布尾部更厚，反映估计 $\sigma$ 的额外不确定性；自由度增大时趋近标准正态。大样本下 z 与 t 数值接近，但用 t 通常更自然。</p>
+<h4>3. 两个独立均值：Welch 通常是默认</h4>
+<p>Welch t statistic 不要求两组方差相等：</p>
+<div class="math-display">$$
+T=
+\frac{\bar X_1-\bar X_2-\Delta_0}
+{\sqrt{s_1^2/n_1+s_2^2/n_2}}.
+$$</div>
+<p>其自由度用 Welch–Satterthwaite 近似：</p>
+<div class="math-display">$$
+\nu\approx
+\frac{(s_1^2/n_1+s_2^2/n_2)^2}
+{(s_1^2/n_1)^2/(n_1-1)+(s_2^2/n_2)^2/(n_2-1)}.
+$$</div>
+<p>Pooled t test 先假设 $\sigma_1^2=\sigma_2^2$ 并合并方差。只有这个假设具有实质依据时才有必要；尤其当样本量和方差都不平衡时，机械使用 pooled test 会失真。Welch 在方差相等时效率损失通常很小，因此是更稳妥的默认。</p>
+<h4>4. 配对检验怎样做？</h4>
+<p>先构造 $D_i=X_{i,\mathrm{after}}-X_{i,\mathrm{before}}$，再对 $D_i$ 做 one-sample t test：</p>
+<div class="math-display">$$
+T=\frac{\bar D-0}{s_D/\sqrt n},
+\qquad T\sim t_{n-1}\quad(H_0).
+$$</div>
+<p>假设要求不同 pair 之间独立、差值分布在小样本下近似正态；并不要求 before 与 after 各自独立。配对的收益来自差值消除了稳定的个体水平。</p>
+<h4>5. 快速选择表</h4>
+<div class="table-scroll">
+<table class="concept-table">
+<thead><tr><th>问题</th><th>常用方法</th></tr></thead>
+<tbody>
+<tr><td>一个均值，$\sigma$ 未知</td><td>one-sample t</td></tr>
+<tr><td>两个独立均值，方差未必相同</td><td>Welch two-sample t</td></tr>
+<tr><td>同一单位前后或严格匹配</td><td>paired t = 对差值做 one-sample t</td></tr>
+<tr><td>一个或两个大样本比例</td><td>proportion z test / 合适的 binomial 方法</td></tr>
+</tbody>
+</table>
+</div>
+<p class="concept-check"><strong>检查假设：</strong>首要条件是抽样单位之间独立；严重偏态和 outlier 在小样本下会破坏均值 t test。不要先用一次“方差相等检验”决定 pooled/Welch——这个两阶段程序本身不稳定，通常直接使用 Welch。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-chi-square-f-anova-tests">
+<summary><span class="concept-label">□ $\chi^2$ 拟合优度与独立性检验；$F$ 检验；ANOVA 假设</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 两种 $\chi^2$ 检验共享同一个“观察与期望差多大”思想</h4>
+<p>统计量都是</p>
+<div class="math-display">$$
+X^2=\sum_{\text{cells}}
+\frac{(O-E)^2}{E}.
+$$</div>
+<ul>
+<li><strong>Goodness-of-fit：</strong>一个 categorical variable 的 observed counts 是否符合指定概率 $p_1,\ldots,p_k$？此时 $E_j=np_j$，若没有从数据估计额外参数，df 为 $k-1$；每估一个参数通常再减一个 df。</li>
+<li><strong>Independence/homogeneity：</strong>两个 categorical variables 是否独立，或多个总体的类别比例是否相同？在 $r\times c$ 表中，$E_{ij}=(\text{row total}_i)(\text{column total}_j)/n$，df 为 $(r-1)(c-1)$。</li>
+</ul>
+<p>统计量大，表示观察计数偏离 $H_0$ 下的期望计数。它使用 counts，不应把百分比直接当成 $O$。近似要求观测单位独立且 expected counts 不太小；稀疏 $2\times2$ 表考虑 Fisher exact test。配对二元数据不是独立列联表，应考虑 McNemar test。</p>
+<h4>2. $F$ 分布为什么会出现？</h4>
+<p>$F$ statistic 是两个独立 variance estimates 的比值。若各自除以正确方差后都来自 chi-square/df，则其比服从 $F$。经典两方差检验使用</p>
+<div class="math-display">$$
+F=\frac{s_1^2}{s_2^2},
+$$</div>
+<p>但它对非正态和 outlier 很敏感。回归与 ANOVA 中更重要的用途是比较“模型解释的 variation”与“残余 noise”的 mean square。</p>
+<h4>3. One-way ANOVA 在检验什么？</h4>
+<p>对 $g$ 个组，null 是</p>
+<div class="math-display">$$
+H_0:\mu_1=\mu_2=\cdots=\mu_g.
+$$</div>
+<p>总变异分解为</p>
+<div class="math-display">$$
+SS_{\mathrm{total}}
+=SS_{\mathrm{between}}+SS_{\mathrm{within}},
+$$</div>
+<p>然后构造</p>
+<div class="math-display">$$
+F=rac{MS_{\mathrm{between}}}{MS_{\mathrm{within}}}
+=\frac{SS_{\mathrm{between}}/(g-1)}
+{SS_{\mathrm{within}}/(n-g)}.
+$$</div>
+<p>$H_0$ 下两者都在估计同一个噪声方差，比例应接近 1；若组均值分离，between variation 变大，$F$ 变大。</p>
+<h4>4. ANOVA assumptions 与拒绝后的下一步</h4>
+<ul>
+<li>观测单位独立，这是最重要且不能靠大样本自动修复的条件；</li>
+<li>每组 residual 近似正态，小样本时尤其重要；</li>
+<li>经典 ANOVA 假设组内方差相等；方差和样本量严重不平衡时用 Welch ANOVA；</li>
+<li>若数据是重复测量、clustered 或 factorial design，必须使用对应模型，不能当普通 one-way ANOVA。</li>
+</ul>
+<p>显著的 omnibus F 只说明<strong>至少一个均值不同</strong>，不说明哪一组。下一步需做事先 planned contrasts 或带多重比较校正的 post-hoc comparisons，例如 Tukey HSD，并报告组间差、CI 与 $\eta^2=SS_{\mathrm{between}}/SS_{\mathrm{total}}$ 等 effect size。</p>
+<p class="concept-check"><strong>一眼识别：</strong>一个 categorical distribution 对指定比例 → goodness-of-fit；两个 categorical variables → independence；三个以上 independent group means → ANOVA。检验显著后仍要看具体 cell/contrast 和 effect size。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-multiple-testing-control">
+<summary><span class="concept-label">□ 多重检验：Bonferroni、Holm、Benjamini–Hochberg；区分 FWER 与 FDR</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 为什么每项都用 0.05 会出问题？</h4>
+<p>若做 $m$ 个独立且全部为真 null 的检验，每项都用 $\alpha=0.05$，至少出现一个 false positive 的概率为</p>
+<div class="math-display">$$
+1-(1-0.05)^m.
+$$</div>
+<p>例如 $m=20$ 时约为 $64.2\%$。现实中的检验可能相关，但“尝试越多，至少撞到一个小 p-value 越容易”的问题仍存在。量化研究中的 feature mining、参数扫描、资产/时期筛选和只展示最佳 backtest 都属于同一类 selection。</p>
+<h4>2. FWER：控制任何 false positive 的概率</h4>
+<p>Family-wise error rate 为</p>
+<div class="math-display">$$
+\operatorname{FWER}=P(V\ge1),
+$$</div>
+<p>其中 $V$ 是错误拒绝数。适合“任何一个错误结论都很昂贵”的 confirmatory 场景。</p>
+<ul>
+<li><strong>Bonferroni：</strong>每项以 $\alpha/m$ 检验，或报告 adjusted p-value $\min(mp_i,1)$。它在任意依赖结构下控制 FWER，但可能保守；20 项时每项门槛为 $0.0025$。</li>
+<li><strong>Holm：</strong>把 p-value 排序为 $p_{(1)}\le\cdots\le p_{(m)}$，依次与 $\alpha/(m-k+1)$ 比较，遇到第一个不通过便停止。它同样控制 FWER，且不比 Bonferroni 更差。</li>
+</ul>
+<h4>3. FDR：控制已发现结果中的错误比例</h4>
+<p>False discovery rate 为</p>
+<div class="math-display">$$
+\operatorname{FDR}
+=\mathbb E\!\left[\frac{V}{\max(R,1)}\right],
+$$</div>
+<p>其中 $R$ 是总拒绝数。它允许少量 false discoveries 换取更多 power，适合大规模 exploratory screening。</p>
+<p>Benjamini–Hochberg（BH）在目标 FDR $q$ 下：</p>
+<ol>
+<li>排序 $p_{(1)}\le\cdots\le p_{(m)}$；</li>
+<li>找最大的 $k$ 使 $p_{(k)}\le(k/m)q$；</li>
+<li>拒绝排序后的前 $k$ 个 hypotheses。</li>
+</ol>
+<p>原始 BH 在独立或某些正相关条件下保证 FDR；任意依赖需要更保守的方法。FDR 也不等于每个被拒绝 hypothesis 有 $q$ 概率是假的。</p>
+<h4>4. 一个正确的分析 family 应包括什么？</h4>
+<p>family 不能只包含最终写进报告的检验；还应考虑实际搜索过的 outcomes、subgroups、features、模型规格和时间窗口。预注册、保留真正未使用的 test set、nested validation 与独立复现能从设计层面减少 data snooping。校正 p-value 不能修复泄漏、选择性报告或事后重定义 hypothesis。</p>
+<p class="concept-check"><strong>选择原则：</strong>少量确认性结论、任何误报都严重 → FWER/Holm；大量候选的探索筛选、愿意容忍一定错误发现比例 → BH/FDR。报告测试 family、原始与 adjusted p/q-values、effect sizes 和选择过程。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-statistical-economic-significance">
+<summary><span class="concept-label">□ 统计显著不等于经济显著；报告效应量与不确定性</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. p-value 同时受 effect size 和 precision 影响</h4>
+<p>许多检验统计量都近似是</p>
+<div class="math-display">$$
+T=\frac{\text{estimated effect}-\text{null effect}}
+{\operatorname{SE}(\text{estimated effect})}.
+$$</div>
+<p>因此样本极大、SE 极小时，几乎没有实际价值的微小差异也可能“高度显著”；样本很小、SE 很大时，经济上重要的效应也可能不显著。p-value 回答的是与 null 的标准化不相容程度，不回答收益是否足以覆盖成本。</p>
+<h4>2. 什么是 effect size？</h4>
+<p>优先报告有业务单位的 raw effect：平均收益差、转化率差、预测误差下降、每笔交易基点、风险或成本变化。需要跨尺度比较时再补充 standardized effect，例如</p>
+<div class="math-display">$$
+d=\frac{\bar X_1-\bar X_2}{s_{\mathrm{pooled}}},
+$$</div>
+<p>或 odds ratio、correlation、$R^2$、$\eta^2$。标准化 effect size 也不自动等于经济价值，最终仍需映射回真实单位和决策后果。</p>
+<h4>3. 用 CI 对照 decision threshold</h4>
+<p>研究前定义 minimum economically meaningful effect $\delta_*$。假设某策略相对基准的年化超额收益估计为 $0.8\%$，95% CI 为 $[0.1\%,1.5\%]$：</p>
+<ul>
+<li>若零是唯一 threshold，它统计显著；</li>
+<li>若交易成本、容量和运营成本要求至少 $1.0\%$ 才值得部署，区间仍包含大量经济上不足的值，证据不够明确；</li>
+<li>若 CI 为 $[-0.2\%,1.8\%]$，不显著也不等于“确定没有价值”，而是同时容纳亏损和有意义收益，说明 precision 不足。</li>
+</ul>
+<h4>4. 量化研究还要报告哪些不确定性？</h4>
+<ul>
+<li>效应估计及 CI，而非只有星号或 p-value；</li>
+<li>交易成本、turnover、capacity、drawdown 与 tail risk；</li>
+<li>时间依赖、非平稳、regime selection 和 backtest overfitting；</li>
+<li>多重检验、模型选择和数据清洗带来的额外不确定性；</li>
+<li>out-of-sample、不同市场时期和独立数据上的稳健性。</li>
+</ul>
+<h4>5. 推荐的结论模板</h4>
+<p>“A 相对 B 的估计差异为 $\hat\Delta$（95% CI $[L,U]$，p-value $p$）。预先设定的经济门槛为 $\delta_*$；在成本和风险调整后，区间中有／没有相当部分超过该门槛。因此当前证据支持／不足以支持部署，并且主要不确定性来自……”</p>
+<p class="concept-check"><strong>常见误区：</strong>不显著不是“证明无效应”；显著不是“效应很大”或“模型正确”；CI 也不能囊括 measurement bias、confounding、leakage 和 data snooping。统计推断必须与研究设计和实际决策共同解释。</p>
+</div>
+</details>
+</li>
+</ul>
+<h3>2.4 线性回归 [P0]</h3>
+<p>模型为 $y=X\beta+\varepsilon$。OLS 解下面的优化问题：</p>
+<div class="math-display">$$
+\hat\beta=\arg\min_\beta\lVert y-X\beta\rVert_2^2,
+\qquad
+X^{\mathsf T}X\hat\beta=X^{\mathsf T}y.
+$$</div>
+<p>若 $X$ 满列秩，则</p>
+<div class="math-display">$$
+\hat\beta=(X^{\mathsf T}X)^{-1}X^{\mathsf T}y.
+$$</div>
+<p>数值计算应使用 QR、SVD 或 least-squares solver，不要显式求逆。</p>
+<ul>
+<li><p>□ 几何解释：$X\hat\beta$ 是 $y$ 在 $\operatorname{Col}(X)$ 上的正交投影，残差与每列正交。</p>
+</li>
+<li><p>□ Gauss–Markov 假设与 BLUE；正态误差主要用于小样本精确推断。</p>
+</li>
+<li><p>□ 异方差：系数可能仍无偏或一致，但经典标准误失效；使用 robust sandwich SE。</p>
+</li>
+<li><p>□ 自相关、clustered dependence、HAC 与 Newey–West。</p>
+</li>
+<li><p>□ 内生性、遗漏变量偏差、测量误差；相关性不识别因果。</p>
+</li>
+<li><p>□ 杠杆值、影响点、残差诊断；不要机械删除金融极端值。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-multicollinearity">
+<summary><span class="concept-label">□ 多重共线性（Multicollinearity）：从直觉、诊断到处理</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 先看一个最简单的例子：两个变量其实在说同一件事</h4>
+<p>考虑带两个特征的线性回归：</p>
+<div class="math-display">$$
+y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\varepsilon_i.
+$$</div>
+<p>如果 $x_{i2}=x_{i1}$ 对所有样本都成立，那么预测只依赖</p>
+<div class="math-display">$$
+\beta_1x_{i1}+\beta_2x_{i2}
+=(\beta_1+\beta_2)x_{i1}.
+$$</div>
+<p>数据只能识别 $\beta_1+\beta_2$，无法分辨“功劳”应该怎样分给两个系数。对任意常数 $c$，</p>
+<div class="math-display">$$
+(\beta_1,\beta_2)
+\quad\text{和}\quad
+(\beta_1+c,\beta_2-c)
+$$</div>
+<p>产生完全相同的 fitted values 和残差。这叫<strong>完全共线性</strong>：$X$ 不满列秩，$X^{\mathsf T}X$ 奇异，OLS 系数没有唯一解。</p>
+<p>现实中的例子是同时放入截距、年龄和“工作年限”，而工作年限恰好等于年龄减去 22。此时三列满足</p>
+<div class="math-display">$$
+x_{\text{experience}}-x_{\text{age}}+22\cdot\mathbf1=0.
+$$</div>
+<p>Dummy-variable trap 也是同一个问题：带截距时又为一个分类变量保留全部类别 dummy，各 dummy 之和正好等于截距列。</p>
+<h4>2. 近似共线性：解仍唯一，但损失函数变得很“平”</h4>
+<p>更常见的是</p>
+<div class="math-display">$$
+x_2\approx x_1,
+$$</div>
+<p>例如 $x_2=x_1+\delta$，而 $\delta$ 的波动很小。此时 OLS 通常仍有唯一解，但数据主要告诉我们 $\beta_1+\beta_2$，几乎没有信息区分 $\beta_1$ 和 $\beta_2$。SSE 的等高线形成一条狭长、平坦的 valley：沿着“一个系数增加、另一个减少”的方向移动很远，预测和 SSE 都变化不大。</p>
+<p>结果是样本稍微变化、删除几行数据或加入一个控制变量，就可能得到很不同的系数：</p>
+<ul>
+<li>某次回归中 $\hat\beta_1=4,\hat\beta_2=-3$；</li>
+<li>另一次可能变成 $\hat\beta_1=-1,\hat\beta_2=2$；</li>
+<li>但两次的和都接近 1，fitted values 也几乎相同。</li>
+</ul>
+<p>这不是优化器“算错了”，而是数据没有提供足够的独立变化来分开两个效应。</p>
+<h4>3. 为什么单个系数不稳定，但预测可能仍然不错？</h4>
+<p>在同方差、外生误差的经典 OLS 条件下，给定设计矩阵 $X$，</p>
+<div class="math-display">$$
+\operatorname{Var}(\hat{\boldsymbol\beta}\mid X)
+=\sigma^2(X^{\mathsf T}X)^{-1}.
+$$</div>
+<p>若 $X$ 有一个很小的奇异值，那么 $X^{\mathsf T}X$ 在对应方向的特征值更小，求逆后该方向被巨大放大，于是系数方差和标准误上升。多重共线性本身通常不会在外生性成立时造成 OLS bias；它主要造成<strong>低精度和弱辨识</strong>。</p>
+<p>假设新样本仍满足 $x_2\approx x_1$，则预测主要是</p>
+<div class="math-display">$$
+\hat y\approx\hat\beta_0+
+(\hat\beta_1+\hat\beta_2)x_1.
+$$</div>
+<p>即使两个系数分别剧烈变化，它们的和可能很稳定，所以同一数据分布内的 prediction 仍然不错。但是，如果要回答“保持 $x_2$ 不变，只改变 $x_1$ 会怎样”，或对不再满足 $x_2\approx x_1$ 的样本外推，模型会非常不可靠。<strong>插值预测尚可不代表系数解释或反事实外推可信。</strong></p>
+<h4>4. VIF 到底在测量什么？</h4>
+<p>为了诊断第 $j$ 个特征，把 $x_j$ 当作因变量，用其余特征回归它，并记辅助回归的 $R^2$ 为 $R_j^2$。定义</p>
+<div class="math-display">$$
+\operatorname{VIF}_j=\frac1{1-R_j^2}.
+$$</div>
+<p>在包含截距的经典同方差回归中，</p>
+<div class="math-display">$$
+\operatorname{Var}(\hat\beta_j\mid X)
+=\frac{\sigma^2}
+{\sum_i(x_{ij}-\bar x_j)^2(1-R_j^2)}.
+$$</div>
+<p>若 $x_j$ 几乎能被其他特征解释，$R_j^2$ 接近 1，留给它独立识别自身系数的 residual variation 很少，VIF 就很大。与其他特征正交时相比：</p>
+<ul>
+<li>系数<strong>方差</strong>被放大 $\operatorname{VIF}_j$ 倍；</li>
+<li>系数<strong>标准误</strong>被放大 $\sqrt{\operatorname{VIF}_j}$ 倍。</li>
+</ul>
+<p>例如 $R_j^2=0.96$ 时，$\operatorname{VIF}_j=25$，标准误放大 5 倍。原本标准误为 0.2 的系数，可能变成 1.0，t-stat 随之大幅下降。</p>
+<p>VIF 超过 5 或 10 常被当作提醒，但不是数学定律。样本量、噪声、研究目标和变量的理论必要性都比机械阈值更重要。</p>
+<h4>5. 如何系统诊断？</h4>
+<ol>
+<li><strong>先检查变量定义：</strong>重复列、单位换算得到的同一变量、截距加全套 dummy、和为 1 的组成变量，常直接产生完全共线性。</li>
+<li><strong>查看相关矩阵与散点图：</strong>它们能发现两两高度相关，但不能发现 $x_3\approx x_1+x_2$ 这类多变量关系，因此不能只看 pairwise correlation。</li>
+<li><strong>计算 VIF：</strong>判断每个变量能在多大程度上被其余变量线性解释。</li>
+<li><strong>检查 SVD 和条件数：</strong>对去除截距并合理标准化后的 $X$，若奇异值为 $\sigma_{\max}\ge\cdots\ge\sigma_{\min}$，</li>
+</ol>
+<div class="math-display">$$
+\kappa(X)=\frac{\sigma_{\max}}{\sigma_{\min}},
+\qquad
+\kappa(X^{\mathsf T}X)=\kappa(X)^2.
+$$</div>
+<p>$\sigma_{\min}=0$ 表示完全共线；很小的 $\sigma_{\min}$ 表示某个特征组合几乎没有变化。Condition index 常写成 $\sigma_{\max}/\sigma_i$；30 有时作为严重问题的经验提醒，但同样不是普适界限。若特征量纲差异巨大，未标准化的 condition number 会把尺度问题和共线性混在一起。</p>
+<ol start="5">
+<li><strong>检查系数稳定性：</strong>改变训练样本、做 bootstrap、逐步加入变量或查看 regularization path。如果预测稳定而相关特征的系数互相补偿地剧烈变化，这是典型信号。</li>
+</ol>
+<p>常见表面症状还包括：整体 $R^2$ 或 F-test 很显著，但多个单独 t-test 不显著；系数符号违反直觉；置信区间很宽；加入或删除相关变量后系数突然翻转。</p>
+<h4>6. 处理方法必须先问：你的目标是什么？</h4>
+<p><strong>A. 明显的数据编码冗余</strong></p>
+<ul>
+<li>删除真正重复的列；分类变量保留一个 reference category；组成数据删除一个分量或使用合适的 log-ratio 坐标。</li>
+<li>用领域知识合并测量同一概念的变量，例如构造可解释的 composite score。</li>
+</ul>
+<p><strong>B. 目标是解释单个系数或做统计推断</strong></p>
+<ul>
+<li>不要仅为降低 VIF 就删除理论上必要的 confounder，否则可能用更小标准误换来 omitted-variable bias。</li>
+<li>重新参数化到数据真正能识别的组合。例如 $x_1,x_2$ 高度相关时，研究“总量”与“差值”可能比强行解释两个原系数更合理。</li>
+<li>报告置信区间、联合 F-test 或可识别的线性组合，而不只报告单个 p-value。</li>
+<li>收集能让相关变量独立变化的新数据。单纯增加更多同样结构的样本，帮助可能有限。</li>
+</ul>
+<p><strong>C. 目标是样本外预测</strong></p>
+<ul>
+<li>对中心化并标准化后的特征使用 Ridge（截距单独处理且通常不惩罚）：</li>
+</ul>
+<div class="math-display">$$
+\hat\beta_{\mathrm{ridge}}
+=(X^{\mathsf T}X+\lambda I)^{-1}X^{\mathsf T}y.
+$$</div>
+<p>它给小特征值方向加上 $\lambda$，以少量 bias 换取显著 variance reduction。$\lambda$ 必须通过无数据泄漏的 validation 选择。</p>
+<ul>
+<li>PCR/PCA 或 SVD 可以丢弃低方差、难识别的方向，但主成分是为了解释 $X$ 的方差，不保证最有利于预测 $y$，解释性也会下降。</li>
+<li>Elastic Net 往往比纯 Lasso 更适合成组的相关特征；Lasso 可能在几个几乎等价的变量中任意选一个，选择结果随样本改变。</li>
+</ul>
+<p><strong>D. 目标是因果效应</strong></p>
+<p>正则化可以稳定预测，却不会凭空创造因果辨识。若处理变量与控制变量几乎同步变化，真正需要的是实验设计、自然实验、工具变量或其他可信的独立变化来源，而不只是一个更稳定的算法。</p>
+<h4>7. Centering、标准化和交互项能不能解决？</h4>
+<ul>
+<li><strong>标准化</strong>改善数值尺度，使 penalty 和 condition number 更可比，但不会消除变量间真正的线性依赖。</li>
+<li><strong>Centering</strong> 在含 $x,x^2$ 或 interaction 的模型中可减少由非零均值造成的 nonessential collinearity，并让截距和主效应更好解释；它不会增加新的辨识信息。</li>
+<li><strong>加入交互项</strong>不是一般解法。交互项和原变量可能更加相关，只有理论上需要时才加入，并通常先 center 连续变量。</li>
+</ul>
+<h4>8. 一分钟面试回答框架</h4>
+<ol>
+<li>定义：$X$ 的某列可以被其他列精确或近似线性表示。</li>
+<li>后果：完全共线时 OLS 不唯一；近似共线时系数方差、标准误和符号不稳定，但同分布内预测可能仍可接受。</li>
+<li>诊断：先查变量定义，再看相关结构、VIF、奇异值／条件数和重采样稳定性。</li>
+<li>处理：删除真正冗余的编码；推断时保护必要控制并报告不确定性；预测时用 Ridge/Elastic Net/PCA 加验证；最好收集更有独立变化的数据。</li>
+</ol>
+<p class="concept-check"><strong>常见误区：</strong>多重共线性不同于异方差、内生性或自相关；它不会自动使 OLS 有偏；高 VIF 不等于必须删变量；更高训练 $R^2$ 不能证明系数可信；正则化稳定的是预测和系数数值，不是因果解释；模型在训练数据流形上的预测稳定，也可能在脱离该相关结构后严重外推失败。</p>
+</div>
+</details>
+</li>
+</ul>
+<h3>2.5 正则化与模型选择 [P0]</h3>
+<ul>
+<li><p>□ Ridge：$\min_\beta \mathrm{SSE}\mathplus{}\lambda\lVert\beta\rVert_2^2$；对应 Gaussian prior。</p>
+</li>
+<li><p>□ Lasso：$\min_\beta \mathrm{SSE}\mathplus{}\lambda\lVert\beta\rVert_1$；对应 Laplace prior，可产生零系数。</p>
+</li>
+<li><p>□ Elastic Net 结合 L1 与 L2，适合高度相关的特征组。</p>
+</li>
+<li><p>□ 特征缩放；截距通常不惩罚；$\lambda$ 必须在训练折内选择。</p>
+</li>
+<li><p>□ 训练误差、验证误差、测试误差；交叉验证、nested CV、one-standard-error rule。</p>
+</li>
+<li><p>□ AIC、BIC、交叉验证目标不同，不能混为一谈。</p>
+</li>
+</ul>
+<h3>2.6 时间序列与金融数据 [P0／P1]</h3>
+<ul>
+<li><p>□ 简单收益 $r_t=\frac{P_t}{P_{t-1}}-1$；对数收益 $g_t=\log(P_t)-\log(P_{t-1})$，可跨期相加。</p>
+</li>
+<li><p>□ 平稳性、趋势、季节性、单位根、差分、协整。</p>
+</li>
+<li><p>□ 自协方差、ACF、PACF；white noise 与 martingale difference。</p>
+</li>
+<li><p>□ AR、MA、ARMA、ARIMA 的假设、平稳性、可逆性与预测直觉。</p>
+</li>
+<li><p>□ Volatility clustering、ARCH、GARCH 直觉。</p>
+</li>
+<li><p>□ 年化 Sharpe 的平方根法则依赖稳定方差与弱相关假设。</p>
+</li>
+<li><p>□ Look-ahead bias、survivorship bias、data snooping、transaction cost、turnover、capacity。</p>
+</li>
+</ul>
+<h2>3. 线性代数</h2>
+<h3>3.1 向量空间、秩与线性方程组 [P0]</h3>
+<ul>
+<li><p>□ 向量加法、数乘、线性组合、span、basis、dimension。</p>
+</li>
+<li><p>□ Column space、row space、null space；四个基本子空间。</p>
+</li>
+<li><p>□ Rank–nullity：$\operatorname{rank}(A)\mathplus{}\operatorname{nullity}(A)=n$。</p>
+</li>
+<li><p>□ $Ax=b$ 无解、唯一解、无穷多解的判别；一致当且仅当 $b\in\operatorname{Col}(A)$。</p>
+</li>
+<li><p>□ L1、L2、L∞ 范数；内积、夹角、cosine similarity。</p>
+</li>
+</ul>
+<h3>3.2 正交、投影与最小二乘 [P0]</h3>
+<ul>
+<li><p>□ 正交与标准正交；若 $Q^{\mathsf T}Q=I$，则长度、角度、距离不变。</p>
+</li>
+<li><p>□ 投影到非零向量 $u$：</p>
+</li>
+</ul>
+<div class="math-display">$$
+\operatorname{proj}_u(v)=\frac{u^{\mathsf T}v}{u^{\mathsf T}u}u.
+$$</div>
+<ul>
+<li><p>□ 满列秩矩阵的投影矩阵：$P=X(X^{\mathsf T}X)^{-1}X^{\mathsf T}$。</p>
+</li>
+<li><p>□ $P^2=P$、$P^{\mathsf T}=P$，特征值只能为 $0$ 或 $1$。</p>
+</li>
+<li><p>□ Gram–Schmidt、QR、normal equations 的几何意义。</p>
+</li>
+</ul>
+<h3>3.3 特征值、半正定矩阵与动态 [P0]</h3>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-eigenspace-multiplicity">
+<summary><span class="concept-label">□ 特征方程 $Av=\lambda v$；特征空间、代数重数、几何重数</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 特征向量究竟表示什么？</h4>
+<p>一般的线性变换会同时改变向量的长度和方向。若非零向量 $v$ 满足</p>
+<div class="math-display">$$
+Av=\lambda v,
+$$</div>
+<p>那么 $A$ 作用在 $v$ 上以后，方向没有离开 $v$ 所在的直线，只是按 $\lambda$ 缩放；$\lambda&lt;0$ 时还会反向。特征值由特征方程</p>
+<div class="math-display">$$
+\det(A-\lambda I)=0
+$$</div>
+<p>求出，因为只有在 $A-\lambda I$ 不可逆时，齐次方程 $(A-\lambda I)v=0$ 才有非零解。</p>
+<h4>2. 特征空间不是一条指定的向量</h4>
+<p>给定特征值 $\lambda$，所有对应特征向量再加上零向量构成特征空间</p>
+<div class="math-display">$$
+E_\lambda=\ker(A-\lambda I).
+$$</div>
+<p>因此求特征空间就是对 $A-\lambda I$ 做消元，找它的 null space。一个特征向量乘任意非零常数仍是特征向量，所以答案应写成一个子空间或一组基，而不是只写某一个向量。</p>
+<h4>3. 代数重数与几何重数</h4>
+<ul>
+<li><strong>代数重数（algebraic multiplicity, AM）：</strong>$\lambda$ 作为特征多项式根重复出现的次数。</li>
+<li><strong>几何重数（geometric multiplicity, GM）：</strong>特征空间的维数，$\dim E_\lambda=\operatorname{nullity}(A-\lambda I)$，也就是这个特征值能提供多少个线性无关的特征向量。</li>
+</ul>
+<p>对每个特征值都有</p>
+<div class="math-display">$$
+1\le \operatorname{GM}(\lambda)\le \operatorname{AM}(\lambda).
+$$</div>
+<p>重复特征值本身并不意味着矩阵不可对角化；关键是几何重数是否“补足”代数重数。例如</p>
+<div class="math-display">$$
+A=\begin{pmatrix}2&amp;0\\0&amp;2\end{pmatrix}
+\quad\Rightarrow\quad \operatorname{AM}(2)=\operatorname{GM}(2)=2,
+$$</div>
+<p>而 Jordan block</p>
+<div class="math-display">$$
+B=\begin{pmatrix}2&amp;1\\0&amp;2\end{pmatrix}
+\quad\Rightarrow\quad \operatorname{AM}(2)=2,
+\qquad \operatorname{GM}(2)=1.
+$$</div>
+<p>第二个矩阵只有一个独立特征方向，不能凑出二维特征向量基。</p>
+<h4>4. 与对角化的关系</h4>
+<p>$n\times n$ 矩阵可对角化，当且仅当它总共拥有 $n$ 个线性无关的特征向量；等价地，每个特征值的 GM 都等于 AM。此时</p>
+<div class="math-display">$$
+A=V\Lambda V^{-1},
+$$</div>
+<p>$V$ 的列是特征向量，$\Lambda$ 的对角元是相应特征值。实对称矩阵更好：它一定可以正交对角化，$A=Q\Lambda Q^{\mathsf T}$，即使存在重复特征值，也能在每个特征空间中选出标准正交基。</p>
+<p class="concept-check"><strong>面试检查：</strong>先由特征多项式得到 eigenvalue 和 AM，再分别求 $\ker(A-\lambda I)$ 得到 GM；不要把“特征值互异”误当成可对角化的必要条件——它只是一个充分条件。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
+<li><p>□ $\operatorname{tr}(A)=\sum_i\lambda_i$，$\det(A)=\prod_i\lambda_i$。</p>
+</li>
+<li><p>□ 对角化 $A=V\Lambda V^{-1}$；对称矩阵可写 $A=Q\Lambda Q^{\mathsf T}$。</p>
+</li>
+<li><p>□ PSD：$x^{\mathsf T}Ax\ge0$；协方差矩阵必为对称 PSD。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-rayleigh-quotient">
+<summary><span class="concept-label">□ Rayleigh quotient、最大与最小特征值</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 定义与缩放不变性</h4>
+<p>对实对称矩阵 $A$ 和任意非零向量 $x$，Rayleigh quotient 定义为</p>
+<div class="math-display">$$
+R_A(x)=\frac{x^{\mathsf T}Ax}{x^{\mathsf T}x}.
+$$</div>
+<p>把 $x$ 乘任何非零常数不会改变 $R_A(x)$，所以它只取决于方向。若把 $x$ 约束为单位向量，分母就是 1，此时 $R_A(x)=x^{\mathsf T}Ax$，可理解为矩阵在方向 $x$ 上的二次型大小或曲率。</p>
+<h4>2. 为什么它一定夹在最小与最大特征值之间？</h4>
+<p>实对称矩阵有正交特征分解 $A=Q\Lambda Q^{\mathsf T}$。把单位向量写成正交特征向量的组合 $x=\sum_i c_iq_i$，其中 $\sum_i c_i^2=1$，则</p>
+<div class="math-display">$$
+R_A(x)=x^{\mathsf T}Ax
+=\sum_i\lambda_i c_i^2.
+$$</div>
+<p>右边是各特征值的加权平均，权重 $c_i^2$ 非负且和为 1，因此</p>
+<div class="math-display">$$
+\lambda_{\min}(A)
+=\min_{x\ne0}R_A(x)
+\le R_A(x)\le
+\max_{x\ne0}R_A(x)
+=\lambda_{\max}(A).
+$$</div>
+<p>等号在 $x$ 落入相应的最小或最大特征空间时取得。如果最大特征值有重数，多条方向都能达到同一个最大值。</p>
+<h4>3. Lagrange multiplier 推导</h4>
+<p>最大化 $x^{\mathsf T}Ax$ 并约束 $x^{\mathsf T}x=1$。令</p>
+<div class="math-display">$$
+\mathcal L(x,\mu)=x^{\mathsf T}Ax-\mu(x^{\mathsf T}x-1).
+$$</div>
+<p>对称 $A$ 下的一阶条件是 $2Ax-2\mu x=0$，即 $Ax=\mu x$。所以约束二次型的 stationary directions 正是特征向量，目标值就是相应特征值；再比较所有 stationary values 得到全局最大和最小值。</p>
+<h4>4. 为什么面试中常见？</h4>
+<ul>
+<li><strong>PSD 判断：</strong>对称 $A$ 为 PSD 当且仅当 $R_A(x)\ge0$ 对所有 $x\ne0$ 成立，也等价于 $\lambda_{\min}\ge0$。</li>
+<li><strong>PCA：</strong>投影方差 $v^{\mathsf T}Sv$ 是协方差矩阵 $S$ 的 Rayleigh quotient，最大化它得到第一主方向。</li>
+<li><strong>优化：</strong>对称 Hessian 的最小、最大特征值描述最弱和最强曲率；正定时 condition number 为 $\lambda_{\max}/\lambda_{\min}$。</li>
+<li><strong>快速边界：</strong>不必完整求谱，也可用某个试探方向的 quotient 给出 $\lambda_{\max}$ 的下界和 $\lambda_{\min}$ 的上界。</li>
+</ul>
+<p class="concept-check"><strong>常见误区：</strong>上述极值结论依赖 $A$ 为实对称（复数情形用 Hermitian）。非对称矩阵的 $x^{\mathsf T}Ax$ 实际只看到对称部分 $(A+A^{\mathsf T})/2$，不能直接用它界定 $A$ 的全部特征值。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-matrix-powers-dynamics">
+<summary><span class="concept-label">□ 矩阵幂、Markov 链与线性动态系统的长期行为</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 长期行为为什么由特征值控制？</h4>
+<p>若 $A$ 可对角化，$A=V\Lambda V^{-1}$，则</p>
+<div class="math-display">$$
+A^t=V\Lambda^tV^{-1},
+\qquad
+\Lambda^t=\operatorname{diag}(\lambda_1^t,\ldots,\lambda_n^t).
+$$</div>
+<p>把初始向量分解到特征方向后，每个分量在第 $t$ 步都乘上 $\lambda_i^t$。因此模最大的特征值通常决定长期速度。记 spectral radius 为 $\rho(A)=\max_i|\lambda_i|$：</p>
+<ul>
+<li>$\rho(A)&lt;1$：所有模式衰减，$A^t\to0$；</li>
+<li>$\rho(A)&gt;1$：至少一个模式指数增长，除非初值恰好没有该方向分量；</li>
+<li>$\rho(A)=1$：必须继续检查 $-1$、复单位根和 Jordan block；可能收敛、振荡或出现多项式增长。</li>
+</ul>
+<p>不可对角化时，Jordan block 会带来 $t\lambda^t,t^2\lambda^t$ 等多项式因子；因此只说“最大特征值等于 1”还不足以断言收敛。</p>
+<h4>2. 线性动态系统</h4>
+<p>齐次系统 $x_{t+1}=Ax_t$ 满足 $x_t=A^tx_0$。带常数输入的系统</p>
+<div class="math-display">$$
+x_{t+1}=Ax_t+b
+$$</div>
+<p>满足</p>
+<div class="math-display">$$
+x_t=A^tx_0+\sum_{k=0}^{t-1}A^kb.
+$$</div>
+<p>若 $\rho(A)&lt;1$，则 $A^t\to0$ 且几何级数收敛，长期状态为</p>
+<div class="math-display">$$
+x_*=(I-A)^{-1}b,
+\qquad x_*=Ax_*+b.
+$$</div>
+<p>这就是稳定 steady state。若 $A$ 非正规（non-normal），即使所有特征值模都小于 1，有限时间内仍可能先显著放大再衰减；此时还要关注奇异值和特征向量的 conditioning。</p>
+<h4>3. Markov 链是特殊的线性动态系统</h4>
+<p>采用 row-stochastic 约定时，每行和为 1，行概率向量按</p>
+<div class="math-display">$$
+p_{t+1}^{\mathsf T}=p_t^{\mathsf T}P,
+\qquad
+p_t^{\mathsf T}=p_0^{\mathsf T}P^t
+$$</div>
+<p>演化。因为 $P\mathbf1=\mathbf1$，$1$ 是右特征值；平稳分布满足 $\pi^{\mathsf T}P=\pi^{\mathsf T}$，是 eigenvalue $1$ 的左特征向量并归一化为概率。有限状态链若不可约且非周期，则</p>
+<div class="math-display">$$
+P^t\longrightarrow \mathbf1\pi^{\mathsf T},
+\qquad
+p_t^{\mathsf T}\longrightarrow\pi^{\mathsf T}.
+$$</div>
+<p>其余特征值的模决定 mixing speed；第二大特征值模越接近 1，收敛越慢。</p>
+<h4>4. 一个两状态例子</h4>
+<p>令</p>
+<div class="math-display">$$
+P=\begin{pmatrix}1-a&amp;a\\b&amp;1-b\end{pmatrix},
+\qquad a,b&gt;0.
+$$</div>
+<p>两个特征值为 $1$ 和 $1-a-b$，平稳分布为</p>
+<div class="math-display">$$
+\pi=\left(\frac{b}{a+b},\frac{a}{a+b}\right).
+$$</div>
+<p>偏离平稳分布的部分大约按 $|1-a-b|^t$ 衰减。若链可约，初始状态可能决定最终落入哪个 closed class；若链有周期，分布可能来回振荡而不逐步收敛，即使平稳分布仍然存在。</p>
+<p class="concept-check"><strong>解题顺序：</strong>先确认 row/column stochastic 约定，再找 eigenvalue 1、平稳向量和其他特征值；检查不可约、非周期与 Jordan 结构，最后才下“长期收敛”的结论。</p>
+</div>
+</details>
+</li>
+</ul>
+<h3>3.4 矩阵分解 [P0／P1]</h3>
+<ul>
+<li><p>□ LU：消元与重复求解。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-qr-least-squares">
+<summary><span class="concept-label">□ QR：正交基、稳定 least squares</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. QR 分解在拆什么？</h4>
+<p>对 $A\in\mathbb R^{m\times n}$ 且 $m\ge n$、列满秩，thin QR 写成</p>
+<div class="math-display">$$
+A=QR,
+\qquad Q\in\mathbb R^{m\times n},
+\quad Q^{\mathsf T}Q=I,
+\quad R\in\mathbb R^{n\times n}.
+$$</div>
+<p>$Q$ 的列是 $\operatorname{Col}(A)$ 的标准正交基，$R$ 是可逆上三角矩阵，记录原列向量在这组正交基下的坐标。full QR 会把 $Q$ 补成 $m\times m$ 正交矩阵；做最小二乘时 thin QR 已足够。</p>
+<h4>2. QR 怎样解 least squares？</h4>
+<p>考虑 $\min_\beta\lVert A\beta-b\rVert_2^2$。将 $Q$ 补成 $[Q\ Q_\perp]$ 后，正交变换保持长度：</p>
+<div class="math-display">$$
+\lVert A\beta-b\rVert_2^2
+=\lVert R\beta-Q^{\mathsf T}b\rVert_2^2
++\lVert Q_\perp^{\mathsf T}b\rVert_2^2.
+$$</div>
+<p>第二项与 $\beta$ 无关，所以最优解只需解上三角系统</p>
+<div class="math-display">$$
+R\hat\beta=Q^{\mathsf T}b.
+$$</div>
+<p>这也直接给出几何解释：拟合值 $Q Q^{\mathsf T}b$ 是 $b$ 到 $\operatorname{Col}(A)$ 的正交投影，残差落在其正交补中。</p>
+<h4>3. 为什么比 normal equations 稳定？</h4>
+<p>normal equations 解 $(A^{\mathsf T}A)\hat\beta=A^{\mathsf T}b$，但</p>
+<div class="math-display">$$
+\kappa_2(A^{\mathsf T}A)=\kappa_2(A)^2.
+$$</div>
+<p>形成 $A^{\mathsf T}A$ 会平方 condition number，并在内积求和时损失精度。QR 直接在 $A$ 上做正交变换，不会人为把病态程度平方，因此通常是满秩 least squares 的标准稳定选择。若矩阵近似秩亏，需要 column-pivoted QR 或 SVD；SVD 更稳健地揭示小奇异值，但计算成本通常更高。</p>
+<h4>4. Gram–Schmidt、Householder 与 Givens</h4>
+<ul>
+<li><strong>Classical Gram–Schmidt：</strong>直觉清晰，但浮点下可能丢失正交性。</li>
+<li><strong>Modified Gram–Schmidt：</strong>数值性质更好，适合逐列正交化的理解与实现。</li>
+<li><strong>Householder reflections：</strong>稠密矩阵 QR 的常用稳定算法，一次消去一列下方的元素。</li>
+<li><strong>Givens rotations：</strong>一次消去一个元素，适合稀疏矩阵或在线更新。</li>
+</ul>
+<p class="concept-check"><strong>面试要点：</strong>能够说清 $Q$ 提供正交基、$R$ 提供坐标；最小二乘归结为 $R\hat\beta=Q^{\mathsf T}b$；不要为了求解显式计算 $Q Q^{\mathsf T}$、$(A^{\mathsf T}A)^{-1}$ 或任何矩阵逆。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-svd-fundamentals">
+<summary><span class="concept-label">□ SVD：$A=U\Sigma V^{\mathsf T}$；rank、null space、pseudoinverse、conditioning</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. SVD 把任意矩阵拆成什么？</h4>
+<p>对任意实矩阵 $A\in\mathbb R^{m\times n}$，无论它是否方阵、对称、满秩或可对角化，都存在</p>
+<div class="math-display">$$
+A=U\Sigma V^{\mathsf T}.
+$$</div>
+<p>full SVD 中，$U\in\mathbb R^{m\times m}$ 与 $V\in\mathbb R^{n\times n}$ 都是正交矩阵；$\Sigma\in\mathbb R^{m\times n}$ 只有主对角线上可能非零：</p>
+<div class="math-display">$$
+\sigma_1\ge\sigma_2\ge\cdots\ge\sigma_r&gt;0,
+\qquad r=\operatorname{rank}(A).
+$$</div>
+<p>$\sigma_i$ 是 singular values，$u_i$、$v_i$ 分别是 left/right singular vectors。只保留非零奇异值对应的列，可写成 compact SVD：</p>
+<div class="math-display">$$
+A=U_r\Sigma_rV_r^{\mathsf T}
+=\sum_{i=1}^r\sigma_i u_iv_i^{\mathsf T}.
+$$</div>
+<h4>2. 旋转—拉伸—旋转的几何直觉</h4>
+<p>把 $x$ 映射为 $Ax$ 可以分三步理解：</p>
+<ol>
+<li>$V^{\mathsf T}$ 把输入旋转／反射到 right-singular-vector 坐标；</li>
+<li>$\Sigma$ 沿第 $i$ 个正交方向缩放 $\sigma_i$ 倍，零奇异值方向被压成零；</li>
+<li>$U$ 再把结果旋转／反射到输出空间。</li>
+</ol>
+<p>因此单位球经过 $A$ 后变成椭球，半轴方向是 $u_i$，半轴长度是 $\sigma_i$。核心关系是</p>
+<div class="math-display">$$
+Av_i=\sigma_i u_i,\qquad
+A^{\mathsf T}u_i=\sigma_i v_i.
+$$</div>
+<p>进而</p>
+<div class="math-display">$$
+A^{\mathsf T}Av_i=\sigma_i^2v_i,\qquad
+AA^{\mathsf T}u_i=\sigma_i^2u_i.
+$$</div>
+<p>所以 right singular vectors 是 $A^{\mathsf T}A$ 的特征向量，left singular vectors 是 $AA^{\mathsf T}$ 的特征向量，非零特征值均为 $\sigma_i^2$。数值计算通常直接做 SVD，不应先显式形成 $A^{\mathsf T}A$。</p>
+<h4>3. SVD 怎样一眼读出四个基本子空间？</h4>
+<p>若 $r=\operatorname{rank}(A)$，则</p>
+<div class="math-display">$$
+\begin{aligned}
+\operatorname{Col}(A)&amp;=\operatorname{span}(u_1,\ldots,u_r),\\
+\operatorname{Null}(A^{\mathsf T})&amp;=\operatorname{span}(u_{r+1},\ldots,u_m),\\
+\operatorname{Row}(A)=\operatorname{Col}(A^{\mathsf T})
+&amp;=\operatorname{span}(v_1,\ldots,v_r),\\
+\operatorname{Null}(A)&amp;=\operatorname{span}(v_{r+1},\ldots,v_n).
+\end{aligned}
+$$</div>
+<p>非零 singular directions 描述矩阵真正传递信息的方向；零奇异值对应输入中完全不可辨识、被 $A$ 消掉的方向。这也直接给出 rank–nullity。</p>
+<h4>4. Moore–Penrose pseudoinverse</h4>
+<p>把每个非零奇异值取倒数、零仍保留为零：</p>
+<div class="math-display">$$
+A^+=V\Sigma^+U^{\mathsf T},
+\qquad
+\Sigma^+_{ii}=
+\begin{cases}
+1/\sigma_i,&amp;\sigma_i&gt;0,\\
+0,&amp;\sigma_i=0.
+\end{cases}
+$$</div>
+<p>于是 $x^*=A^+b$ 有两个重要性质：</p>
+<ul>
+<li>若 $Ax=b$ 无精确解，它最小化 residual $\lVert Ax-b\rVert_2$；</li>
+<li>若 least-squares 解不唯一，它在所有最优解中拥有最小 $\lVert x\rVert_2$。</li>
+</ul>
+<p>从 singular directions 看，</p>
+<div class="math-display">$$
+x^*=A^+b
+=\sum_{i=1}^r\frac{u_i^{\mathsf T}b}{\sigma_i}v_i.
+$$</div>
+<p>很小的 $\sigma_i$ 会把 $b$ 中很小的噪声放大成巨大的 coefficient，这正是病态 least squares 的来源。截断 SVD、ridge/Tikhonov regularization 都是在抑制这些不稳定方向。</p>
+<h4>5. Condition number 与 numerical rank</h4>
+<p>对满列秩矩阵，二范数 condition number 为</p>
+<div class="math-display">$$
+\kappa_2(A)=\frac{\sigma_{\max}(A)}{\sigma_{\min}(A)}
+=\frac{\sigma_1}{\sigma_r}.
+$$</div>
+<p>$\kappa$ 大表示某些方向被强烈拉伸、另一些几乎被压平，输入或 rounding error 可能被显著放大；$\sigma_r=0$ 时矩阵 rank deficient，condition number 为无穷。实际浮点计算中“是否为零”必须相对于 $\sigma_1$、矩阵尺寸和机器精度设 threshold，因此 numerical rank 不是机械地检查精确等于零。</p>
+<h4>6. 一个最小例子</h4>
+<p>若</p>
+<div class="math-display">$$
+A=\operatorname{diag}(3,1,0),
+$$</div>
+<p>则 singular values 为 $3,1,0$，rank 为 2，$\operatorname{Null}(A)=\operatorname{span}(e_3)$，</p>
+<div class="math-display">$$
+A^+=\operatorname{diag}\!\left(\frac13,1,0\right),
+\qquad
+\kappa_2\text{（限制在非零子空间）}=3.
+$$</div>
+<p class="concept-check"><strong>常见误区：</strong>SVD 与 eigendecomposition 不同：SVD 适用于任意矩阵，$u_i$ 与 $v_i$ 可处于不同维度；singular values 总非负；向量符号可同时翻转；重复奇异值对应的单个 singular vector 不唯一，但相应子空间唯一。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-pca-svd-directions">
+<summary><span class="concept-label">□ PCA：中心化数据的右奇异向量是主方向，解释方差为 $\sigma_j^2/(n-1)$</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 先明确数据矩阵的方向</h4>
+<p>令中心化后的数据矩阵 $X\in\mathbb R^{n\times p}$：每行是一个样本，每列是一个特征，每列均值为零。对它做 thin SVD：</p>
+<div class="math-display">$$
+X=U\Sigma V^{\mathsf T}.
+$$</div>
+<ul>
+<li>$V$ 的列 $v_j\in\mathbb R^p$ 位于<strong>特征空间</strong>，所以能作为原始特征的线性组合方向；</li>
+<li>$Xv_j=\sigma_j u_j$ 是所有样本在第 $j$ 个方向上的坐标，即 principal-component scores；</li>
+<li>$U$ 的列位于样本空间，不要把左奇异向量直接称为特征方向。</li>
+</ul>
+<h4>2. 为什么右奇异向量恰好是 PCA 方向？</h4>
+<p>样本协方差矩阵为</p>
+<div class="math-display">$$
+S=\frac{1}{n-1}X^{\mathsf T}X.
+$$</div>
+<p>把 SVD 代入：</p>
+<div class="math-display">$$
+S
+=\frac{1}{n-1}V\Sigma U^{\mathsf T}U\Sigma V^{\mathsf T}
+=V\frac{\Sigma^2}{n-1}V^{\mathsf T}.
+$$</div>
+<p>因此 $v_j$ 是 $S$ 的特征向量，特征值为 $\sigma_j^2/(n-1)$。另一方面，把数据投影到单位方向 $v$ 后的样本方差是</p>
+<div class="math-display">$$
+\operatorname{Var}(Xv)
+=\frac{1}{n-1}\lVert Xv\rVert_2^2
+=v^{\mathsf T}Sv.
+$$</div>
+<p>这是 $S$ 的 Rayleigh quotient，所以最大化投影方差得到最大特征值对应的 $v_1$；后续方向在与前面方向正交的约束下依次最大化，恰好得到 $v_2,v_3,\ldots$。</p>
+<h4>3. 方差、scores 与 explained variance</h4>
+<p>第 $j$ 个 score 向量为 $z_j=Xv_j=\sigma_j u_j$，其样本方差是</p>
+<div class="math-display">$$
+\operatorname{Var}(z_j)=\frac{\sigma_j^2}{n-1},
+\qquad
+\text{explained-ratio}_j
+=\frac{\sigma_j^2}{\sum_k\sigma_k^2}.
+$$</div>
+<p>保留前 $k$ 个方向时，低维坐标为 $Z=XV_k$，重构为 $\hat X=ZV_k^{\mathsf T}=XV_kV_k^{\mathsf T}$。这既保留最大方差，也给出 Frobenius 范数下最佳 rank-$k$ 近似。</p>
+<h4>4. 为什么一定要中心化？什么时候要标准化？</h4>
+<p>不中心化时，$X^{\mathsf T}X$ 混入均值方向，第一成分可能主要指向“数据离原点有多远”，而不是样本围绕均值如何变化。特征量纲差异很大时还应在训练数据内标准化；否则数值尺度最大的特征会支配 PCA。标准化后等价于对 correlation matrix 做 PCA。</p>
+<p class="concept-check"><strong>常见误区：</strong>主方向是 $V$ 的列，scores 是 $XV=U\Sigma$；loading 的整体正负号可任意翻转；PCA 只看 $X$ 的方差，不保证高方差方向最能预测 $y$；centering、scaling 和 PCA 必须只在每个训练折上拟合，避免数据泄漏。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-eckart-young">
+<summary><span class="concept-label">□ Eckart–Young：截断 SVD 给出 Frobenius 范数下最佳低秩近似</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 什么叫 truncated SVD？</h4>
+<p>设</p>
+<div class="math-display">$$
+A=\sum_{i=1}^r\sigma_i u_iv_i^{\mathsf T},
+\qquad
+\sigma_1\ge\cdots\ge\sigma_r&gt;0.
+$$</div>
+<p>只保留最大的前 $k$ 个 singular components：</p>
+<div class="math-display">$$
+A_k
+=\sum_{i=1}^k\sigma_i u_iv_i^{\mathsf T}
+=U_k\Sigma_kV_k^{\mathsf T},
+\qquad k&lt;r.
+$$</div>
+<p>每个 $u_iv_i^{\mathsf T}$ 都是 rank 1，所以 $A_k$ 的 rank 至多为 $k$。丢掉的是较小 singular values 所代表的弱方向。</p>
+<h4>2. “最佳”到底指什么？</h4>
+<p>Eckart–Young–Mirsky theorem 说：在所有 rank 不超过 $k$ 的矩阵 $B$ 中，$A_k$ 同时最小化 spectral norm 和 Frobenius norm 误差：</p>
+<div class="math-display">$$
+\min_{\operatorname{rank}(B)\le k}\lVert A-B\rVert_2
+=\lVert A-A_k\rVert_2
+=\sigma_{k+1},
+$$</div>
+<div class="math-display">$$
+\min_{\operatorname{rank}(B)\le k}\lVert A-B\rVert_F
+=\lVert A-A_k\rVert_F
+=\sqrt{\sum_{i=k+1}^r\sigma_i^2}.
+$$</div>
+<p>这里</p>
+<div class="math-display">$$
+\lVert M\rVert_F
+=\sqrt{\sum_{i,j}M_{ij}^2}
+=\sqrt{\sum_i\sigma_i(M)^2}
+$$</div>
+<p>衡量所有 entries 的总平方误差；$\lVert M\rVert_2=\sigma_1(M)$ 衡量最坏输入方向上的最大放大。因此两个 error formula 的含义不同：spectral error 只由第一个被丢弃的奇异值决定，Frobenius error 累积所有被丢弃方向的能量。</p>
+<h4>3. 为什么保留最大的奇异值会最优？</h4>
+<p>SVD 把 $A$ 分成彼此正交的 rank-one components，且第 $i$ 项的 Frobenius energy 是 $\sigma_i^2$。rank-$k$ 模型最多保留 $k$ 个独立输入—输出方向；若丢掉较大的 $\sigma_i$ 却保留较小的，就会产生更大的 squared error。因此最优策略是保留能量最大的前 $k$ 项。更严格地说，任何 $k$ 维子空间都无法把最坏方向的误差压到 $\sigma_{k+1}$ 以下；$A_k$ 恰好达到这个下界。</p>
+<h4>4. 数值例子</h4>
+<p>若 singular values 为 $5,2,1$：</p>
+<ul>
+<li>rank-1 approximation 保留 $5$，spectral error 为 $2$，Frobenius error 为 $\sqrt{2^2+1^2}=\sqrt5$；</li>
+<li>它保留的 squared Frobenius energy 比例为 $25/(25+4+1)=83.3\%$；</li>
+<li>rank-2 approximation 再保留 $2$，两种 error 都降为 $1$。</li>
+</ul>
+<p>这也是 PCA explained variance 的来源：对中心化数据 $X$，保留前 $k$ 个 principal components 等价于用 $X_k$ 做最佳 rank-$k$ 重构。</p>
+<h4>5. 用途与限制</h4>
+<ul>
+<li><strong>Compression：</strong>只存 $U_k,\Sigma_k,V_k$，当 $k\ll\min(m,n)$ 时显著节省参数；</li>
+<li><strong>Denoising：</strong>若 signal 集中在大 singular values、noise 分散在小方向，截断可过滤噪声；</li>
+<li><strong>Latent factors/PCA：</strong>用少量正交 factors 描述主要 variation。</li>
+</ul>
+<p>但“最佳”只针对所选 rank 和 unweighted spectral/Frobenius loss。它不保证对 missing data、outlier、稀疏结构、预测目标 $y$ 或经济损失函数最佳。若 $\sigma_k=\sigma_{k+1}$，最佳误差值唯一，但 rank-$k$ 子空间或近似矩阵可能不唯一。</p>
+<p class="concept-check"><strong>面试总结：</strong>先写 $A_k=U_k\Sigma_kV_k^{\mathsf T}$；再分别给出 $\lVert A-A_k\rVert_2=\sigma_{k+1}$ 与 $\lVert A-A_k\rVert_F^2=\sum_{i&gt;k}\sigma_i^2$。不要只说“保留最大特征值”，因为一般矩阵这里使用的是 singular values。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-cholesky-gaussian">
+<summary><span class="concept-label">□ Cholesky：正定矩阵 $A=LL^{\mathsf T}$；模拟相关 Gaussian</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 分解的条件与形式</h4>
+<p>若实矩阵 $A$ 对称正定，即 $x^{\mathsf T}Ax&gt;0$ 对所有 $x\ne0$ 成立，则存在唯一的下三角矩阵 $L$（对角元取正）使</p>
+<div class="math-display">$$
+A=LL^{\mathsf T}.
+$$</div>
+<p>Cholesky 可看成专门利用对称正定结构的 LU。它大约只需一般 LU 一半的存储和计算量，常用于协方差矩阵、Gaussian likelihood、最小二乘和正定线性系统。</p>
+<h4>2. 一个 $2\times2$ 分解怎样算？</h4>
+<p>设</p>
+<div class="math-display">$$
+A=\begin{pmatrix}a&amp;c\\c&amp;b\end{pmatrix},
+\qquad
+L=\begin{pmatrix}\ell_{11}&amp;0\\\ell_{21}&amp;\ell_{22}\end{pmatrix}.
+$$</div>
+<p>比较 $A=LL^{\mathsf T}$ 的元素得到</p>
+<div class="math-display">$$
+\ell_{11}=\sqrt a,
+\qquad
+\ell_{21}=\frac{c}{\ell_{11}},
+\qquad
+\ell_{22}=\sqrt{b-\ell_{21}^2}.
+$$</div>
+<p>根号内为正正是正定性的体现。高维算法也按这个思路逐列扣除已经解释的部分。求 $Ax=b$ 时不形成 $A^{-1}$，而是先 forward solve $Ly=b$，再 backward solve $L^{\mathsf T}x=y$。</p>
+<h4>3. 为什么能模拟相关 Gaussian？</h4>
+<p>若目标协方差 $\Sigma=LL^{\mathsf T}$，先生成独立标准正态</p>
+<div class="math-display">$$
+Z\sim N(0,I),
+\qquad X=\mu+LZ,
+$$</div>
+<p>则</p>
+<div class="math-display">$$
+\mathbb E[X]=\mu,
+\qquad
+\operatorname{Cov}(X)
+=L\operatorname{Cov}(Z)L^{\mathsf T}
+=LL^{\mathsf T}
+=\Sigma.
+$$</div>
+<p>直觉上，$L$ 把独立、球形的 Gaussian 云拉伸并旋转成具有目标相关结构的椭球。</p>
+<h4>4. 两个相关标准正态的具体构造</h4>
+<p>目标相关矩阵为</p>
+<div class="math-display">$$
+\Sigma=\begin{pmatrix}1&amp;\rho\\\rho&amp;1\end{pmatrix},
+\qquad |\rho|&lt;1,
+$$</div>
+<p>其 Cholesky factor 可取</p>
+<div class="math-display">$$
+L=\begin{pmatrix}1&amp;0\\\rho&amp;\sqrt{1-\rho^2}\end{pmatrix}.
+$$</div>
+<p>若 $Z_1,Z_2$ 独立且均为 $N(0,1)$，那么</p>
+<div class="math-display">$$
+X_1=Z_1,
+\qquad
+X_2=\rho Z_1+\sqrt{1-\rho^2}Z_2
+$$</div>
+<p>均为标准正态，且 $\operatorname{Corr}(X_1,X_2)=\rho$。这就是 Monte Carlo 中最常见的相关正态构造。</p>
+<h4>5. 半正定、数值误差与替代方案</h4>
+<p>若 $A$ 只有 PSD 而不严格 PD，例如协方差矩阵有完全线性相关的特征，普通 Cholesky 会遇到零 pivot 并失败。可以删除冗余方向、使用 eigen/SVD 的低秩平方根，或在确有建模理由时加小的 diagonal jitter $\varepsilon I$。若失败来自矩阵本应对称但有浮点噪声，应先检查数据与建模问题，不要盲目加很大的 jitter。</p>
+<p class="concept-check"><strong>常见误区：</strong>必须确认实现返回的是 lower 还是 upper factor；若 $A=LL^{\mathsf T}$，模拟时用 $LZ$，不能随意换成 $L^{\mathsf T}Z$；Cholesky failure 往往是在提醒矩阵并非严格正定。</p>
+</div>
+</details>
+</li>
+</ul>
+<h3>3.5 矩阵微积分与优化前置 [P0]</h3>
+<ul>
+<li><p>□ 梯度、Jacobian、Hessian；形状检查。</p>
+</li>
+<li><p>□ $\nabla_x(a^{\mathsf T}x)=a$。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-quadratic-form-gradient">
+<summary><span class="concept-label">□ $\nabla_x(x^{\mathsf T}Ax)=(A+A^{\mathsf T})x$</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 先做 shape check，并记住 $A$ 必须视为常数</h4>
+<p>令 $x\in\mathbb R^n$ 为 column vector，$A\in\mathbb R^{n\times n}$ 不依赖 $x$。二次型</p>
+<div class="math-display">$$
+f(x)=x^{\mathsf T}Ax
+$$</div>
+<p>的形状是 $(1\times n)(n\times n)(n\times1)=1\times1$，所以 $f$ 是 scalar；采用 column-gradient convention 时，$\nabla_x f$ 应是 $n\times1$。候选答案 $(A+A^{\mathsf T})x$ 的形状正好也是 $n\times1$。</p>
+<h4>2. 最稳的手推方法：逐坐标展开</h4>
+<p>先把 scalar 写成双重求和：</p>
+<div class="math-display">$$
+f(x)=\sum_{i=1}^n\sum_{j=1}^n x_iA_{ij}x_j.
+$$</div>
+<p>对第 $k$ 个分量 $x_k$ 求偏导时，$x_k$ 会以两种身份出现：</p>
+<ul>
+<li>它可能是左边的 $x_i$，即 $i=k$；</li>
+<li>它也可能是右边的 $x_j$，即 $j=k$。</li>
+</ul>
+<p>product rule 因而给出两项：</p>
+<div class="math-display">$$
+\begin{aligned}
+\frac{\partial f}{\partial x_k}
+&amp;=\sum_j A_{kj}x_j+\sum_i x_iA_{ik}\\
+&amp;=(Ax)_k+(A^{\mathsf T}x)_k.
+\end{aligned}
+$$</div>
+<p>因为每个 gradient component 都满足这个关系，把 $k=1,\ldots,n$ 叠成 column vector：</p>
+<div class="math-display">$$
+\nabla_x f=Ax+A^{\mathsf T}x=(A+A^{\mathsf T})x.
+$$</div>
+<p><strong>记忆点：</strong>$x$ 在二次型中出现两次，所以求导有两项；左边那个 $x^{\mathsf T}$ 贡献 $Ax$，右边那个 $x$ 贡献 $A^{\mathsf T}x$。</p>
+<h4>3. 面试中最快的方法：微分法</h4>
+<p>对 $f=x^{\mathsf T}Ax$ 使用 product rule：</p>
+<div class="math-display">$$
+\begin{aligned}
+\mathrm df
+&amp;=(\mathrm dx)^{\mathsf T}Ax
++x^{\mathsf T}A\,\mathrm dx\\
+&amp;=(Ax)^{\mathsf T}\mathrm dx
++(A^{\mathsf T}x)^{\mathsf T}\mathrm dx\\
+&amp;=\bigl[(A+A^{\mathsf T})x\bigr]^{\mathsf T}\mathrm dx.
+\end{aligned}
+$$</div>
+<p>再与 gradient 的定义</p>
+<div class="math-display">$$
+\mathrm df=(\nabla_x f)^{\mathsf T}\mathrm dx
+$$</div>
+<p>逐项比较，就读出 $\nabla_x f=(A+A^{\mathsf T})x$。这里用到“scalar 等于其 transpose”：$x^{\mathsf T}A\,\mathrm dx=(x^{\mathsf T}A\,\mathrm dx)^{\mathsf T}=(\mathrm dx)^{\mathsf T}A^{\mathsf T}x$。</p>
+<h4>4. 为什么二次型只看得到 $A$ 的对称部分？</h4>
+<p>把 $A$ 分解成 symmetric 与 skew-symmetric parts：</p>
+<div class="math-display">$$
+A=S+K,\qquad
+S=\frac{A+A^{\mathsf T}}2,\qquad
+K=\frac{A-A^{\mathsf T}}2.
+$$</div>
+<p>因为 $K^{\mathsf T}=-K$，scalar $x^{\mathsf T}Kx$ 满足</p>
+<div class="math-display">$$
+x^{\mathsf T}Kx
+=(x^{\mathsf T}Kx)^{\mathsf T}
+=x^{\mathsf T}K^{\mathsf T}x
+=-x^{\mathsf T}Kx,
+$$</div>
+<p>所以 $x^{\mathsf T}Kx=0$，从而</p>
+<div class="math-display">$$
+x^{\mathsf T}Ax=x^{\mathsf T}Sx,
+\qquad
+\nabla_x f=2Sx=(A+A^{\mathsf T})x.
+$$</div>
+<p>这给出最常用的两个特例：</p>
+<div class="math-display">$$
+A=A^{\mathsf T}\ \Rightarrow\ \nabla_x(x^{\mathsf T}Ax)=2Ax,
+$$</div>
+<div class="math-display">$$
+A=-A^{\mathsf T}\ \Rightarrow\ x^{\mathsf T}Ax=0,\quad \nabla_x f=0.
+$$</div>
+<p>因此优化中常写 $\frac12x^{\mathsf T}Ax$；若 $A$ 对称，前面的 $1/2$ 正好抵消求导产生的 2：</p>
+<div class="math-display">$$
+\nabla_x\!\left(\frac12x^{\mathsf T}Ax\right)=Ax,
+\qquad
+\nabla_x^2(x^{\mathsf T}Ax)=A+A^{\mathsf T}.
+$$</div>
+<h4>5. 用 $2\times2$ 非对称例子自检</h4>
+<p>令</p>
+<div class="math-display">$$
+A=\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix},
+\qquad
+x=\begin{pmatrix}x_1\\x_2\end{pmatrix}.
+$$</div>
+<p>直接乘开：</p>
+<div class="math-display">$$
+f=ax_1^2+(b+c)x_1x_2+dx_2^2.
+$$</div>
+<p>所以</p>
+<div class="math-display">$$
+\nabla_x f
+=\begin{pmatrix}
+2ax_1+(b+c)x_2\\
+(b+c)x_1+2dx_2
+\end{pmatrix}
+=(A+A^{\mathsf T})x.
+$$</div>
+<p>这个例子也说明为什么不能在 $A$ 非对称时机械写 $2Ax$：cross term 中真正出现的是 $b+c$，不是 $2b$。</p>
+<p class="concept-check"><strong>手推模板：</strong>忘记公式时写 $f=\sum_{ij}x_iA_{ij}x_j$，固定 $k$ 后分别抓住 $i=k$ 与 $j=k$ 两批项；或者写 $\mathrm df=(\mathrm dx)^{\mathsf T}Ax+x^{\mathsf T}A\,\mathrm dx$。上述结论假设 $A$ 与 $x$ 无关；若 $A=A(x)$，还必须对 $A$ 本身求导。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
+<li><p>□ 链式法则、log-sum-exp、softmax Jacobian、backpropagation。</p>
+</li>
+<li><p>□ Convex set、convex function、first-order condition；强凸与唯一解。</p>
+</li>
+<li><p>□ Lagrangian、KKT 的可行性、互补松弛和对偶直觉 [P1]。</p>
+</li>
+</ul>
+<h3>3.6 数值线性代数 [P1]</h3>
+<ul>
+<li><p>□ Condition number 衡量输入误差放大；接近秩亏会导致不稳定。</p>
+</li>
+<li><p>□ 形成 $X^{\mathsf T}X$ 会平方二范数条件数。</p>
+</li>
+<li><p>□ 避免为求解 $Ax=b$ 显式求逆。</p>
+</li>
+<li><p>□ 浮点精度、cancellation、overflow、underflow、log-sum-exp。</p>
+</li>
+<li><p>□ 稀疏矩阵、power iteration、conjugate gradient 直觉 [P2]。</p>
+</li>
+</ul>
+<h2>4. 组合数学与离散推理</h2>
+<h3>4.1 计数工具箱 [P0]</h3>
+<ul>
+<li><p>□ 加法与乘法原理；排列、组合、多项式系数。</p>
+</li>
+<li><p>□ 二项式定理与 Pascal 恒等式：$\binom nk=\binom{n-1}{k}\mathplus{}\binom{n-1}{k-1}$。</p>
+</li>
+<li><p>□ 隔板法及上下界修正；容斥；错排；抽屉原理。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-circular-permutations">
+<summary><span class="concept-label">□ 圆排列；按旋转或镜像取商</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 为什么 $n!$ 要除以 $n$？</h4>
+<p>把 $n$ 个互不相同的人排在圆桌旁，若只关心相对位置而不区分整体旋转，则每个圆排列在线排列中出现 $n$ 次：任何一个人都可以写在第一个位置。因此</p>
+<div class="math-display">$$
+\frac{n!}{n}=(n-1)!.
+$$</div>
+<p>更直观的做法是先固定一个人，再把其余 $n-1$ 人依次排在他周围，共有 $(n-1)!$ 种。这里不是“圆形自动少一个位置”，而是在对旋转对称性取商。</p>
+<h4>2. 先问清哪些排列算相同</h4>
+<ul>
+<li><strong>座位有编号：</strong>旋转后人坐到了不同编号，仍算不同，共 $n!$ 种。</li>
+<li><strong>圆桌且只忽略旋转：</strong>共有 $(n-1)!$ 种。</li>
+<li><strong>项链／手链且翻面也相同：</strong>还要把镜像识别。对 $n\ge3$ 个互异对象，通常为 $(n-1)!/2$。</li>
+</ul>
+<p>有重复颜色或某些排列本身具有旋转／镜像对称时，不能机械除以 $n$ 或 $2n$；此时应使用 Burnside's lemma 计算每种群作用下的不动点。</p>
+<h4>3. 常见限制：两个人必须相邻</h4>
+<p>若指定的 A、B 必须相邻，把二人看成一个 block。这个 block 加上其余 $n-2$ 人，共 $n-1$ 个对象做圆排列，有 $(n-2)!$ 种；A、B 内部可交换，因此</p>
+<div class="math-display">$$
+N(\text{A、B 相邻})=2(n-2)!.
+$$</div>
+<p>若要求不相邻，则用总数 $(n-1)!$ 减去上式。</p>
+<h4>4. 男女交替的标准方法</h4>
+<p>有 $m$ 名男性和 $m$ 名女性围成一圈并要求性别交替。先把男性做圆排列，共 $(m-1)!$ 种；男性之间恰有 $m$ 个空隙，再把女性放入空隙，共 $m!$ 种，所以</p>
+<div class="math-display">$$
+N(\text{男女交替})=(m-1)!\,m!.
+$$</div>
+<p>“先固定一类，再填空隙”是圆排列限制题的常见套路。</p>
+<p class="concept-check"><strong>常见误区：</strong>先确认座位是否有标签、旋转是否相同、镜像是否相同；圆桌排列与项链计数不是同一问题；含重复对象或内部对称时，简单相除可能发生过度计数；block 法之后仍要用圆排列数量而不是线排列数量。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul>
+<li><p>□ Catalan 数、合法括号、格路径与递推 [P1]。</p>
+</li>
+</ul>
+<h3>4.2 递推、生成函数与动态规划 [P0／P1]</h3>
+<ul>
+<li><p>□ 从最小状态开始写 base case、transition、answer location。</p>
+</li>
+<li><p>□ Memoization 与 tabulation；时间、空间复杂度；滚动数组。</p>
+</li>
+<li><p>□ 一维 DP、背包、区间 DP、序列 DP、状态机 DP、bitmask DP。</p>
+</li>
+<li><p>□ 线性递推与矩阵快速幂；特征根法。</p>
+</li>
+<li><p>□ 生成函数编码计数问题 [P1]。</p>
+</li>
+</ul>
+<p><b>三角形游走：</b> 若每步从一个顶点走向另外两个顶点之一，令 $a_n$ 为第 $n$ 步回到起点的路径数，则</p>
+<div class="math-display">$$
+a_n=\frac{2^n+2(-1)^n}{3},
+\qquad a_6=22.
+$$</div>
+<p>题目若改成三角格点、沿边连续运动或记录方向，状态空间会完全不同，必须先澄清。</p>
+<h3>4.3 图、概率方法与不变量 [P1]</h3>
+<ul>
+<li><p>□ 图的顶点、边、度、路径、连通性、树、环。</p>
+</li>
+<li><p>□ 邻接矩阵幂计算固定长度 walk 数。</p>
+</li>
+<li><p>□ Handshaking lemma、树有 $n-1$ 条边、生成树。</p>
+</li>
+<li><p>□ 期望存在性证明：若随机对象的期望小于阈值，则至少存在一个对象达到该阈值。</p>
+</li>
+<li><p>□ Invariant、monovariant、extremal principle、symmetry。</p>
+</li>
+</ul>
+<h2>5. 机器学习数学</h2>
+<h3>5.1 问题设定与泛化 [P0]</h3>
+<ul>
+<li><p>□ Supervised、unsupervised；regression、classification、ranking。</p>
+</li>
+<li><p>□ Empirical risk minimization；损失函数与期望风险。</p>
+</li>
+<li><p>□ Train、validation、test 的职责；test 不能参与超参数选择。</p>
+</li>
+<li><p>□ Underfitting、overfitting、bias–variance trade-off、double descent 直觉。</p>
+</li>
+<li><p>□ 数据泄漏、distribution shift、concept drift、class imbalance。</p>
+</li>
+</ul>
+<p>平方损失下，点 $x$ 的期望测试误差为</p>
+<div class="math-display">$$
+\mathbb E\!\left[(Y-\hat f(x))^2\right]=\sigma^2
++\left(\mathbb E\hat f(x)-f(x)\right)^2
++\operatorname{Var}(\hat f(x)).
+$$</div>
+<h3>5.2 线性模型与 GLM [P0]</h3>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-ml-linear-regularized-models">
+<summary><span class="concept-label">□ Linear regression、weighted least squares、Ridge、Lasso、Elastic Net</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 线性回归在拟合什么？</h4>
+<p>线性回归假设条件均值可写为 $\mathbb E[Y\mid X=x]=x^{\mathsf T}\beta$。普通最小二乘（OLS）选择</p>
+<div class="math-display">$$
+\hat\beta_{\mathrm{OLS}}
+=\arg\min_\beta\sum_{i=1}^n(y_i-x_i^{\mathsf T}\beta)^2.
+$$</div>
+<p>“线性”是指对参数 $\beta$ 线性；特征本身可以包含多项式、交互项或 spline。OLS 既可以用于预测，也可以在更强假设下用于系数推断，但两种目标对偏差、方差与变量选择的要求不同。</p>
+<h4>2. Weighted Least Squares（WLS）</h4>
+<p>若观测误差方差不同，且已知或能合理估计 $\operatorname{Var}(\varepsilon_i\mid x_i)=\sigma_i^2$，WLS 最小化</p>
+<div class="math-display">$$
+\sum_{i=1}^n w_i(y_i-x_i^{\mathsf T}\beta)^2,
+\qquad w_i\propto\frac1{\sigma_i^2}.
+$$</div>
+<p>噪声更小的观测权重更大。若所有权重相等就退化为 OLS。WLS 的权重应表达精度或抽样设计；不要因为某个残差大就事后随意降低该点权重，这会改变估计目标并可能引入偏差。</p>
+<h4>3. 三种正则化</h4>
+<div class="math-display">$$
+\begin{aligned}
+\text{Ridge: }&amp;\min_\beta \frac1{2n}\lVert y-X\beta\rVert_2^2+\lambda\lVert\beta\rVert_2^2,\\
+\text{Lasso: }&amp;\min_\beta \frac1{2n}\lVert y-X\beta\rVert_2^2+\lambda\lVert\beta\rVert_1,\\
+\text{Elastic Net: }&amp;\min_\beta \frac1{2n}\lVert y-X\beta\rVert_2^2
++\lambda\!\left[\alpha\lVert\beta\rVert_1+(1-\alpha)\lVert\beta\rVert_2^2\right].
+\end{aligned}
+$$</div>
+<ul>
+<li><strong>Ridge：</strong>连续收缩所有系数，缓解多重共线性，通常不会把系数精确压成 0；</li>
+<li><strong>Lasso：</strong>产生稀疏解，可做变量选择，但在高度相关特征中可能不稳定地只选一个；</li>
+<li><strong>Elastic Net：</strong>结合稀疏与成组收缩，常比纯 Lasso 更适合相关特征。</li>
+</ul>
+<h4>4. 实际建模流程</h4>
+<p>先在训练折内中心化／标准化连续特征，否则惩罚会因单位不同而不公平；截距通常不惩罚。用交叉验证选择 $\lambda$（以及 Elastic Net 的 $\alpha$），并把预处理放入每个训练折，避免泄漏。$\lambda$ 增大通常增加 bias、降低 variance。</p>
+<p class="concept-check"><strong>常见误区：</strong>正则化后的训练误差不必更小，目标是验证／测试误差；Ridge 不能自动给因果解释；Lasso 选中变量不等于该变量显著或因果；若目标是统计推断，正则化后的标准误和检验需要专门方法。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-logistic-regression">
+<summary><span class="concept-label">□ Logistic regression、Bernoulli likelihood、binary cross-entropy 与梯度</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 从线性分数到概率</h4>
+<p>对二分类 $Y\in\{0,1\}$，令 $\eta_i=x_i^{\mathsf T}\beta$，再用 sigmoid 把任意实数映射到 $(0,1)$：</p>
+<div class="math-display">$$
+p_i=P(Y_i=1\mid x_i)=\sigma(\eta_i)=\frac1{1+e^{-\eta_i}},
+\qquad
+\log\frac{p_i}{1-p_i}=x_i^{\mathsf T}\beta.
+$$</div>
+<p>所以模型对<strong>对数胜算</strong>线性。其他变量不变时，特征 $x_j$ 增加 1 使 odds 乘以 $e^{\beta_j}$；它并不表示概率固定增加 $\beta_j$。</p>
+<h4>2. 为什么交叉熵就是负对数似然？</h4>
+<p>条件于特征，$Y_i\sim\operatorname{Bernoulli}(p_i)$，似然为 $\prod_i p_i^{y_i}(1-p_i)^{1-y_i}$。取负对数得到 binary cross-entropy：</p>
+<div class="math-display">$$
+L(\beta)=-\sum_{i=1}^n\left[y_i\log p_i+(1-y_i)\log(1-p_i)\right].
+$$</div>
+<p>因此“最大化 Bernoulli likelihood”和“最小化 binary cross-entropy”是同一个优化问题。</p>
+<h4>3. 梯度、Hessian 与几何</h4>
+<div class="math-display">$$
+\nabla L(\beta)=X^{\mathsf T}(p-y),
+\qquad
+\nabla^2L(\beta)=X^{\mathsf T}WX,
+\quad W_{ii}=p_i(1-p_i).
+$$</div>
+<p>梯度把每个样本的预测误差 $p_i-y_i$ 按特征加权求和；Hessian 半正定，所以无正则的负对数似然是凸函数。预测类别的阈值可以按业务成本调整，不必固定为 0.5；阈值不改变模型输出的概率或排名。</p>
+<h4>4. 正则化、分离与解释</h4>
+<p>L2/L1 惩罚分别对应 Ridge/Lasso 式收缩。若存在一条超平面把训练样本完全分开，无惩罚 MLE 的系数可能趋向无穷而不收敛；正则化可以得到有限稳定解。类别不平衡时应结合 class weight、采样策略、PR-AUC、校准和成本敏感阈值判断，不能只看 accuracy。</p>
+<p class="concept-check"><strong>常见误区：</strong>Logistic regression 是线性决策边界，但输出不是线性概率；系数对应 log-odds 而非概率差；低训练交叉熵不保证概率校准；在测试集上挑阈值会造成泄漏。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-softmax-regression">
+<summary><span class="concept-label">□ Multiclass softmax、cross-entropy、identifiability 与数值稳定</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 多分类概率</h4>
+<p>对 $K$ 个互斥类别，模型为每类产生 logit $z_k=x^{\mathsf T}\beta_k$，再归一化：</p>
+<div class="math-display">$$
+p_k=P(Y=k\mid x)=\frac{e^{z_k}}{\sum_{j=1}^Ke^{z_j}},
+\qquad \sum_{k=1}^Kp_k=1.
+$$</div>
+<p>若真实类别是 $y$，单样本 cross-entropy 为 $-\log p_y$。它强烈惩罚对真实类别给出极小概率的自信错误。</p>
+<h4>2. 可识别性为何有问题？</h4>
+<p>给所有 logits 同时加同一个常数 $c$ 不改变 softmax，因此参数并非天然唯一。常见处理是把一个类别设为 reference，令其系数为 0；或加入等价约束。系数通常解释为某类相对于 reference 类的 log-odds 变化。</p>
+<h4>3. 数值稳定与梯度</h4>
+<p>直接计算很大的 $e^{z_k}$ 可能溢出。利用平移不变性，令 $m=\max_jz_j$，计算</p>
+<div class="math-display">$$
+\log\sum_j e^{z_j}=m+\log\sum_j e^{z_j-m}.
+$$</div>
+<p>这就是 log-sum-exp trick。对每类参数，梯度仍是“预测概率减 one-hot 真值”乘特征，即 $X^{\mathsf T}(P-Y)$。Softmax 是一个联合多分类模型；one-vs-rest 则训练多个独立二分类器，输出未必自然加总为 1。</p>
+<p class="concept-check"><strong>常见误区：</strong>softmax 的最大概率不等于模型一定可靠；类别多或分布漂移时仍需校准。实现时不要先算巨大指数再取对数，应直接使用稳定的 log-softmax／cross-entropy。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-glm-framework">
+<summary><span class="concept-label">□ GLM：随机成分、线性预测子、link function 与 Poisson regression</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. GLM 的三个组成部分</h4>
+<ol>
+<li><strong>随机成分：</strong>$Y\mid X$ 来自指数族分布，如 Normal、Bernoulli、Poisson；</li>
+<li><strong>线性预测子：</strong>$\eta=x^{\mathsf T}\beta$；</li>
+<li><strong>link：</strong>$g(\mu)=\eta$，其中 $\mu=\mathbb E[Y\mid X=x]$。</li>
+</ol>
+<p>典型组合是 Normal + identity link（线性回归）、Bernoulli + logit link（Logistic regression）、Poisson + log link（Poisson regression）。GLM 并不是要求 $Y$ 必须正态，而是让条件分布及其均值—方差关系适合数据类型。</p>
+<h4>2. Poisson regression</h4>
+<p>对非负计数 $Y_i$，设</p>
+<div class="math-display">$$
+Y_i\mid x_i\sim\operatorname{Poisson}(\mu_i),
+\qquad
+\log\mu_i=x_i^{\mathsf T}\beta,
+\qquad
+\mu_i=e^{x_i^{\mathsf T}\beta}&gt;0.
+$$</div>
+<p>特征增加 1 会使期望计数乘以 $e^{\beta_j}$。若观测暴露时间不同，可加入 offset：$\log\mu_i=\log t_i+x_i^{\mathsf T}\beta$，其中 $\log t_i$ 的系数固定为 1，模型解释的是单位暴露率。</p>
+<h4>3. Canonical link、deviance 与 overdispersion</h4>
+<p>canonical link 能让似然与梯度形式特别简洁；Normal、Bernoulli、Poisson 的 canonical link 分别是 identity、logit、log。Deviance 衡量拟合模型相对饱和模型损失了多少对数似然，可用于比较嵌套模型和检查拟合。</p>
+<p>Poisson 强制 $\operatorname{Var}(Y\mid X)=\mathbb E[Y\mid X]$。真实计数常因未观测异质性或聚集而方差更大，即 overdispersion；此时朴素标准误会偏小，可考虑 robust/quasi-Poisson 或 Negative Binomial。零值异常多时还可能需要 hurdle 或 zero-inflated 模型。</p>
+<p class="concept-check"><strong>常见误区：</strong>GLM 的“linear”是 link 后的均值对参数线性，不是响应本身必须线性；link 要与响应支持集相容；看到计数就直接套 Poisson 而不检查 dispersion、暴露量和独立性是不够的。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-interactions-basis-expansion">
+<summary><span class="concept-label">□ Interaction 与 nonlinear basis expansion：解释、正则化与验证</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. Interaction 表达“一个变量的效果取决于另一个变量”</h4>
+<p>模型 $y=\beta_0+\beta_1x_1+\beta_2x_2+\beta_3x_1x_2+\varepsilon$ 中，$x_1$ 的边际效应是</p>
+<div class="math-display">$$
+\frac{\partial\mathbb E[Y\mid X]}{\partial x_1}=\beta_1+\beta_3x_2.
+$$</div>
+<p>所以存在交互项时，$\beta_1$ 只表示 $x_2=0$ 时 $x_1$ 的效应。连续变量先中心化可让“0”更有意义，也能减轻主项与乘积项的数值相关。一般遵守 hierarchy principle：加入 $x_1x_2$ 时保留 $x_1,x_2$ 主效应，除非有明确结构理由。</p>
+<h4>2. Basis expansion 让线性模型表示曲线</h4>
+<p>把原始 $x$ 映射成 $\phi(x)=(x,x^2,x^3,\ldots)$、分段多项式、spline 或 Fourier basis，然后拟合 $\phi(x)^{\mathsf T}\beta$。模型仍对参数线性，却能表示非线性函数。高阶多项式在边界外容易剧烈振荡，spline 通常提供更局部、稳定的灵活性。</p>
+<h4>3. 容量控制与无泄漏验证</h4>
+<p>大量交互和 basis 会迅速增加维数及方差，应结合 Ridge/Lasso/Elastic Net、限制 knot/degree，并用交叉验证选择复杂度。所有标准化、basis knot、特征筛选都必须只在训练折拟合，再应用到验证折。</p>
+<p class="concept-check"><strong>常见误区：</strong>交互项不能只靠其单个系数脱离尺度解释；加入 $x^2$ 后 $x$ 的系数含义已经改变；训练拟合更好并不表示曲线或交互可泛化，尤其不要相信远离训练支持集的高阶多项式外推。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-calibration-discrimination">
+<summary><span class="concept-label">□ Calibration 与 discrimination：概率质量、排名能力与阈值</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 两个目标不同</h4>
+<p><strong>Discrimination</strong>问模型能否把正例排在负例前面，ROC-AUC 近似等于随机抽取一个正例和负例时正例得分更高的概率。<strong>Calibration</strong>问概率数值是否可信：在所有预测约为 0.7 的样本中，实际应约有 70% 为正例。</p>
+<p>模型可以排名很好但概率过度自信，也可以整体校准尚可却几乎没有区分能力。因此 AUC 高不代表“0.8 真的是 80%”。</p>
+<h4>2. 怎么评估？</h4>
+<ul>
+<li>排名：ROC-AUC；类别极不平衡时同时看 precision–recall curve/PR-AUC；</li>
+<li>概率：reliability diagram、Brier score $n^{-1}\sum_i(p_i-y_i)^2$、log loss；</li>
+<li>决策：结合 false positive/negative 成本、容量限制与业务基准率选择阈值。</li>
+</ul>
+<h4>3. 怎么校准？</h4>
+<p>Platt scaling 用一个 Logistic 模型变换原始分数；isotonic regression 更灵活但更容易在小样本过拟合。校准器必须在模型未用于拟合的数据或交叉验证的 out-of-fold 预测上训练，最终只在独立测试集评估。分布或基准率漂移后，旧校准可能失效，需要持续监控。</p>
+<p class="concept-check"><strong>常见误区：</strong>accuracy 依赖阈值和基准率；AUC 基本不评价概率大小；在测试集调阈值或校准等于泄漏；校准不是永远把阈值设为 0.5，最优阈值仍取决于错误成本。</p>
+</div>
+</details>
+</li>
+</ul>
+<h3>5.3 树与集成学习 [P0]</h3>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-decision-trees">
+<summary><span class="concept-label">□ Regression tree 与 classification tree；greedy split</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 树模型在做什么？</h4>
+<p>决策树用一连串形如 $x_j\le s$ 的问题，把特征空间递归切成若干矩形区域。落入同一个叶节点的样本共享一个预测：</p>
+<ul>
+<li><strong>Regression tree：</strong>通常预测叶内训练标签均值；</li>
+<li><strong>Classification tree：</strong>预测叶内多数类，或用各类频率作为概率估计。</li>
+</ul>
+<p>树天然能表示非线性和高阶交互。例如先问“波动率是否高”，再只在高波动区域问“成交量是否高”，就表示成交量的作用依赖波动率。</p>
+<h4>2. Greedy split 怎样选择？</h4>
+<p>在当前节点 $R$，算法枚举候选特征 $j$ 和阈值 $s$，形成左右子节点 $R_L,R_R$，选择加权 impurity 最小（等价于 impurity reduction 最大）的切分：</p>
+<div class="math-display">$$
+\Delta I
+=I(R)-\frac{n_L}{n}I(R_L)-\frac{n_R}{n}I(R_R).
+$$</div>
+<p>回归常用平方误差，分类常用 Gini 或 entropy。选定本层最佳切分后再对子节点重复。之所以叫 greedy，是因为每一步只求当前最优，不会回头搜索整棵树的全局最优结构；全局最优树通常是组合优化难题。</p>
+<h4>3. 预测与解释</h4>
+<p>单棵树可以沿路径解释：“因为 $x_2&gt;3$ 且 $x_5\le0.4$，所以落入该叶”。它不需要标准化，也不受单调单位变换影响。但轴对齐切分可能需要很多阶梯近似一条斜线边界；回归树在训练范围外通常只能给边界叶值，不能像线性模型那样自然外推。</p>
+<p class="concept-check"><strong>常见误区：</strong>树在训练集上的每次 greedy 改进不保证测试集更好；叶内类别频率在小叶节点中可能很不稳定、也未必校准；单棵深树对少量数据变化非常敏感，这是后面需要 bagging 的原因。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-tree-impurity">
+<summary><span class="concept-label">□ MSE、Entropy 与 Gini：节点不纯度和切分收益</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. Regression tree 的平方误差</h4>
+<p>若节点 $R$ 用常数 $c$ 预测，最小化 $\sum_{i\in R}(y_i-c)^2$ 的解是叶内均值 $c=\bar y_R$。所以回归节点 impurity 可写成</p>
+<div class="math-display">$$
+I_{mathrm{MSE}}(R)=\frac1{|R|}\sum_{i\in R}(y_i-\bar y_R)^2.
+$$</div>
+<p>好的切分让左右两边分别更同质，从而显著减少加权平方误差。若改用绝对误差，最佳常数会变成叶内中位数。</p>
+<h4>2. Classification tree 的 Gini 与 entropy</h4>
+<p>设节点内第 $k$ 类比例为 $p_k$：</p>
+<div class="math-display">$$
+I_{\mathrm{Gini}}=1-\sum_kp_k^2,
+\qquad
+I_{\mathrm{Entropy}}=-\sum_kp_k\log p_k.
+$$</div>
+<p>纯节点只有一类，两者都为 0。二分类各占一半时，Gini 为 $1/2$，entropy 为 $\log2$，都达到最大。Gini 也可理解为按节点比例随机给两个样本贴标签时标签不同的概率。</p>
+<h4>3. 为什么必须按子节点大小加权？</h4>
+<p>若一个切分只把一个容易样本单独分出去，而让其余样本仍很混乱，不能把两个子节点的 impurity 简单平均；必须用 $n_L/n,n_R/n$ 加权。Entropy 对很小的类别概率变化略敏感，Gini 计算稍快，但二者通常给出相近的树，超参数与数据噪声往往更重要。</p>
+<p class="concept-check"><strong>常见误区：</strong>impurity 是节点内标签混杂程度，不是整棵树的测试错误率；训练 impurity 永远可由更深切分继续下降，因此不能据此无限生长；不同 criterion 的数值尺度不可直接比较，只比较同一 criterion 下的 reduction。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-tree-complexity-pruning">
+<summary><span class="concept-label">□ Depth、min leaf、pruning 对偏差与方差的影响</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 为什么深树容易过拟合？</h4>
+<p>树越深、叶越小，就能表示越细的局部结构：训练 bias 降低，但每个叶的均值／比例由更少样本估计，variance 上升。极端情况下，每个叶只有一个样本，训练误差几乎为 0，却主要记住噪声。</p>
+<ul>
+<li><strong>max depth：</strong>限制路径最多能问多少个问题；</li>
+<li><strong>min samples leaf：</strong>保证叶内至少有一定样本，直接平滑叶预测；</li>
+<li><strong>min samples split / min impurity decrease：</strong>阻止证据不足的继续切分。</li>
+</ul>
+<h4>2. Pre-pruning 与 post-pruning</h4>
+<p>Pre-pruning 在生长过程中提前停止。Post-pruning 先长出较大的树，再删除收益不值得复杂度的分支。Cost-complexity pruning 常最小化</p>
+<div class="math-display">$$
+R_\alpha(T)=R(T)+\alpha|T_{\mathrm{leaves}}|,
+$$</div>
+<p>其中 $R(T)$ 是训练叶损失，$\alpha$ 惩罚叶节点数量。$\alpha$ 越大，保留的树越小。</p>
+<h4>3. 如何选择复杂度？</h4>
+<p>用交叉验证选择 depth、min leaf 或 pruning parameter，而不是根据训练准确率。分类不平衡时还需使用合适的 scoring/class weights。先比较学习曲线：训练与验证都差通常是高 bias；训练很好而验证差通常是高 variance。</p>
+<p class="concept-check"><strong>常见误区：</strong>“更浅一定更稳”也不对，过度剪枝会漏掉真实交互；min leaf 是样本数约束，不等于树深度；应在每个训练折内完成建树和剪枝选择，不能看测试集后再调树大小。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-bagging-random-forest">
+<summary><span class="concept-label">□ Bagging、Random Forest：bootstrap、特征子采样与方差降低</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. Bagging 的核心</h4>
+<p>Bagging 对训练集做 $B$ 次有放回 bootstrap，每份样本训练一棵通常较深的树，再对回归预测取平均、分类概率取平均或投票：</p>
+<div class="math-display">$$
+\hat f_{\mathrm{bag}}(x)=\frac1B\sum_{b=1}^B\hat f^{(b)}(x).
+$$</div>
+<p>单棵深树 bias 较低但 variance 很高；对许多有差异的树求平均能抵消不稳定波动，而通常不会大幅增加 bias。</p>
+<h4>2. 为什么还需要 Random Forest？</h4>
+<p>如果某个强特征在每棵树顶部都被选中，bootstrap 树仍高度相关，平均降方差的效果有限。Random Forest 在每个节点只允许从随机抽取的一部分特征中找 split，故意让单树略弱但彼此更不相似。</p>
+<p>若每棵树预测方差为 $\sigma^2$，任意两棵相关系数约为 $\rho$，则平均 $B$ 棵的方差近似</p>
+<div class="math-display">$$
+\operatorname{Var}(\bar f)
+=\rho\sigma^2+\frac{1-\rho}{B}\sigma^2.
+$$</div>
+<p>增加树数只能消掉第二项；特征子采样降低 $\rho$，因此才是 Random Forest 的关键。</p>
+<h4>3. 调参与实务</h4>
+<p>树数增加通常使性能趋于稳定而非产生传统意义上的过拟合，但增加计算成本。max features 越小，树间相关性通常越低，但单树 bias 可能升高；min leaf 控制平滑程度。树不要求 feature scaling，但缺失值处理、类别编码、时间／组别验证仍必须正确。</p>
+<p class="concept-check"><strong>常见误区：</strong>Random Forest 的随机性不只是 bootstrap，还包括逐节点特征子采样；bagging 主要降低 variance，不会自动修正有偏标签、泄漏或分布漂移；大量高度相关的树并不等于大量独立信息。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-gradient-boosting">
+<summary><span class="concept-label">□ Boosting：顺序拟合残差／负梯度，以及学习率与树数的权衡</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 与 Bagging 的根本区别</h4>
+<p>Bagging 独立训练许多树后平均；Boosting 按顺序训练弱学习器，每棵新树专门修正当前 ensemble 仍犯的错误。加法模型写成</p>
+<div class="math-display">$$
+F_m(x)=F_{m-1}(x)+\eta h_m(x),
+$$</div>
+<p>其中 $h_m$ 是第 $m$ 棵浅树，$\eta$ 是 learning rate。平方损失下，负梯度就是残差 $y_i-F_{m-1}(x_i)$，所以新树拟合残差；一般可微损失下则拟合对当前预测的负梯度，这就是 gradient boosting。</p>
+<h4>2. Learning rate、树数和树深</h4>
+<ul>
+<li>$\eta$ 小：每一步谨慎，通常需要更多树，训练慢但常有更好泛化；</li>
+<li>树数太少：underfit；在固定设置下太多可能继续拟合噪声，应使用验证集／early stopping；</li>
+<li>基学习树深度控制交互阶数：stump 主要学主效应，更深的树能学复杂交互但 variance 更高。</li>
+</ul>
+<p>$\eta$ 与树数必须联合理解：把 learning rate 减半却保持树数不变，通常只是把模型容量也减半。</p>
+<h4>3. 常见实现与正则化</h4>
+<p>XGBoost/LightGBM 等在梯度提升框架中加入二阶近似、叶权重惩罚、行列子采样、缺失值路径和高效分桶。常用控制包括浅树、shrinkage、subsample、column sample、L1/L2 和 early stopping。Boosting 是顺序算法，不能像 bagging 那样完全并行训练各棵树。</p>
+<p class="concept-check"><strong>常见误区：</strong>分类 boosting 拟合的通常是损失对分数的负梯度，不是简单的 0/1 错误标签；训练 loss 持续下降不代表验证表现持续变好；树数、深度、learning rate 和采样率之间高度耦合，不能单独机械调一个参数。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-oob-feature-importance">
+<summary><span class="concept-label">□ OOB estimate、feature importance 偏差与相关特征替代效应</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. Out-of-bag（OOB）估计</h4>
+<p>一次大小为 $n$ 的 bootstrap 中，某个原样本没被抽中的概率约为</p>
+<div class="math-display">$$
+\left(1-\frac1n\right)^n\approx e^{-1}\approx36.8\%.
+$$</div>
+<p>对样本 $i$，只收集没有用它训练的那些树的预测并聚合，就得到近似 out-of-sample 的 OOB prediction，可估计误差并辅助调参。它能节省单独验证集，但不能替代最终测试集；时间序列或 grouped data 也不能因为有 OOB 就忽略依赖结构。</p>
+<h4>2. Impurity importance 为什么有偏？</h4>
+<p>Mean decrease in impurity 把一个特征带来的所有训练 impurity reduction 累加。连续变量或类别水平很多的变量拥有更多候选切分，更容易偶然获得较大 reduction，因此重要度有系统偏高；训练噪声和过拟合也会被算作“重要”。</p>
+<h4>3. Permutation importance 与相关特征</h4>
+<p>Permutation importance 在验证数据上打乱某个特征，观察性能下降。它更直接回答“模型在该数据分布中依赖此特征多少”，但若 $X_1,X_2$ 高度相关，模型可用 $X_2$ 替代被打乱的 $X_1$，两者单独重要度都会显得很小；反过来，打乱一个特征也可能制造不现实的特征组合。</p>
+<p>可结合 grouped/conditional permutation、成组删除、drop-column retraining、SHAP 与领域知识，但所有解释都描述拟合模型，不自动等同于因果效应。</p>
+<p class="concept-check"><strong>常见误区：</strong>OOB 只对相应 bootstrap ensemble 自然成立；feature importance 没有统一定义，数值不能跨方法随意比较；相关特征的重要性会被分摊或替代，排名靠后不代表变量没有真实信息，更不代表没有因果作用。</p>
+</div>
+</details>
+</li>
+</ul>
+<h3>5.4 SVM、Kernel 与近邻 [P1]</h3>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-svm-kernels">
+<summary><span class="concept-label">□ SVM：margin、hinge loss、soft margin、support vector 与 kernel trick</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 最大间隔分类器</h4>
+<p>设标签 $y_i\in\{-1,+1\}$，线性分数为 $f(x)=w^{\mathsf T}x+b$。分类由 $\operatorname{sign}f(x)$ 决定，而点 $(x_i,y_i)$ 到决策面的带符号几何间隔为 $y_if(x_i)/\lVert w\rVert$。对完全线性可分数据，hard-margin SVM 解</p>
+<div class="math-display">$$
+\min_{w,b}\frac12\lVert w\rVert_2^2
+\quad\text{s.t.}\quad
+y_i(w^{\mathsf T}x_i+b)\ge1\quad\forall i.
+$$</div>
+<p>约束把最近样本的 functional margin 规范为 1，此时最小化 $\lVert w\rVert$ 等价于最大化两条边界之间的几何宽度 $2/\lVert w\rVert$。</p>
+<h4>2. Soft margin、slack 与 $C$</h4>
+<p>真实数据通常不可完全分开，因此引入 $\xi_i\ge0$：</p>
+<div class="math-display">$$
+\min_{w,b,\xi}\frac12\lVert w\rVert_2^2+C\sum_i\xi_i,
+\qquad
+y_if(x_i)\ge1-\xi_i.
+$$</div>
+<p>$C$ 大表示更重视训练违例，边界可能更复杂、对异常值更敏感；$C$ 小允许更多违例以换取更宽 margin 和更强正则化。等价的无约束形式使用 hinge loss：</p>
+<div class="math-display">$$
+\min_{w,b}\frac12\lVert w\rVert_2^2
++C\sum_i\max(0,1-y_if(x_i)).
+$$</div>
+<p>即使样本已分对，只要落在 margin 内，仍会产生正 hinge loss。</p>
+<h4>3. Support vectors 与 dual 直觉</h4>
+<p>在对偶问题中，解可以写成</p>
+<div class="math-display">$$
+w=\sum_i\alpha_i y_i x_i,
+\qquad
+f(x)=\sum_i\alpha_i y_i\,x_i^{\mathsf T}x+b.
+$$</div>
+<p>只有 $\alpha_i&gt;0$ 的训练点影响最终边界，它们就是 support vectors，通常位于 margin 上、margin 内或被误分。远离边界且分类容易的点有 $\alpha_i=0$，删除它们不会改变解。</p>
+<h4>4. Kernel trick</h4>
+<p>若线性边界不足，把内积 $x_i^{\mathsf T}x$ 替换为 kernel $K(x_i,x)$，即可隐式地在高维特征空间做线性 SVM：</p>
+<div class="math-display">$$
+f(x)=\sum_i\alpha_i y_iK(x_i,x)+b.
+$$</div>
+<p>有效 kernel 需产生对称半正定 Gram matrix。常见选择有 linear、polynomial 和 RBF：</p>
+<div class="math-display">$$
+K_{\mathrm{RBF}}(x,z)=\exp(-\gamma\lVert x-z\rVert_2^2).
+$$</div>
+<p>$\gamma$ 大使每个样本影响范围很局部，边界更弯曲、过拟合风险更高；$\gamma$ 小得到更平滑的边界。$C$ 与 $\gamma$ 应联合交叉验证。</p>
+<h4>5. 实际使用与 Logistic regression 对比</h4>
+<ul>
+<li>先在训练折内标准化特征，否则距离、margin 和 RBF 会被大尺度特征支配；</li>
+<li>SVM 原生给 decision score，不是概率；需要 Platt scaling 等额外校准；</li>
+<li>多分类通常用 one-vs-rest 或 one-vs-one；类别不平衡可使用 class weights；</li>
+<li>线性 SVM 与 Logistic regression 都产生线性边界，但 hinge loss 主要关注 margin 附近样本，log loss 使用所有样本并自然建模概率。</li>
+</ul>
+<p class="concept-check"><strong>常见误区：</strong>$C$ 大不是“正则化更强”，恰恰是违例惩罚更强、正则相对更弱；kernel 不等于自动更好，RBF 在大样本下计算和存储代价可能很高；未缩放数据时调 $C,\gamma$ 往往没有意义。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-knn">
+<summary><span class="concept-label">□ k-NN：scaling、距离度量、distance concentration 与 bias–variance</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. k-NN 如何预测？</h4>
+<p>k-nearest neighbors 几乎没有显式训练：保存训练数据。对新点 $x$，计算它到所有训练点的距离，找最近的 $k$ 个邻居：</p>
+<ul>
+<li><strong>分类：</strong>邻居多数投票，或用各类比例估计概率；</li>
+<li><strong>回归：</strong>邻居响应的平均值；</li>
+<li><strong>距离加权：</strong>让更近的邻居权重更大，例如 $w_i=1/(d_i+\varepsilon)$。</li>
+</ul>
+<p>它是局部、非参数方法：不预先假定全局直线或固定函数形状，而假定附近样本有相近标签。</p>
+<h4>2. 为什么 scaling 至关重要？</h4>
+<p>Euclidean distance 为</p>
+<div class="math-display">$$
+d(x,z)=\sqrt{\sum_{j=1}^p(x_j-z_j)^2}.
+$$</div>
+<p>若“年收入”以万元计而“收益率”以小数计，收入的数值尺度会支配距离。应在每个训练折内做 standardization、robust scaling 或根据业务定义距离，再应用到验证／测试折。类别变量直接编码成 0、1、2 会引入虚假的顺序距离，通常需 one-hot、Hamming/Gower distance 或专门方法。</p>
+<h4>3. $k$ 如何控制 bias–variance？</h4>
+<ul>
+<li>$k=1$：决策边界很曲折，训练 bias 低，但对噪声和单个异常点极敏感，variance 高；</li>
+<li>$k$ 增大：邻域更平滑，variance 降低，但会混合不同局部结构，bias 上升；</li>
+<li>$k=n$：分类几乎永远预测总体多数类，回归预测总体均值。</li>
+</ul>
+<p>用交叉验证选择 $k$、距离度量和加权方式。二分类常选奇数 $k$ 只是减少平票，不是理论上的最优保证。</p>
+<h4>4. 维数灾难与 distance concentration</h4>
+<p>高维中，数据变得极稀疏；要让一个局部邻域覆盖固定比例的单位超立方体，边长必须迅速接近整个空间。无关特征还会不断给距离增加噪声，使最近与最远样本的距离越来越相似，邻居不再真正“近”。</p>
+<p>常见对策是删去无关特征、用 PCA/embedding 降维、使用符合领域的 metric，或改用带正则化的模型。训练虽然便宜，朴素预测却需 $O(np)$ 距离计算；大样本可用 KD-tree（低维有效）或 approximate nearest neighbors。</p>
+<p class="concept-check"><strong>常见误区：</strong>不缩放就调 $k$ 通常没有意义；更多特征不一定提供更多信息，可能只破坏邻域；邻居比例不是天然校准概率；标准化、降维和选 $k$ 都必须在训练折内完成，不能先看全数据。</p>
+</div>
+</details>
+</li>
+</ul>
+<h3>5.5 概率模型与无监督学习 [P1]</h3>
+<ul>
+<li><p>□ k-means 最小化簇内平方距离；初始化、尺度、异常值、非球形簇。</p>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-em-algorithm">
+<summary><span class="concept-label">□ EM 算法与 GMM：E-step、M-step、下界、收敛与局部最优</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. EM 解决什么困难？</h4>
+<p>设观测为 $X$、不可见变量为 $Z$、参数为 $\theta$。若 $Z$ 已知，完整数据似然 $p(X,Z\mid\theta)$ 往往容易优化；但只观察 $X$ 时需要</p>
+<div class="math-display">$$
+\ell(\theta)=\log p(X\mid\theta)
+=\log\sum_Zp(X,Z\mid\theta),
+$$</div>
+<p>或对连续 $Z$ 积分。log 外面的求和／积分使直接求导困难。EM 用当前参数猜测隐变量分布，再在这个软分配下更新参数。</p>
+<h4>2. E-step 与 M-step</h4>
+<p>给定当前参数 $\theta^{(t)}$：</p>
+<div class="math-display">$$
+\text{E-step:}\quad
+q^{(t)}(Z)=p(Z\mid X,\theta^{(t)}),
+$$</div>
+<p>并计算完整数据对数似然的条件期望</p>
+<div class="math-display">$$
+Q(\theta\mid\theta^{(t)})
+=\mathbb E_{Z\mid X,\theta^{(t)}}[\log p(X,Z\mid\theta)].
+$$</div>
+<p>随后</p>
+<div class="math-display">$$
+\text{M-step:}\quad
+\theta^{(t+1)}=\arg\max_\theta Q(\theta\mid\theta^{(t)}).
+$$</div>
+<p>不断交替直至似然增量、参数变化或责任概率变化足够小。</p>
+<h4>3. 为什么似然不会下降？</h4>
+<p>对任意分布 $q(Z)$，Jensen 不等式给出 evidence lower bound（ELBO）：</p>
+<div class="math-display">$$
+\log p(X\mid\theta)
+\ge \mathbb E_q[\log p(X,Z\mid\theta)]-\mathbb E_q[\log q(Z)].
+$$</div>
+<p>E-step 令 $q$ 等于当前后验，使下界在当前 $\theta^{(t)}$ 处贴紧真实 log-likelihood；M-step 提高这个下界。因此每次迭代的观测数据似然不下降。不过“单调上升”只保证到达 stationary point，不保证全局最大值。</p>
+<h4>4. GMM 中具体怎么算？</h4>
+<p>在 $K$ 成分 Gaussian mixture 中，$p(x_i)=\sum_{k=1}^K\pi_k\mathcal N(x_i\mid\mu_k,\Sigma_k)$。E-step 的 responsibility 是</p>
+<div class="math-display">$$
+r_{ik}=P(Z_i=k\mid x_i)
+=\frac{\pi_k\mathcal N(x_i\mid\mu_k,\Sigma_k)}
+{\sum_{j=1}^K\pi_j\mathcal N(x_i\mid\mu_j,\Sigma_j)}.
+$$</div>
+<p>令 $N_k=\sum_i r_{ik}$，M-step 是加权 MLE：</p>
+<div class="math-display">$$
+\pi_k=\frac{N_k}{n},
+\qquad
+\mu_k=\frac1{N_k}\sum_i r_{ik}x_i,
+\qquad
+\Sigma_k=\frac1{N_k}\sum_i r_{ik}(x_i-\mu_k)(x_i-\mu_k)^{\mathsf T}.
+$$</div>
+<p>与 k-means 的硬分配不同，GMM 给每个点一组软概率；在球形、相同且很小的协方差极限下，其行为接近 k-means。</p>
+<h4>5. 初始化、奇异性与实际流程</h4>
+<ul>
+<li>用 k-means 或多组随机起点初始化，比较多个 restart 的最终验证似然；</li>
+<li>监控 log-likelihood 而不是仅看参数，因为 mixture 标签可置换；</li>
+<li>某个 Gaussian 可把均值放在单个样本上并令协方差趋近 0，使似然无界；需要 covariance floor、正则化或先验；</li>
+<li>EM 还用于 missing data、HMM、factor analysis 等“隐变量给定后容易”的模型。</li>
+</ul>
+<p class="concept-check"><strong>常见误区：</strong>E-step 不是给每点强行选一类，而是求后验 responsibility；似然不下降不等于参数每项都单调，也不等于找到全局最优；不同成分标签互换表示同一个 mixture，不应据此判断没有收敛。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-pca">
+<summary><span class="concept-label">□ PCA：方差最大化、重构误差最小化、SVD、解释方差与实务</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. PCA 想找什么方向？</h4>
+<p>先对数据矩阵 $X\in\mathbb R^{n\times p}$ 的每列中心化。第一主成分方向是在单位向量中让投影方差最大的方向：</p>
+<div class="math-display">$$
+v_1=\arg\max_{\lVert v\rVert=1}\operatorname{Var}(Xv)
+=\arg\max_{\lVert v\rVert=1}v^{\mathsf T}Sv,
+\qquad S=\frac{X^{\mathsf T}X}{n-1}.
+$$</div>
+<p>解 $v_1$ 是协方差矩阵最大特征值对应的特征向量。后续方向在与前面方向正交的约束下依次最大化剩余方差。</p>
+<h4>2. PCA 与 SVD 的精确关系</h4>
+<p>对中心化矩阵作 SVD：</p>
+<div class="math-display">$$
+X=U\Sigma V^{\mathsf T}.
+$$</div>
+<ul>
+<li>$V$ 的列是 principal directions/loadings，说明原特征怎样组合；</li>
+<li>$XV=U\Sigma$ 是 scores，表示每个样本在主成分坐标中的位置；</li>
+<li>第 $j$ 个主成分的样本方差为 $\sigma_j^2/(n-1)$；解释方差比为 $\sigma_j^2/\sum_\ell\sigma_\ell^2$。</li>
+</ul>
+<h4>3. 为什么也等价于最小重构误差？</h4>
+<p>保留前 $k$ 个 loading，低维 score 为 $Z=XV_k$，重构为</p>
+<div class="math-display">$$
+\hat X_k=ZV_k^{\mathsf T}=XV_kV_k^{\mathsf T}.
+$$</div>
+<p>Eckart–Young 定理说明它在所有 rank-$k$ 近似中最小化 $\lVert X-\hat X_k\rVert_F^2$。所以“最大化保留方差”和“最小化平方重构误差”是同一件事。</p>
+<h4>4. 中心化、标准化与小例子</h4>
+<p>中心化几乎总是必须的。若变量单位差异很大（例如价格与收益率），还应先标准化，相当于在相关矩阵上做 PCA；否则大方差单位会主导方向。若两个标准化特征高度正相关，第一主成分大致沿 $(1,1)/\sqrt2$，代表共同变化；第二个沿 $(1,-1)/\sqrt2$，代表二者的差异。</p>
+<h4>5. 如何选 $k$，何时会失败？</h4>
+<p>可看 scree plot、累计解释方差，或更可靠地用下游任务的交叉验证选择 $k$。PCA 是无监督方法，只最大化 $X$ 的方差，低方差方向仍可能最能预测 $y$；loadings 的整体正负号任意，不影响含义；异常值会强烈改变协方差和方向。所有中心化、缩放和 PCA 都必须只在训练折拟合。</p>
+<p class="concept-check"><strong>常见误区：</strong>主成分不是原变量子集，而是线性组合；解释方差高不等于因果或预测信息高；PCA 不会自动处理非线性流形；先在全数据做 PCA 再交叉验证会泄漏验证集结构。</p>
+</div>
+</details>
+</li>
+</ul>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-naive-bayes-lda-qda">
+<summary><span class="concept-label">□ Naive Bayes 的条件独立假设；LDA 与 QDA 的协方差假设</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 三者共同的 Bayes 分类框架</h4>
+<p>对类别 $Y=k$ 和特征 $x$，Bayes 公式给出</p>
+<div class="math-display">$$
+P(Y=k\mid X=x)
+\propto \pi_k f_k(x),
+$$</div>
+<p>其中 $\pi_k=P(Y=k)$ 是 class prior，$f_k(x)=p(x\mid Y=k)$ 是第 $k$ 类的特征分布。分类时选择 $\pi_kf_k(x)$ 最大的类。Naive Bayes、LDA、QDA 的主要差别，就是怎样对 $f_k(x)$ 作可估计的假设。</p>
+<h4>2. Naive Bayes：给定类别后特征独立</h4>
+<p>Naive Bayes 假设</p>
+<div class="math-display">$$
+p(x_1,\ldots,x_p\mid Y=k)
+=\prod_{j=1}^p p(x_j\mid Y=k).
+$$</div>
+<p>这不是说特征在总体中独立，而是<strong>条件于类别</strong>后独立。常见版本包括：词频用 Multinomial NB，0/1 特征用 Bernoulli NB，连续变量用 Gaussian NB。预测时在 log 空间相加，避免许多小概率相乘下溢：</p>
+<div class="math-display">$$
+\log P(Y=k\mid x)=C+\log\pi_k+\sum_j\log p(x_j\mid Y=k).
+$$</div>
+<p>计数从未在某类出现时，MLE 会给概率 0 并让整个乘积变 0；Laplace smoothing 加伪计数，例如 $(N_{jk}+\alpha)/(N_k+\alpha V)$。条件独立常明显不真，但分类边界仍可能很好，因为分类只需各类相对分数排序正确；概率校准却可能很差。</p>
+<h4>3. LDA：各类 Gaussian，共用协方差</h4>
+<p>LDA 假设</p>
+<div class="math-display">$$
+X\mid Y=k\sim N(\mu_k,\Sigma),
+$$</div>
+<p>所有类别均值不同，但共享同一个完整协方差矩阵。展开 Gaussian log-density 后，$x^{\mathsf T}\Sigma^{-1}x$ 在类别比较中抵消，得到线性判别分数</p>
+<div class="math-display">$$
+\delta_k(x)
+=x^{\mathsf T}\Sigma^{-1}\mu_k
+-\frac12\mu_k^{\mathsf T}\Sigma^{-1}\mu_k
++\log\pi_k.
+$$</div>
+<p>因此任意两类的决策边界对 $x$ 是线性的。共享协方差汇集所有类别的数据来估计，参数较少，在样本不大时通常比 QDA 稳定。</p>
+<h4>4. QDA：每类自己的协方差</h4>
+<p>QDA 放宽为 $X\mid Y=k\sim N(\mu_k,\Sigma_k)$。此时判别分数包含</p>
+<div class="math-display">$$
+\delta_k(x)
+=-\frac12\log|\Sigma_k|
+-\frac12(x-\mu_k)^{\mathsf T}\Sigma_k^{-1}(x-\mu_k)
++\log\pi_k,
+$$</div>
+<p>所以边界是二次曲线／曲面。灵活性更高、bias 较低，但每类要估计约 $p(p+1)/2$ 个协方差参数；当 $p$ 接近或超过类内样本数时，$\Sigma_k$ 可能奇异且 variance 很大，需要 shrinkage、降维或改用 LDA。</p>
+<h4>5. 一张比较表的记忆方式</h4>
+<ul>
+<li><strong>Gaussian NB：</strong>每类协方差为对角矩阵，允许每类方差不同，不建模特征相关；</li>
+<li><strong>LDA：</strong>每类共享同一个完整协方差，建模相关，边界线性；</li>
+<li><strong>QDA：</strong>每类一个完整协方差，边界二次，最灵活也最耗数据；</li>
+<li><strong>Logistic regression：</strong>直接建模 $P(Y\mid X)$，不要求为每类指定 $p(X\mid Y)$。</li>
+</ul>
+<p class="concept-check"><strong>常见误区：</strong>LDA 在这里是 Linear Discriminant Analysis，不是 topic model 的 Latent Dirichlet Allocation；“naive”是假设条件独立而非边际独立；QDA 不一定优于 LDA，有限样本的额外 variance 可能超过其灵活性收益；class prior 改变时决策边界与后验概率也会改变。</p>
+</div>
+</details>
+</li>
+</ul>
+<h3>5.6 神经网络 [P1；AI 量化岗位为 P0]</h3>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-neural-network-foundations">
+<summary><span class="concept-label">□ Affine layer、activation、depth、width 与 universal approximation 直觉</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 神经网络的基本积木</h4>
+<p>一层最基本的计算是 affine transformation 加 nonlinear activation：</p>
+<div class="math-display">$$
+z^{(\ell)}=W^{(\ell)}h^{(\ell-1)}+b^{(\ell)},
+\qquad
+h^{(\ell)}=\phi(z^{(\ell)}).
+$$</div>
+<p>若输入维数为 $d_{\ell-1}$、本层宽度为 $d_\ell$，则 $W^{(\ell)}\in\mathbb R^{d_\ell\times d_{\ell-1}}$，$b^{(\ell)}\in\mathbb R^{d_\ell}$。先检查 tensor shape，能避免很多实现错误。</p>
+<p>若每层都只有 affine 而没有 activation，多层仍可合并成一个 affine map：$W_2(W_1x+b_1)+b_2=\widetilde Wx+\widetilde b$。非线性 activation 才让深度真正增加表达能力。</p>
+<h4>2. Depth 与 width 分别做什么？</h4>
+<p><strong>Width</strong>是在同一层并行学习许多特征；<strong>depth</strong>把简单表示逐级组合成更复杂表示。深网络可高效复用中间特征，例如“局部边缘 → 形状 → 物体”，或“短期模式 → 中期状态 → 长期关系”。同一个函数浅网络理论上可能也能表示，但可能需要指数级更多单元。</p>
+<h4>3. Universal approximation 定理真正说了什么？</h4>
+<p>在适当 activation 和紧致定义域上，一个足够宽的单隐层网络可以把任意连续函数逼近到任意精度。它只说明<strong>存在某组参数</strong>，不保证：</p>
+<ul>
+<li>有限数据足以学到它；</li>
+<li>gradient descent 能找到它；</li>
+<li>需要的宽度、计算量合理；</li>
+<li>训练区间外能够外推；</li>
+<li>测试误差小或模型可解释。</li>
+</ul>
+<h4>4. 输出层必须匹配任务</h4>
+<p>回归常用线性输出；二分类用一个 logit 加 sigmoid；互斥多分类用 softmax；非负强度可用 exponential/softplus。隐藏层 activation 和输出分布是两件事，选择输出与 loss 时应确保概率／响应的支持集一致。</p>
+<p class="concept-check"><strong>常见误区：</strong>参数更多不自动代表有效信息更多；深度没有 activation 就没有额外非线性；universal approximation 不是“任何网络都能轻松学会任何规律”，更不是泛化或因果保证。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-activations-gradients">
+<summary><span class="concept-label">□ ReLU、sigmoid、tanh；饱和、梯度消失与梯度爆炸</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 三个常见 activation</h4>
+<div class="math-display">$$
+\sigma(z)=\frac1{1+e^{-z}},
+\qquad
+\tanh z=\frac{e^z-e^{-z}}{e^z+e^{-z}},
+\qquad
+\operatorname{ReLU}(z)=\max(0,z).
+$$</div>
+<ul>
+<li><strong>sigmoid：</strong>输出 $(0,1)$，适合二分类输出层；导数 $\sigma(z)(1-\sigma(z))\le1/4$；</li>
+<li><strong>tanh：</strong>输出 $(-1,1)$ 且零中心，但大 $|z|$ 时也饱和；</li>
+<li><strong>ReLU：</strong>正半轴导数为 1，训练深层隐藏层通常更容易且计算便宜。</li>
+</ul>
+<h4>2. 饱和与梯度消失</h4>
+<p>sigmoid/tanh 在 $|z|$ 很大时函数几乎水平，导数接近 0。反向传播会连乘每层 Jacobian：</p>
+<div class="math-display">$$
+\frac{\partial L}{\partial h^{(0)}}
+=\frac{\partial L}{\partial h^{(L)}}
+\prod_{\ell=L}^{1}
+\frac{\partial h^{(\ell)}}{\partial h^{(\ell-1)}}.
+$$</div>
+<p>若多数因子的典型奇异值小于 1，梯度随深度指数衰减，早期层几乎学不到；若大于 1，则可能指数放大并数值不稳定。这就是 vanishing/exploding gradients。</p>
+<h4>3. ReLU 的优点与 dead ReLU</h4>
+<p>ReLU 在正区间不饱和，能缓解梯度消失；但 $z&lt;0$ 时导数为 0。若一个神经元因不良初始化或过大学习率长期落在负区间，它可能永远不再更新，即 dead ReLU。Leaky ReLU 在负区间保留小斜率；GELU/SiLU 提供平滑门控，是 Transformer 等模型的常见选择。</p>
+<h4>4. 梯度问题不只由 activation 决定</h4>
+<p>初始化尺度、权重谱、网络深度、序列长度、normalization 和 residual connection 都会影响梯度。诊断时查看各层 activation/gradient 分布、训练 loss 是否 NaN、gradient norm 和 dead-unit 比例，而不是只替换 activation。</p>
+<p class="concept-check"><strong>常见误区：</strong>sigmoid 不是“不能用”，它很适合 Bernoulli 输出；ReLU 不能消除所有梯度问题；gradient explosion 与模型过拟合是不同概念，前者是优化数值问题，后者是泛化问题。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-backprop-training-stability">
+<summary><span class="concept-label">□ Backpropagation、initialization、normalization、residual connection 与 gradient clipping</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. Backpropagation 就是高效复用的链式法则</h4>
+<p>以两层网络 $z_1=W_1x+b_1$、$h=\phi(z_1)$、$z_2=W_2h+b_2$、loss $L(z_2,y)$ 为例，从输出误差信号 $\delta_2=\partial L/\partial z_2$ 向后算：</p>
+<div class="math-display">$$
+\begin{aligned}
+\frac{\partial L}{\partial W_2}&amp;=\delta_2h^{\mathsf T},
+&amp;\frac{\partial L}{\partial b_2}&amp;=\delta_2,\\
+\delta_1&amp;=(W_2^{\mathsf T}\delta_2)\odot\phi'(z_1),
+&amp;\frac{\partial L}{\partial W_1}&amp;=\delta_1x^{\mathsf T}.
+\end{aligned}
+$$</div>
+<p>Backprop 不等于参数更新；它计算梯度，SGD/Adam 等 optimizer 再用梯度更新参数。</p>
+<h4>2. Initialization：让信号方差不要逐层塌缩或爆炸</h4>
+<p>权重全设为 0 会令同层神经元保持完全相同，无法打破对称性。Xavier/Glorot initialization 适合 tanh 一类 activation，方差约按 $2/(d_{\mathrm{in}}+d_{\mathrm{out}})$；He initialization 适合 ReLU，方差约 $2/d_{\mathrm{in}}$。目标是让 forward activation 与 backward gradient 的尺度跨层大致稳定。</p>
+<h4>3. Normalization 与 residual connection</h4>
+<p>Normalization 把中间表示保持在较稳定尺度，改善条件数并允许更大学习率。BatchNorm 跨 batch 统计，LayerNorm 在单个样本的 feature 维归一化，后者更适合序列和小 batch。</p>
+<p>Residual block 写成</p>
+<div class="math-display">$$
+h_{\ell+1}=h_\ell+F(h_\ell;\theta_\ell).
+$$</div>
+<p>梯度中出现 identity path：$\partial h_{\ell+1}/\partial h_\ell=I+\partial F/\partial h_\ell$，使深层网络更容易传播信息和学习接近 identity 的变换。</p>
+<h4>4. Gradient clipping、weight decay 与 early stopping</h4>
+<p>若全局梯度范数 $\lVert g\rVert&gt;c$，norm clipping 使用 $g\leftarrow c g/\lVert g\rVert$，常用于 RNN 防止偶发爆炸；它缓解症状但不能替代正确学习率和模型设计。Weight decay 收缩参数，early stopping 在验证 loss 不再改善时停止，两者控制泛化的机制不同。</p>
+<p class="concept-check"><strong>常见误区：</strong>backprop 不是一种 optimizer；gradient clipping 不是把每个梯度都粗暴截成同一个数；初始化只影响起点但可能决定优化是否可行；normalization、residual 和 clipping 都不能修复标签泄漏或错误目标。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-batch-normalization">
+<summary><span class="concept-label">□ Batch normalization 的训练统计与推理 running statistics</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 训练时怎样计算？</h4>
+<p>对 mini-batch 中某个通道／feature 的 activation $x_1,\ldots,x_m$，BatchNorm 计算</p>
+<div class="math-display">$$
+\mu_B=\frac1m\sum_i x_i,
+\qquad
+\sigma_B^2=\frac1m\sum_i(x_i-\mu_B)^2,
+\qquad
+\hat x_i=\frac{x_i-\mu_B}{\sqrt{\sigma_B^2+\varepsilon}},
+$$</div>
+<p>再学习 scale/shift：$y_i=\gamma\hat x_i+\beta$。因此网络仍可恢复有用的均值和尺度。训练时一个样本的输出会轻微依赖同 batch 的其他样本，这也带来一定正则化噪声。</p>
+<h4>2. 为什么推理时不能继续用当前 batch？</h4>
+<p>部署时可能一次只来一个样本，或 batch 组成与训练不同。推理模式使用训练期间累计的 running mean/variance，而不是当前 batch 统计。忘记切换 eval mode 会让同一个样本的预测随 batch 同伴变化；反之训练时误用冻结 running statistics 也会破坏学习。</p>
+<h4>3. 位置、batch size 与替代方案</h4>
+<p>BatchNorm 常放在 affine/convolution 与 activation 附近，具体前后顺序取决于架构。很小或强相关 batch 会使统计量噪声大；时间序列若 batch 混合不恰当，也可能引入不合理的信息耦合。LayerNorm 不依赖 batch，常用于 Transformer；GroupNorm 常用于小 batch 视觉模型。</p>
+<p class="concept-check"><strong>常见误区：</strong>BatchNorm 不是数据输入标准化的替代品；running variance 不是当前测试 batch variance；$\gamma,\beta$ 是可学习参数；训练／推理模式不同是模型定义的一部分，不只是计算加速开关。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-dropout">
+<summary><span class="concept-label">□ Dropout 的训练与推理差异</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 训练时随机丢弃神经元</h4>
+<p>设保留概率为 $q=1-p$。Inverted dropout 在训练时采样独立 mask $m_j\sim\operatorname{Bernoulli}(q)$，并使用</p>
+<div class="math-display">$$
+\widetilde h_j=\frac{m_j}{q}h_j.
+$$</div>
+<p>因此 $\mathbb E[\widetilde h_j\mid h_j]=h_j$。每个 mini-batch 看到一个不同的稀疏子网络，减少单元间过度 co-adaptation，可粗略理解为共享权重的大量子网络 ensemble。</p>
+<h4>2. 推理时为什么要关闭？</h4>
+<p>由于训练时已经除以 $q$，标准推理直接使用完整 activation $h$，不再随机 mask，也不再额外缩放。若忘记 eval mode，预测会随机漂移；若训练实现没有 inverted scaling，则推理时需要乘 $q$，两种 convention 不可混用。</p>
+<h4>3. Dropout 不是总是越多越好</h4>
+<p>$p$ 太大会导致 underfit 和训练困难。BatchNorm、数据增强、weight decay、模型规模和数据量都会影响是否还需要 dropout。CNN 常用较低 rate 或 spatial dropout；Transformer 在 attention/MLP/residual 路径使用 dropout。MC dropout 在推理时故意保持随机并重复预测，可提供粗略不确定性，但不等于严格后验。</p>
+<p class="concept-check"><strong>常见误区：</strong>dropout rate $p$ 是丢弃概率，不一定是保留概率；训练和推理行为不同；dropout 不能弥补数据泄漏，也不能保证概率校准；对已经 underfit 的模型继续加 dropout 通常更差。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-neural-architectures">
+<summary><span class="concept-label">□ CNN、RNN、LSTM、GRU、Transformer 的核心归纳偏置</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. Inductive bias 是什么？</h4>
+<p>归纳偏置是模型在看数据以前就内置的结构假设。合适的 bias 能用更少数据学到规律；不合适的 bias 会限制模型。不同架构主要不是“谁更高级”，而是对空间、顺序和远程交互作出不同假设。</p>
+<h4>2. CNN：局部性与权重共享</h4>
+<p>卷积核在不同位置重复使用，假设局部模式无论出现在哪里都具有类似含义。它参数高效，并具有 translation equivariance：输入平移会引起 feature map 相应平移。堆叠卷积扩大 receptive field；pooling/stride 汇总局部信息，但可能损失精确位置。</p>
+<h4>3. RNN、LSTM 与 GRU：顺序递归和门控</h4>
+<p>普通 RNN 递推 $h_t=\phi(W_xx_t+W_hh_{t-1}+b)$，用同一组参数处理任意长度序列，天然保留顺序并逐步汇总过去。但长序列反向传播需连乘许多 Jacobian，容易梯度消失／爆炸且时间步难并行。</p>
+<p>LSTM 用 input/forget/output gates 和 cell state 建立较稳定的加法记忆路径；GRU 用 update/reset gates 简化结构。门接近 1 时信息可跨很多时间步保留，但它们也不能保证学到任意长期依赖。</p>
+<h4>4. Transformer：attention 与位置信息</h4>
+<p>Scaled dot-product attention 为</p>
+<div class="math-display">$$
+\operatorname{Attention}(Q,K,V)
+=\operatorname{softmax}\!\left(\frac{QK^{\mathsf T}}{\sqrt{d_k}}\right)V.
+$$</div>
+<p>每个位置能直接选择其他位置的信息，路径短且训练时可并行；除以 $\sqrt{d_k}$ 防止高维点积过大使 softmax 饱和。Attention 本身对排列没有顺序感，必须加入 positional encoding/embedding；自回归任务还需 causal mask 防止看到未来。标准 attention 的时间和内存通常为 $O(T^2)$。</p>
+<h4>5. 选择架构</h4>
+<ul>
+<li>网格／局部平移模式：CNN；</li>
+<li>流式、小模型、强顺序状态：RNN/GRU/LSTM；</li>
+<li>长程依赖、大规模并行与跨位置检索：Transformer；</li>
+<li>实际模型常混合 convolution、recurrence 和 attention。</li>
+</ul>
+<p class="concept-check"><strong>常见误区：</strong>Transformer 不会自动知道时间顺序；双向 attention 用于预测未来时会产生 look-ahead leakage，必须 causal mask；LSTM 的 gate 不是消除所有长依赖问题；架构名称不能替代正确的标签时点、验证方式和计算预算。</p>
+</div>
+</details>
+</li>
+</ul>
+<h3>5.7 指标与验证 [P0]</h3>
+<ul class="concept-list">
+<li>
+<details class="concept-detail" id="concept-regression-metrics">
+<summary><span class="concept-label">□ Regression：MSE、RMSE、MAE、Huber 与 $R^2$</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. MSE 与 RMSE：大误差受到平方惩罚</h4>
+<p>令残差 $e_i=y_i-\hat y_i$：</p>
+<div class="math-display">$$
+\operatorname{MSE}=\frac1n\sum_i e_i^2,
+\qquad
+\operatorname{RMSE}=\sqrt{\operatorname{MSE}}.
+$$</div>
+<p>MSE 可微、与 Gaussian noise 的负 log-likelihood 对应，并强烈惩罚大误差；但单个异常点可能主导结果。RMSE 与目标 $y$ 单位相同，更易解释，但模型排序与 MSE 完全相同，因为平方根单调。</p>
+<h4>2. MAE 与 Huber：提高稳健性</h4>
+<div class="math-display">$$
+\operatorname{MAE}=\frac1n\sum_i|e_i|.
+$$</div>
+<p>MAE 对大误差线性惩罚，对异常值较稳健；最小化总体绝对误差对应条件中位数，而 MSE 对应条件均值。Huber loss 在小误差用平方、大误差用线性：</p>
+<div class="math-display">$$
+L_\delta(e)=
+\begin{cases}
+\frac12e^2,&amp;|e|\le\delta,\\
+\delta\left(|e|-\frac12\delta\right),&amp;|e|&gt;\delta.
+\end{cases}
+$$</div>
+<p>$\delta$ 越小越接近 MAE，越大越接近 MSE。它兼顾小残差区的平滑优化与大残差区的稳健性。</p>
+<h4>3. $R^2$：相对于均值基准减少了多少平方误差？</h4>
+<div class="math-display">$$
+R^2=1-\frac{\sum_i(y_i-\hat y_i)^2}{\sum_i(y_i-\bar y)^2}.
+$$</div>
+<p>在同一测试集上，$R^2=0$ 表示与永远预测测试集均值的平方误差相当；$R^2&lt;0$ 表示比该基准更差。训练集中带截距 OLS 的 $R^2$ 不会为负，但 out-of-sample 完全可以。$R^2$ 没有把交易成本、方向、尾部或排名直接纳入。</p>
+<h4>4. 如何选择？</h4>
+<p>指标应匹配业务 loss：极端误差代价特别大用 MSE/RMSE；异常点可能是数据错误且线性代价更合理用 MAE/Huber；不同目标尺度间比较可使用 normalized error，但必须明确归一化方式。最好同时报告一个中心指标、误差分位数和按 regime/segment 的结果。</p>
+<p class="concept-check"><strong>常见误区：</strong>RMSE 不是误差标准差；$R^2$ 可为负，也不能跨不同测试集／不同目标机械比较；删除“大残差”后指标更好可能只是删掉困难样本；应先确定评估单位和经济损失，再选指标。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-classification-metrics">
+<summary><span class="concept-label">□ Classification：confusion matrix、accuracy、precision、recall、specificity 与 F1</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 先从 confusion matrix 开始</h4>
+<p>给定一个分类阈值，把预测和真实标签交叉可得：</p>
+<ul>
+<li>$TP$：真实正且预测正；$FP$：真实负但预测正；</li>
+<li>$FN$：真实正但预测负；$TN$：真实负且预测负。</li>
+</ul>
+<div class="math-display">$$
+\begin{aligned}
+\mathrm{Accuracy}&amp;=\frac{TP+TN}{TP+FP+FN+TN},\\
+\mathrm{Precision}&amp;=\frac{TP}{TP+FP},
+&amp;\mathrm{Recall}&amp;=\frac{TP}{TP+FN},\\
+\mathrm{Specificity}&amp;=\frac{TN}{TN+FP},
+&amp;\mathrm{FPR}&amp;=1-\mathrm{Specificity}.
+\end{aligned}
+$$</div>
+<h4>2. 每个指标在问什么？</h4>
+<ul>
+<li><strong>Precision：</strong>被模型抓出来的正例中，有多少是真的？关心 false-positive burden；</li>
+<li><strong>Recall/sensitivity：</strong>所有真实正例中抓到了多少？关心漏报；</li>
+<li><strong>Specificity：</strong>所有真实负例中正确排除了多少；</li>
+<li><strong>Accuracy：</strong>总体判对比例，类别极不平衡时可能具有欺骗性。</li>
+</ul>
+<p>例如 10,000 个样本只有 100 个正例，永远预测负类也有 99% accuracy，但 recall 为 0。</p>
+<h4>3. F1 与阈值</h4>
+<div class="math-display">$$
+F_1=\frac{2\,\mathrm{Precision}\,\mathrm{Recall}}
+{\mathrm{Precision}+\mathrm{Recall}}
+=\frac{2TP}{2TP+FP+FN}.
+$$</div>
+<p>调和平均会被两者中较小者拉低，适合希望 precision/recall 都不能太差且暂不计 $TN$ 的情形。但 F1 隐含把 precision 与 recall 同等看待，并忽略 true negatives；若两类错误成本不等，应直接按成本选阈值或用 $F_\beta$。</p>
+<p>阈值降低通常提高 recall、降低 precision/specificity。多分类还需说明 macro average（每类等权）、weighted macro 或 micro average（汇总所有样本）。</p>
+<p class="concept-check"><strong>常见误区：</strong>所有这些数都依赖正类定义和阈值；precision 还强烈依赖部署基准率；F1 高不等于概率校准好；不能只报最优阈值下的结果而不说明阈值如何在验证集上选择。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-roc-pr-imbalance">
+<summary><span class="concept-label">□ ROC-AUC、PR-AUC、类别不平衡与 false-positive burden</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. ROC 曲线与 AUC</h4>
+<p>遍历所有 score 阈值，ROC 画出</p>
+<div class="math-display">$$
+\mathrm{TPR}=\frac{TP}{TP+FN}
+\quad\text{对}\quad
+\mathrm{FPR}=\frac{FP}{FP+TN}.
+$$</div>
+<p>ROC-AUC 可解释为随机抽取一个正例和一个负例时，模型给正例更高 score 的概率（ties 作相应修正）。它评价 ranking，基本不关心概率是否校准，也不直接指定一个部署阈值。</p>
+<h4>2. 为什么严重不平衡时看 PR？</h4>
+<p>Precision–Recall 曲线画 precision 对 recall。随机排序的 PR 基准约等于正类 prevalence，而 ROC 的随机基准总是 0.5。若正例仅 1%，即使 FPR=1%，每 100 个真实正例附近也可能产生约 99 个 false positives，precision 只有约一半；ROC 上 1% FPR 看起来却很小。</p>
+<p>因此检索稀有事件、欺诈、疾病或极少数交易机会时，PR-AUC 更直接反映为了抓到正例要承担多少误报。不同 prevalence 的数据集之间，PR-AUC 不应不加说明地直接比较。</p>
+<h4>3. 阈值与错误成本</h4>
+<p>AUC 汇总所有阈值，但业务只使用某个工作点。应根据 $C_{FP},C_{FN}$、容量限制、prevalence 和概率校准在验证集选择阈值，并报告该点的 confusion matrix。class weights/resampling 会改变训练目标和 score，未必保持自然概率，需要重新校准。</p>
+<p class="concept-check"><strong>常见误区：</strong>ROC-AUC 高不保证低 FPR 区域表现好；PR-AUC 没有与 ROC-AUC 相同的 0.5 基准；AUC 不考虑交易规模或错误成本；测试集不能用于选择最漂亮的阈值。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-probability-metrics-calibration">
+<summary><span class="concept-label">□ Log loss、Brier score、calibration curve；ranking 与 calibration 分开评价</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. Log loss 与 Brier score</h4>
+<p>二分类概率预测 $p_i=P(Y_i=1\mid x_i)$ 的常用 proper scoring rules 是</p>
+<div class="math-display">$$
+\operatorname{LogLoss}
+=-\frac1n\sum_i[y_i\log p_i+(1-y_i)\log(1-p_i)],
+$$</div>
+<div class="math-display">$$
+\operatorname{Brier}=\frac1n\sum_i(p_i-y_i)^2.
+$$</div>
+<p>Log loss 对“极度自信却预测错误”惩罚趋于无穷；Brier 有界且更像概率的 MSE。Proper 意味着在期望意义下，诚实报告真实概率最优。</p>
+<h4>2. Calibration curve 看什么？</h4>
+<p>把预测概率分箱，对每箱比较平均预测概率与实际正例率。若预测约 0.7 的样本实际约 70% 为正，才算局部校准。分箱方式和样本量会影响曲线；小箱的波动需要置信区间，不应把锯齿全部解释为系统偏差。</p>
+<h4>3. Ranking、calibration 与 sharpness 是不同维度</h4>
+<p>任意单调变换 score 可保持 AUC，却改变概率和 log loss。一个永远预测 prevalence 的模型可能整体校准但毫无区分力；好的概率模型应在保持校准的同时尽量给出远离总体基准率的有信息预测（sharpness/resolution）。</p>
+<p>Platt scaling 或 isotonic regression 必须用 held-out/out-of-fold prediction 拟合；在部署 prevalence 或 regime 改变后应重新监控。</p>
+<p class="concept-check"><strong>常见误区：</strong>accuracy/AUC 不评价概率数值；校准曲线贴近对角线不代表模型有区分能力；对概率先 clip 虽能防数值无穷，但阈值要透明；不能在测试集上训练校准器。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-time-series-validation">
+<summary><span class="concept-label">□ 时间序列的 expanding/rolling walk-forward，以及 purge 与 embargo</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 为什么不能随机 k-fold？</h4>
+<p>随机打乱会让模型用未来 regime、价格分布或实体状态预测过去，产生 look-ahead。时间序列验证必须保证训练时点严格早于验证时点，并模拟真实的重新训练方式。</p>
+<ul>
+<li><strong>Expanding window：</strong>训练集从固定起点不断累积，信息最多，适合认为旧数据仍有价值；</li>
+<li><strong>Rolling window：</strong>只保留最近固定长度，牺牲样本量换取对 regime drift 的适应；</li>
+<li><strong>Gap：</strong>训练末端与验证起点之间留空，反映执行延迟或降低邻近依赖。</li>
+</ul>
+<h4>2. 标签重叠为什么泄漏？</h4>
+<p>若时刻 $t$ 的标签使用未来 $H$ 日收益，训练样本 $t$ 与验证样本 $t+1$ 的标签区间大幅共享价格。即使 feature timestamp 正确，训练目标已经包含验证期间的信息。</p>
+<p><strong>Purging</strong> 从训练集删除标签时间区间与验证区间重叠的样本；<strong>embargo</strong> 在验证区间周围再留一段缓冲，防止持有期或特征状态跨边界污染。缓冲长度应由标签 horizon、feature lookback 和交易实现决定，而不是机械套固定天数。</p>
+<h4>3. 调参与最终评估</h4>
+<p>每个 walk-forward fold 内重新 fit preprocessing、feature selection 和模型。超参数可在更内层时间切分选择；最后保留一个真正 untouched 的末期 holdout。除了平均指标，还应报告各 fold/regime 的离散程度、turnover 和成本后表现。</p>
+<p class="concept-check"><strong>常见误区：</strong>只按日期切 train/test 不保证没有 overlapping-label leakage；expanding window 不一定比 rolling 好；embargo 不是越长越安全，过长会浪费数据；未来数据绝不能参与 normalization、缺失值填补或特征选择。</p>
+</div>
+</details>
+</li>
+<li>
+<details class="concept-detail" id="concept-grouped-validation-pipelines">
+<summary><span class="concept-label">□ GroupKFold、一般交叉验证、nested CV 与训练折内 preprocessing</span><span class="concept-action"><span class="when-closed">点击展开</span><span class="when-open">点击收起</span></span></summary>
+<div class="concept-content">
+<h4>1. 独立单位决定怎样切分</h4>
+<p>普通 k-fold 假设行近似 i.i.d.；StratifiedKFold 保持各折类别比例，但仍允许同一实体跨折。若同一公司、患者、用户、证券或事件有多行观测，随机按行切会让模型在验证时看到同一 group 的近似副本。</p>
+<p>GroupKFold 保证一个 group 只出现在一个 fold，评估对<strong>新 group</strong> 的泛化。若部署目标是对已见 group 的未来时间预测，则还需同时尊重时间顺序；分组方式必须匹配真实部署问题。</p>
+<h4>2. Nested CV 为什么需要？</h4>
+<p>反复在同一 CV 上选择超参数并报告最佳分数，会对验证噪声过拟合。Nested CV 用 inner folds 选超参数，outer folds 只估计整个调参流程的泛化性能。最终测试集仍应只使用一次。</p>
+<h4>3. Pipeline 防止 preprocessing leakage</h4>
+<p>在每个训练折内 fit imputer、scaler、winsorization threshold、PCA、feature selection、target encoding 和 calibration，再把学得参数应用到该验证折：</p>
+<div class="math-display">$$
+\text{train fold}\xrightarrow{\mathrm{fit\ preprocessing}}
+\text{transform train/validation separately}.
+$$</div>
+<p>若先在全数据标准化，验证均值和方差已经渗入训练；监督 feature selection/target encoding 的泄漏更严重。Pipeline 把预处理和 estimator 绑定，使 CV 每折自动重拟合。</p>
+<h4>4. 评估的不确定性</h4>
+<p>各 fold 分数并不完全独立，不能把标准差机械当成精确置信区间。报告每折结果、group/regime 覆盖、重复切分敏感性和最终 holdout，更能说明稳健性。</p>
+<p class="concept-check"><strong>常见误区：</strong>stratification 不能解决 group leakage；GroupKFold 不自动解决时间 leakage；unsupervised preprocessing 也会泄漏；nested CV 的 outer fold 不能继续参与超参数选择。</p>
+</div>
+</details>
+</li>
+</ul>
+<h3>5.8 量化研究判断 [P0]</h3>
+<ul>
+<li><p>□ Cross-sectional IC、Rank IC、time-series predictive metric 的差异。</p>
+</li>
+<li><p>□ Signal 到 portfolio 再到 execution：turnover、cost、liquidity、capacity、constraints。</p>
+</li>
+<li><p>□ Feature timestamp、label horizon、execution time 必须明确对齐。</p>
+</li>
+<li><p>□ Neutralization、exposure control、universe selection、missing-data semantics。</p>
+</li>
+<li><p>□ 多因子与多超参数产生 selection bias；保留真正 untouched holdout。</p>
+</li>
+<li><p>□ 报告 uncertainty、regime stability、economic rationale，而不只报告最高 Sharpe。</p>
+</li>
+</ul>
+<h2>6. 一页公式速查</h2>
+<div class="math-display">$$
+P(A\mid B)=\frac{P(B\mid A)P(A)}{P(B)},
+\qquad
+\operatorname{Var}(X)=\mathbb E(X^2)-(\mathbb E X)^2.
+$$</div>
+<div class="math-display">$$
+\operatorname{Var}(X)=\mathbb E\!\left[\operatorname{Var}(X\mid Y)\right]
++\operatorname{Var}\!\left(\mathbb E(X\mid Y)\right).
+$$</div>
+<div class="math-display">$$
+\hat\beta_{\mathrm{OLS}}=(X^{\mathsf T}X)^{-1}X^{\mathsf T}y,
+\qquad
+\hat\beta_{\mathrm{ridge}}=(X^{\mathsf T}X+\lambda I)^{-1}X^{\mathsf T}y.
+$$</div>
+<div class="math-display">$$
+P=X(X^{\mathsf T}X)^{-1}X^{\mathsf T},
+\qquad
+A=U\Sigma V^{\mathsf T}.
+$$</div>
+<div class="math-display">$$
+\nabla L_{\mathrm{logistic}}=X^{\mathsf T}(p-y),
+\qquad
+\operatorname{Sharpe}=\frac{\mathbb E(R-R_f)}{\sqrt{\operatorname{Var}(R-R_f)}}.
+$$</div>
+<h2>7. 如何完成知识检查</h2>
+<ol>
+<li><p><b>第一遍：</b> 每个方框标为绿（能推导与解释）、黄（只认得）、红（不会）。</p>
+</li>
+<li><p><b>第二遍：</b> 脱稿推导 Bayes、全方差、OLS、Ridge、Logistic gradient、PCA 与 SVD、一个 DP recurrence。</p>
+</li>
+<li><p><b>第三遍：</b> 每个 P0 点口头回答“定义—假设—推导—例子—失效模式”。</p>
+</li>
+<li><p><b>第四遍：</b> 用 Python 模拟一个概率结果，实现 OLS 或 logistic loss、区间合并和一个 DP。</p>
+</li>
+<li><p><b>第五遍：</b> 计时刷题；错题按知识点归档，一周后重新独立完成。</p>
+</li>
+</ol>
+<h2>8. 主要资料来源</h2>
+<ul>
+<li><p><a href="https://www.janestreet.com/static/pdfs/trading-interview.pdf">Jane Street Probability &amp; Markets Guide</a> — 计数、概率、独立性、期望、条件概率与面试思考方式。</p>
+</li>
+<li><p><a href="https://www.janestreet.com/probability-playing-cards/">Jane Street Probability Playing Cards</a> — 分级概率练习。</p>
+</li>
+<li><p><a href="https://stat110.hsites.harvard.edu/strategic-practice-problems">Harvard Stat 110 Strategic Practice</a> — 按主题组织且附解答的概率练习。</p>
+</li>
+<li><p><a href="https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/">MIT 18.06 Linear Algebra</a> — 线性方程组、子空间、最小二乘、特征值、PSD 与 SVD。</p>
+</li>
+<li><p><a href="https://cs229.stanford.edu/2023_index.html">Stanford CS229</a> 与 <a href="https://www.statlearning.com/">An Introduction to Statistical Learning</a> — 机器学习模型、验证与理论材料。</p>
+</li>
+<li><p>Xinfeng Zhou, <i>A Practical Guide to Quantitative Finance Interviews</i>；Timothy Crack, <i>Heard on the Street</i>；Frederick Mosteller, <i>Fifty Challenging Problems in Probability</i>。请使用合法版本并坚持先做后看。</p>
+</li>
+</ul>
+<p><b>范围说明：</b> 衍生品定价、随机微积分、C<tt></tt> 系统与市场微观结构可能在特定岗位中占主导；本笔记按你的目标重点覆盖概率统计、线性代数、组合数学、机器学习和量化研究判断。岗位描述明确要求时再加专项模块。</p>
+</div>
+</body>
+</html>

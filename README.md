@@ -41,7 +41,7 @@ jemdoc.css / collapsible-sections.* / photos/ / files/ ──> 由 HTML 直接�
 | `reading.jemdoc` / `reading.html` | 阅读资料与学术资源 | 修改 jemdoc，再生成 HTML |
 | `study.jemdoc` / `study.html` | 学习笔记与参考书目 | 修改 jemdoc，再生成 HTML |
 | `blog.jemdoc` / `blog.html` | 按栏目组织的博客入口 | 修改 jemdoc，再生成 HTML |
-| `blogs/` | 独立 Blog 笔记，按栏目目录保存 jemdoc/HTML 配对文件 | 按 `blogs/README.md` 维护，并从仓库根目录生成 |
+| `blogs/` | 独立 Blog 笔记；目录层级与 Blog 页面公开栏目及子栏目保持一致 | 按 `blogs/README.md` 维护，并从仓库根目录生成 |
 | `random.jemdoc` / `random.html` | 随笔与链接收藏 | 修改 jemdoc，再生成 HTML |
 | `MENU` | 所有 jemdoc 页面的共享侧边栏 | 修改后重新生成全部 jemdoc 页面 |
 | `jemdoc.css` | 全站公共样式 | 直接修改，不需要重新生成 HTML |

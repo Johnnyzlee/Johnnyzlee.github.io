@@ -1,6 +1,6 @@
 # Blog content
 
-This directory contains the source and generated HTML for standalone blog notes. The public index remains at [blog.jemdoc](../blog.jemdoc), where articles are grouped by reader-facing category. Existing article paths are kept stable even when the public category changes.
+This directory contains the source and generated HTML for standalone blog notes. The public index remains at [blog.jemdoc](../blog.jemdoc). The filesystem hierarchy mirrors the reader-facing category and subcategory hierarchy shown on that page.
 
 ## Layout
 
@@ -12,30 +12,31 @@ blogs/
 ├── blog-note.css
 ├── blog-sidebar.js
 ├── math-render.js
-├── book-based-question-banks/
-│   ├── mosteller-probability-problems.jemdoc / .html
-│   ├── crack-heard-on-the-street-question-bank.jemdoc / .html
-│   └── zhou-quant-finance-interview-question-bank.jemdoc / .html
-├── mathematical-problems-and-puzzles/
-│   ├── brainteasers.jemdoc
-│   └── brainteasers.html
+├── quantitative-career-resources/
+│   ├── study-guides/
+│   │   ├── quant-math-review.jemdoc / .html
+│   │   ├── quant-math-review-en.jemdoc / .html
+│   │   ├── python-for-quant-interviews.jemdoc / .html
+│   │   ├── python-for-quant-interviews-en.jemdoc / .html
+│   │   ├── numpy-for-quant-interviews.jemdoc / .html
+│   │   ├── numpy-for-quant-interviews-en.jemdoc / .html
+│   │   ├── pandas-for-quant-interviews.jemdoc / .html
+│   │   ├── pandas-for-quant-interviews-en.jemdoc / .html
+│   │   ├── scikit-learn-for-quant-interviews.jemdoc / .html
+│   │   ├── scikit-learn-for-quant-interviews-en.jemdoc / .html
+│   │   ├── algorithms-for-quant-interviews.jemdoc / .html
+│   │   └── algorithms-for-quant-interviews-en.jemdoc / .html
+│   └── problem-sets/
+│       ├── brainteasers.jemdoc / .html
+│       ├── quant-interview-question-bank.jemdoc / .html
+│       ├── mosteller-probability-problems.jemdoc / .html
+│       ├── stefanica-150-quant-interview-questions.jemdoc / .html
+│       ├── crack-heard-on-the-street-question-bank.jemdoc / .html
+│       └── zhou-quant-finance-interview-question-bank.jemdoc / .html
 └── technical-notes/
-    ├── algorithms-for-quant-interviews.jemdoc / .html
-    ├── algorithms-for-quant-interviews-en.jemdoc / .html
     ├── hkust-hpc-server-guide.jemdoc
     ├── hkust-hpc-server-guide.html
-    ├── numpy-for-quant-interviews.jemdoc / .html
-    ├── numpy-for-quant-interviews-en.jemdoc / .html
-    ├── optimal-quota-allocation-under-random-resets.jemdoc / .html
-    ├── pandas-for-quant-interviews.jemdoc / .html
-    ├── pandas-for-quant-interviews-en.jemdoc / .html
-    ├── python-for-quant-interviews.jemdoc / .html
-    ├── python-for-quant-interviews-en.jemdoc / .html
-    ├── quant-interview-question-bank.jemdoc / .html
-    ├── quant-math-review.jemdoc / .html
-    ├── quant-math-review-en.jemdoc / .html
-    ├── scikit-learn-for-quant-interviews.jemdoc / .html
-    └── scikit-learn-for-quant-interviews-en.jemdoc / .html
+    └── optimal-quota-allocation-under-random-resets.jemdoc / .html
 ```
 
 ## Public categories
@@ -46,9 +47,9 @@ blogs/
 | Quantitative Career Resources | Problem Sets | Assorted brainteasers, the general mathematics question bank, and the independently adapted book-based question banks |
 | Technical Notes | — | Operational guides, command references, and self-contained mathematical or technical essays |
 
-The legacy `technical-notes/`, `book-based-question-banks/`, and `mathematical-problems-and-puzzles/` paths are retained so existing public URLs continue to work. Their interview-preparation articles are presented together under Quantitative Career Resources on the public Blog index.
+The top-level category directory and any subcategory directory must use the same English label as the public Blog index, converted to lowercase kebab case. When an article changes public category, move its `.jemdoc` and generated `.html` together and update the root index and relative asset paths in the same change.
 
-Add future categories as lowercase, kebab-case sibling directories. Keep every article's `.jemdoc` source and generated `.html` file together in its category directory.
+Add future categories as lowercase, kebab-case sibling directories. Add subcategories beneath their public parent category. Keep every article's `.jemdoc` source and generated `.html` file together.
 
 ## Article conventions
 
@@ -62,24 +63,27 @@ Add future categories as lowercase, kebab-case sibling directories. Keep every a
 - Keep the Python interview tutorial series split into Python fundamentals, NumPy, pandas, and scikit-learn. Examples should identify inputs, explain non-obvious commands, show expected output, and call out common failure modes.
 - The quantitative research mathematics question bank and book-based question banks are intentionally single-page bilingual notes: each question includes Chinese and English wording, while answers remain in English.
 - Math-heavy bilingual notes load `blogs/math-render.js`, which configures MathJax and provides responsive equation layout. Keep raw TeX in the `.jemdoc` source and use `noeqs` so the legacy image equation renderer stays disabled.
-- Nested articles are standalone pages with a visible link back to `../../blog.html`; they intentionally do not duplicate the root `MENU`.
+- Nested articles are standalone pages with a visible link back to the root `blog.html`; they intentionally do not duplicate the root `MENU`. Category-level notes use `../../blog.html`; notes inside a subcategory use `../../../blog.html`.
 - Prefer concise prose, short command blocks, official primary links, and obvious uppercase placeholders such as `YOUR_USERNAME`.
 - Never publish passwords, tokens, SSH private keys, account balances, or non-public infrastructure details. Include personal usernames or group/account identifiers only when the site owner explicitly asks for them.
 
-Use this header for a new note at the same directory depth:
+Use this header for a new note inside a subcategory such as `quantitative-career-resources/study-guides/`:
 
 ```text
-# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blog-note}, addjs{../math-render}, addjs{../blog-sidebar}
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../../blog-note}, addjs{../../math-render}, addjs{../../blog-sidebar}
 = Article title
-[../../blog.html ← 返回 Blogs]
+[../../../blog.html ← 返回 Blogs]
 ```
+
+For a category-level note under `technical-notes/`, use one fewer `../` component for the shared assets and Blog backlink.
 
 Generate from the repository root. The Blog-specific configuration adds the
 mobile viewport metadata required by the responsive article layout:
 
 ```bash
+python2 jemdoc.py -c blogs/blog.conf blogs/quantitative-career-resources/study-guides/example-en.jemdoc
+python2 jemdoc.py -c blogs/blog-zh.conf blogs/quantitative-career-resources/study-guides/example.jemdoc
 python2 jemdoc.py -c blogs/blog.conf blogs/technical-notes/example.jemdoc
-python2 jemdoc.py -c blogs/blog-zh.conf blogs/technical-notes/example.jemdoc
 python2 jemdoc.py blog.jemdoc
 ```
 

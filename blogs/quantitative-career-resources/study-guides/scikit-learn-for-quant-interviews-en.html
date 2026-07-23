@@ -1,0 +1,390 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../../blog-note.css" type="text/css" />
+<script src="../../math-render.js" type="text/javascript"></script>
+<script src="../../blog-sidebar.js" type="text/javascript"></script>
+<title>scikit-learn for Quantitative Research Interviews</title>
+</head>
+<body>
+<div id="layout-content">
+<div id="toptitle">
+<h1>scikit-learn for Quantitative Research Interviews</h1>
+<div id="subtitle"><a href="../../../blog.html">← Blogs</a> &middot; <i>updated 2026-07-21</i></div>
+</div>
+<div class="language-switch" role="navigation" aria-label="Language selection"><a href="scikit-learn-for-quant-interviews.html" hreflang="zh-CN">中文</a><span class="active" aria-current="page">English</span></div>
+<div class="page-lead"><strong>Learning goal:</strong> understand scikit-learn's unified Estimator API and safely move from a baseline through preprocessing, training, cross-validation, tuning, and evaluation with a Pipeline. The emphasis is not memorizing model names; it is preventing leakage and explaining validation design.</div>
+<div class="study-callout"><strong>Series:</strong><a href="python-for-quant-interviews-en.html">Python</a> · <a href="numpy-for-quant-interviews-en.html">NumPy</a> · <a href="pandas-for-quant-interviews-en.html">pandas</a></div>
+<h2>0. Machine-learning code is a data pipeline</h2>
+<p>A reliable modeling answer makes six steps explicit:</p>
+<ol>
+<li><p>Define one sample, feature matrix <tt>X</tt>, and target <tt>y</tt>.</p>
+</li>
+<li><p>Split train and test before any preprocessing step that learns from data.</p>
+</li>
+<li><p>Establish a simple baseline.</p>
+</li>
+<li><p>Put imputation, scaling, encoding, and the model in a <tt>Pipeline</tt>.</p>
+</li>
+<li><p>Use validation and metrics that respect the data structure.</p>
+</li>
+<li><p>Evaluate once on an untouched final test set.</p>
+</li>
+</ol>
+<p>scikit-learn expects <tt>X</tt> with shape <tt>(n_samples, n_features)</tt> and usually <tt>y</tt> with shape <tt>(n_samples,)</tt>.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="comment"># Terminal installation, only when scikit-learn <span class="builtin">is</span> absent:</span>
+<span class="comment"># python3 -m pip install scikit-learn</span>
+
+<span class="statement">import</span> numpy <span class="statement">as</span> np
+
+X = np.array([[1.0], [2.0], [3.0], [4.0]])  <span class="comment"># Four samples, one feature each</span>
+y = np.array([3.0, 5.0, 7.0, 9.0])         <span class="comment"># Target follows y = 1 + 2x</span>
+
+<span class="statement">print</span>(X.shape)
+<span class="statement">print</span>(y.shape)
+</pre></div></div>
+<div class="example-output-label">Expected output</div><pre class="example-output">(4, 1)
+(4,)</pre>
+<p>Even one feature needs a two-dimensional <tt>X</tt>. Passing <tt>(4,)</tt> normally raises “Expected 2D array.”</p>
+<h2>1. Estimator API: fit, transform, and predict</h2>
+<ul>
+<li><p><tt>fit(X, y)</tt> learns parameters from training data.</p>
+</li>
+<li><p><tt>transform(X)</tt> applies a previously learned transformation.</p>
+</li>
+<li><p><tt>fit_transform(X, y)</tt> learns and transforms the same training data.</p>
+</li>
+<li><p><tt>predict(X)</tt> returns predictions.</p>
+</li>
+<li><p><tt>predict_proba(X)</tt> returns class probabilities for supported classifiers.</p>
+</li>
+<li><p><tt>score(X, y)</tt> uses an estimator's default metric; explicit metric functions are clearer in interviews.</p>
+</li>
+</ul>
+<p>Attributes ending in an underscore usually appear after <tt>fit</tt>, for example <tt>coef_</tt>, <tt>mean_</tt>, and <tt>classes_</tt>.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.linear_model <span class="statement">import</span> LinearRegression
+
+model = LinearRegression()  <span class="comment"># Create configuration; no data learned yet</span>
+model.fit(X, y)             <span class="comment"># Learn intercept <span class="builtin">and</span> slope</span>
+prediction = model.predict([[5.0], [6.0]])
+
+<span class="statement">print</span>(<span class="string">"intercept:"</span>, model.intercept_)
+<span class="statement">print</span>(<span class="string">"coefficient:"</span>, model.coef_)
+<span class="statement">print</span>(<span class="string">"prediction:"</span>, prediction)
+</pre></div></div>
+<div class="example-output-label">Expected output</div><pre class="example-output">intercept: 1.0
+coefficient: [2.]
+prediction: [11. 13.]</pre>
+<p>Only training data may enter <tt>fit</tt>. Test data may enter <tt>transform</tt> and <tt>predict</tt>, never a fitting operation.</p>
+<h2>2. Split data and establish a baseline</h2>
+<p>A baseline answers what complexity must beat. Regression can predict the training mean; classification can predict the majority class or class prior.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.dummy <span class="statement">import</span> DummyRegressor
+<span class="statement">from</span> sklearn.metrics <span class="statement">import</span> mean_absolute_error, mean_squared_error
+
+X_all = np.arange(1.0, 7.0).reshape(-1, 1)
+y_all = 1.0 + 2.0 * X_all.ravel()
+
+X_train, X_test = X_all[:4], X_all[4:]  <span class="comment"># Preserve time: first four train, last two test</span>
+y_train, y_test = y_all[:4], y_all[4:]
+
+baseline = DummyRegressor(strategy=<span class="string">"mean"</span>)
+baseline.fit(X_train, y_train)            <span class="comment"># Learn training-target mean 6</span>
+pred = baseline.predict(X_test)           <span class="comment"># Predict 6 <span class="statement">for</span> both test samples</span>
+
+mae = mean_absolute_error(y_test, pred)
+rmse = mean_squared_error(y_test, pred) ** 0.5
+
+<span class="statement">print</span>(pred)
+<span class="statement">print</span>(<span class="string">"MAE:"</span>, mae)
+<span class="statement">print</span>(<span class="string">"RMSE:"</span>, <span class="builtin">round</span>(rmse, 4))
+</pre></div></div>
+<div class="example-output-label">Expected output</div><pre class="example-output">[6. 6.]
+MAE: 6.0
+RMSE: 6.0828</pre>
+<p>The test targets are 11 and 13, so absolute errors are 5 and 7. If a complex model cannot consistently beat this baseline, extra complexity is unjustified.</p>
+<h3>2.1 Random splitting is not universally valid</h3>
+<p><tt>train_test_split</tt> shuffles by default and is useful for approximately independent observations. Ordered data usually requires a chronological split. Panels may also need entity or event grouping so overlapping labels do not cross boundaries.</p>
+<h2>3. What standardization learns</h2>
+<p><tt>StandardScaler</tt> learns each training feature's mean and standard deviation during <tt>fit</tt>; <tt>transform</tt> applies those fixed values to new data.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.preprocessing <span class="statement">import</span> StandardScaler
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)  <span class="comment"># Transform only; never refit on test</span>
+
+<span class="statement">print</span>(<span class="string">"train mean:"</span>, scaler.mean_)
+<span class="statement">print</span>(<span class="string">"train scale:"</span>, np.<span class="builtin">round</span>(scaler.scale_, 4))
+<span class="statement">print</span>(<span class="string">"scaled test:"</span>, np.<span class="builtin">round</span>(X_test_scaled.ravel(), 4))
+</pre></div></div>
+<div class="example-output-label">Expected output</div><pre class="example-output">train mean: [2.5]
+train scale: [1.118]
+scaled test: [2.2361 3.1305]</pre>
+<p>Scaling all of <tt>X_all</tt> before splitting leaks test-distribution information into training.</p>
+<h2>4. Pipeline: bind preprocessing to the model</h2>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.pipeline <span class="statement">import</span> Pipeline
+<span class="statement">from</span> sklearn.impute <span class="statement">import</span> SimpleImputer
+<span class="statement">from</span> sklearn.preprocessing <span class="statement">import</span> StandardScaler
+<span class="statement">from</span> sklearn.linear_model <span class="statement">import</span> Ridge
+
+pipeline = Pipeline([
+    (<span class="string">"imputer"</span>, SimpleImputer(strategy=<span class="string">"median"</span>)),  <span class="comment"># Learn training-column medians</span>
+    (<span class="string">"scaler"</span>, StandardScaler()),                   <span class="comment"># Learn training mean <span class="builtin">and</span> scale</span>
+    (<span class="string">"model"</span>, Ridge(alpha=1.0)),                    <span class="comment"># Fit L2-regularized linear model</span>
+])
+
+X_missing = np.array([[1.0], [2.0], [np.nan], [4.0]])
+y_missing = np.array([3.0, 5.0, 7.0, 9.0])
+
+pipeline.fit(X_missing, y_missing)
+<span class="statement">print</span>(pipeline.named_steps[<span class="string">"imputer"</span>].statistics_)
+<span class="statement">print</span>(np.<span class="builtin">round</span>(pipeline.predict([[5.0]]), 4))
+</pre></div></div>
+<div class="example-output-label">Expected output</div><pre class="example-output">[2.]
+[10.1684]</pre>
+<p>The median is 2. <tt>named_steps</tt> exposes fitted components. During cross-validation, every fold learns imputation and scale from its training subset only.</p>
+<h3>4.1 Feature selection also belongs inside the Pipeline</h3>
+<p>Any step that inspects feature or target distributions—imputation, scaling, encoding, feature selection, or PCA—must be fitted within each training fold. Pipeline is the safest default.</p>
+<h2>5. Numeric and categorical columns: ColumnTransformer</h2>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">import</span> pandas <span class="statement">as</span> pd
+<span class="statement">from</span> sklearn.compose <span class="statement">import</span> ColumnTransformer
+<span class="statement">from</span> sklearn.preprocessing <span class="statement">import</span> OneHotEncoder
+<span class="statement">from</span> sklearn.linear_model <span class="statement">import</span> LogisticRegression
+
+data = pd.DataFrame({
+    <span class="string">"momentum"</span>: [0.2, -0.1, 0.4, -0.3, 0.1, 0.5],
+    <span class="string">"volatility"</span>: [0.15, 0.30, np.nan, 0.40, 0.20, 0.12],
+    <span class="string">"sector"</span>: [<span class="string">"Tech"</span>, <span class="string">"Bank"</span>, <span class="string">"Tech"</span>, <span class="string">"Bank"</span>, <span class="string">"Energy"</span>, <span class="string">"Tech"</span>],
+})
+target = np.array([1, 0, 1, 0, 0, 1])
+
+numeric = [<span class="string">"momentum"</span>, <span class="string">"volatility"</span>]
+categorical = [<span class="string">"sector"</span>]
+
+preprocess = ColumnTransformer([
+    (<span class="string">"num"</span>, Pipeline([
+        (<span class="string">"imputer"</span>, SimpleImputer(strategy=<span class="string">"median"</span>)),
+        (<span class="string">"scaler"</span>, StandardScaler()),
+    ]), numeric),
+    (<span class="string">"cat"</span>, OneHotEncoder(handle_unknown=<span class="string">"ignore"</span>), categorical),
+])
+
+classifier = Pipeline([
+    (<span class="string">"preprocess"</span>, preprocess),
+    (<span class="string">"model"</span>, LogisticRegression(max_iter=1000)),
+])
+classifier.fit(data, target)
+
+<span class="statement">print</span>(classifier.predict(data.iloc[[0, 1]]))
+<span class="statement">print</span>(np.<span class="builtin">round</span>(classifier.predict_proba(data.iloc[[0, 1]])[:, 1], 4))
+</pre></div></div>
+<div class="example-output-label">Typical output</div><pre class="example-output">[1 0]
+[0.7326 0.1765]</pre>
+<p>Last decimals may vary by version. <tt>handle_unknown=&ldquo;ignore&rdquo;</tt> lets test data contain an unseen category; its one-hot columns are all zero instead of raising an error.</p>
+<h2>6. Cross-validation simulates unseen data</h2>
+<h3>6.1 KFold versus TimeSeriesSplit</h3>
+<p><tt>KFold</tt> partitions general samples; classification often uses <tt>StratifiedKFold</tt> to preserve class balance. <tt>TimeSeriesSplit</tt> keeps training indices before validation indices.</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.model_selection <span class="statement">import</span> TimeSeriesSplit
+
+splitter = TimeSeriesSplit(n_splits=3)
+<span class="statement">for</span> fold, (train_index, test_index) <span class="builtin">in</span> <span class="builtin">enumerate</span>(splitter.split(np.arange(8)), start=1):
+    <span class="statement">print</span>(fold, train_index.tolist(), test_index.tolist())
+</pre></div></div>
+<div class="example-output-label">Expected output</div><pre class="example-output">1 [0, 1] [2, 3]
+2 [0, 1, 2, 3] [4, 5]
+3 [0, 1, 2, 3, 4, 5] [6, 7]</pre>
+<p>Overlapping financial labels can still share information intervals across a chronological boundary. Discuss a gap, purge, or embargo rather than applying random five-fold validation mechanically.</p>
+<h3>6.2 Evaluate the entire Pipeline</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.model_selection <span class="statement">import</span> cross_val_score
+
+X_cv = np.arange(1.0, 13.0).reshape(-1, 1)
+y_cv = 1.0 + 2.0 * X_cv.ravel()
+
+linear_pipeline = Pipeline([
+    (<span class="string">"scaler"</span>, StandardScaler()),
+    (<span class="string">"model"</span>, LinearRegression()),
+])
+
+scores = cross_val_score(
+    linear_pipeline,
+    X_cv,
+    y_cv,
+    cv=TimeSeriesSplit(n_splits=3),
+    scoring=<span class="string">"neg_mean_absolute_error"</span>,
+)
+
+<span class="statement">print</span>(np.<span class="builtin">round</span>(scores, 6))
+<span class="statement">print</span>(<span class="string">"mean MAE:"</span>, <span class="builtin">round</span>(-scores.mean(), 6))
+</pre></div></div>
+<div class="example-output-label">Expected output</div><pre class="example-output">[-0. -0. -0.]
+mean MAE: 0.0</pre>
+<p>scikit-learn scores are defined so larger is better, hence losses are negated. Convert the sign back for reporting and show dispersion across folds.</p>
+<h2>7. Choosing the first models</h2>
+<p>Begin with explainable baselines and add complexity in response to failure modes:</p>
+<ul>
+<li><p>Regression: <tt>DummyRegressor</tt>, then <tt>LinearRegression</tt>, <tt>Ridge</tt>, or <tt>Lasso</tt>.</p>
+</li>
+<li><p>Classification: <tt>DummyClassifier</tt>, then <tt>LogisticRegression</tt>.</p>
+</li>
+<li><p>Nonlinear tabular patterns: trees, random forests, or gradient boosting.</p>
+</li>
+<li><p>High-dimensional sparse features: regularized linear models are strong baselines.</p>
+</li>
+<li><p>Dimensionality reduction: <tt>PCA</tt>; clustering: <tt>KMeans</tt>, with stability checks and business interpretation.</p>
+</li>
+</ul>
+<p>No model is “always better.” Choice depends on sample size, feature types, nonlinearity, noise, interpretability, compute, and deployment. Use the official <a href="https://scikit-learn.org/stable/machine_learning_map.html">estimator map</a> as a review aid.</p>
+<h3>7.1 Regularization intuition</h3>
+<p><tt>Ridge</tt> adds a squared-coefficient penalty and often reduces variance. Larger <tt>alpha</tt> usually shrinks coefficients toward zero. <tt>Lasso</tt> uses an absolute-value penalty and can produce exact zeros, but selection among correlated features may be unstable.</p>
+<h2>8. Tuning: double underscores address Pipeline parameters</h2>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.model_selection <span class="statement">import</span> GridSearchCV
+
+search = GridSearchCV(
+    estimator=pipeline,
+    param_grid={
+        <span class="string">"imputer__strategy"</span>: [<span class="string">"mean"</span>, <span class="string">"median"</span>],
+        <span class="string">"model__alpha"</span>: [0.1, 1.0, 10.0],
+    },
+    cv=2,
+    scoring=<span class="string">"neg_mean_absolute_error"</span>,
+)
+search.fit(X_missing, y_missing)
+
+<span class="statement">print</span>(search.best_params_)
+<span class="statement">print</span>(<span class="builtin">type</span>(search.best_estimator_).__name__)
+</pre></div></div>
+<div class="example-output-label">Typical output</div><pre class="example-output">{'imputer__strategy': 'mean', 'model__alpha': 0.1}
+Pipeline</pre>
+<p><tt>model__alpha</tt> means parameter <tt>alpha</tt> on the Pipeline step called <tt>model</tt>. The toy optimum is not substantive. In real work, predefine the search space and metric and keep a final test set untouched.</p>
+<h2>9. Metrics begin with the cost of an error</h2>
+<h3>9.1 Regression</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.metrics <span class="statement">import</span> r2_score
+
+y_true = np.array([1.0, 2.0, 10.0])
+y_pred = np.array([1.0, 4.0, 7.0])
+
+<span class="statement">print</span>(<span class="string">"MAE:"</span>, mean_absolute_error(y_true, y_pred))
+<span class="statement">print</span>(<span class="string">"RMSE:"</span>, <span class="builtin">round</span>(mean_squared_error(y_true, y_pred) ** 0.5, 4))
+<span class="statement">print</span>(<span class="string">"R2:"</span>, <span class="builtin">round</span>(r2_score(y_true, y_pred), 4))
+</pre></div></div>
+<div class="example-output-label">Expected output</div><pre class="example-output">MAE: 1.6666666666666667
+RMSE: 2.0817
+R2: 0.7329</pre>
+<ul>
+<li><p>MAE has the target's unit and penalizes errors linearly.</p>
+</li>
+<li><p>RMSE emphasizes large errors.</p>
+</li>
+<li><p>$R^2$ compares squared error with a mean baseline and can be negative out of sample.</p>
+</li>
+<li><p>Quantitative prediction also needs rank IC, spreads, turnover, costs, and stability.</p>
+</li>
+</ul>
+<h3>9.2 Classification</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="statement">from</span> sklearn.metrics <span class="statement">import</span> accuracy_score, precision_score, recall_score, f1_score
+
+y_true = np.array([1, 1, 1, 0, 0, 0])
+y_pred = np.array([1, 0, 1, 0, 1, 0])
+
+<span class="statement">print</span>(<span class="string">"accuracy:"</span>, accuracy_score(y_true, y_pred))
+<span class="statement">print</span>(<span class="string">"precision:"</span>, precision_score(y_true, y_pred))
+<span class="statement">print</span>(<span class="string">"recall:"</span>, recall_score(y_true, y_pred))
+<span class="statement">print</span>(<span class="string">"F1:"</span>, f1_score(y_true, y_pred))
+</pre></div></div>
+<div class="example-output-label">Expected output</div><pre class="example-output">accuracy: 0.6666666666666666
+precision: 0.6666666666666666
+recall: 0.6666666666666666
+F1: 0.6666666666666666</pre>
+<p>Accuracy can mislead under imbalance. ROC-AUC assesses ranking broadly; PR-AUC is often more informative for rare positives. Choose a threshold from false-positive and false-negative costs, not automatically 0.5.</p>
+<h2>10. Coefficients and importance are limited explanations</h2>
+<ul>
+<li><p>Linear coefficients depend on feature scale.</p>
+</li>
+<li><p>Correlated features can make individual coefficients unstable even when prediction is stable.</p>
+</li>
+<li><p>Tree impurity importance may favor continuous or high-cardinality variables.</p>
+</li>
+<li><p>Compute permutation importance on data not used for fitting and interpret it carefully with correlated features.</p>
+</li>
+<li><p>Predictive association is not a causal conclusion.</p>
+</li>
+</ul>
+<h2>11. Frequent leakage and reproducibility failures</h2>
+<ul>
+<li><p>Imputing or scaling all data before splitting.</p>
+</li>
+<li><p>Using test data to select features, thresholds, or hyperparameters.</p>
+</li>
+<li><p>Randomly shuffling a time series.</p>
+</li>
+<li><p>Putting the same entity or event in train and validation; use grouped splitting when appropriate.</p>
+</li>
+<li><p>Using information unavailable at prediction time.</p>
+</li>
+<li><p>Omitting <tt>random_state</tt>, versions, or the data snapshot.</p>
+</li>
+<li><p>Reporting only the best fold instead of mean, dispersion, and an out-of-sample baseline.</p>
+</li>
+</ul>
+<h2>12. A quantitative-interview answer template</h2>
+<ol>
+<li><p>One row is an asset-date; target is an $h$-period forward return, and every feature is available before trading.</p>
+</li>
+<li><p>Sort chronologically and reserve the final segment; add purge or gap for overlapping labels.</p>
+</li>
+<li><p>Establish a zero-return or training-mean baseline.</p>
+</li>
+<li><p>Put imputation, scaling, categorical encoding, and the model in Pipeline.</p>
+</li>
+<li><p>Tune within training data using TimeSeriesSplit and a business-aligned metric.</p>
+</li>
+<li><p>Report fold metrics, final test metrics, IC, turnover, and cost sensitivity.</p>
+</li>
+<li><p>Audit leakage, feature stability, residuals, and market regimes.</p>
+</li>
+</ol>
+<h2>13. Official tutorials, examples, and course</h2>
+<ul>
+<li><p><a href="https://scikit-learn.org/stable/getting_started.html">Getting Started</a> — official Estimator, preprocessing, Pipeline, evaluation, and search introduction.</p>
+</li>
+<li><p><a href="https://scikit-learn.org/stable/user_guide.html">User Guide</a> — supervised and unsupervised learning, selection, preprocessing, and computing.</p>
+</li>
+<li><p><a href="https://scikit-learn.org/stable/common_pitfalls.html">Common Pitfalls and Recommended Practices</a> — inconsistent preprocessing, leakage, and randomness control.</p>
+</li>
+<li><p><a href="https://scikit-learn.org/stable/machine_learning_map.html">Choosing the Right Estimator</a> — official interactive flowchart and downloadable SVG cheat sheet.</p>
+</li>
+<li><p><a href="https://scikit-learn.org/stable/auto_examples/index.html">Examples Gallery</a> — complete runnable examples maintained by the project.</p>
+</li>
+<li><p><a href="https://scikit-learn.org/stable/auto_examples/compose/plot_column_transformer_mixed_types.html">Column Transformer with Mixed Types</a> — official heterogeneous-table example.</p>
+</li>
+<li><p><a href="https://inria.github.io/scikit-learn-mooc/">scikit-learn MOOC</a> — a free progressive INRIA course with notebooks, exercises, and solutions.</p>
+</li>
+</ul>
+</div>
+</body>
+</html>

@@ -28,13 +28,15 @@
   }
 
   function questionAnchor(heading, index) {
-    var codeMatch = cleanHeadingText(heading).match(/^([ZCM])(\d{3})\b/i);
+    var codeMatch = cleanHeadingText(heading).match(/^([ZCMS])(\d{3})\b/i);
     var bookPrefix =
       codeMatch && codeMatch[1].toUpperCase() === "Z"
         ? "zhou-z"
         : codeMatch && codeMatch[1].toUpperCase() === "C"
           ? "crack-c"
-          : "mosteller-m";
+          : codeMatch && codeMatch[1].toUpperCase() === "M"
+            ? "mosteller-m"
+            : "stefanica-s";
     return headingAnchor(
       heading,
       codeMatch

@@ -1,0 +1,594 @@
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../../blog-note}, addjs{../../math-render}, addjs{../../blog-sidebar}
+= Python for Quantitative Research Interviews
+[../../../blog.html ← Blogs] \M /updated 2026-07-21/
+
+~~~
+{}{raw}
+<div class="language-switch" role="navigation" aria-label="Language selection"><a href="python-for-quant-interviews.html" hreflang="zh-CN">中文</a><span class="active" aria-current="page">English</span></div>
+<div class="page-lead"><strong>Learning goal:</strong> move from recognizing short Python snippets to writing, explaining, and checking code independently in a quantitative research interview. This page covers the language and standard library only; NumPy, pandas, and scikit-learn now have separate tutorials. Every major example identifies its input, explains non-obvious lines, and shows the expected output.</div>
+<div class="study-callout"><strong>Series:</strong><a href="numpy-for-quant-interviews-en.html">NumPy</a> · <a href="pandas-for-quant-interviews-en.html">pandas</a> · <a href="scikit-learn-for-quant-interviews-en.html">scikit-learn</a></div>
+~~~
+
+== 0. How to use this tutorial
+
+Do not begin by memorizing APIs. Ask four questions for every example:
+
+. What are the input types?
+. Which object does each line create or mutate?
+. What are the output type and value?
+. What are the complexity and boundary cases?
+
+Text after +#+ is a comment and is not executed. A dark “Expected output” block shows what the terminal prints; do not copy that block into the program.
+
+=== 0.1 A minimal program
+
+Save this as +hello.py+ and run +python3 hello.py+:
+
+~~~
+{}{python}
+name = "quant"                 # Bind name to a string object
+score = 0.81234                 # Bind score to a floating-point object
+print(f"{name}: {score:.3f}")  # :.3f formats the value to three decimals
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">quant: 0.812</pre>
+~~~
+
++print+ displays a value. A function without an explicit +return+ returns +None+. Interview platforms normally provide Python already, so installation commands do not belong in a coding answer.
+
+== 1. Names, objects, and types
+
+A Python variable is a name bound to an object, not a box that stores a copied value. Assignment +b = a+ normally does not copy the object.
+
+~~~
+{}{python}
+prices = [100, 102, 101]  # Create a mutable list
+alias = prices            # Both names now refer to the same list
+alias.append(104)         # Mutate that shared list in place
+
+print(prices)             # The change is visible through prices as well
+print(alias is prices)    # is asks whether both names reference one object
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[100, 102, 101, 104]
+True</pre>
+~~~
+
+Use +prices.copy()+ when you need an independent shallow copy. A shallow copy duplicates only the outer container; nested objects may still be shared.
+
+=== 1.1 Mutable and immutable objects
+
+- Immutable: +int+, +float+, +bool+, +str+, and +tuple+. An apparent modification creates another object and rebinds the name.
+- Mutable: +list+, +dict+, +set+, and most data-science containers. A method may change the object in place.
+- +==+ compares values; +is+ compares identity. Test a missing sentinel with +x is None+.
+
+~~~
+{}{python}
+x = 10
+y = x
+x = x + 1              # Create integer 11; y still references integer 10
+
+print(x, y)
+print(x == y)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">11 10
+False</pre>
+~~~
+
+== 2. Numbers, booleans, and floating point
+
+=== 2.1 Common numeric operators
+
+~~~
+{}{python}
+cash = 17
+lot_size = 5
+
+lots, remainder = divmod(cash, lot_size)  # Quotient and remainder together
+power = 2 ** 3                            # Exponentiation
+floor_value = -7 // 3                     # Floor toward negative infinity
+
+print(lots, remainder)
+print(power)
+print(floor_value)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">3 2
+8
+-3</pre>
+~~~
+
+Comparisons return +bool+. +and+ and +or+ short-circuit: the right-hand expression is skipped when the result is already determined.
+
+=== 2.2 Why direct floating-point equality fails
+
+Most decimal fractions do not have an exact finite binary representation.
+
+~~~
+{}{python}
+import math
+
+raw = 0.1 + 0.2
+print(raw)                              # Reveal the representation error
+print(raw == 0.3)                       # Exact equality is false
+print(math.isclose(raw, 0.3, rel_tol=1e-12))
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">0.30000000000000004
+False
+True</pre>
+~~~
+
+Explain why a tolerance is appropriate for the application. Money may require +decimal.Decimal+; scientific code usually uses floating point with explicit tolerances.
+
+== 3. The four core containers
+
+=== 3.1 list: ordered and mutable
+
+~~~
+{}{python}
+returns = [0.02, -0.01, 0.03]
+returns.append(0.01)          # Append at the end; amortized O(1)
+last = returns.pop()          # Remove and return the final item; O(1)
+middle = returns[1:3]         # Stop index 3 is excluded; creates a new list
+
+print(last)
+print(middle)
+print(returns)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">0.01
+[-0.01, 0.03]
+[0.02, -0.01, 0.03]</pre>
+~~~
+
+Indexing is $O(1)$; inserting or deleting at the front is $O(n)$. Use +collections.deque+ for a queue instead of repeatedly calling +list.pop(0)+.
+
+=== 3.2 tuple: an immutable record
+
+~~~
+{}{python}
+quote = ("AAPL", 214.5)
+symbol, price = quote       # Unpack two positions into two names
+print(symbol)
+print(price)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">AAPL
+214.5</pre>
+~~~
+
+A tuple can be a dictionary key when all its elements are hashable. A one-element tuple needs the comma: +(value,)+.
+
+=== 3.3 dict: keys mapped to values
+
+~~~
+{}{python}
+weights = {"AAPL": 0.4, "MSFT": 0.6}
+weights["GOOG"] = 0.0                   # Add a key-value pair
+apple_weight = weights.get("AAPL", 0.0) # Return the stored value
+missing = weights.get("TSLA", 0.0)      # Return the fallback for a missing key
+
+print(apple_weight)
+print(missing)
+print(list(weights.keys()))
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">0.4
+0.0
+['AAPL', 'MSFT', 'GOOG']</pre>
+~~~
+
+Lookup, insertion, and deletion are $O(1)$ on average. Direct indexing with a missing key raises +KeyError+; a silent default is correct only when it matches the problem semantics.
+
+=== 3.4 set: uniqueness and fast membership
+
+~~~
+{}{python}
+tradable = {"AAPL", "MSFT", "GOOG"}
+portfolio = {"AAPL", "TSLA"}
+
+print("AAPL" in tradable)       # Average O(1) membership test
+print(portfolio & tradable)      # Intersection
+print(portfolio - tradable)      # Items only in portfolio
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">True
+{'AAPL'}
+{'TSLA'}</pre>
+~~~
+
+Sets have no sorting semantics. Use +sorted(result)+ for deterministic presentation. The empty set is +set()+; +{}+ is an empty dictionary.
+
+== 4. Conditions, loops, and paired iteration
+
+=== 4.1 if / elif / else
+
+~~~
+{}{python}
+ret = -0.035
+
+if ret > 0.02:
+    label = "large gain"
+elif ret < -0.02:
+    label = "large loss"
+else:
+    label = "small move"
+
+print(label)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">large loss</pre>
+~~~
+
+Indentation defines a block. Use four spaces and do not mix tabs and spaces.
+
+=== 4.2 What enumerate and zip produce
+
+~~~
+{}{python}
+symbols = ["AAPL", "MSFT", "GOOG"]
+returns = [0.02, -0.01, 0.03]
+
+for position, (symbol, ret) in enumerate(zip(symbols, returns), start=1):
+    # zip yields (symbol, ret); enumerate adds a position starting at 1
+    print(position, symbol, f"{ret:.1%}")
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">1 AAPL 2.0%
+2 MSFT -1.0%
+3 GOOG 3.0%</pre>
+~~~
+
++zip+ stops when its shortest input ends. If equal lengths are an invariant, modern Python supports +zip(a, b, strict=True)+; for an unknown interview runtime, an explicit length check is portable.
+
+=== 4.3 break and continue
+
+~~~
+{}{python}
+values = [3, -1, 5, 0, 8]
+first_zero = None
+
+for index, value in enumerate(values):
+    if value < 0:
+        continue                 # Skip the remaining body for negative values
+    if value == 0:
+        first_zero = index
+        break                    # Stop after the first zero is found
+
+print(first_zero)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">3</pre>
+~~~
+
+== 5. Functions: make inputs, rules, and outputs explicit
+
+=== 5.1 Consecutive simple returns
+
+~~~
+{}{python}
+def simple_returns(prices):
+    """Return consecutive simple returns; require positive prices."""
+    if len(prices) < 2:                      # Two prices make one return
+        return []
+    if any(price <= 0 for price in prices):  # Prevent division by zero or invalid prices
+        raise ValueError("prices must be positive")
+
+    result = []
+    for previous, current in zip(prices, prices[1:]):
+        result.append(current / previous - 1.0)
+    return result
+
+answer = simple_returns([100, 102, 101])
+print([round(x, 4) for x in answer])
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[0.02, -0.0098]</pre>
+~~~
+
+Line by line:
+
+- +prices\[1:\]+ is a new list beginning at the second price.
+- +zip(prices, prices\[1:\])+ produces +(100,102)+ and +(102,101)+.
+- Compute at full precision; round for presentation only.
+- For $n$ inputs, one scan costs $O(n)$ time and the returned list costs $O(n)$ space.
+
+=== 5.2 Defaults and keyword arguments
+
+~~~
+{}{python}
+def clip(value, lower=-1.0, upper=1.0):
+    return max(lower, min(value, upper))
+
+print(clip(1.7))                    # Use both defaults
+print(clip(1.7, upper=2.0))         # Override upper by name
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">1.0
+1.7</pre>
+~~~
+
+Avoid mutable default arguments:
+
+~~~
+{}{python}
+def append_value(value, output=None):
+    if output is None:       # Create a fresh list for each omitted argument
+        output = []
+    output.append(value)
+    return output
+
+print(append_value(1))
+print(append_value(2))
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[1]
+[2]</pre>
+~~~
+
+With +output=\[\]+, the list would be created once at function definition time and reused across calls.
+
+== 6. Comprehensions, generators, and standard-library tools
+
+=== 6.1 A comprehension is a compact loop
+
+~~~
+{}{python}
+returns = [0.02, -0.01, 0.03, -0.04]
+
+positive_bps = [round(ret * 10_000) for ret in returns if ret > 0]
+# Keep positive returns and convert decimal returns to basis points
+
+print(positive_bps)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[200, 300]</pre>
+~~~
+
+Use a comprehension for one expression and a simple filter. With multiple nested conditions, an ordinary loop is usually easier to explain and debug.
+
+=== 6.2 Counter, defaultdict, and deque
+
+~~~
+{}{python}
+from collections import Counter, defaultdict, deque
+
+trades = [("AAPL", 10), ("MSFT", 5), ("AAPL", 7)]
+
+trade_count = Counter(symbol for symbol, _ in trades)
+quantity_by_symbol = defaultdict(int)
+for symbol, quantity in trades:
+    quantity_by_symbol[symbol] += quantity
+
+recent = deque(maxlen=2)
+for trade in trades:
+    recent.append(trade)              # Discard the oldest item beyond length 2
+
+print(trade_count["AAPL"])
+print(dict(quantity_by_symbol))
+print(list(recent))
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">2
+{'AAPL': 17, 'MSFT': 5}
+[('MSFT', 5), ('AAPL', 7)]</pre>
+~~~
+
+=== 6.3 heapq and top-k
+
+~~~
+{}{python}
+import heapq
+
+scores = [0.12, -0.03, 0.44, 0.19, 0.31]
+top_two = heapq.nlargest(2, scores)  # Select only the two largest values
+print(top_two)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[0.44, 0.31]</pre>
+~~~
+
+Full sorting costs $O(n\log n)$; maintaining a heap of size $k$ is typically $O(n\log k)$ and is useful when $k\ll n$.
+
+== 7. Sorting, exceptions, files, and tests
+
+=== 7.1 A multi-level sorting key
+
+~~~
+{}{python}
+rows = [
+    {"date": "2026-01-02", "score": 0.2, "id": "B"},
+    {"date": "2026-01-02", "score": 0.5, "id": "A"},
+    {"date": "2026-01-01", "score": 0.1, "id": "C"},
+]
+
+ordered = sorted(
+    rows,
+    key=lambda row: (row["date"], -row["score"], row["id"]),
+)
+# Date ascending, then score descending, then id ascending
+
+print([(row["date"], row["id"]) for row in ordered])
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[('2026-01-01', 'C'), ('2026-01-02', 'A'), ('2026-01-02', 'B')]</pre>
+~~~
+
++sorted(data)+ returns a new list. +data.sort()+ mutates in place and returns +None+. Python sorting is stable: equal keys preserve their original relative order.
+
+=== 7.2 Catch only an expected exception
+
+~~~
+{}{python}
+text = "12.5"
+
+try:
+    value = float(text)          # Invalid numeric text raises ValueError
+except ValueError:
+    value = None
+
+print(value)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">12.5</pre>
+~~~
+
+Do not hide arbitrary failures with +except Exception: pass+. Use a context manager for files:
+
+~~~
+{}{python}
+with open("prices.csv", "r", encoding="utf-8") as file:
+    header = file.readline().strip()  # The file closes automatically afterward
+~~~
+
+=== 7.3 A minimum test checklist
+
+Consider empty input, one item, duplicates, negative values, all equal, sorted, reverse sorted, extreme values, and wrong types. State expectations as assertions:
+
+~~~
+{}{python}
+assert simple_returns([]) == []
+assert simple_returns([100]) == []
+assert math.isclose(simple_returns([100, 110])[0], 0.1)
+~~~
+
+Passing assertions print nothing. A failed assertion raises +AssertionError+.
+
+== 8. Worked interview problem: fixed-window moving average
+
+Given a numeric sequence and window length $k$, return the mean of every consecutive window.
+
+Recomputing each sum costs $O(nk)$. Maintain one window sum instead: add the entering value and subtract the leaving value for $O(n)$ total time.
+
+~~~
+{}{python}
+def moving_average(values, k):
+    if k <= 0:
+        raise ValueError("k must be positive")
+    if k > len(values):
+        return []
+
+    window_sum = sum(values[:k])       # Sum the first window; O(k)
+    averages = [window_sum / k]
+
+    for right in range(k, len(values)):
+        entering = values[right]       # New value entering the window
+        leaving = values[right - k]    # Old value leaving the window
+        window_sum += entering - leaving
+        averages.append(window_sum / k)
+
+    return averages
+
+result = moving_average([1, 2, 3, 6, 8], 3)
+print(result)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">[2.0, 3.6666666666666665, 5.666666666666667]</pre>
+~~~
+
+The windows are +\[1,2,3\]+, +\[2,3,6\]+, and +\[3,6,8\]+. Initialization is $O(k)$ and every remaining value enters and leaves once, so total time is $O(n)$ and auxiliary space is $O(1)$ excluding the output.
+
+== 9. Pure-Python quantitative patterns
+
+=== 9.1 Online mean
+
+~~~
+{}{python}
+stream = [2.0, 4.0, 8.0]
+count = 0
+mean = 0.0
+
+for value in stream:
+    count += 1
+    mean += (value - mean) / count  # Update after incorporating one observation
+    print(count, round(mean, 4))
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output</div><pre class="example-output">1 2.0
+2 3.0
+3 4.6667</pre>
+~~~
+
+This consumes $O(1)$ auxiliary space and works when the whole stream cannot be held in memory.
+
+=== 9.2 Reproducible simulation
+
+~~~
+{}{python}
+import random
+
+rng = random.Random(42)                 # Local generator; do not alter global state
+tosses = [rng.choice(["H", "T"]) for _ in range(6)]
+print(tosses)
+~~~
+
+~~~
+{}{raw}
+<div class="example-output-label">Expected output on standard CPython</div><pre class="example-output">['H', 'H', 'T', 'H', 'H', 'H']</pre>
+~~~
+
+A fixed seed provides reproducibility, not better randomness. Use NumPy's +Generator+ for array simulations.
+
+== 10. Learning order and next steps
+
+. Type each function in this page and predict its output before running it.
+. Study [numpy-for-quant-interviews-en.html NumPy] for shapes, axes, broadcasting, indexing, linear algebra, and simulation.
+. Study [pandas-for-quant-interviews-en.html pandas] for table selection, grouping, joins, reshaping, and time alignment.
+. Study [scikit-learn-for-quant-interviews-en.html scikit-learn] for preprocessing, pipelines, cross-validation, metrics, and leakage.
+. Return to interview problems and explain input types, alignment, complexity, and boundary tests aloud.
+
+== 11. Official tutorials and references
+
+- [https://docs.python.org/3/tutorial/ The Python Tutorial] — official coverage of control flow, functions, data structures, I/O, exceptions, classes, iterators, and environments.
+- [https://docs.python.org/3/tutorial/datastructures.html Python Data Structures] — lists, tuples, sets, dictionaries, comprehensions, and looping techniques.
+- [https://docs.python.org/3/library/collections.html collections] — +Counter+, +defaultdict+, +deque+, and specialized containers.
+- [https://docs.python.org/3/library/heapq.html heapq] and [https://docs.python.org/3/library/bisect.html bisect] — heaps and binary search in sorted lists.
+- [https://docs.python.org/3/tutorial/floatingpoint.html Floating-Point Arithmetic] — understand representation error instead of memorizing one example.
+
+*Version note:* official documentation evolves with Python. Check the interview runtime first; when it is unknown, prefer long-stable language features and standard-library interfaces.
