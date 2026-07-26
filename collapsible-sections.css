@@ -2,6 +2,10 @@ table#tlayout {
   width: 100%;
 }
 
+#layout-menu {
+  width: 140px;
+}
+
 .collapsible-section-toggle {
   appearance: none;
   align-items: center;
@@ -45,6 +49,26 @@ table#tlayout {
 
 .collapsible-section-content {
   padding-top: 0.3em;
+}
+
+.collapsible-section-content[id^="research-watchlist-"]:not([id^="research-watchlist-item-"]) {
+  padding-top: 0;
+}
+
+.collapsible-section-heading[id^="research-watchlist-item-heading-"] {
+  margin-bottom: 0.1em;
+  margin-top: 0.45em;
+}
+
+.collapsible-section-content[id^="research-watchlist-item-"] {
+  padding-top: 0;
+}
+
+.collapsible-section-content[id^="research-watchlist-item-"] > ul,
+.collapsible-section-content[id^="research-watchlist-item-"] > ol,
+.collapsible-section-content[id^="research-watchlist-item-"] > p {
+  margin-bottom: 0.35em;
+  margin-top: 0;
 }
 
 .collapsible-section-content[hidden] {

@@ -12,7 +12,7 @@
 - 内容源：jemdoc（`*.jemdoc`）
 - 页面生成器：`jemdoc.py`，jemdoc 0.7.3，需要 Python 2.7
 - 样式：原生 CSS（`jemdoc.css`）
-- 交互增强：原生 JavaScript（Study 页章节及 Reading 页推荐主题的展开/收起）
+- 交互增强：原生 JavaScript（Study 页章节、Reading 页推荐主题及 Research 页 Watchlist 的展开/收起）
 - 托管：GitHub Pages
 - 构建系统：无
 - 包管理器：无
@@ -45,7 +45,7 @@ jemdoc.css / collapsible-sections.* / photos/ / files/ ──> 由 HTML 直接�
 | `random.jemdoc` / `random.html` | 随笔与链接收藏 | 修改 jemdoc，再生成 HTML |
 | `MENU` | 所有 jemdoc 页面的共享侧边栏 | 修改后重新生成全部 jemdoc 页面 |
 | `jemdoc.css` | 全站公共样式 | 直接修改，不需要重新生成 HTML |
-| `collapsible-sections.css` / `collapsible-sections.js` | Study 页顶层章节及 Reading 页推荐主题的展开/收起增强 | 由 `study.jemdoc`、`reading.jemdoc` 通过 `addcss` / `addjs` 加载 |
+| `collapsible-sections.css` / `collapsible-sections.js` | Study 页顶层章节、Reading 页推荐主题及 Research 页 Watchlist 的展开/收起增强 | 由 `study.jemdoc`、`reading.jemdoc`、`research.jemdoc` 通过 `addcss` / `addjs` 加载 |
 | `blogs/blog-note.css` | 独立 Blog 笔记的共享页面样式 | 由各 Blog 笔记通过相对路径加载 |
 | `blogs/blog.conf` | Blog 笔记的 jemdoc 生成配置，包含移动端 viewport | 生成 Blog 笔记时通过 `-c` 指定 |
 | `jemdoc.py` | 随仓库保存的 jemdoc 0.7.3 生成器 | 一般不要修改 |

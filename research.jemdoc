@@ -1,5 +1,18 @@
-# jemdoc: menu{MENU}{research.html}, nofooter  
+# jemdoc: menu{MENU}{research.html}, nofooter, addcss{collapsible-sections}, addjs{collapsible-sections}
 = Li Zeng's Research
 
 == Space Computing Power Networks
 
+=== Research Watchlist
+==== Projects
+- [https://github.com/ShipItAndPray/orbital-compute orbital-compute] [https://shipitandpray.github.io/orbital-compute/index.html \[Live Demo\]] — An open-source simulator for scheduling GPU compute jobs across satellite constellations.
+- [https://github.com/chrieke/awesome-satellite-imagery-datasets awesome-satellite-imagery-datasets] — A curated list of aerial and satellite imagery datasets for computer vision and deep learning (archived).
+- [https://github.com/TiansuanConstellation/MobiCom24-SatelliteCOTS MobiCom24-SatelliteCOTS] [https://arxiv.org/abs/2401.03435 \[Paper\]] — Datasets and analysis tools from real-satellite measurements of COTS computing devices, covering thermal and energy behavior.
+- [https://github.com/SpaceNetLab/LeoCC LeoCC] [https://doi.org/10.1145/3718958.3750491 \[Paper\]] — A congestion-control algorithm designed to remain robust under LEO satellite network dynamics.
+- [https://github.com/suvambasak/LEOCraft LEOCraft] [https://www.usenix.org/conference/atc25/presentation/basak \[Paper\]] — A modular flow-level simulator for evaluating LEO constellation throughput, latency/stretch, traffic flow, and coverage.
+
+==== Researchers
+- [https://lzq8272587.github.io/ Zeqi Lai], INSC@Tsinghua. [https://scholar.google.com/citations?hl=en&user=rH0hRIcAAAAJ&view_op=list_works&sortby=pubdate \[Google Scholar\]] [https://ieeexplore.ieee.org/author/37085649109 \[IEEEXplore\]]
+- [https://deepakvasisht.com/ Deepak Vasisht], CS@UIUC. [https://scholar.google.com/citations?hl=en&user=qph2BRgAAAAJ&view_op=list_works&sortby=pubdate \[Google Scholar\]] [https://ieeexplore.ieee.org/author/37085471961 \[IEEEXplore\]]
+- [https://bdebopam.github.io/ Debopam Bhattacherjee], MSR India. [https://scholar.google.com/citations?hl=en&user=hl3YvokAAAAJ&view_op=list_works&sortby=pubdate \[Google Scholar\]] [https://ieeexplore.ieee.org/author/37086886210 \[IEEEXplore\]]
+- [https://spacenet.fudan.edu.cn/snenglish/gy/list.psp Yue Gao], Institute of Space Internet@Fudan. [https://scholar.google.com/citations?hl=en&user=VCFRT_sAAAAJ&view_op=list_works&sortby=pubdate \[Google Scholar\]] [https://ieeexplore.ieee.org/author/37309917200 \[IEEEXplore\]]

@@ -74,7 +74,7 @@
       heading.className +=
         (heading.className ? " " : "") + "collapsible-section-heading";
       heading.appendChild(button);
-      setExpanded(button, content, false);
+      setExpanded(button, content, options.initiallyExpanded === true);
 
       button.addEventListener("click", function () {
         var isExpanded = button.getAttribute("aria-expanded") === "true";
@@ -115,6 +115,34 @@
     return headings;
   }
 
+  function findResearchWatchlistHeadings(layoutContent) {
+    var watchlistHeadings = [];
+    var listHeadings = [];
+    var insideWatchlist = false;
+    var children = layoutContent.children;
+    var index;
+
+    for (index = 0; index < children.length; index += 1) {
+      if (children[index].tagName === "H2") {
+        insideWatchlist = false;
+      } else if (children[index].tagName === "H3") {
+        insideWatchlist =
+          children[index].textContent.replace(/\s+/g, " ").trim() ===
+          "Research Watchlist";
+        if (insideWatchlist) {
+          watchlistHeadings.push(children[index]);
+        }
+      } else if (insideWatchlist && children[index].tagName === "H4") {
+        listHeadings.push(children[index]);
+      }
+    }
+
+    return {
+      watchlists: watchlistHeadings,
+      lists: listHeadings
+    };
+  }
+
   function initializeCollapsibleSections() {
     var layoutContent = document.getElementById("layout-content");
     var currentPageLink = document.querySelector("#layout-menu a.current");
@@ -131,6 +159,35 @@
 
       makeHeadingsCollapsible(readingTopicHeadings, {
         idPrefix: "reading-topic-",
+        isBoundary: function (element) {
+          return (
+            element.nodeType === 1 &&
+            (element.tagName === "H2" || element.tagName === "H3")
+          );
+        }
+      });
+    } else if (currentPage === "research.html") {
+      var researchHeadings = findResearchWatchlistHeadings(layoutContent);
+      if (!researchHeadings.watchlists.length) {
+        return;
+      }
+
+      makeHeadingsCollapsible(researchHeadings.lists, {
+        idPrefix: "research-watchlist-item-",
+        initiallyExpanded: true,
+        isBoundary: function (element) {
+          return (
+            element.nodeType === 1 &&
+            (element.tagName === "H2" ||
+              element.tagName === "H3" ||
+              element.tagName === "H4")
+          );
+        }
+      });
+
+      makeHeadingsCollapsible(researchHeadings.watchlists, {
+        idPrefix: "research-watchlist-",
+        initiallyExpanded: true,
         isBoundary: function (element) {
           return (
             element.nodeType === 1 &&
