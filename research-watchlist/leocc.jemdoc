@@ -1,0 +1,19 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../jemdoc}, addcss{research-watchlist-detail}
+= LeoCC
+
+[https://github.com/SpaceNetLab/LeoCC Repository] | [https://doi.org/10.1145/3718958.3750491 Paper]
+
+*LeoCC: Making Internet Congestion Control Robust to LEO Satellite Dynamics*\nZeqi Lai, Zonglun Li, Qian Wu, Hewu Li, Jihao Li, Xin Xie, Yuanjie Li, Jun Liu, Jianping Wu\n/ACM SIGCOMM 2025/
+
+LeoCC 是一个面向低轨卫星互联网动态性的拥塞控制方案。卫星移动和路径切换会频繁改变带宽、时延与丢包特征，传统拥塞控制容易把这些基础设施变化误判为网络拥塞，从而不必要地降低发送速率。
+
+它主要面向：
+
+- 从端点检测卫星连接重配置；
+- 重新估计路径变化后的带宽和时延；
+- 在 BBR 风格框架中快速调整发送速率；
+- 记录和回放 Starlink 的带宽、RTT 与丢包变化。
+
+LeoCC 适合研究 LEO 网络中的拥塞控制、切换恢复和传输稳定性。仓库同时提供真实网络实现、回放工具和测量 traces，便于复现实验。
+
+[../research.html ← 返回 Research Watchlist]

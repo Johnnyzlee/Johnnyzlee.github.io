@@ -1,0 +1,22 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../jemdoc}, addcss{research-watchlist-detail}
+= ESA Anomalies Dataset & ESA-ADB
+
+[https://esoc.esa.int/esa-releases-building-block-open-database-satellite-anomalies Official ESA Page] | [https://github.com/esa/anomaly-dataset Repository] | [https://zenodo.org/records/12528696 Data] | [https://github.com/kplabs-pl/ESA-ADB Benchmark] | [https://openreview.net/forum?id=bbpRMoatVO Paper] | [https://arxiv.org/abs/2406.17826 Preprint]
+
+*European Space Agency Dataset and Benchmark for Real-World Anomaly Detection in Spacecraft Time Series*\nKrzysztof Kotowski, Christoph Haskamp, Jacek Andrzejewski, Bogdan Ruszczak, Jakub Nalepa, Daniel Lakey, Peter Collins, Jose Martinez-Heras, Gabriele De Canio\n/Journal of Data-centric Machine Learning Research (DMLR), 2026/
+
+ESA Anomalies Dataset（ESA-AD）是由 ESA、Airbus Defence and Space 与 KP Labs 合作整理的真实卫星遥测异常数据集。数据来自三项 ESA 任务，并由领域专家提供异常标注。
+
+它主要面向：
+
+- 卫星健康状态监测；
+- 多变量时间序列异常检测；
+- 故障诊断与预警；
+- 轻量化星上 AI；
+- 不同算法之间的统一基准测试。
+
+ESA-ADB 是这份数据集的配套评测框架，并不是另一份独立数据。它从三项任务中选择两项用于基准测试，提供预处理、算法封装、实验流程、分层评价方法和基线结果。相比普通合成异常数据，ESA-AD 的价值在于真实任务数据中包含缺失值、不同采样频率、长期漂移和复杂异常模式。
+
+它与“网络”关系不大，更偏卫星运维、可靠性和星上智能；如果 Space Computing Power Networks 研究包含任务可靠性、自主管理或计算资源健康监测，它会很有价值。
+
+[../research.html ← 返回 Research Watchlist]

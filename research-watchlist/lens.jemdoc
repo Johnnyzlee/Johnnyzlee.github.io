@@ -1,0 +1,19 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../jemdoc}, addcss{research-watchlist-detail}
+= LENS
+
+[https://github.com/clarkzjw/LENS Repository] | [https://lens-starlink.jinwei.me/ Dataset Portal] | [https://doi.org/10.1145/3625468.3652170 Paper]
+
+*LENS: A LEO Satellite Network Measurement Dataset*\nJinwei Zhao, Jianping Pan\n/The 15th ACM Multimedia Systems Conference (MMSys 2024), Open-Source Software and Dataset (ODS) Track/
+
+LENS 是一个长期维护的低轨卫星网络测量数据集，最初与论文《LENS: A LEO Satellite Network Measurement Dataset》一同发布。它通过分布在多个国家和地区的 Starlink 用户终端持续采集网络性能数据。
+
+它主要包含：
+
+- 多地点、多终端和多服务类型的长期测量；
+- IRTT、ping 等原始结果和处理后的 CSV；
+- 终端型号、PoP、服务状态等背景信息；
+- 月度归档和持续更新的节点快照。
+
+LENS 适合研究 Starlink 的时延、抖动、可用性、地域差异和长期演化。数据规模较大，分析时需要保留地点、终端、套餐和测量时间等上下文。
+
+[../research.html ← 返回 Research Watchlist]

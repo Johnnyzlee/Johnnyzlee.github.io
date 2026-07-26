@@ -1,0 +1,17 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../jemdoc}, addcss{research-watchlist-detail}
+= Xingkan Satellite Digital Twin
+
+[https://xingkan-satellite-digital-twin.onrender.com/ Live Demo]
+
+Xingkan Satellite Digital Twin（星瞰全球卫星星座数字孪生系统）是一个在浏览器中运行的卫星星座交互式可视化系统。它读取 TLE 数据，使用 SGP4 传播轨道，并在三维地球上展示卫星位置和轨道变化。
+
+它主要面向：
+
+- 实时或历史 TLE 数据展示；
+- 卫星名称和 NORAD 编号检索；
+- 轨道、高度、光照和昼夜效果观察；
+- 仿真时间调整与加速播放。
+
+它适合浏览星座态势、教学演示，以及快速理解星座拓扑随时间的变化。显示精度取决于 TLE 的更新时间和传播范围，不能替代高精度定轨产品。
+
+[../research.html ← 返回 Research Watchlist]

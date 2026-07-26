@@ -1,0 +1,19 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../jemdoc}, addcss{research-watchlist-detail}
+= PASEOS
+
+[https://github.com/aidotse/PASEOS Repository] | [https://paseos.readthedocs.io/ Documentation] | [https://doi.org/10.1109/JSTARS.2024.3445506 Paper]
+
+*PAseos Simulates the Environment for Operating Multiple Spacecraft*\nPablo Gómez, Johan Östman, Vinutha Magal Shreenath, Gabriele Meoni\n/IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing (JSTARS), 2024/
+
+PASEOS（PAseos Simulates the Environment for Operating multiple Spacecraft）是一个模拟多航天器运行环境的 Python 模块。它把航天器上的计算或操作抽象成 activity，并在执行过程中考虑能量、热、辐射、轨道和通信窗口等约束。
+
+它主要面向：
+
+- 航天器任务与活动调度；
+- 功率、电池、热环境和辐射建模；
+- 轨道传播与星间、星地通信窗口；
+- 星座协同、在轨机器学习和分布式计算。
+
+PASEOS 适合研究资源受限条件下的在轨计算与多星协同。它提供可配置的研究模型，具体实验仍需要根据目标航天器参数进行校准。
+
+[../research.html ← 返回 Research Watchlist]

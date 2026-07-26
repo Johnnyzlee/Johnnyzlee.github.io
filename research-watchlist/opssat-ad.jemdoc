@@ -1,0 +1,20 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../jemdoc}, addcss{research-watchlist-detail}
+= OPSSAT-AD
+
+[https://github.com/kplabs-pl/OPS-SAT-AD Repository] | [https://doi.org/10.5281/zenodo.12588358 Data] | [https://doi.org/10.1038/s41597-025-05035-3 Paper] | [https://arxiv.org/abs/2407.04730 Preprint]
+
+*The OPS-SAT benchmark for detecting anomalies in satellite telemetry*\nBogdan Ruszczak, Krzysztof Kotowski, David Evans, Jakub Nalepa\n/Scientific Data, 2025/
+
+OPSSAT-AD 是一套来自 ESA OPS-SAT CubeSat 的真实卫星遥测异常检测数据集与基准。它与 ESA Anomalies Dataset / ESA-ADB 不同：前者聚焦一颗具名的 OPS-SAT 卫星和片段级检测任务，后者覆盖三项 ESA 任务并以多变量时间序列评测为主。
+
+它主要包含：
+
+- 9 个磁强计和光电二极管遥测通道；
+- 2,123 个经过专家标注的正常与异常遥测片段；
+- 原始遥测片段及对应的人工提取特征；
+- 固定的训练/测试划分和 30 种监督、无监督基线；
+- 数据生成与基准实验所需的代码和 Notebook。
+
+OPSSAT-AD 适合研究小型卫星健康监测、片段级异常识别、特征工程和轻量化检测模型。由于它的任务粒度和 ESA-ADB 不同，两者可以互补使用。
+
+[../research.html ← 返回 Research Watchlist]

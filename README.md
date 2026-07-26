@@ -36,6 +36,7 @@ jemdoc.css / collapsible-sections.* / photos/ / files/ ──> 由 HTML 直接�
 | --- | --- | --- |
 | `index.jemdoc` / `index.html` | 首页、个人简介、研究兴趣与代表作 | 修改 jemdoc，再生成 HTML |
 | `research.jemdoc` / `research.html` | 研究页面 | 修改 jemdoc，再生成 HTML |
+| `research-watchlist/` | Research Watchlist 中项目与数据集的中文详情页 | 修改同目录 jemdoc，再使用 `detail.conf` 生成 HTML |
 | `publication.jemdoc` / `publication.html` | 论文列表 | 修改 jemdoc，再生成 HTML |
 | `teaching.jemdoc` / `teaching.html` | 教学经历 | 修改 jemdoc，再生成 HTML |
 | `reading.jemdoc` / `reading.html` | 阅读资料与学术资源 | 修改 jemdoc，再生成 HTML |
@@ -93,7 +94,18 @@ python2 jemdoc.py index.jemdoc
 python2 jemdoc.py *.jemdoc
 ```
 
-### 3. 一次重建全部 jemdoc 页面
+### 3. 修改 Research Watchlist 详情页
+
+详情页位于 `research-watchlist/`，使用独立配置补充移动端 viewport：
+
+```bash
+python2 jemdoc.py -c research-watchlist/detail.conf research-watchlist/paseos.jemdoc
+python2 jemdoc.py research.jemdoc
+```
+
+新增或删除详情页时，还要同步修改 `research.jemdoc` 中的 Projects 或 Datasets 索引。
+
+### 4. 一次重建全部根目录 jemdoc 页面
 
 ```bash
 python2 jemdoc.py *.jemdoc

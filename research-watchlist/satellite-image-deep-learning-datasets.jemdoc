@@ -1,0 +1,17 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../jemdoc}, addcss{research-watchlist-detail}
+= satellite-image-deep-learning/datasets
+
+[https://github.com/satellite-image-deep-learning/datasets Repository]
+
+satellite-image-deep-learning/datasets 是一个持续更新的卫星与航空影像数据目录，主要面向遥感深度学习。它不是单独的数据集，而是把分散在不同平台、论文和项目中的数据入口集中到一个可检索的列表中。
+
+它主要收集：
+
+- Sentinel、Landsat、Planet 等卫星和航空影像数据；
+- 光学、SAR、多光谱、时序和多模态数据；
+- 分类、检测、分割、变化检测和超分辨率等任务；
+- 数据下载、相关论文、代码和大型数据平台入口。
+
+这个目录适合快速发现可用于遥感机器学习的数据资源。实际使用某个数据集前，仍需进入原始页面确认许可证、下载方式、标注定义和当前可用性。
+
+[../research.html ← 返回 Research Watchlist]

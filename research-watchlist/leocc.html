@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head>
+<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../jemdoc.css" type="text/css" />
+<link rel="stylesheet" href="research-watchlist-detail.css" type="text/css" />
+<title>LeoCC</title>
+</head>
+<body>
+<div id="layout-content">
+<div id="toptitle">
+<h1>LeoCC</h1>
+</div>
+<p><a href="https://github.com/SpaceNetLab/LeoCC">Repository</a> | <a href="https://doi.org/10.1145/3718958.3750491">Paper</a></p>
+<p><b>LeoCC: Making Internet Congestion Control Robust to LEO Satellite Dynamics</b><br />Zeqi Lai, Zonglun Li, Qian Wu, Hewu Li, Jihao Li, Xin Xie, Yuanjie Li, Jun Liu, Jianping Wu<br /><i>ACM SIGCOMM 2025</i></p>
+<p>LeoCC 是一个面向低轨卫星互联网动态性的拥塞控制方案。卫星移动和路径切换会频繁改变带宽、时延与丢包特征，传统拥塞控制容易把这些基础设施变化误判为网络拥塞，从而不必要地降低发送速率。</p>
+<p>它主要面向：</p>
+<ul>
+<li><p>从端点检测卫星连接重配置；</p>
+</li>
+<li><p>重新估计路径变化后的带宽和时延；</p>
+</li>
+<li><p>在 BBR 风格框架中快速调整发送速率；</p>
+</li>
+<li><p>记录和回放 Starlink 的带宽、RTT 与丢包变化。</p>
+</li>
+</ul>
+<p>LeoCC 适合研究 LEO 网络中的拥塞控制、切换恢复和传输稳定性。仓库同时提供真实网络实现、回放工具和测量 traces，便于复现实验。</p>
+<p><a href="../research.html">← 返回 Research Watchlist</a></p>
+</div>
+</body>
+</html>

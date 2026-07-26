@@ -1,0 +1,19 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../jemdoc}, addcss{research-watchlist-detail}
+= MobiCom24-SatelliteCOTS
+
+[https://github.com/TiansuanConstellation/MobiCom24-SatelliteCOTS Repository] | [https://arxiv.org/abs/2401.03435 Paper]
+
+*Deciphering the Enigma of Satellite Computing with COTS Devices: Measurement and Analysis*\nRuolin Xing, Mengwei Xu, Ao Zhou, Qing Li, Yiran Zhang, Feng Qian, Shangguang Wang\n/The 30th Annual International Conference on Mobile Computing and Networking (ACM MobiCom 2024)/
+
+MobiCom24-SatelliteCOTS 发布了论文《Deciphering the Enigma of Satellite Computing with COTS Devices: Measurement and Analysis》使用的数据和分析脚本。数据来自天算星座 BUPT-1 号立方星上的 Atlas 200 DK、Raspberry Pi 4B 等商用计算设备。
+
+它主要面向：
+
+- COTS 计算载荷的真实在轨实验；
+- 功率变化、过热和升温速率分析；
+- 日照、阴影和长期能源供需变化；
+- 论文数据处理、绘图与复现实验。
+
+它适合研究在轨计算的热管理、能源调度和 COTS 载荷建模。数据来自特定卫星与硬件，向其他平台外推时需要注意实验条件差异。
+
+[../research.html ← 返回 Research Watchlist]

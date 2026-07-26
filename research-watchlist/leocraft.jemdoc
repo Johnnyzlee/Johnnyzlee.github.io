@@ -1,0 +1,19 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../jemdoc}, addcss{research-watchlist-detail}
+= LEOCraft
+
+[https://github.com/suvambasak/LEOCraft Repository] | [https://suvambasak.github.io/LEOCraft/ Documentation] | [https://www.usenix.org/conference/atc25/presentation/basak Paper]
+
+*LEOCraft: Towards Designing Performant LEO Networks*\nSuvam Basak, Amitangshu Pal, Debopam Bhattacherjee\n/2025 USENIX Annual Technical Conference (USENIX ATC '25)/
+
+LEOCraft 是一个模块化、可扩展的流级低轨卫星网络模拟器，用于快速评估星座在吞吐量、时延、路径和覆盖方面的表现。相较逐包仿真，它以较低计算开销探索更大的星座和设计空间。
+
+它主要面向：
+
+- LEO 星座及其动态网络图建模；
+- 吞吐量、覆盖、路径伸展和跳数评估；
+- 地面站、流量矩阵、星间链路和路由方案比较；
+- 二维与三维拓扑可视化。
+
+LEOCraft 适合在设计早期筛选星座结构、链路连接方式和路由策略。它采用流级抽象，因此不用于呈现逐包排队和完整协议栈行为。
+
+[../research.html ← 返回 Research Watchlist]

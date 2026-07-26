@@ -1,0 +1,19 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../jemdoc}, addcss{research-watchlist-detail}
+= WetLinks
+
+[https://github.com/sys-uos/WetLinks Repository and Data] | [https://github.com/sys-uos/WetLinks/blob/main/Download_Links.txt External Weather Data] | [https://arxiv.org/abs/2402.16448 Paper]
+
+*WetLinks: a Large-Scale Longitudinal Starlink Dataset with Contiguous Weather Data*\nDominic Laniewski, Eric Lanfer, Bernd Meijerink, Roland van Rijswijk-Deij, Nils Aschenbruck\n/The 8th Network Traffic Measurement and Analysis Conference (TMA 2024)/
+
+WetLinks 是一个将 Starlink 网络性能与连续天气观测对齐的长期数据集。它把网络测量、用户终端遥测和天线附近的气象数据放在一起，用于分析环境因素与卫星接入性能之间的关系。
+
+它主要包含：
+
+- 吞吐量、RTT、路由和终端遥测；
+- 降雨、温度、湿度、风、日照与辐射数据；
+- 多个气象数据源的下载入口；
+- 时间对齐、清洗、合并和论文绘图脚本。
+
+WetLinks 适合研究天气对卫星互联网吞吐量、时延和路由稳定性的影响。分析时需要仔细处理不同数据源的时间戳、采样频率、时区和缺失值。
+
+[../research.html ← 返回 Research Watchlist]

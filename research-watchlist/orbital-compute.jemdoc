@@ -1,0 +1,17 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../jemdoc}, addcss{research-watchlist-detail}
+= orbital-compute
+
+[https://github.com/ShipItAndPray/orbital-compute Repository] | [https://shipitandpray.github.io/orbital-compute/index.html Live Demo]
+
+orbital-compute 是一个面向“轨道数据中心”和“在轨 GPU 计算”的开源模拟器。它把轨道力学、能源与热约束、辐射故障、星间链路、地面站窗口、作业调度和经济性分析放进同一套实验框架，用于判断在轨计算方案是否可行，以及瓶颈来自计算、供能还是下行链路。
+
+它主要面向：
+
+- 轨道传播、日照和地面站可见窗口；
+- 功率、热环境与辐射可靠性；
+- GPU 作业调度、星间路由和数据下行；
+- 星座规模、任务规划与成本分析。
+
+这个项目适合快速验证研究想法和比较调度方案。其结果依赖预设的硬件、成本与故障模型，用于正式研究时需要按照目标卫星和任务重新校准参数。
+
+[../research.html ← 返回 Research Watchlist]

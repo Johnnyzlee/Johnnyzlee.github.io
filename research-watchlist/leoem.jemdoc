@@ -1,0 +1,19 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../jemdoc}, addcss{research-watchlist-detail}
+= LeoEM
+
+[https://github.com/XuyangCaoUCSD/LeoEM Repository] | [https://doi.org/10.1109/INFOCOM53939.2023.10228914 Paper]
+
+*SaTCP: Link-Layer Informed TCP Adaptation for Highly Dynamic LEO Satellite Networks*\nXuyang Cao, Xinyu Zhang\n/IEEE INFOCOM 2023/
+
+LeoEM 是一个实时低轨卫星网络仿真器，目标是把不断变化的卫星拓扑和路由转化为真实 Linux 主机上的网络路径。它使用网络命名空间、Mininet 和 Linux 网络工具，让未经修改的应用程序与完整协议栈在动态链路上运行。
+
+它主要面向：
+
+- 卫星位置和动态拓扑生成；
+- 星间链路或弯管模式下的路径计算；
+- 动态路径到 Linux 网络环境的实时映射；
+- TCP、视频和其他真实网络程序实验。
+
+仓库同时包含 SaTCP，一种利用链路层信息预测卫星切换并调整 TCP 行为的机制。LeoEM 适合研究协议栈、拥塞控制、切换和应用体验。
+
+[../research.html ← 返回 Research Watchlist]
