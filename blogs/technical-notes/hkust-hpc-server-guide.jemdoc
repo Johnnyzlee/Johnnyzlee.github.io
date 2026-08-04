@@ -1,13 +1,13 @@
 # jemdoc: nofooter, nodefaultcss, addcss{../blog-note}, addjs{../blog-sidebar}
 = HKUST HPC Server Guide
-[../../blog.html ← Blogs] \M /updated 2026-07-18/
+[../../blog.html ← Blogs] \M /updated 2026-08-02/
 
 +lzengan@hpc4.ust.hk+ \M Slurm account +khaledgroup+
 
 This guide is used from both my MacBook Air M1 and my Mac mini M4. Each Mac keeps its own private SSH key; never copy a private key between machines.
 
-== Access
-Both Macs use the +hpc4+ alias, but their local +\~\/.ssh\/config+ entries are different.
+== Configurations
+Both Macs use the +hpc4+ alias, but their local +\~\/.ssh\/config+ entries are different. The MacBook Air M1 also has +macmini-campus+ and +hpc4-via-mini+ aliases for off-campus access through the Mac mini M4.
 
 === My MacBook Air M1
 My MacBook Air M1 keeps its original entry:
@@ -48,7 +48,10 @@ Check the Mac mini M4's effective client settings without connecting:
 ssh -G hpc4 | grep -E '^(hostname|user|identityfile) '
 ~~~
 
-*On campus* (wired network or eduroam):
+== Access
+
+=== On campus
+From either Mac on a wired campus network or eduroam:
 
 ~~~
 {}{sh}
@@ -66,10 +69,22 @@ If Clash TUN mode is enabled, keep HKUST traffic on the campus route. Place thes
 
 The Mac mini M4's current Clash profile has these rules. If +ssh hpc4+ times out before showing a login banner, disable TUN to confirm the cause. A subscription refresh may overwrite locally edited rules, so add them to the provider's custom-rule or override feature when available.
 
-*Off campus:* disable Clash TUN, connect [https://itso.hkust.edu.hk/services/cyber-security/vpn HKUST VPN], then run +ssh hpc4+. Complete the Duo prompt when requested. Avoid running two TUN-based clients at the same time unless their routes have been verified.
+=== Off-campus MacBook Air M1 via Mac mini M4
+When the Mac mini M4 is online on campus and reachable through ZeroTier, connect from the off-campus MacBook Air M1 with:
+
++MacBook Air M1 → ZeroTier → Mac mini M4 → hpc4.ust.hk+
+
+~~~
+{}{sh}
+ssh hpc4-via-mini
+~~~
+
+The +hpc4-via-mini+ alias is already configured on the MacBook and does not require HKUST VPN. It reaches +lzengan+ on HPC4 through +johnnytseng+ on the Mac mini.
+
+*Off campus when the Mac mini is unreachable:* disable Clash TUN, connect [https://itso.hkust.edu.hk/services/cyber-security/vpn HKUST VPN], then run +ssh hpc4+. Complete the Duo prompt when requested. Avoid running two TUN-based clients at the same time unless their routes have been verified.
 
 == File transfer
-Run these commands on either Mac.
+Use +hpc4+ from either Mac when it has direct campus or VPN access.
 
 Upload a project:
 
@@ -83,6 +98,14 @@ Download results:
 ~~~
 {}{sh}
 rsync -avP hpc4:~/my-project/results/ ./results/
+~~~
+
+From the off-campus MacBook, use the jump-host alias instead:
+
+~~~
+{}{sh}
+rsync -avP ./my-project/ hpc4-via-mini:~/my-project/
+rsync -avP hpc4-via-mini:~/my-project/results/ ./results/
 ~~~
 
 Storage layout:

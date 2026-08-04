@@ -13,12 +13,12 @@
 <div id="layout-content">
 <div id="toptitle">
 <h1>HKUST HPC Server Guide</h1>
-<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>updated 2026-07-18</i></div>
+<div id="subtitle"><a href="../../blog.html">← Blogs</a> &middot; <i>updated 2026-08-02</i></div>
 </div>
 <p><tt>lzengan@hpc4.ust.hk</tt> &middot; Slurm account <tt>khaledgroup</tt></p>
 <p>This guide is used from both my MacBook Air M1 and my Mac mini M4. Each Mac keeps its own private SSH key; never copy a private key between machines.</p>
-<h2>Access</h2>
-<p>Both Macs use the <tt>hpc4</tt> alias, but their local <tt>~/.ssh/config</tt> entries are different.</p>
+<h2>Configurations</h2>
+<p>Both Macs use the <tt>hpc4</tt> alias, but their local <tt>~/.ssh/config</tt> entries are different. The MacBook Air M1 also has <tt>macmini-campus</tt> and <tt>hpc4-via-mini</tt> aliases for off-campus access through the Mac mini M4.</p>
 <h3>My MacBook Air M1</h3>
 <p>My MacBook Air M1 keeps its original entry:</p>
 <div class="codeblock">
@@ -52,7 +52,9 @@ Host hpc4
 <div class="blockcontent"><pre>
 <span class="builtin">ssh</span> -G hpc4 <span class="operator">|</span> <span class="builtin">grep</span> -E <span class="string">'^(hostname<span class="operator">|</span>user<span class="operator">|</span>identityfile) '</span>
 </pre></div></div>
-<p><b>On campus</b> (wired network or eduroam):</p>
+<h2>Access</h2>
+<h3>On campus</h3>
+<p>From either Mac on a wired campus network or eduroam:</p>
 <div class="codeblock">
 <div class="blockcontent"><pre>
 <span class="builtin">ssh</span> hpc4
@@ -65,9 +67,17 @@ Host hpc4
 - IP-CIDR,143.89.0.0/16,DIRECT,no-resolve
 </pre></div></div>
 <p>The Mac mini M4's current Clash profile has these rules. If <tt>ssh hpc4</tt> times out before showing a login banner, disable TUN to confirm the cause. A subscription refresh may overwrite locally edited rules, so add them to the provider's custom-rule or override feature when available.</p>
-<p><b>Off campus:</b> disable Clash TUN, connect <a href="https://itso.hkust.edu.hk/services/cyber-security/vpn">HKUST VPN</a>, then run <tt>ssh hpc4</tt>. Complete the Duo prompt when requested. Avoid running two TUN-based clients at the same time unless their routes have been verified.</p>
+<h3>Off-campus MacBook Air M1 via Mac mini M4</h3>
+<p>When the Mac mini M4 is online on campus and reachable through ZeroTier, connect from the off-campus MacBook Air M1 with:</p>
+<p><tt>MacBook Air M1 → ZeroTier → Mac mini M4 → hpc4.ust.hk</tt></p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+<span class="builtin">ssh</span> hpc4-via-mini
+</pre></div></div>
+<p>The <tt>hpc4-via-mini</tt> alias is already configured on the MacBook and does not require HKUST VPN. It reaches <tt>lzengan</tt> on HPC4 through <tt>johnnytseng</tt> on the Mac mini.</p>
+<p><b>Off campus when the Mac mini is unreachable:</b> disable Clash TUN, connect <a href="https://itso.hkust.edu.hk/services/cyber-security/vpn">HKUST VPN</a>, then run <tt>ssh hpc4</tt>. Complete the Duo prompt when requested. Avoid running two TUN-based clients at the same time unless their routes have been verified.</p>
 <h2>File transfer</h2>
-<p>Run these commands on either Mac.</p>
+<p>Use <tt>hpc4</tt> from either Mac when it has direct campus or VPN access.</p>
 <p>Upload a project:</p>
 <div class="codeblock">
 <div class="blockcontent"><pre>
@@ -77,6 +87,12 @@ rsync -avP ./my-project/ hpc4:~/my-project/
 <div class="codeblock">
 <div class="blockcontent"><pre>
 rsync -avP hpc4:~/my-project/results/ ./results/
+</pre></div></div>
+<p>From the off-campus MacBook, use the jump-host alias instead:</p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+rsync -avP ./my-project/ hpc4-via-mini:~/my-project/
+rsync -avP hpc4-via-mini:~/my-project/results/ ./results/
 </pre></div></div>
 <p>Storage layout:</p>
 <ul>

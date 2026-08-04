@@ -21,27 +21,13 @@
 Welcome to my homepage! 
 
 I am a Ph.D. candidate with the [https://ece.hkust.edu.hk/ Department of Electronic and Computer Engineering (ECE)], [https://hkust.edu.hk/ The Hong Kong University of Science and Technology (HKUST)], Hong Kong. 
-I feel extremely privileged to have the esteemed [https://eekhaled.home.ece.ust.hk/ Prof. Khaled B. Letaief] as my supervisor.
+I am privileged to be advised by [https://eekhaled.home.ece.ust.hk/ Prof. Khaled B. Letaief].
+I work on space computing power networks for 6G.
 Previously, I received my B.Eng. degree with honors in 2021 and my M.S. degree in 2024 from [https://www.shanghaitech.edu.cn/eng ShanghaiTech University], Shanghai, China, both in computer science, working with [https://shiyuanming.github.io/ Prof. Yuanming Shi] and [https://dingzhuwen.github.io Prof. Dingzhu Wen].\n
 
 Outside research, I enjoy music and poker. My favorite singer is Cantopop legend [https://music.youtube.com/channel/UC5xTFUiRH4Kxqdwh63pgdUA Alan Tam], affectionately known as \"Principal Tam,\" and my favorite poker player is [https://www.youtube.com/@TonyLinPoker Tony Lin]. I admire them both for their remarkable vitality and resilience, which is what draws me to them.\n
 
 #You can find my CV [files/cv_lizeng.pdf here].
-
-== Research Interests
-I am interested in understanding, utilizing and developing elegant theoretical tools as well as provable learning-based methods to direct the design of and optimize the performance of the next-generation communication networks.
-My particular focus lies in applying graph theory, discrete algorithms, and mathematical optimization for federated edge learning, computing power networks and non-terrestrial networks in 5G/6G.\n
-
-== News
-
-#== Research
-#My research interests include 
-#- Convex Optimization.
-#- 5G/6G, Wireless Communication, Signal Processing, Information Theory.
-#- Machine Learning, Federated Learning, Reinforcement Learning.
-
-#[research.html Find out more].
-
 
 == Publications
 . *L. Zeng*, J. Zhu, Z. Wang, Y. Shi and K. B. Letaief, \"Unseen Cost of Space Computing: Quantifying LEO Battery Aging via Physics-Driven Modeling,\" in *Proc. IEEE Int. Conf. Commun. (ICC)*, Glasgow, United Kingdom, May 2026, pp. 1–6. [https://ieeexplore.ieee.org/document/11587009 \[Paper\]] [https://arxiv.org/abs/2603.04372 \[arXiv\]]
