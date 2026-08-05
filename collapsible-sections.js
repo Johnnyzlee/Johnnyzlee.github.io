@@ -74,7 +74,11 @@
       heading.className +=
         (heading.className ? " " : "") + "collapsible-section-heading";
       heading.appendChild(button);
-      setExpanded(button, content, options.initiallyExpanded === true);
+      var initiallyExpanded =
+        typeof options.initiallyExpanded === "function"
+          ? options.initiallyExpanded(index, heading)
+          : options.initiallyExpanded === true;
+      setExpanded(button, content, initiallyExpanded);
 
       button.addEventListener("click", function () {
         var isExpanded = button.getAttribute("aria-expanded") === "true";
@@ -205,6 +209,12 @@
 
       makeHeadingsCollapsible(studyHeadings, {
         idPrefix: "study-section-",
+        initiallyExpanded: function (index, heading) {
+          return (
+            heading.textContent.replace(/\s+/g, " ").trim() ===
+            "On Artificial Intelligence"
+          );
+        },
         isBoundary: function (element) {
           return element.nodeType === 1 && element.tagName === "H2";
         }

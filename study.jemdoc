@@ -1,9 +1,29 @@
 # jemdoc: menu{MENU}{study.html}, nofooter, addcss{collapsible-sections}, addjs{collapsible-sections}
 = Li Zeng's Study
 
-I am excited to share some good resources and my notes in selected interesting, insightful and helpful courses here. 
-I warmly welcome discussions and collaborative learning on these topics!
+I collect and share some helpful resources for learning and understanding things here.
 
+== On Artificial Intelligence
+Artificial intelligence is advancing at a remarkable pace, with concepts and technologies evolving rapidly. This section therefore collects only relatively mature knowledge that has developed into systematic foundations; real-world AI systems may already extend far beyond what is covered here.
+
+- [https://ai.richardxu.com/ml/ Machine Learning Basics], by Prof. Richard Xu.
+- Deep Learning
+    -- [https://d2l.ai/ Dive into Deep Learning]
+- Reinforcement Learning
+    -- [https://rail.eecs.berkeley.edu/deeprlcourse/ Berkeley CS285: Deep Reinforcement Learning]
+    -- [https://spinningup.openai.com/en/latest/ OpenAI Spinning Up in Deep RL]
+    -- /[https://mitpress.mit.edu/9780262039246/reinforcement-learning/ Reinforcement Learning: An Introduction]/, by Richard S. Sutton and Andrew G. Barto, MIT Press, 2018.
+- Graph Neural Networks (GNNs)
+    -- [https://web.stanford.edu/class/cs224w/ Stanford CS224W: Machine Learning with Graphs]
+    -- [https://pytorch-geometric.readthedocs.io/en/latest/get_started/colabs.html PyTorch Geometric Tutorials]
+- Large Language Models (LLMs)
+    -- [https://cs336.stanford.edu/ Stanford CS336: Language Modeling from Scratch]
+    -- Practical Resources
+        --- [https://docs.ollama.com/quickstart Ollama Quickstart]
+        --- [https://developers.openai.com/learn OpenAI Learn]
+        --- [https://developers.openai.com/cookbook OpenAI Cookbook]
+- AI Agent
+    -- [https://bojieli.github.io/ai-agent-book/ 深入理解 AI Agent], by Bojie Li
 == On Theory and Algorithm (Closer to Mathematics)
 - Convex Optimization
     -- Reading Materials
@@ -41,14 +61,13 @@ I warmly welcome discussions and collaborative learning on these topics!
 - Approximation Algorithms
 - Game Theory
 == On System and Tool (Closer to Engineering)
-- Deep Learning
-- Reinforcement Learning
-- Graph Neural Networks
-- Wireless Communication
-    -- Materials: 
+- Communication Systems
+    -- Wireless Communication
         --- [http://stanford.edu/\~dntse/wireless_book.html Fundamentals of Wireless Communication], by David Tse and Pramod Viswanath, Cambridge University Press, 2005.
         --- [http://cs-www.cs.yale.edu/homes/yry/readings/wireless/wireless_readings/ Supplemental Reading on Wireless Communication], provided by [http://cs-www.cs.yale.edu/homes/yry/ Prof. Yang Richard Yang] at Yale.
-- Computer Networks
+- Computer Systems
+    -- Computer Networks
+        --- [http://cs-www.cs.yale.edu/homes/yry/readings/general/ A Reading List in Computer Networking], provided by [http://cs-www.cs.yale.edu/homes/yry/ Prof. Yang Richard Yang] at Yale.
 == Others
 === Information Sources like Websites, Channels, Article Series and so on...
 - [https://timroughgarden.org/ Tim Roughgarden], CS@Columbia
