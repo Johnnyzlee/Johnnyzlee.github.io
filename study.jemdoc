@@ -12,6 +12,7 @@ Artificial intelligence is advancing at a remarkable pace, with concepts and tec
 - Reinforcement Learning
     -- [https://rail.eecs.berkeley.edu/deeprlcourse/ Berkeley CS285: Deep Reinforcement Learning]
     -- [https://spinningup.openai.com/en/latest/ OpenAI Spinning Up in Deep RL]
+    -- [https://github.com/walkinglabs/hands-on-modern-rl Hands-On Modern Reinforcement Learning], by Walking Labs.
     -- /[https://mitpress.mit.edu/9780262039246/reinforcement-learning/ Reinforcement Learning: An Introduction]/, by Richard S. Sutton and Andrew G. Barto, MIT Press, 2018.
 - Graph Neural Networks (GNNs)
     -- [https://web.stanford.edu/class/cs224w/ Stanford CS224W: Machine Learning with Graphs]
