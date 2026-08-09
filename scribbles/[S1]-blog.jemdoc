@@ -1,0 +1,13 @@
+# jemdoc: nofooter, nodefaultcss, noeqs, addcss{../blogs/blog-note}, addjs{../blogs/math-render}, addjs{../blogs/blog-sidebar}
+= (Title of the Scribble)
+[../scribbles.html ← Back to Scribbles] · /2026-08-08/
+
+This is a blank scribble (blog style, version B, with section sidebar).
+
+Write your words here — about music, friends, opinions, or anything. Nothing needs to be formal, complete, or impressive. It just needs to be true.
+
+== A Section Title
+Some words in this section.
+
+== Another Section Title
+More words here. The sidebar on the right shows the outline of this page.
