@@ -1,4 +1,4 @@
-# jemdoc: menu{MENU}{random.html}, nofooter, addcss{random}  
+# jemdoc: menu{MENU}{random.html}, nofooter, addcss{collapsible-sections}, addcss{random}, addjs{collapsible-sections}
 = Random
 
 From time to time I add things to this page that I came across in my daily browsing and found worth keeping. My criteria have never been fully consistent, but one thing has always been true: every link here is something that, at the moment I read it, stirred something real in me — agreement, admiration, awe, or something harder to name. Not content that an AI judged to be good writing or good thinking, but content that my own living self actually responded to.
@@ -7,9 +7,44 @@ I am aware that, in an age where AI can produce and evaluate "good" content effo
 
 One day I will leave this academic world behind — all the knowledge I once studied, all the developments I felt I had to keep up with, all the traces of technology. When that day comes, I believe the page I will treasure most is this one. It tracks the most honest and free version of myself. I want to protect that self.
 
-== Music Go
+== Listening
+
+=== Music we go
 - [https://www.youtube.com/watch?v=TvawEgF-2UQ&list=RDapmCEyOGaOs&index=5 重低音 Lo Fi R&B × JAZZ｜一度触れたら、きっと心を奪われる。], [https://www.youtube.com/@VelvetJazzLounge07ae Velvet Jazz Lounge]@YouTube.
 - [https://www.bilibili.com/video/BV1sbCUY8Eh4/ 齐秦-《一听钟秦 情歌天王齐秦30周年纪念》2CD \[WAV+CUE\]], [https://space.bilibili.com/385339128 来自南通州春雨]@Bilibili.
+
+=== Music we freeze
+At least for the sound, but never just the sound.
+
+- Alan｜[https://www.bilibili.com/video/BV1x341177m3 谭咏麟《眼泪为你流》温拿拉阔情弦25年演唱会LIVE], [https://space.bilibili.com/1821710559 whatiswww]@Bilibili.
+- Alan｜[https://www.bilibili.com/video/BV1Nb421b7LU 金声玉振的《孩儿》谭咏麟 送给所有的母亲，母亲节快乐！], [https://space.bilibili.com/3537109277214741 伦是永远着迷]@Bilibili.
+- Alan｜[https://www.bilibili.com/video/BV1Zr421t7ng 谭咏麟 回赠/还我真情 2001飞一般演唱会], [https://space.bilibili.com/3537109277214741 伦是永远着迷]@Bilibili.
+- Alan｜[https://www.bilibili.com/video/BV19Z421h78K 谭咏麟 一个人飞（李克勤三十周年演唱会嘉宾）], [https://space.bilibili.com/3537109277214741 伦是永远着迷]@Bilibili.
+- Alan｜[https://www.bilibili.com/video/BV1rG41127u7 共同渡过-谷村新司&谭咏麟合唱], [https://space.bilibili.com/348853613 alanda123]@Bilibili.
+- Alan｜[https://www.bilibili.com/video/BV1Zu411Y7RY 【私藏馆】谭咏麟《讲不出再见》神级现场！永远的经典], [https://space.bilibili.com/229733301 音乐私藏馆]@Bilibili.
+- Alan｜[https://www.bilibili.com/video/BV1zu4y1o72w 【私藏馆】谭咏麟《一生中最爱》万人大合唱现场！我真的想你], [https://space.bilibili.com/229733301 音乐私藏馆]@Bilibili.
+- Alan｜[https://www.bilibili.com/video/BV1yq4y1s7a2 【谭咏麟】梦幻的笑容 (Live'94) 你like唔Likey啊？弹幕党行动起来！], [https://space.bilibili.com/82185527 E楼前座MF_哆啦A滔]@Bilibili.
+- Alan｜[https://www.bilibili.com/video/BV1LB4y1w718 完美画质完美音质【经典咏流传】谭咏麟《定风波》FullHD1080超高清], [https://space.bilibili.com/1821710559 whatiswww]@Bilibili.
+- Alan｜[https://www.bilibili.com/video/BV1sL411v7Ji 【华语乐坛核爆现场】谭咏麟《傲骨》1994年香港大球场场演唱会LIVE], [https://space.bilibili.com/1821710559 whatiswww]@Bilibili.
+- Teresa & Alan｜[https://www.bilibili.com/video/BV1D44y1T7V4 华语乐坛三大顶级歌手分别演唱粤语版《星》，你更中意谁的版本？结尾有彩蛋！], [https://space.bilibili.com/2030181749 账号已注销]@Bilibili.
+- Sally & Alan｜[https://www.bilibili.com/video/BV1UR4y1N7Bu 【爆笑吹水】谭咏麟《雾之恋》叶倩文2004年演唱会嘉宾演出], [https://space.bilibili.com/1821710559 whatiswww]@Bilibili.
+- Eason & Alan｜[https://www.bilibili.com/video/BV17A411Z71z 【4K·60FPS·HiRes】《爱情陷阱\+重口味》串烧，Eason和校长的梦幻联动！], [https://space.bilibili.com/1162055111 YEYEEEYE]@Bilibili.
+- Eason & Alan｜[https://www.bilibili.com/video/BV1a1GwzCEim 【考古eason】谭咏麟附体陈奕迅，陈奕迅夺舍谭咏麟！→师徒合唱〈重口味〉互学名场面], [https://space.bilibili.com/26595402 小柒的音乐日记]@Bilibili.
+- Hacken & Alan｜[https://www.bilibili.com/video/BV174411P7UY 谭咏麟演唱《无情的情书》《征服》《岁月如歌》，好听], [https://space.bilibili.com/312618748 jun295031530]@Bilibili.
+- Jay & Alan｜[https://www.bilibili.com/video/BV1ds411b7fQ 周杰伦&谭咏麟《一生中最爱》《半梦半醒之间》《 千里之外 》【完整版】], [https://space.bilibili.com/8235736 加鸡汁的鸡腿]@Bilibili.
+- B｜[https://www.bilibili.com/video/BV1e54y147Cm 【高清版】《为爱痴狂》钟镇涛 冯提莫 中国梦之声 我们的歌], [https://space.bilibili.com/2031799087 音乐患儿]@Bilibili.
+- B｜[https://www.bilibili.com/video/BV1L1421D7j3 【高清】钟镇涛 - 让一切随风 2003 (黄霑狮子山下演唱会)], [https://space.bilibili.com/521125404 蓝光live]@Bilibili.
+- B｜[https://www.bilibili.com/video/BV1Gx421D7dV 钟镇涛 - 问我 (黄霑狮子山下演唱会2003)], [https://space.bilibili.com/521125404 蓝光live]@Bilibili.
+- B｜[https://www.bilibili.com/video/BV1wV4y167Ko 【华语乐坛最man的合唱】林子祥 钟镇涛 太极乐队《大丈夫\+真的汉子\+男儿当自强》高音测量\+统计 极致的阳刚之美], [https://space.bilibili.com/1350407210 悲歌王gary曹]@Bilibili.
+- JJ Lin｜[https://www.bilibili.com/video/BV1Yj411m7W6 【官摄】林俊杰第34届金曲奖颁奖典礼live《听海》\+《哭砂》\+《心痛》\+《不为谁而作的歌》丨致敬林秋离老师], [https://space.bilibili.com/26711182 林俊杰甜品铺]@Bilibili.
+- Jonathan｜[https://www.bilibili.com/video/BV1mT411w7An 『4k60FPS』李宗盛《别怕你伤心\+听见有人叫你宝贝\+爱情少尉\+爱如潮水》四怂大串烧！], [https://space.bilibili.com/350952551 老treee]@Bilibili.
+- Wakin Chau & Chyi Yu｜[https://www.bilibili.com/video/BV1jA411G72r 〖B站首发〗【4K】周华健& 齐豫【天下有情人 People In Love】Official Live Video], [https://space.bilibili.com/482793752 驰放音乐分享]@Bilibili.
+- Wynners｜[https://www.bilibili.com/video/BV1Rj411i71K 《让一切随风》 - 谭咏麟、钟镇涛 LIVE], [https://space.bilibili.com/248849350 DDosik]@Bilibili.
+- Wynners｜[https://www.bilibili.com/video/BV18t411Z7tS 《每当变幻时》\--温拿乐队], [https://space.bilibili.com/225223860 共享平台]@Bilibili.
+- 黄霑｜[https://www.bilibili.com/video/BV13y4y157GB 【4K60FPS】黄霑《沧海一声笑》史诗级现场！人生一定要看的现场！], [https://space.bilibili.com/229733301 音乐私藏馆]@Bilibili.
+- 黄霑｜[https://www.bilibili.com/video/BV1ob411j7Qg 罗大佑、黄沾、徐克《沧海一声笑》1990年《第十三届十大中文金曲》金针奖颁奖音乐会现场版], [https://space.bilibili.com/61887599 一家三口去看海]@Bilibili.
+- 黄霑｜[https://www.bilibili.com/video/BV1jK4y1c7FC 黄霑先生与叶振棠合唱《忘尽心中情》:], [https://space.bilibili.com/30306550 秒杀三省坏男孩]@Bilibili.
+- 黄霑｜[https://www.bilibili.com/video/BV16t4y1w7kJ 【今夜不设防】黄霑谈《问我》这首歌，歌词真的是一流], [https://space.bilibili.com/1289617408 薄荷与苏打]@Bilibili.
 
 
 == Channels
@@ -36,6 +71,7 @@ One day I will leave this academic world behind — all the knowledge I once stu
 
 
 == Everyday Life
+- [https://www.zhihu.com/question/649312623/answer/2068682619940869133 长寿之人有什么特征？], 妥爸赵十三@Zhihu, 2026-08-08.
 - [https://youtu.be/Z6Wee0HuFBs 如何科学地健康管理：超越百岁/outlive 超精细解读], [https://www.youtube.com/@shaopinginbj 少平在北京]@YouTube, 2025-08-08.
 - [https://www.zhihu.com/question/21062491/answer/1928417146288993910 你对男性保养有什么经验和建议？], 罗马复国人@Zhihu, 2025-07-23.
 - [https://www.zhihu.com/question/1911566511509861042/answer/1916549815644435388 中年的intp们能不能给年轻的intp一些建议?], 遵从内心@Zhihu, 2025-07-09.

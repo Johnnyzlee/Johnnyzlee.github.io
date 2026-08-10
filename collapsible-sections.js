@@ -219,6 +219,36 @@
           return element.nodeType === 1 && element.tagName === "H2";
         }
       });
+    } else if (currentPage === "random.html") {
+      var musicGroupHeadings = Array.prototype.filter.call(
+        layoutContent.children,
+        function (element) {
+          var headingText = element.textContent.replace(/\s+/g, " ").trim();
+          return (
+            element.tagName === "H3" &&
+            (headingText === "Music we go" || headingText === "Music we freeze")
+          );
+        }
+      );
+
+      if (!musicGroupHeadings.length) {
+        return;
+      }
+
+      makeHeadingsCollapsible(musicGroupHeadings, {
+        idPrefix: "random-music-group-",
+        initiallyExpanded: function (index, heading) {
+          return (
+            heading.textContent.replace(/\s+/g, " ").trim() === "Music we go"
+          );
+        },
+        isBoundary: function (element) {
+          return (
+            element.nodeType === 1 &&
+            (element.tagName === "H2" || element.tagName === "H3")
+          );
+        }
+      });
     } else {
       return;
     }

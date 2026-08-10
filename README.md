@@ -12,7 +12,7 @@
 - 内容源：jemdoc（`*.jemdoc`）
 - 页面生成器：`jemdoc.py`，jemdoc 0.7.3，需要 Python 2.7
 - 样式：原生 CSS（`jemdoc.css`）
-- 交互增强：原生 JavaScript（Study 页章节及 Research 页 Watchlist 的展开/收起）
+- 交互增强：原生 JavaScript（Study 页章节、Research 页 Watchlist 及 Random 页 Listening 分组的展开/收起）
 - 托管：GitHub Pages
 - 构建系统：无
 - 包管理器：无
@@ -47,11 +47,11 @@ CSS / JavaScript / photos/ / files/ ──> 由 HTML 直接引用
 | `blogs/` | 独立 Blog 笔记；目录层级与 Blog 页面公开栏目及子栏目保持一致 | 按 `blogs/README.md` 维护，并从仓库根目录生成 |
 | `scribbles.jemdoc` / `scribbles.html` | Scribbles 公开入口页 | 修改 jemdoc，再生成 HTML |
 | `scribbles/` | 独立随笔及其同目录 jemdoc/HTML 配对文件 | 以 `S1-empty-note.jemdoc` 为模板维护 |
-| `random.jemdoc` / `random.html` | 随笔与链接收藏 | 修改 jemdoc，再生成 HTML |
+| `random.jemdoc` / `random.html` | 随笔与链接收藏；Listening 下的 Music we go 默认展开，Music we freeze 默认收起 | 修改 jemdoc，再生成 HTML |
 | `random.css` | Random 页专用样式 | 由 `random.jemdoc` 通过 `addcss` 加载 |
 | `MENU` | 根目录 jemdoc 页面共享的侧边栏 | 修改后重新生成所有根目录、使用 `MENU` 的页面 |
 | `jemdoc.css` | 全站公共样式 | 直接修改，不需要重新生成 HTML |
-| `collapsible-sections.css` / `collapsible-sections.js` | Study 页顶层章节及 Research 页 Watchlist 的展开/收起增强 | 由 `study.jemdoc`、`research.jemdoc` 通过 `addcss` / `addjs` 加载 |
+| `collapsible-sections.css` / `collapsible-sections.js` | Study 页顶层章节、Research 页 Watchlist 及 Random 页 Listening 分组的展开/收起增强 | 由 `study.jemdoc`、`research.jemdoc`、`random.jemdoc` 通过 `addcss` / `addjs` 加载 |
 | `blogs/blog-note.css` | 独立 Blog 笔记的共享页面样式 | 由各 Blog 笔记通过相对路径加载 |
 | `blogs/blog.conf` / `blogs/blog-zh.conf` | 英文与中文 Blog 笔记的 jemdoc 配置，包含移动端 viewport 和页面语言 | 生成 Blog 笔记时通过 `-c` 指定 |
 | `blogs/blog-sidebar.js` | 根据二级标题自动生成独立 Blog 的响应式文章目录 | 每篇独立 Blog 都应加载 |
