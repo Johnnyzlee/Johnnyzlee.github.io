@@ -89,6 +89,13 @@ div.menu-item {
 	text-indent: -16px;
 }
 
+/* Separate academic pages from the more personal sections below. */
+#layout-menu div.menu-item:has(> a[href="study.html"]) {
+	border-top: 1px solid #dddddd;
+	margin-top: 0.45em;
+	padding-top: 0.35em;
+}
+
 div#toptitle {
 	padding-bottom: 0.2em;
 	margin-bottom: 1.5em;

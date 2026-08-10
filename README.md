@@ -21,11 +21,12 @@
 页面的基本生成关系如下：
 
 ```text
-*.jemdoc + MENU + jemdoc.py
-            │
-            └──> 同名 *.html ──> GitHub Pages
+根目录 *.jemdoc + MENU + jemdoc.py ──> 根目录同名 *.html
+独立文章 *.jemdoc + 对应配置（如有）+ jemdoc.py ──> 同目录 *.html
+                                                        │
+                                                        └──> GitHub Pages
 
-jemdoc.css / collapsible-sections.* / photos/ / files/ ──> 由 HTML 直接引用
+CSS / JavaScript / photos/ / files/ ──> 由 HTML 直接引用
 ```
 
 重要：GitHub Pages 不会执行 `jemdoc.py`。仅提交 `.jemdoc` 源文件不会更新线上页面；对应的 `.html` 生成文件也必须提交。
@@ -35,20 +36,26 @@ jemdoc.css / collapsible-sections.* / photos/ / files/ ──> 由 HTML 直接�
 | 路径 | 作用 | 维护方式 |
 | --- | --- | --- |
 | `index.jemdoc` / `index.html` | 首页、个人简介、研究兴趣与代表作 | 修改 jemdoc，再生成 HTML |
+| `reading.jemdoc` / `reading.html` | 阅读资料与学术资源；当前保持完全展开 | 修改 jemdoc，再生成 HTML |
 | `research.jemdoc` / `research.html` | 研究页面 | 修改 jemdoc，再生成 HTML |
 | `research-watchlist/` | Research Watchlist 中项目与数据集的中文详情页 | 修改同目录 jemdoc，再使用 `detail.conf` 生成 HTML |
-| `publication.jemdoc` / `publication.html` | 论文列表 | 修改 jemdoc，再生成 HTML |
+| `research-watchlist/research-watchlist-detail.css` | Research Watchlist 详情页专用样式 | 由各详情页通过相对路径加载 |
+| `publication.jemdoc` / `publication.html` | 论文列表；导航标签为 Publications | 修改 jemdoc，再生成 HTML |
 | `teaching.jemdoc` / `teaching.html` | 教学经历 | 修改 jemdoc，再生成 HTML |
-| `reading.jemdoc` / `reading.html` | 阅读资料与学术资源 | 修改 jemdoc，再生成 HTML |
 | `study.jemdoc` / `study.html` | 学习笔记与参考书目 | 修改 jemdoc，再生成 HTML |
 | `blog.jemdoc` / `blog.html` | 按栏目组织的博客入口 | 修改 jemdoc，再生成 HTML |
 | `blogs/` | 独立 Blog 笔记；目录层级与 Blog 页面公开栏目及子栏目保持一致 | 按 `blogs/README.md` 维护，并从仓库根目录生成 |
+| `scribbles.jemdoc` / `scribbles.html` | Scribbles 公开入口页 | 修改 jemdoc，再生成 HTML |
+| `scribbles/` | 独立随笔及其同目录 jemdoc/HTML 配对文件 | 以 `S1-empty-note.jemdoc` 为模板维护 |
 | `random.jemdoc` / `random.html` | 随笔与链接收藏 | 修改 jemdoc，再生成 HTML |
-| `MENU` | 所有 jemdoc 页面的共享侧边栏 | 修改后重新生成全部 jemdoc 页面 |
+| `random.css` | Random 页专用样式 | 由 `random.jemdoc` 通过 `addcss` 加载 |
+| `MENU` | 根目录 jemdoc 页面共享的侧边栏 | 修改后重新生成所有根目录、使用 `MENU` 的页面 |
 | `jemdoc.css` | 全站公共样式 | 直接修改，不需要重新生成 HTML |
 | `collapsible-sections.css` / `collapsible-sections.js` | Study 页顶层章节及 Research 页 Watchlist 的展开/收起增强 | 由 `study.jemdoc`、`research.jemdoc` 通过 `addcss` / `addjs` 加载 |
 | `blogs/blog-note.css` | 独立 Blog 笔记的共享页面样式 | 由各 Blog 笔记通过相对路径加载 |
-| `blogs/blog.conf` | Blog 笔记的 jemdoc 生成配置，包含移动端 viewport | 生成 Blog 笔记时通过 `-c` 指定 |
+| `blogs/blog.conf` / `blogs/blog-zh.conf` | 英文与中文 Blog 笔记的 jemdoc 配置，包含移动端 viewport 和页面语言 | 生成 Blog 笔记时通过 `-c` 指定 |
+| `blogs/blog-sidebar.js` | 根据二级标题自动生成独立 Blog 的响应式文章目录 | 每篇独立 Blog 都应加载 |
+| `blogs/math-render.js` | 配置浏览器端 MathJax 并改善公式显示 | 需要公式的独立 Blog 配合 `noeqs` 加载 |
 | `jemdoc.py` | 随仓库保存的 jemdoc 0.7.3 生成器 | 一般不要修改 |
 | `photos/` | 头像等图片资源 | 保持被引用文件名与路径一致 |
 | `files/` | CV、论文与参考资料 PDF | 保持被引用文件名与路径一致 |
@@ -88,24 +95,56 @@ python2 jemdoc.py index.jemdoc
 
 ### 2. 修改共享菜单
 
-`MENU` 会被所有 jemdoc 页面读取。修改菜单后必须重建全部页面：
+`MENU` 只由根目录的菜单页面读取。修改菜单后必须重建所有根目录、使用 `MENU` 的页面：
 
 ```bash
 python2 jemdoc.py *.jemdoc
 ```
 
-### 3. 修改 Research Watchlist 详情页
+这条命令不会递归处理子目录。`blogs/`、`research-watchlist/` 和 `scribbles/` 中的独立文章不加载根目录菜单，因此不需要仅因 `MENU` 改动而重建。
 
-详情页位于 `research-watchlist/`，使用独立配置补充移动端 viewport：
+### 3. 修改独立 Blog 笔记
+
+Blog 目前包含 Quantitative Career Resources（下分 `study-guides/` 和 `problem-sets/`）、Technical Notes 与 World Models。完整分类、文章模板和相对路径约定见 `blogs/README.md`。
+
+独立 Blog 使用英文或中文配置生成；命令应从仓库根目录运行：
+
+```bash
+# 英文页面
+python2 jemdoc.py -c blogs/blog.conf blogs/technical-notes/hkust-hpc-server-guide.jemdoc
+
+# 中文或中文优先页面
+python2 jemdoc.py -c blogs/blog-zh.conf blogs/technical-notes/optimal-quota-allocation-under-random-resets.jemdoc
+
+# 新增、删除或改名文章后同步重建公开索引
+python2 jemdoc.py blog.jemdoc
+```
+
+每篇独立 Blog 都加载 `blog-sidebar.js`。需要公式时还应在 jemdoc 头部使用 `noeqs` 并加载 `math-render.js`，由浏览器端 MathJax 渲染公式。
+
+### 4. 修改 Research Watchlist 详情页
+
+详情页位于 `research-watchlist/`，不加载根目录 `MENU`，并使用独立配置补充中文页面语言和移动端 viewport：
 
 ```bash
 python2 jemdoc.py -c research-watchlist/detail.conf research-watchlist/paseos.jemdoc
 python2 jemdoc.py research.jemdoc
 ```
 
-新增或删除详情页时，还要同步修改 `research.jemdoc` 中的 Projects 或 Datasets 索引。
+新增或删除详情页时，还要同步修改 `research.jemdoc` 中的 Projects 或 Datasets 索引，并一起生成、提交 `research.html`。
 
-### 4. 一次重建全部根目录 jemdoc 页面
+### 5. 修改 Scribbles
+
+`scribbles.jemdoc` 是公开索引，独立随笔位于 `scribbles/`。以 `scribbles/S1-empty-note.jemdoc` 为当前模板；独立随笔复用英文 Blog 配置，以保留英文页面语言和移动端 viewport。命令应从仓库根目录运行：
+
+```bash
+python2 jemdoc.py -c blogs/blog.conf scribbles/S1-empty-note.jemdoc
+python2 jemdoc.py scribbles.jemdoc
+```
+
+独立随笔不加载 `MENU`，但应保留返回 `scribbles.html` 的链接，并复用 `blogs/blog-note.css`。
+
+### 6. 一次重建全部根目录 jemdoc 页面
 
 ```bash
 python2 jemdoc.py *.jemdoc
@@ -117,7 +156,7 @@ python2 jemdoc.py *.jemdoc
 python2 --version
 ```
 
-当前页面不含需要渲染的 LaTeX 公式，因此普通生成流程不需要 LaTeX。若未来加入 jemdoc 公式，则还需要 `latex` 和 `dvipng`。
+普通页面生成不需要本地 LaTeX。现有数学 Blog 使用 `noeqs` 禁用 jemdoc 的旧式公式图片生成，再由 `blogs/math-render.js` 在浏览器端加载 MathJax。只有未来重新启用 jemdoc 自带的公式图片生成时，才需要本地安装 `latex` 和 `dvipng`。
 
 ## 添加新页面
 
@@ -129,14 +168,14 @@ python2 --version
    ```
 
 2. 在 `MENU` 中加入指向 `example.html` 的条目。
-3. 重建全部页面，使所有页面的侧边栏保持一致：
+3. 重建所有根目录、使用 `MENU` 的页面，使共享侧边栏保持一致：
 
    ```bash
    python2 jemdoc.py *.jemdoc
    ```
 
 4. 本地预览并检查新页面、侧边栏和资源链接。
-5. 提交新 `.jemdoc`、新 `.html`、`MENU`，以及因共享菜单变化而重建的其他 HTML。
+5. 提交新 `.jemdoc`、新 `.html`、`MENU`，以及因共享菜单变化而重建的其他根目录 HTML。
 
 ## 推荐维护流程
 
@@ -149,7 +188,7 @@ git status --short
 # 3. 按修改范围生成页面
 python2 jemdoc.py index.jemdoc   # 单页内容变化
 # 或
-python2 jemdoc.py *.jemdoc       # MENU 变化或全量生成
+python2 jemdoc.py *.jemdoc       # MENU 变化或根目录页面全量生成
 
 # 4. 本地预览
 python3 -m http.server 8000
@@ -172,7 +211,7 @@ git push origin main
 - 个人身份、职称、单位、邮箱和办公地址准确。
 - 论文题目、作者顺序、期刊/会议、年份和外部链接准确。
 - 修改 jemdoc 后，对应 HTML 已重新生成。
-- 修改 `MENU` 后，全部 jemdoc 页面已重新生成。
+- 修改 `MENU` 后，所有根目录、使用 `MENU` 的 jemdoc 页面已重新生成。
 - 页面可以通过本地 HTTP 服务器打开。
 - 新增图片和 PDF 的相对路径使用 `/`，大小写与磁盘文件名完全一致。
 - 首页、导航、CV、头像和本次修改涉及的外部链接可访问。
@@ -187,7 +226,7 @@ git push origin main
 
 ### 修改了菜单，但只有一个页面的菜单更新
 
-`MENU` 是生成时嵌入各 HTML 的共享输入。运行 `python2 jemdoc.py *.jemdoc`，并提交所有重新生成的 HTML。
+`MENU` 是生成时嵌入根目录菜单页面 HTML 的共享输入。运行 `python2 jemdoc.py *.jemdoc`，并提交所有重新生成的根目录 HTML；独立 Blog、Watchlist 详情页和 Scribbles 文章不受这次菜单变化影响。
 
 ### Python 报语法错误或找不到 `StringIO`
 
