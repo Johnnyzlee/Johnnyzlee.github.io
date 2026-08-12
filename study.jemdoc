@@ -25,6 +25,7 @@ Artificial intelligence is advancing at a remarkable pace, with concepts and tec
         --- [https://developers.openai.com/cookbook OpenAI Cookbook]
 - AI Agent
     -- [https://bojieli.github.io/ai-agent-book/ 深入理解 AI Agent], by Bojie Li
+    -- [https://www.youtube.com/watch?v=GE0pFiFJTKo Agent 的概念、原理与构建模式 —— 从零打造一个简化版的 Claude Code], by [https://www.youtube.com/@马克的技术工作坊 马克的技术工作坊].
 == On Theory and Algorithm (Closer to Mathematics)
 - Convex Optimization
     -- Reading Materials
