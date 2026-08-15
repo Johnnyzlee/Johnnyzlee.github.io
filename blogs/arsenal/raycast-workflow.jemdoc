@@ -913,7 +913,35 @@ fi</pre>
 </div>
 ~~~
 
+== Tips & Tricks
 
+~~~
+{}{raw}
+<div class="command-item">
+<p><span class="command-label">@exa</span> &ndash; search, read, summarize, and discuss the web &ndash; all inside AI Chat.</p>
+</div>
+~~~
+
+~~~
+{}{raw}
+<div class="command-item">
+<p><span class="command-label">@browser</span> &ndash; lets the AI read the page currently open in your browser and discuss it with you.</p>
+</div>
+~~~
+
+~~~
+{}{raw}
+<div class="command-item">
+<p><span class="command-label">@apple-notes</span> &ndash; look up anything you have saved in Apple Notes &ndash; API keys, passwords, account configurations, IP addresses &ndash; no digging through your notes.</p>
+</div>
+~~~
+
+~~~
+{}{raw}
+<div class="command-item">
+<p><span class="command-label"><span class="command-key">⌘⇧B</span>Chat Branching</span> &ndash; branches any AI conversation &ndash; Quick AI, AI Chat, or AI Command &ndash; so you can explore another angle; the original chat is preserved, and you can compare both threads side by side.</p>
+</div>
+~~~
 
 == Resources
 
