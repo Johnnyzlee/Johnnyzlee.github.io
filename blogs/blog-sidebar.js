@@ -186,6 +186,13 @@
     shell.appendChild(content);
     document.body.classList.add("blog-sidebar-ready");
 
+    Array.prototype.forEach.call(
+      navigation.querySelectorAll(".blog-sidebar-section"),
+      function (chapter) {
+        chapter.open = true;
+      }
+    );
+
     var desktopQuery = window.matchMedia("(min-width: 1200px)");
 
     function syncPanelForViewport(event) {
@@ -224,8 +231,6 @@
           chapter.classList.toggle("active", isCurrent);
           if (isCurrent) {
             chapter.open = true;
-          } else if (activeRecord && activeRecord.chapter) {
-            chapter.open = false;
           }
         }
       );
@@ -242,25 +247,6 @@
         });
       }
     }
-
-    Array.prototype.forEach.call(
-      navigation.querySelectorAll(".blog-sidebar-section"),
-      function (chapter) {
-        chapter.addEventListener("toggle", function () {
-          if (!chapter.open) {
-            return;
-          }
-          Array.prototype.forEach.call(
-            navigation.querySelectorAll(".blog-sidebar-section"),
-            function (otherChapter) {
-              if (otherChapter !== chapter) {
-                otherChapter.open = false;
-              }
-            }
-          );
-        });
-      }
-    );
 
     Array.prototype.forEach.call(
       navigation.querySelectorAll("a[data-section-id]"),

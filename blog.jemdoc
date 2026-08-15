@@ -21,7 +21,9 @@
 
 == Technical Notes
 - [blogs/technical-notes/hkust-hpc-server-guide.html HKUST HPC Server Guide]
-- [blogs/technical-notes/optimal-quota-allocation-under-random-resets.html The Codex Quota Problem: How Much Should You Use Today?]
+
+== Arsenal
+- [blogs/arsenal/raycast-workflow.html My Raycast Workflow]
 
 == World Models
 - [blogs/world-models/world-models-learning-note.html World Models: A Beginner's Learning Note]

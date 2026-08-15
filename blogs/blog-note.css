@@ -66,6 +66,11 @@ h3 {
   margin: 30px 0 14px;
 }
 
+h3.step-heading {
+  font-size: 1em;
+  margin: 24px 0 12px;
+}
+
 p {
   margin: 0 0 16px;
 }
@@ -167,6 +172,12 @@ ol {
   padding-left: 2em;
 }
 
+.command-item + ol {
+  list-style-position: outside;
+  margin-left: 2em;
+  padding-left: 1.5em;
+}
+
 li + li {
   margin-top: 0.25em;
 }
@@ -187,6 +198,30 @@ ul.concept-list + ul.concept-list {
 
 ul.concept-list > li + li {
   margin-top: 0.375em;
+}
+
+.command-item {
+  margin-left: 2em;
+}
+
+.command-item + .command-item {
+  margin-top: 1em;
+}
+
+.command-item p {
+  margin: 0;
+}
+
+.command-label {
+  background: rgba(175, 184, 193, 0.2);
+  border-radius: 6px;
+  display: inline-block;
+  padding: 0.2em 0.4em;
+}
+
+.command-label .command-key {
+  color: #57606a;
+  margin-right: 0.25em;
 }
 
 details.concept-detail {
@@ -491,6 +526,95 @@ pre .statement {
   margin: -4px 0 6px;
 }
 
+.copy-block summary {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 0.5em;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.copy-block summary::-webkit-details-marker {
+  display: none;
+}
+
+.copy-block-marker {
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.copy-block details[open] .copy-block-marker {
+  transform: rotate(90deg);
+}
+
+.copy-block-title-file {
+  font-style: italic;
+}
+
+.copy-block details {
+  margin-top: 16px;
+}
+
+.copy-block pre {
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  margin-top: 16px;
+  overflow-x: auto;
+  padding: 12px 14px;
+}
+
+p:has(+ .copy-block) {
+  margin-bottom: 0;
+}
+
+.copy-btn {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #57606a;
+  cursor: pointer;
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  padding: 0;
+  width: 24px;
+}
+
+.copy-btn:hover {
+  background: #ffffff;
+  border-color: #d0d7de;
+  color: #0969da;
+}
+
+.section-toggle {
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  color: #57606a;
+  cursor: pointer;
+  font-size: 0.8em;
+  margin-left: 0.45em;
+  padding: 2px 5px;
+  transition: transform 0.15s ease;
+  vertical-align: 0.15em;
+}
+
+.section-toggle:hover {
+  background: rgba(175, 184, 193, 0.25);
+}
+
+.section-toggle.collapsed {
+  transform: rotate(-90deg);
+}
+
+.blog-section-collapsed {
+  display: none;
+}
+
 pre.example-output {
   background: #0d1117;
   border-left: 4px solid #2da44e;
@@ -793,7 +917,15 @@ pre.example-output {
     padding: 0;
   }
 
-  pre.example-output {
+.copy-btn {
+  display: none;
+}
+
+.section-toggle {
+  display: none;
+}
+
+pre.example-output {
     background: #ffffff;
     border: 1px solid #8c959f;
     border-left: 4px solid #2da44e;

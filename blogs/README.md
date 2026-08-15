@@ -34,9 +34,10 @@ blogs/
 │       ├── crack-heard-on-the-street-question-bank.jemdoc / .html
 │       └── zhou-quant-finance-interview-question-bank.jemdoc / .html
 ├── technical-notes/
-    ├── hkust-hpc-server-guide.jemdoc
-    ├── hkust-hpc-server-guide.html
-    └── optimal-quota-allocation-under-random-resets.jemdoc / .html
+│   ├── hkust-hpc-server-guide.jemdoc
+│   └── hkust-hpc-server-guide.html
+├── arsenal/
+│   └── raycast-workflow.jemdoc / .html
 └── world-models/
     ├── world-models-learning-note.jemdoc / .html
     └── world-models-for-communication-networks.jemdoc / .html
@@ -49,6 +50,7 @@ blogs/
 | Quantitative Career Resources | Study Guides | Mathematics review, Python fundamentals, NumPy, pandas, scikit-learn, and algorithms for quantitative research interviews |
 | Quantitative Career Resources | Problem Sets | Assorted brainteasers, the general mathematics question bank, and the independently adapted book-based question banks |
 | Technical Notes | — | Operational guides, command references, and self-contained mathematical or technical essays |
+| Arsenal | — | Personal toolbox: tools, workflows, and configurations for academic work and daily life |
 | World Models | — | Chinese-first learning notes on world models, latent dynamics, planning, and related agent research |
 
 The top-level category directory and any subcategory directory must use the same English label as the public Blog index, converted to lowercase kebab case. When an article changes public category, move its `.jemdoc` and generated `.html` together and update the root index and relative asset paths in the same change.
