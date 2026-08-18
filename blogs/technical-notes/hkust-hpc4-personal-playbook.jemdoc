@@ -1,10 +1,12 @@
 # jemdoc: nofooter, nodefaultcss, addcss{../blog-note}, addjs{../blog-sidebar}
-= HKUST HPC Server Guide
+= HKUST HPC4 Personal Playbook
 [../../blog.html ← Blogs] \M /updated 2026-08-02/
 
-+lzengan@hpc4.ust.hk+ \M Slurm account +khaledgroup+
+This is a personal playbook rather than a tutorial. It records how I use HPC4 and the related configurations on my own computers, kept as a reference for myself; it is not meant to apply to other users.
 
-This guide is used from both my MacBook Air M1 and my Mac mini M4. Each Mac keeps its own private SSH key; never copy a private key between machines.
+Username +lzengan+@+hpc4.ust.hk+ \M Project group account +khaledgroup+
+
+This playbook is used from both my MacBook Air M1 and my Mac mini M4. Each Mac keeps its own private SSH key; never copy a private key between machines.
 
 == Configurations
 Both Macs use the +hpc4+ alias, but their local +\~\/.ssh\/config+ entries are different. The MacBook Air M1 also has +macmini-campus+ and +hpc4-via-mini+ aliases for off-campus access through the Mac mini M4.

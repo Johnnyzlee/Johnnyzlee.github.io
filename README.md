@@ -105,13 +105,13 @@ python2 jemdoc.py *.jemdoc
 
 ### 3. 修改独立 Blog 笔记
 
-Blog 目前包含 Quantitative Career Resources（下分 `study-guides/` 和 `problem-sets/`）、Technical Notes 与 World Models。完整分类、文章模板和相对路径约定见 `blogs/README.md`。
+Blog 目前包含 Quantitative Career Resources（下分 `study-guides/` 和 `problem-sets/`）、Technical Notes、Arsenal 与 World Models。完整分类、文章模板和相对路径约定见 `blogs/README.md`。
 
 独立 Blog 使用英文或中文配置生成；命令应从仓库根目录运行：
 
 ```bash
 # 英文页面
-python2 jemdoc.py -c blogs/blog.conf blogs/technical-notes/hkust-hpc-server-guide.jemdoc
+python2 jemdoc.py -c blogs/blog.conf blogs/technical-notes/hkust-hpc4-personal-playbook.jemdoc
 
 # 中文或中文优先页面
 python2 jemdoc.py -c blogs/blog-zh.conf blogs/technical-notes/optimal-quota-allocation-under-random-resets.jemdoc

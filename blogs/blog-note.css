@@ -186,6 +186,11 @@ li p {
   margin: 0;
 }
 
+li ul,
+li ol {
+  margin: 0.25em 0 0;
+}
+
 ul.concept-list {
   margin: -10px 0 6px;
   padding-left: 2em;

@@ -1,0 +1,418 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../blog-note}, addjs{../blog-sidebar}
+= Git & GitHub Working Reference
+[../../blog.html ← Blogs] \M /updated 2026-08-19/
+
+A working reference on Git and GitHub.
+
+Git is an old, basic topic by now. Tutorials are everywhere, and with AI around, no one really needs to type these commands by hand anymore. But the meaning behind the commands still matters. These concepts stay in the head and shape how a developer thinks about code. They outline the whole skeleton and landscape of software development. They are a framework that great developers distilled from the craft itself. They provide a global map and a sense of direction. Only with that orientation can the right habits and conventions produce good work.
+
+== Principles
+=== Centralized vs distributed
+The difference comes down to where the history lives — and that matters because merging depends on it.
+
+In a *centralized* system (+SVN+, +CVS+), the only copy of the history sits on a central server. Everyone checks out a working copy — a snapshot of the files, not the history. Committing, merging, and even looking at history all go through that one server and require permission, so you have to be online to do anything. If the server goes down, development stops: a copy of the files is not a copy of the history, and without the history nobody can merge changes together — you cannot tell what changed, from which version, or who did it. With no authoritative version left, no one's copy counts as official, so none of them can serve as the reference point. If the server dies without a backup, that history is gone for good.
+
+~~~
+{}{raw}
+<p>As a <b>distributed</b> version control system, Git solves this by making the history ubiquitous. Every clone already is the full history<a class="footnote-ref" href="#note-clone-storage">1</a>, so the chain of &ldquo;who came from whom&rdquo; lives on every machine. Committing is purely local &mdash; I create a commit on my own branch and don&rsquo;t ask anyone. Sharing is just copying commits between repositories (<tt>fetch</tt>, <tt>pull</tt>, <tt>push</tt>), and merging is local too: Git compares the two commit graphs, finds the common ancestor<a class="footnote-ref" href="#note-common-ancestor">2</a>, and joins the changes<a class="footnote-ref" href="#note-common-ancestor-how">3</a>. No server is required for any of it.</p>
+~~~
+
+In practice people may still use a designated server (+GitHub+) as the common place to exchange changes, but it is only a convenience. Without it, everyone keeps working; they just sync directly with each other.
+
+=== Algorithms
+The machinery underneath the commands. Each item says what it does, where it is implemented in the Git source, and where it is documented.
+
+~~~
+{}{raw}
+<style>
+h4 {
+  color: #1f2328;
+  font-size: 1.08em;
+  line-height: 1.35;
+  margin: 22px 0 8px;
+}
+a.footnote-ref {
+  color: #0969da;
+  font-size: 0.8em;
+  line-height: 0;
+  text-decoration: none;
+  vertical-align: super;
+}
+a.footnote-ref:hover {
+  text-decoration: underline;
+}
+details.footnote-detail {
+  margin: 22px 0 4px;
+}
+details.footnote-detail + details.footnote-detail {
+  margin-top: 4px;
+}
+details.footnote-detail > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 8px 0;
+  user-select: none;
+}
+details.footnote-detail > summary::-webkit-details-marker {
+  display: none;
+}
+details.footnote-detail > summary::before {
+  color: #0969da;
+  content: "▸";
+  display: inline-block;
+  margin-right: 0.5em;
+  transition: transform 0.15s ease;
+}
+details.footnote-detail[open] > summary::before {
+  transform: rotate(90deg);
+}
+details.footnote-detail .footnote-body {
+  border-left: 3px solid #d0d7de;
+  margin: 8px 0 0 0.9em;
+  padding: 2px 0 4px 1.2em;
+}
+details.footnote-detail .footnote-body h4 {
+  color: #1f2328;
+  font-size: 1.02em;
+  line-height: 1.35;
+  margin: 18px 0 8px;
+}
+details.footnote-detail .footnote-body h4:first-child {
+  margin-top: 0;
+}
+details.footnote-detail .footnote-body p {
+  margin: 0 0 12px;
+}
+details.footnote-detail .footnote-body p:last-child {
+  margin-bottom: 0;
+}
+div.subnote {
+  border-left: 3px solid #d0d7de;
+  margin: 8px 0 4px 1.2em;
+  padding-left: 1em;
+}
+div.subnote p {
+  margin: 0 0 10px;
+}
+div.subnote p:last-child {
+  margin-bottom: 0;
+}
+</style>
+~~~
+==== Storage and cloning
+Every clone holds the full history; deduplication and compression keep that affordable.
+
+~~~
+{}{raw}
+<details class="footnote-detail" id="note-clone-storage">
+<summary><strong>1 · Doesn't keeping the full history in every clone explode storage?</strong></summary>
+<div class="footnote-body">
+<h4>1. Objects are stored once, keyed by content</h4>
+<p>Git stores every file as a <tt>blob</tt> object named by its SHA-1 hash. A commit does not copy its files; it records a <tt>tree</tt> that references blobs. If a file is unchanged from one commit to the next, the new tree simply points at the same blob again — nothing is duplicated. Storage therefore grows with the amount of change, not with the accumulated size of every version.</p>
+<h4>2. Packfiles add delta compression</h4>
+<p>Objects are packed into packfiles and similar objects are delta-encoded — stored as differences against a base object. The server does this when serving a clone, and a background <tt>git gc</tt> does the same locally. A clone transfers and stores this compressed pack, which is why even large histories clone in a manageable size.</p>
+<h4>3. Sync transfers only what the other side lacks</h4>
+<p>Because the same content always hashes to the same ID, two repositories recognize shared objects at a glance. A <tt>fetch</tt> or <tt>push</tt> sends only the objects the other side does not already have — history sync is incremental by construction.</p>
+<h4>4. Shallow and partial clones for the extreme cases</h4>
+<p>For very large repositories, <tt>git clone --depth 1</tt> fetches only the tip commit, and partial clones (<tt>--filter=blob:none</tt>) download file contents on demand. These are optional; a normal clone is a full, self-contained history.</p>
+</div>
+</details>
+~~~
+Implemented in [https://github.com/git/git/blob/master/object-file.c object-file.c] (the object store), [https://github.com/git/git/blob/master/packfile.c packfile.c] (packfile format), [https://github.com/git/git/blob/master/builtin/pack-objects.c pack-objects.c] (delta compression), and [https://github.com/git/git/blob/master/builtin/gc.c gc.c] (auto maintenance); documented in [https://git-scm.com/docs/git-pack-objects git-pack-objects].
+==== Merging
+Finding the ancestor and joining the changes is local graph traversal plus a three-way diff.
+
+~~~
+{}{raw}
+<details class="footnote-detail" id="note-common-ancestor">
+<summary><strong>2 · Why does merging need the common ancestor?</strong></summary>
+<div class="footnote-body">
+<h4>1. Why does merging need the common ancestor?</h4>
+<p>Merging is combining changes, and to combine changes Git must know what each side changed relative to. That reference point is the <tt>common ancestor</tt> — the last commit both branches share. Two people branch off the same commit <tt>A</tt>; one makes <tt>B</tt>, the other <tt>C</tt>. Git merges by a three-way comparison: it figures out what <tt>B</tt> changed since <tt>A</tt> and what <tt>C</tt> changed since <tt>A</tt>, then applies both sets of changes. Only when both sides touched the same line do we get a conflict to resolve by hand.</p>
+<h4>2. What happens without the ancestor?</h4>
+<p>Git would hold only <tt>B</tt> and <tt>C</tt> and could not tell which changes belong to whom. A plain diff of <tt>B</tt> vs <tt>C</tt> would mix both people&rsquo;s edits together, so automatic merging would be impossible and almost everything would look like a conflict.</p>
+</div>
+</details>
+<details class="footnote-detail" id="note-common-ancestor-how">
+<summary><strong>3 · How does it merge?</strong></summary>
+<div class="footnote-body">
+<h4>1. It starts from the common ancestor</h4>
+<p>To merge, Git first needs the reference point described above. Because each commit embeds its parent&rsquo;s hash, the history is a graph (a DAG), and Git walks backward along parent links from both tips until it reaches the first commit both sides share — <tt>git merge-base</tt> computes exactly this.</p>
+<h4>2. A three-way merge applies both change sets</h4>
+<p>From that ancestor, Git diffs each side separately — what <tt>B</tt> changed and what <tt>C</tt> changed — and applies both on top of the ancestor. Changes to different files, or to different lines of the same file, combine automatically with no help needed.</p>
+<h4>3. Conflicts need manual confirmation</h4>
+<p>When both sides changed the same line, Git cannot guess which version is right. It stops and marks the spot in the file with conflict markers (<tt>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</tt>, <tt>=======</tt>, <tt>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</tt>) showing both versions. Resolving is a manual decision: edit the file to keep one side, merge both, or write something new, then <tt>git add</tt> the file to tell Git the conflict is resolved.</p>
+<h4>4. The result is a commit with two parents</h4>
+<p>The finished merge becomes a merge commit whose two parents are the two tips — the graph itself records that two lines of development joined here.</p>
+</div>
+</details>
+<script>
+(function () {
+  var refs = document.querySelectorAll("a.footnote-ref[href^=\"#\"]");
+  Array.prototype.forEach.call(refs, function (ref) {
+    ref.addEventListener("click", function () {
+      var id = this.getAttribute("href").slice(1);
+      var target = document.getElementById(id);
+      if (target && target.tagName === "DETAILS") {
+        target.open = true;
+      }
+    });
+  });
+})();
+</script>
+~~~
+Implemented in [https://github.com/git/git/blob/master/commit.c commit.c] (merge-base computation), [https://github.com/git/git/blob/master/merge-ort.c merge-ort.c] (the default three-way merge and conflict handling), and [https://github.com/git/git/blob/master/xdiff/ the xdiff engine]; documented in [https://git-scm.com/docs/git-merge git-merge] and [https://git-scm.com/docs/git-merge-base git-merge-base].
+
+==== Diffing and rename detection
+Comparing two files or two trees: the xdiff engine (based on Myers' algorithm) finds the minimal line-level edit script between two versions. Rename and copy detection builds on this by hashing each file's content and scoring how similar any two files are, so a moved or renamed file is recognized instead of shown as delete-plus-add. Implemented in [https://github.com/git/git/blob/master/xdiff/ xdiff], [https://github.com/git/git/blob/master/diff.c diff.c], and [https://github.com/git/git/blob/master/diffcore-rename.c diffcore-rename.c]; documented in [https://git-scm.com/docs/git-diff git-diff].
+
+==== Revision walking
+The engine behind +git log+ and +git rev-list+: starting from a commit, walk backward along parent links, apply filters, and emit commits in a usable order (topological sort). Generation numbers and the commit-graph file make reachability checks fast. Implemented in [https://github.com/git/git/blob/master/revision.c revision.c], [https://github.com/git/git/blob/master/commit-graph.c commit-graph.c], and [https://github.com/git/git/blob/master/builtin/rev-list.c rev-list.c]; documented in [https://git-scm.com/docs/git-rev-list git-rev-list].
+
+==== History rewriting
+Replaying commits onto a different base: +git rebase+ and +git cherry-pick+ take existing changes and reproduce them on top of another commit, producing new hashes and a new graph. +git replace+ substitutes one commit for another locally, and filter-repo rewrites whole histories in bulk. Implemented in [https://github.com/git/git/blob/master/sequencer.c sequencer.c] and [https://github.com/git/git/blob/master/builtin/replace.c replace.c]; documented in [https://git-scm.com/docs/git-rebase git-rebase] and [https://git-scm.com/docs/git-cherry-pick git-cherry-pick].
+
+==== Sync and negotiation
+How repositories exchange objects over the network: during +git fetch+ or +git push+, the two sides first agree on which objects the receiver is missing, then the sender packs exactly those and transmits them. Thin packs, fast-forward checks, and shallow/partial clone transfers all live here. Implemented in [https://github.com/git/git/blob/master/fetch-pack.c fetch-pack.c], [https://github.com/git/git/blob/master/send-pack.c send-pack.c], [https://github.com/git/git/blob/master/transport.c transport.c], and [https://github.com/git/git/blob/master/upload-pack.c upload-pack.c]; documented in [https://git-scm.com/docs/git-fetch git-fetch] and [https://git-scm.com/docs/git-push git-push].
+
+==== Index and checkout
+The index (staging area) is a snapshot of what the next commit will contain. Checkout reconciles three states — HEAD, the index, and the working tree — with a three-way read-tree merge. Pathspecs pick which files a command acts on, and +.gitignore+ rules decide which untracked files are ignored. Implemented in [https://github.com/git/git/blob/master/read-cache.c read-cache.c], [https://github.com/git/git/blob/master/unpack-trees.c unpack-trees.c], and [https://github.com/git/git/blob/master/dir.c dir.c]; documented in [https://git-scm.com/docs/git-read-tree git-read-tree] and [https://git-scm.com/docs/gitignore gitignore].
+
+== Git commands
+=== Everyday commits
+The usual commit loop: check status, review the diff, stage selectively, and commit with a clear message.
+
+A typical session looks like this:
+
+~~~
+{}{sh}
+$ git status
+$ git diff
+$ git add file.txt
+$ git diff --staged
+$ git commit -m "Fix off-by-one in the quota calculator"
+$ git log --oneline -5
+~~~
+
+*+git status+* — the first command of any session. It lists modified files, untracked files, and what is already staged, i.e. what the next commit would contain. Everything else builds on knowing where you are.
+
+*+git diff+* — shows the actual changes, line by line, in the files Git tracks but that are not staged. +git diff \-\-staged+ shows only what is staged — the exact content of the commit you are about to make. Append a filename to restrict either to one file: +git diff file.txt+.
+
+*+git add+* — stages changes: it copies the current state of files into the staging area (the index), marking them as part of the next commit. Stage selectively — +git add file.txt+ for one file, +git add -p+ to walk through the diff hunk by hunk and stage only some of it. +git add -A+ stages everything at once; convenient when all changes belong together, risky otherwise.
+
+*+git commit+* — saves the staged snapshot as a permanent commit on the current branch. +git commit -m "message"+ writes the message directly without opening an editor. Write the summary line in the imperative mood — "Fix X" rather than "Fixes X" or "Fixed X" — so the history reads as a list of instructions. Commits are purely local: nothing leaves the machine until pushed, so committing often costs nothing and protects against losing work.
+
+~~~
+{}{raw}
+<div class="subnote">
+<p><strong>Writing a good commit message.</strong> A one-liner via <tt>-m</tt> is fine for tiny fixes. For real work, run <tt>git commit</tt> with no <tt>-m</tt>: Git opens an editor with the summary line at the top, a blank line, then the body — the body is where you explain what changed and, more importantly, why. Many people deliberately avoid <tt>-m</tt> because writing the message in an editor forces the explanation while the context is still fresh.</p>
+<p>A widely used convention: a summary under about 50 characters, capitalized and in the imperative mood (&ldquo;Fix X&rdquo;, not &ldquo;Fixed X&rdquo;), a blank line, then a body that explains the <em>why</em> rather than repeating the diff.</p>
+<p>Good references: <a href="https://cbea.ms/git-commit/">How to Write a Git Commit Message</a>, <a href="https://www.conventionalcommits.org/en/v1.0.0/">Conventional Commits</a>, and <a href="https://github.com/RomuloOliveira/commit-messages-guide">commit-messages-guide</a>.</p>
+</div>
+~~~
+
+*+git log+* — reviews history. +git log \-\-oneline+ prints one line per commit (hash plus message); append +-5+ to limit to the last five, or +\-\-stat+ for per-file change counts.
+
+=== Branching and merging
+A branch is just a pointer to a commit, so creating one costs nothing. Merging joins two lines of history, and the common-ancestor machinery from the [\#note-common-ancestor-how Merging algorithm] decides what to combine.
+
+A typical session:
+
+~~~
+{}{sh}
+$ git branch feature/stats        # create a branch at the current commit
+$ git switch feature/stats        # move to it
+$ git branch -a                   # list branches, local and remote
+$ git switch main                 # back to main
+$ git merge feature/stats         # join the feature back in
+$ git branch -d feature/stats     # delete it once it is merged
+~~~
+
+*+git branch+* — lists branches, marking the current one with a star. +git branch NAME+ creates a new branch at the current commit without switching to it; +git branch -d NAME+ deletes a branch once its commits are merged (+-D+ forces it). Since a branch is just a pointer, all of this is cheap and local.
+
+*+git switch+* — moves the working tree to another branch. +git switch NAME+ is the modern spelling of +git checkout NAME+; +git switch -c NAME+ creates and switches in one step. Switching is refused if it would overwrite uncommitted changes that the target branch also touches — commit or stash them first.
+
+*+git merge+* — joins the named branch into the current one. Git finds the common ancestor, then applies the other side's changes on top of yours.
+
+*Fast-forward vs. merge commit:* if the current branch has not moved since the other branch forked off, Git simply slides the branch pointer forward — a fast-forward, with no new commit. If both sides moved, Git creates a merge commit with two parents, recording that two lines of history joined here. +git merge \-\-no-ff NAME+ forces a merge commit even when a fast-forward is possible; teams that want a visible "feature joined" record use it.
+
+*Conflicts:* when both sides changed the same lines, Git stops mid-merge and marks the conflicted files. +git status+ lists them (as "both modified"); each file contains conflict markers (+<<<<<<<+, +=======+, +>>>>>>>+) showing both versions. Resolve by editing the file to the intended result, then +git add+ it to mark the conflict resolved, and finish the merge with +git commit+ or +git merge \-\-continue+. The full mechanics are covered in the [\#note-common-ancestor-how Merging footnote].
+
+=== Remotes and collaboration
+A remote is just a name for another repository's URL. After cloning, collaboration is mostly fetch and push.
+
+A typical session:
+
+~~~
+{}{sh}
+$ git remote add upstream https://github.com/OWNER/REPO.git
+$ git remote -v                     # list remotes and their URLs
+$ git fetch origin                  # download origin's branches without touching the working tree
+$ git pull                          # fetch and merge the upstream branch
+$ git push                          # upload commits to the remote branch
+$ git push -u origin feature/stats  # push and remember the upstream branch
+~~~
+
+*+git remote+* — manages remotes: +git remote -v+ lists them with URLs, +git remote add NAME URL+ adds one, +git remote rename OLD NEW+ renames one, +git remote remove NAME+ drops one.
+
+The +NAME+ is the alias typed in later commands, so it can be anything. How naming works:
+
+- +git remote add github URL+ only registers the URL under the name +github+ — it does not fetch or push anything by itself. From then on, +git fetch github+ and +git push github+ refer to that URL.
+- +git clone+ sets up the source URL as +origin+ automatically; +git clone -o NAME+ picks a different initial name.
+
+*+git fetch+* — downloads commits and branches from a remote into local remote-tracking refs (+origin/main+), without touching the working tree. Nothing is merged; fetch only updates the record of what the remote has.
+
+*+git pull+* — +git fetch+ followed by a merge of the corresponding branch. It is a convenience — fetch and merge can always be done as two explicit steps. +git pull \-\-rebase+ does fetch + rebase instead, replaying local commits on top of the remote's new ones.
+
+*+git push+* — uploads local commits to the remote branch. A push breaks down as:
+
+- The full form is +git push REMOTE LOCALbranch:REMOTEbranch+ — local branch, colon, remote branch. Omitting the colon part means the remote branch takes the same name, so +git push origin master+ pushes the local +master+ to the remote +master+.
+- Use the colon form when the names differ: +git push origin my-feature:feature-x+.
+- A bare +git push+ pushes the current branch to its configured upstream — the mapping recorded by +git push -u+, as in the Upstream tracking note below.
+- Git rejects the push when it is not a fast-forward — when the remote has commits this side does not have — so a shared branch cannot silently overwrite anyone's work.
+- A rejected push is resolved by pulling first and pushing again.
+
+*Upstream tracking:* +git push -u origin BRANCH+ (+-u+ for +\-\-set-upstream+) pushes and records the mapping, so later plain +git pull+ / +git push+ know which remote branch to use.
+
+*Keeping a fork in sync:* a fork is a copy of someone else's repository, made on GitHub under your own account. Without write permission you cannot push to their repository, so to contribute you fork it, change your own copy, and ask the original maintainers to accept the work through a pull request. Meanwhile the original keeps moving, so the fork drifts behind and needs regular syncing. A fork uses two remotes: +origin+ pointing at the fork, +upstream+ pointing at the original repository (+git remote add upstream URL+). Fetch from +upstream+, merge or rebase +upstream/main+ into the local branch, then push to the fork. From the fork's perspective the original repo is read-only: changes arrive by fetching, never by pushing.
+
+=== Undoing and rewriting
+Two kinds of undo: discard work that is not committed, or rewrite history that is. The second kind changes commit hashes, so it is safe only for commits not yet pushed — for pushed commits, use +git revert+ instead.
+
+A typical session:
+
+~~~
+{}{sh}
+$ git restore file.txt            # discard uncommitted changes to a file
+$ git restore --staged file.txt   # unstage, keep the changes
+$ git commit --amend              # fix the last commit
+$ git reset --hard HEAD~1         # move the branch back and drop a commit
+$ git rebase -i HEAD~3            # squash, reorder, or edit the last three commits
+$ git reflog                      # find commits that a reset or rebase made unreachable
+~~~
+
+*+git restore+* — discards working-tree changes. +git restore file.txt+ reverts the file to the last commit; +git restore \-\-staged file.txt+ unstages it without touching the file. The older spellings are +git checkout \-\- file.txt+ and +git reset HEAD file.txt+.
+
+*+git reset+* — moves the current branch pointer to another commit. Three modes: +\-\-soft+ keeps the changes staged, +\-\-mixed+ (default) keeps them in the working tree but unstaged, +\-\-hard+ discards them entirely. Resetting rewrites history, and +\-\-hard+ throws work away — check +git status+ and +git diff+ before using it.
+
+*+git commit \-\-amend+* — replaces the last commit with a new one. Fix a message with +git commit \-\-amend -m "..."+, or add a file you forgot with +git add file.txt && git commit \-\-amend \-\-no-edit+. Amending rewrites the commit hash.
+
+*+git rebase -i+* — interactive rebase, the rebase idea from Remotes applied to local history. An editor opens the list of commits; mark each line as pick, reword, squash, edit, or drop — or move lines around to reorder them. Every touched commit gets a new hash.
+
+*+git reflog+* — Git logs every pointer movement (HEAD changes) for about 90 days. After a bad +git reset+ or +git rebase+, find the lost commit's hash here and restore it with +git reset \-\-hard HASH+ or +git cherry-pick HASH+.
+
+*+git revert+* — the safe undo for pushed commits: it creates a new commit that reverses the target commit's changes, leaving history intact. Use it instead of reset, amend, or rebase on commits that others already have.
+
+=== Stash and cleanup
+Stash sets aside work that is not ready to commit; cleanup removes untracked junk and compresses the object store.
+
+A typical session:
+
+~~~
+{}{sh}
+$ git stash -u                 # set aside tracked and untracked changes
+$ git stash list               # see the pile of stashes
+$ git switch other-branch      # switch freely now
+$ git stash pop                # bring the changes back
+$ git clean -n                 # preview what would be deleted
+$ git clean -fd                # delete untracked files and directories
+~~~
+
+*+git stash+* — saves uncommitted changes and reverts the working tree to the last commit, leaving it clean. +git stash -u+ also stashes untracked files; +-m "message"+ names the stash so +git stash list+ stays readable. A stash is stored as a special commit, so it is not a fragile side note — and if it is dropped by accident, it can usually be recovered: find the dangling commit with +git fsck \-\-unreachable+ before it is pruned.
+
+*+git stash pop+* — restores the most recent stash and removes it from the list. +git stash apply+ restores it without removing (useful when the same stash is needed on several branches); +git stash drop+ deletes a stash without applying it.
+
+*+git clean+* — deletes untracked files and directories. Always preview with +git clean -n+ first: it prints exactly what would be removed. +git clean -f+ deletes files, +git clean -fd+ also removes directories. There is no built-in undo — +clean+ removes things permanently, and it never touches tracked files or stashed changes.
+
+*+git gc+* — compresses loose objects into packfiles and prunes unreachable ones, keeping the object store compact (the packing algorithm from the Storage section). It runs automatically in the background, but a manual +git gc+ is harmless after a large batch of work.
+
+== GitHub
+=== Authentication and configuration
+Two ways to get your changes into a repository. Both need the same one-time setup — an identity and a transport — and both authenticate at push time, but the flows are different.
+
+*Push — you may write to the repository.* This covers your own repos and repos where you are a collaborator.
+
+- *Flow:* clone (or add the remote), commit, then push.
+- *Authentication:* happens at push time. HTTPS prompts for the GitHub username and a token; SSH presents your registered key and never prompts.
+
+*Fork + pull request — you may not write to the repository.* The counterpart to push for everyone else's repos: a push to their repository is rejected because the permission check fails, so changes reach the original repo by asking, not by pushing.
+
+- *Flow:* fork the repo (a copy under your own account) → clone the fork → add +upstream+ → commit → push to the fork, where you are the owner and the check always passes → open a pull request for the maintainers to review and merge.
+- *Authentication:* identical to push, except the target of the push is your fork. The syncing mechanics are in the Remotes section.
+
+*Setup — needed once, for both:*
+- *Identity.* Commits are stamped with a name and email, configured once — every commit records them, so use the values you want to appear publicly:
+  -- +git config \-\-global user.name "NAME"+
+  -- +git config \-\-global user.email "EMAIL"+
+  -- The identity and the GitHub account are two separate things: +git config+ only stamps commits and is never used for authentication. They usually carry the same name, but Git does not check that they match.
+- *Transport.* The transport is what authenticates you as the GitHub account that owns the remote repository (or is a collaborator on it) — nothing else in git verifies who you are. There are two transports — HTTPS and SSH — and either works; pick one and point the remote at the matching URL:
+  -- HTTPS:
+    --- Commands: +git remote set-url origin https:\/\/github.com\/OWNER\/REPO.git+ (or just clone), then +gh auth login+.
+    --- How it works: Git needs a credential helper to store a token. A GitHub Personal Access Token is the usual choice, and +gh auth login+ can create and manage it for you.
+  -- SSH:
+    --- Commands: +ssh-keygen -t ed25519+ ([https://en.wikipedia.org/wiki/Curve25519 why 25519]), then +git remote set-url origin git@github.com:OWNER\/REPO.git+.
+    --- How it works: the command generates a key pair — a private key that stays on the machine and a matching public key (+\~\/.ssh\/id_ed25519.pub+) that you paste into GitHub Settings → SSH and GPG keys. If a key with that name already exists, +ssh-keygen+ asks before overwriting; to keep several keys, save a new one under a different name with +ssh-keygen -t ed25519 -f \~\/.ssh\/id_ed25519_github+.
+- *Check what is configured:*
+  -- +gh auth status+ reports the account and transport.
+  -- +ssh -T git@github.com+ tests the SSH connection.
+
+=== Workflows
+GitHub adds a collaboration layer on top of the git commands from the previous section: pull requests, issues, and releases — plus the +gh+ command-line tool to drive them from the terminal.
+
+A typical session:
+
+~~~
+{}{sh}
+$ gh auth login                 # authenticate once, as in Authentication and configuration
+$ gh pr create --fill           # open a PR from the current branch
+$ gh pr view --web              # open it in the browser
+$ gh issue list --assignee @me  # issues assigned to you
+$ gh release create v1.0.0      # tag the release and publish it
+~~~
+
+*Pull requests.* The delivery mechanism behind the fork scenario: after pushing a branch (to your fork or a feature branch on the shared repository), open a pull request proposing those commits for merge into a target branch. Reviewers comment on specific lines, request changes, or approve; the maintainer then merges — as a merge commit, a squash, or a rebase, depending on the project's preference. A PR can be opened as a draft to signal work in progress.
+
+*Issues.* Bug reports and feature requests live next to the code. A PR can reference an issue, and writing +fixes #123+ in the PR description auto-closes the issue when the PR merges.
+
+*Releases.* A release bundles a git tag (such as +v1.0.0+) with notes and downloadable artifacts. Tagging locally is just git: +git tag -a v1.0.0 -m "message"+, then +git push origin v1.0.0+. Pushing the tag alone does not create a release page — create one from it with +gh release create v1.0.0+ (or in the web UI), which tags and publishes in one step if the tag does not exist yet.
+
+*The +gh+ CLI.* +gh+ wraps the GitHub API and reuses the authentication from the section above. Common ones: +gh pr create+, +gh pr view+, +gh issue list+, +gh issue create+, +gh release create+.
+
+=== GitHub Actions
+GitHub's automation: think of it as a helper that watches your repository and runs a script for you whenever something happens — you never run it yourself; GitHub runs it on its own machines. The script lives in the repo as a YAML file under +.github\/workflows\/+, and every push, pull request, or scheduled moment can be its trigger.
+
+The most common use is continuous integration (CI): every time you push, GitHub automatically checks out your code on a fresh machine, runs your tests, and tells you if something broke. Deployment goes one step further and publishes the result — for example rebuilding and redeploying a site to GitHub Pages on every push.
+
+A minimal CI workflow, read line by line:
+
+~~~
+{}{yaml}
+name: CI                    # just a label shown in the Actions tab
+on:                         # the events that start it (the triggers)
+  push:                     # runs after every push
+  pull_request:             # and after every pull request
+jobs:
+  build:                    # a job = one machine doing the work
+    runs-on: ubuntu-latest  # the machine image to use
+    steps:                  # an ordered checklist
+      - uses: actions/checkout@v4      # ready-made step: get your code
+      - uses: actions/setup-python@v5  # ready-made step: install Python
+        with:
+          python-version: "3.12"       # the option to pass to it
+      - run: python -m pytest          # a plain command you wrote yourself
+~~~
+
+*The pieces, in plain terms:*
+
+- Trigger (+on+): the doorbell that wakes the workflow. The common ones are +push+ and +pull_request+; +schedule:+ uses cron syntax for periodic runs, and +workflow_dispatch:+ adds a "Run workflow" button so you can also start it by hand.
+- Job (+jobs:+): one task running on one fresh virtual machine (+runs-on+ picks it: +ubuntu-latest+, +windows-latest+, +macos-latest+). Jobs can depend on each other, but a single job covers most needs.
+- Step (+steps:+): one line of a checklist, run in order. A step is either +uses:+ a ready-made action from the marketplace, or +run:+ a shell command you type yourself.
+- Action: someone else's pre-written step you pull in instead of reinventing — checking out code, installing a language, uploading files. The +actions\/+ prefix marks the official GitHub ones; always pin a version (+@v4+) or a commit SHA.
+
+*What you see in practice:* push, then open the Actions tab. The new run shows a spinner, then a green check or a red cross — and a red cross links straight to the failing step's log. That is the point of CI: a broken commit is caught automatically before anyone merges it.
+
+*Secrets:* a locked drawer for things that must not appear in the file, like tokens or passwords. Add them once under Settings → Secrets and variables, then reference +$\{\{ secrets.NAME \}\}+ in a step; GitHub substitutes the value at run time and masks it in the logs. One caveat: on pull requests opened from forks, secrets are withheld by default — a security measure — so a secret-using step runs only after the PR is merged.
+
+*Deployment:* a workflow can end by publishing instead of just testing — +actions\/deploy-pages+ deploys a site to GitHub Pages, and an SSH or API action can ship to any other host. Releases integrate too: a workflow can attach build artifacts to a release.
+
+*Running from the terminal:* +gh workflow run NAME+ starts a +workflow_dispatch+ manually; +gh run watch+ follows it to completion.

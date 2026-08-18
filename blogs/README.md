@@ -34,8 +34,9 @@ blogs/
 │       ├── crack-heard-on-the-street-question-bank.jemdoc / .html
 │       └── zhou-quant-finance-interview-question-bank.jemdoc / .html
 ├── technical-notes/
-│   ├── hkust-hpc-server-guide.jemdoc
-│   └── hkust-hpc-server-guide.html
+│   ├── git-github-working-reference.jemdoc / .html
+│   ├── hkust-hpc4-personal-playbook.jemdoc
+│   └── hkust-hpc4-personal-playbook.html
 ├── arsenal/
 │   └── raycast-workflow.jemdoc / .html
 └── world-models/
