@@ -1,0 +1,219 @@
+# jemdoc: menu{MENU}{gallery.html}, nofooter, addcss{gallery}
+= Gallery
+
+== 2026
+
+~~~
+{}{raw}
+<div class="gallery-grid">
+<figure class="gallery-card">
+<a href="gallery/2026/westminster-bridge-london/2026-05-28-westminster-bridge-london.jpg" aria-label="View the full-size photo from 2026-05-28">
+<img src="gallery/2026/westminster-bridge-london/2026-05-28-westminster-bridge-london-thumb.jpg" srcset="gallery/2026/westminster-bridge-london/2026-05-28-westminster-bridge-london-thumb.jpg 640w, gallery/2026/westminster-bridge-london/2026-05-28-westminster-bridge-london.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="480" loading="eager" decoding="async" alt="Portrait on Westminster Bridge in London" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2026-05-28">2026-05-28</time>
+<span class="gallery-location">Westminster Bridge, London, United Kingdom</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
+<a href="gallery/2026/edinburgh-scotland/2026-05-26-edinburgh-scotland.jpg" aria-label="View the full-size photo from 2026-05-26">
+<img src="gallery/2026/edinburgh-scotland/2026-05-26-edinburgh-scotland-thumb.jpg" srcset="gallery/2026/edinburgh-scotland/2026-05-26-edinburgh-scotland-thumb.jpg 640w, gallery/2026/edinburgh-scotland/2026-05-26-edinburgh-scotland.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="480" loading="lazy" decoding="async" alt="Group photo with Eric and Hongru in Edinburgh, Scotland" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2026-05-26">2026-05-26</time>
+<span class="gallery-location">Edinburgh, Scotland, United Kingdom</span>
+<span class="gallery-companions">With Eric and Hongru.</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
+<a href="gallery/2026/icc-2026-glasgow/2026-05-24-icc-2026-glasgow.jpg" aria-label="View the full-size photo from IEEE ICC 2026 on 2026-05-24">
+<img src="gallery/2026/icc-2026-glasgow/2026-05-24-icc-2026-glasgow-thumb.jpg" srcset="gallery/2026/icc-2026-glasgow/2026-05-24-icc-2026-glasgow-thumb.jpg 640w, gallery/2026/icc-2026-glasgow/2026-05-24-icc-2026-glasgow.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="480" loading="lazy" decoding="async" alt="Group photo at IEEE ICC 2026 in Glasgow, Scotland" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2026-05-24">2026-05-24</time>
+<span class="gallery-event">IEEE ICC 2026</span>
+<span class="gallery-location">Glasgow, Scotland, United Kingdom</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
+<a href="gallery/2026/wcnc-2026-kuala-lumpur/2026-04-14-wcnc-2026-kuala-lumpur.jpg" aria-label="View the full-size photo from IEEE WCNC 2026 on 2026-04-14">
+<img src="gallery/2026/wcnc-2026-kuala-lumpur/2026-04-14-wcnc-2026-kuala-lumpur-thumb.jpg" srcset="gallery/2026/wcnc-2026-kuala-lumpur/2026-04-14-wcnc-2026-kuala-lumpur-thumb.jpg 640w, gallery/2026/wcnc-2026-kuala-lumpur/2026-04-14-wcnc-2026-kuala-lumpur.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="480" loading="lazy" decoding="async" alt="Group photo at IEEE WCNC 2026 in Kuala Lumpur, Malaysia" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2026-04-14">2026-04-14</time>
+<span class="gallery-event">IEEE WCNC 2026</span>
+<span class="gallery-location">Kuala Lumpur, Malaysia</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
+<a href="gallery/2026/panglao-island/2026-04-05-panglao-island.jpg" aria-label="View the full-size photo from 2026-04-05">
+<img src="gallery/2026/panglao-island/2026-04-05-panglao-island-thumb.jpg" srcset="gallery/2026/panglao-island/2026-04-05-panglao-island-thumb.jpg 640w, gallery/2026/panglao-island/2026-04-05-panglao-island.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="480" loading="lazy" decoding="async" alt="Group photo on Panglao Island, Philippines" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2026-04-05">2026-04-05</time>
+<span class="gallery-location">Panglao Island, Philippines</span>
+</figcaption>
+</figure>
+</div>
+~~~
+
+== 2025
+
+~~~
+{}{raw}
+<div class="gallery-grid">
+<figure class="gallery-card">
+<a href="gallery/2025/ieee-hong-kong-6g-wireless-summit/2025-09-11-ieee-hong-kong-6g-wireless-summit.jpg" aria-label="View the full-size photo from the IEEE Hong Kong 6G Wireless Summit on 2025-09-11">
+<img src="gallery/2025/ieee-hong-kong-6g-wireless-summit/2025-09-11-ieee-hong-kong-6g-wireless-summit-thumb.jpg" srcset="gallery/2025/ieee-hong-kong-6g-wireless-summit/2025-09-11-ieee-hong-kong-6g-wireless-summit-thumb.jpg 640w, gallery/2025/ieee-hong-kong-6g-wireless-summit/2025-09-11-ieee-hong-kong-6g-wireless-summit.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="426" loading="lazy" decoding="async" alt="Group photo at the IEEE Hong Kong 6G Wireless Summit" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2025-09-11">2025-09-11</time>
+<span class="gallery-event">IEEE Hong Kong 6G Wireless Summit</span>
+<span class="gallery-location">Kowloon Shangri-La, Tsim Sha Tsui, Hong Kong</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
+<a href="gallery/2025/huaihai-middle-road-shanghai/2025-08-23-huaihai-middle-road-shanghai.jpg" aria-label="View the full-size photo from 2025-08-23">
+<img src="gallery/2025/huaihai-middle-road-shanghai/2025-08-23-huaihai-middle-road-shanghai-thumb.jpg" srcset="gallery/2025/huaihai-middle-road-shanghai/2025-08-23-huaihai-middle-road-shanghai-thumb.jpg 640w, gallery/2025/huaihai-middle-road-shanghai/2025-08-23-huaihai-middle-road-shanghai.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="360" loading="lazy" decoding="async" alt="Johnny with Dr. Yifei Shen and Dr. Jingyang Zhu on Middle Huaihai Road in Shanghai" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2025-08-23">2025-08-23</time>
+<span class="gallery-location">Middle Huaihai Road, Shanghai, China</span>
+<span class="gallery-companions">With Dr. Yifei Shen and Dr. Jingyang Zhu.</span>
+</figcaption>
+</figure>
+</div>
+~~~
+
+== 2024
+
+~~~
+{}{raw}
+<div class="gallery-grid">
+<figure class="gallery-card">
+<a href="gallery/2024/jiagedaqi-beishan-forest-park/2024-10-04-beishan-forest-park.jpg" aria-label="View the full-size photo from 2024-10-04">
+<img src="gallery/2024/jiagedaqi-beishan-forest-park/2024-10-04-beishan-forest-park-thumb.jpg" srcset="gallery/2024/jiagedaqi-beishan-forest-park/2024-10-04-beishan-forest-park-thumb.jpg 640w, gallery/2024/jiagedaqi-beishan-forest-park/2024-10-04-beishan-forest-park.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="360" loading="lazy" decoding="async" alt="Johnny, Jiaye Cui, and Jiantao Li at Beishan Forest Park in Jiagedaqi, Daxing'anling" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2024-10-04">2024-10-04</time>
+<span class="gallery-location">Beishan Forest Park, Jiagedaqi, Daxing'anling</span>
+<span class="gallery-companions">With Jiaye Cui and Jiantao Li.</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
+<a href="gallery/2024/ieee-hong-kong-6g-wireless-summit/2024-09-12-ieee-hong-kong-6g-wireless-summit.jpg" aria-label="View the full-size photo from the IEEE Hong Kong 6G Wireless Summit on 2024-09-12">
+<img src="gallery/2024/ieee-hong-kong-6g-wireless-summit/2024-09-12-ieee-hong-kong-6g-wireless-summit-thumb.jpg" srcset="gallery/2024/ieee-hong-kong-6g-wireless-summit/2024-09-12-ieee-hong-kong-6g-wireless-summit-thumb.jpg 640w, gallery/2024/ieee-hong-kong-6g-wireless-summit/2024-09-12-ieee-hong-kong-6g-wireless-summit.jpg 1200w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="426" loading="lazy" decoding="async" alt="Group photo at the 2024 IEEE Hong Kong 6G Wireless Summit" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2024-09-12">2024-09-12</time>
+<span class="gallery-event">IEEE Hong Kong 6G Wireless Summit</span>
+<span class="gallery-location">Sheraton Hotel, Tsim Sha Tsui, Hong Kong</span>
+</figcaption>
+</figure>
+</div>
+~~~
+
+== 2023
+
+~~~
+{}{raw}
+<div class="gallery-grid">
+<figure class="gallery-card">
+<a href="gallery/2023/alan-tam-concert-shanghai/2023-05-20-alan-tam-concert-shanghai.jpg" aria-label="View the full-size photo from 2023-05-20">
+<img src="gallery/2023/alan-tam-concert-shanghai/2023-05-20-alan-tam-concert-shanghai-thumb.jpg" srcset="gallery/2023/alan-tam-concert-shanghai/2023-05-20-alan-tam-concert-shanghai-thumb.jpg 640w, gallery/2023/alan-tam-concert-shanghai/2023-05-20-alan-tam-concert-shanghai.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="480" loading="lazy" decoding="async" alt="Johnny and Yiji Wang at Hongkou Football Stadium in Shanghai" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2023-05-20">2023-05-20</time>
+<span class="gallery-location">Hongkou Football Stadium, Shanghai</span>
+<span class="gallery-note">My first Alan Tam concert.</span>
+<span class="gallery-companions">With Yiji Wang.</span>
+</figcaption>
+</figure>
+</div>
+~~~
+
+== 2022
+
+~~~
+{}{raw}
+<div class="gallery-grid">
+<figure class="gallery-card">
+<a href="gallery/2022/donghu-road-shanghai/2022-11-20-donghu-road-shanghai.jpg" aria-label="View the full-size photo from 2022-11-20">
+<img src="gallery/2022/donghu-road-shanghai/2022-11-20-donghu-road-shanghai-thumb.jpg" srcset="gallery/2022/donghu-road-shanghai/2022-11-20-donghu-road-shanghai-thumb.jpg 640w, gallery/2022/donghu-road-shanghai/2022-11-20-donghu-road-shanghai.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="360" loading="lazy" decoding="async" alt="Johnny, Jiayi Xu, and Jiantao Li on Donghu Road in Shanghai" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2022-11-20">2022-11-20</time>
+<span class="gallery-location">Donghu Road, Shanghai</span>
+<span class="gallery-note">Early morning.</span>
+<span class="gallery-companions">With Jiayi Xu and Jiantao Li.</span>
+</figcaption>
+</figure>
+</div>
+~~~
+
+== 2021
+
+~~~
+{}{raw}
+<div class="gallery-grid">
+<figure class="gallery-card">
+<a href="gallery/2021/tongji-university-siping-road-campus/2021-10-25-tongji-siping-road-campus.jpg" aria-label="View the full-size photo from 2021-10-25">
+<img src="gallery/2021/tongji-university-siping-road-campus/2021-10-25-tongji-siping-road-campus-thumb.jpg" srcset="gallery/2021/tongji-university-siping-road-campus/2021-10-25-tongji-siping-road-campus-thumb.jpg 448w, gallery/2021/tongji-university-siping-road-campus/2021-10-25-tongji-siping-road-campus.jpg 1344w" sizes="(max-width: 700px) 100vw, 720px" width="448" height="640" loading="lazy" decoding="async" alt="Johnny and Jiantao Li at Tongji University's Siping Road Campus in Shanghai" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2021-10-25">2021-10-25</time>
+<span class="gallery-location">Siping Road Campus, Tongji University, Shanghai, China</span>
+<span class="gallery-companions">With Jiantao Li.</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
+<a href="gallery/2021/hulunbuir-grassland/2021-07-hulunbuir-grassland.jpg" aria-label="View the full-size photo from late July 2021">
+<img src="gallery/2021/hulunbuir-grassland/2021-07-hulunbuir-grassland-thumb.jpg" srcset="gallery/2021/hulunbuir-grassland/2021-07-hulunbuir-grassland-thumb.jpg 640w, gallery/2021/hulunbuir-grassland/2021-07-hulunbuir-grassland.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="426" loading="lazy" decoding="async" alt="Horseback riding with Ge Zhang on the Hulunbuir grassland" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2021-07">Late July 2021</time>
+<span class="gallery-location">Hulunbuir Grassland, Inner Mongolia, China</span>
+<span class="gallery-companions">With Ge Zhang.</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
+<a href="gallery/2021/daxingtun-village-qiqihar/2021-07-daxingtun-village-qiqihar.jpg" aria-label="View the full-size photo from late July 2021">
+<img src="gallery/2021/daxingtun-village-qiqihar/2021-07-daxingtun-village-qiqihar-thumb.jpg" srcset="gallery/2021/daxingtun-village-qiqihar/2021-07-daxingtun-village-qiqihar-thumb.jpg 480w, gallery/2021/daxingtun-village-qiqihar/2021-07-daxingtun-village-qiqihar.jpg 1134w" sizes="(max-width: 700px) 100vw, 720px" width="480" height="640" loading="lazy" decoding="async" alt="Johnny after being rescued by local villagers from a muddy field in Daxingtun Village" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2021-07">Late July 2021</time>
+<span class="gallery-location">Daxingtun Village, Yushutun Town, Ang'angxi District, Qiqihar, Heilongjiang, China</span>
+<span class="gallery-note">After being rescued by local villagers from a muddy field.</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
+<a href="gallery/2021/apple-store-nanjing-east-road/2021-05-25-apple-store-nanjing-east-road.jpg" aria-label="View the full-size photo from 2021-05-25">
+<img src="gallery/2021/apple-store-nanjing-east-road/2021-05-25-apple-store-nanjing-east-road-thumb.jpg" srcset="gallery/2021/apple-store-nanjing-east-road/2021-05-25-apple-store-nanjing-east-road-thumb.jpg 640w, gallery/2021/apple-store-nanjing-east-road/2021-05-25-apple-store-nanjing-east-road.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="480" loading="lazy" decoding="async" alt="Group photo with Ge Zhang, Shujie Cao, an Apple Store employee who is blind, and a guide dog" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2021-05-25">2021-05-25</time>
+<span class="gallery-location">Apple Store, East Nanjing Road, Shanghai, China</span>
+<span class="gallery-companions">With Ge Zhang and Shujie Cao.</span>
+<span class="gallery-note">Buying a computer; group photo with an Apple Store employee who is blind and a guide dog.</span>
+</figcaption>
+</figure>
+</div>
+~~~
+
+== 2017
+
+~~~
+{}{raw}
+<div class="gallery-grid">
+<figure class="gallery-card">
+<a href="gallery/2017/oriental-land-military-training/2017-09-12-oriental-land-military-training.jpg" aria-label="View the full-size photo from 2017-09-12">
+<img src="gallery/2017/oriental-land-military-training/2017-09-12-oriental-land-military-training-thumb.jpg" srcset="gallery/2017/oriental-land-military-training/2017-09-12-oriental-land-military-training-thumb.jpg 640w, gallery/2017/oriental-land-military-training/2017-09-12-oriental-land-military-training.jpg 960w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="480" loading="lazy" decoding="async" alt="Group photo during military training at Oriental Land in Shanghai" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2017-09-12">2017-09-12</time>
+<span class="gallery-location">Oriental Land, Shanghai</span>
+<span class="gallery-note">Writing a self-criticism during military training.</span>
+</figcaption>
+</figure>
+</div>
+~~~

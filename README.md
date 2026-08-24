@@ -26,7 +26,7 @@
                                                         │
                                                         └──> GitHub Pages
 
-CSS / JavaScript / photos/ / files/ ──> 由 HTML 直接引用
+CSS / JavaScript / photos/ / gallery/ / files/ ──> 由 HTML 直接引用
 ```
 
 重要：GitHub Pages 不会执行 `jemdoc.py`。仅提交 `.jemdoc` 源文件不会更新线上页面；对应的 `.html` 生成文件也必须提交。
@@ -47,6 +47,9 @@ CSS / JavaScript / photos/ / files/ ──> 由 HTML 直接引用
 | `blogs/` | 独立 Blog 笔记；目录层级与 Blog 页面公开栏目及子栏目保持一致 | 按 `blogs/README.md` 维护，并从仓库根目录生成 |
 | `scribbles.jemdoc` / `scribbles.html` | Scribbles 公开入口页 | 修改 jemdoc，再生成 HTML |
 | `scribbles/` | 独立随笔及其同目录 jemdoc/HTML 配对文件 | 以 `S1-empty-note.jemdoc` 为模板维护 |
+| `gallery.jemdoc` / `gallery.html` | Gallery 公开入口页 | 修改 jemdoc，再生成 HTML |
+| `gallery/` | Gallery 的网页照片资源与维护说明 | 按 `gallery/README.md` 组织、优化和检查图片 |
+| `gallery.css` | Gallery 照片网格与说明文字的页面专用样式 | 由 `gallery.jemdoc` 通过 `addcss{gallery}` 加载 |
 | `random.jemdoc` / `random.html` | 随笔与链接收藏；Listening 下的 Music we go 默认展开，Music we freeze 默认收起 | 修改 jemdoc，再生成 HTML |
 | `random.css` | Random 页专用样式 | 由 `random.jemdoc` 通过 `addcss` 加载 |
 | `MENU` | 根目录 jemdoc 页面共享的侧边栏 | 修改后重新生成所有根目录、使用 `MENU` 的页面 |
@@ -144,7 +147,17 @@ python2 jemdoc.py scribbles.jemdoc
 
 独立随笔不加载 `MENU`，但应保留返回 `scribbles.html` 的链接，并复用 `blogs/blog-note.css`。
 
-### 6. 一次重建全部根目录 jemdoc 页面
+### 6. 修改 Gallery
+
+`gallery.jemdoc` / `gallery.html` 是公开入口页，网页照片资源位于 `gallery/`。添加照片前先阅读 `gallery/README.md`；仓库只保存经过优化、适合公开访问的网页版本，不保存 HEIC、RAW 或其他原始母版。
+
+```bash
+python2 jemdoc.py gallery.jemdoc
+```
+
+新增、删除、改名或重新排序照片时，应同步修改 `gallery.jemdoc`，重新生成 `gallery.html`，并检查每个资源路径、桌面与窄屏布局。照片默认按拍摄日期从新到旧展示；若日期或地点不明确，不要自行推断。
+
+### 7. 一次重建全部根目录 jemdoc 页面
 
 ```bash
 python2 jemdoc.py *.jemdoc
@@ -214,6 +227,7 @@ git push origin main
 - 修改 `MENU` 后，所有根目录、使用 `MENU` 的 jemdoc 页面已重新生成。
 - 页面可以通过本地 HTTP 服务器打开。
 - 新增图片和 PDF 的相对路径使用 `/`，大小写与磁盘文件名完全一致。
+- Gallery 照片已经过网页优化、转换为 sRGB，并清除了 GPS 等不应公开的元数据；原始母版保存在仓库之外。
 - 首页、导航、CV、头像和本次修改涉及的外部链接可访问。
 - 没有把临时文件、编辑器文件、凭据或不应公开的个人信息加入 Git。
 - `git diff --check` 无报错，`git status` 中只有预期文件。
@@ -247,6 +261,7 @@ GitHub Pages 路径区分大小写。检查相对路径、文件名大小写以�
 - 经典 jemdoc 表格布局对窄屏和移动端的适配有限。
 - 部分页面包含很长的外部链接，后续可以做可读性与失效链接治理。
 - 仓库包含体积较大的参考书和论文 PDF。新增文件前应检查版权、公开传播许可和 GitHub 文件大小限制；更适合外链的资料不要直接放入仓库。
+- Gallery 图片会计入仓库和 GitHub Pages 的总体积；应优先使用缩略图、延迟加载和优化后的网页图片，并避免把这个仓库当作原片备份。
 - 主页可能包含联系方式、办公地址等个人信息；所有提交都会公开，发布前需做隐私检查。
 
 若未来现代化，建议把“迁移生成器/框架”“视觉与移动端改版”“自动部署与链接检查”拆成独立任务，以便保留现有内容和 URL，并降低一次性改动风险。
