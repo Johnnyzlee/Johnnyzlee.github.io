@@ -378,4 +378,29 @@ img {
 table.imgtable, table.imgtable td {
     border: none;
     text-align: left;
+    vertical-align: top;
+}
+
+table.imgtable td:first-child {
+    padding-left: 0;
+}
+
+@media (max-width: 700px) {
+    table.imgtable,
+    table.imgtable tbody,
+    table.imgtable tr,
+    table.imgtable td {
+        display: block;
+        max-width: 100%;
+    }
+
+    table.imgtable td + td {
+        margin-top: 0.75em;
+        overflow-wrap: anywhere;
+    }
+
+    table.imgtable img {
+        max-width: 100%;
+        height: auto;
+    }
 }
