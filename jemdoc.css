@@ -96,6 +96,13 @@ div.menu-item {
 	padding-top: 0.35em;
 }
 
+/* Separate the private site from the public sections above. */
+#layout-menu div.menu-item:has(> a[href="https://johnnyzlee-private-site.vercel.app/"]) {
+	border-top: 1px solid #dddddd;
+	margin-top: 0.45em;
+	padding-top: 0.35em;
+}
+
 div#toptitle {
 	padding-bottom: 0.2em;
 	margin-bottom: 1.5em;
