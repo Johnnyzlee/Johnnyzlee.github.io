@@ -92,12 +92,13 @@
 <div class="gallery-grid">
 <figure class="gallery-card">
 <a href="gallery/2024/jiagedaqi-beishan-forest-park/2024-10-04-beishan-forest-park.jpg" aria-label="View the full-size photo from 2024-10-04">
-<img src="gallery/2024/jiagedaqi-beishan-forest-park/2024-10-04-beishan-forest-park-thumb.jpg" srcset="gallery/2024/jiagedaqi-beishan-forest-park/2024-10-04-beishan-forest-park-thumb.jpg 640w, gallery/2024/jiagedaqi-beishan-forest-park/2024-10-04-beishan-forest-park.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="360" loading="lazy" decoding="async" alt="Johnny, Jiaye Cui, and Jiantao Li at Beishan Forest Park in Jiagedaqi, Daxing'anling" />
+<img src="gallery/2024/jiagedaqi-beishan-forest-park/2024-10-04-beishan-forest-park-thumb.jpg" srcset="gallery/2024/jiagedaqi-beishan-forest-park/2024-10-04-beishan-forest-park-thumb.jpg 640w, gallery/2024/jiagedaqi-beishan-forest-park/2024-10-04-beishan-forest-park.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="360" loading="lazy" decoding="async" alt="Johnny, Jiaye Cui, and Jiantao Li at Beishan Forest Park in Jiagedaqi District, Daxing'anling Prefecture, Heilongjiang" />
 </a>
 <figcaption>
 <time class="gallery-date" datetime="2024-10-04">2024-10-04</time>
-<span class="gallery-location">Beishan Forest Park, Jiagedaqi, Daxing'anling</span>
+<span class="gallery-location">Beishan Forest Park, Jiagedaqi District, Daxing'anling Prefecture, Heilongjiang, China</span>
 <span class="gallery-companions">With Jiaye Cui and Jiantao Li.</span>
+<span class="gallery-note">A stop on our road trip from Heihe north along the China–Russia border to Mohe, then south to Qiqihar.</span>
 </figcaption>
 </figure>
 <figure class="gallery-card">
@@ -108,6 +109,27 @@
 <time class="gallery-date" datetime="2024-09-12">2024-09-12</time>
 <span class="gallery-event">IEEE Hong Kong 6G Wireless Summit</span>
 <span class="gallery-location">Sheraton Hotel, Tsim Sha Tsui, Hong Kong</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
+<a href="gallery/2024/xujiahui-shanghai/2024-03-16-xujiahui-shanghai.jpg" aria-label="View the full-size photo from 2024-03-16">
+<img src="gallery/2024/xujiahui-shanghai/2024-03-16-xujiahui-shanghai-thumb.jpg" srcset="gallery/2024/xujiahui-shanghai/2024-03-16-xujiahui-shanghai-thumb.jpg 640w, gallery/2024/xujiahui-shanghai/2024-03-16-xujiahui-shanghai.jpg 1620w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="426" loading="lazy" decoding="async" alt="Johnny with Yuhan Yang, Yiji Wang, and Jingyang Zhu in Xujiahui, Shanghai, shortly before master's graduation" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2024-03-16">2024-03-16</time>
+<span class="gallery-location">Xujiahui, Shanghai, China</span>
+<span class="gallery-companions">With Yuhan Yang, Yiji Wang, and Jingyang Zhu.</span>
+<span class="gallery-note">My master's cohort mates from the same research group, shortly before graduation.</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
+<a href="gallery/2024/windsor-ktv-lujiazui/2024-02-05-windsor-ktv-lujiazui.jpg" aria-label="View the full-size photo from 2024-02-05">
+<img src="gallery/2024/windsor-ktv-lujiazui/2024-02-05-windsor-ktv-lujiazui-thumb.jpg" srcset="gallery/2024/windsor-ktv-lujiazui/2024-02-05-windsor-ktv-lujiazui-thumb.jpg 640w, gallery/2024/windsor-ktv-lujiazui/2024-02-05-windsor-ktv-lujiazui.jpg 1024w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="480" loading="lazy" decoding="async" alt="Johnny with Jiantao Li, Jiaye Cui, and Jiayi Xu at Windsor KTV in Lujiazui, Shanghai" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2024-02-05">2024-02-05</time>
+<span class="gallery-location">Windsor KTV, Lujiazui, Shanghai, China</span>
+<span class="gallery-companions">With Jiantao Li, Jiaye Cui, and Jiayi Xu.</span>
 </figcaption>
 </figure>
 </div>
@@ -125,8 +147,9 @@
 <figcaption>
 <time class="gallery-date" datetime="2023-05-20">2023-05-20</time>
 <span class="gallery-location">Hongkou Football Stadium, Shanghai</span>
-<span class="gallery-note">My first Alan Tam concert.</span>
 <span class="gallery-companions">With Yiji Wang.</span>
+<span class="gallery-note">This was my first Alan Tam concert, when I still knew very little about him. Before the show, I had eaten nothing all day, was retching, and felt close to collapse.</span>
+<span class="gallery-note">By the end, I felt completely revived. I was struck by Alan Tam's energy and charisma, and from then on I gradually became a fan.</span>
 </figcaption>
 </figure>
 </div>
@@ -187,6 +210,16 @@
 </figcaption>
 </figure>
 <figure class="gallery-card">
+<a href="gallery/2021/baiyunyuan-tonglu/2021-06-23-baiyunyuan-tonglu.jpg" aria-label="View the full-size photo from 2021-06-23">
+<img src="gallery/2021/baiyunyuan-tonglu/2021-06-23-baiyunyuan-tonglu-thumb.jpg" srcset="gallery/2021/baiyunyuan-tonglu/2021-06-23-baiyunyuan-tonglu-thumb.jpg 480w, gallery/2021/baiyunyuan-tonglu/2021-06-23-baiyunyuan-tonglu.jpg 1320w" sizes="(max-width: 700px) 100vw, 720px" width="480" height="640" loading="lazy" decoding="async" alt="Johnny with Ge Zhang, Yun'an Xu, and Zihao Pan at Baiyunyuan in Tonglu, Hangzhou" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2021-06-23">2021-06-23</time>
+<span class="gallery-location">Baiyunyuan, Tonglu, Hangzhou, Zhejiang, China</span>
+<span class="gallery-companions">With Ge Zhang, Yun'an Xu, and Zihao Pan.</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
 <a href="gallery/2021/apple-store-nanjing-east-road/2021-05-25-apple-store-nanjing-east-road.jpg" aria-label="View the full-size photo from 2021-05-25">
 <img src="gallery/2021/apple-store-nanjing-east-road/2021-05-25-apple-store-nanjing-east-road-thumb.jpg" srcset="gallery/2021/apple-store-nanjing-east-road/2021-05-25-apple-store-nanjing-east-road-thumb.jpg 640w, gallery/2021/apple-store-nanjing-east-road/2021-05-25-apple-store-nanjing-east-road.jpg 1920w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="480" loading="lazy" decoding="async" alt="Group photo with Ge Zhang, Shujie Cao, an Apple Store employee who is blind, and a guide dog" />
 </a>
@@ -195,6 +228,16 @@
 <span class="gallery-location">Apple Store, East Nanjing Road, Shanghai, China</span>
 <span class="gallery-companions">With Ge Zhang and Shujie Cao.</span>
 <span class="gallery-note">Buying a computer; group photo with an Apple Store employee who is blind and a guide dog.</span>
+</figcaption>
+</figure>
+<figure class="gallery-card">
+<a href="gallery/2021/changsha-hunan/2021-04-26-changsha-hunan.jpg" aria-label="View the full-size photo from 2021-04-26">
+<img src="gallery/2021/changsha-hunan/2021-04-26-changsha-hunan-thumb.jpg" srcset="gallery/2021/changsha-hunan/2021-04-26-changsha-hunan-thumb.jpg 640w, gallery/2021/changsha-hunan/2021-04-26-changsha-hunan.jpg 1276w" sizes="(max-width: 700px) 100vw, 720px" width="640" height="296" loading="lazy" decoding="async" alt="Johnny with Yueying Lu, Yike Zhang, and Jiantao Li in Changsha, Hunan" />
+</a>
+<figcaption>
+<time class="gallery-date" datetime="2021-04-26">2021-04-26</time>
+<span class="gallery-location">Changsha, Hunan, China</span>
+<span class="gallery-companions">With Yueying Lu, Yike Zhang, and Jiantao Li.</span>
 </figcaption>
 </figure>
 </div>

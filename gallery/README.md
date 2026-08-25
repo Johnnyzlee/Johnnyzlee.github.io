@@ -36,9 +36,15 @@ gallery/
 │   ├── jiagedaqi-beishan-forest-park/
 │   │   ├── 2024-10-04-beishan-forest-park.jpg
 │   │   └── 2024-10-04-beishan-forest-park-thumb.jpg
-│   └── ieee-hong-kong-6g-wireless-summit/
-│       ├── 2024-09-12-ieee-hong-kong-6g-wireless-summit.jpg
-│       └── 2024-09-12-ieee-hong-kong-6g-wireless-summit-thumb.jpg
+│   ├── ieee-hong-kong-6g-wireless-summit/
+│   │   ├── 2024-09-12-ieee-hong-kong-6g-wireless-summit.jpg
+│   │   └── 2024-09-12-ieee-hong-kong-6g-wireless-summit-thumb.jpg
+│   ├── xujiahui-shanghai/
+│   │   ├── 2024-03-16-xujiahui-shanghai.jpg
+│   │   └── 2024-03-16-xujiahui-shanghai-thumb.jpg
+│   └── windsor-ktv-lujiazui/
+│       ├── 2024-02-05-windsor-ktv-lujiazui.jpg
+│       └── 2024-02-05-windsor-ktv-lujiazui-thumb.jpg
 ├── 2023/
 │   └── alan-tam-concert-shanghai/
 │       ├── 2023-05-20-alan-tam-concert-shanghai.jpg
@@ -57,9 +63,15 @@ gallery/
 │   ├── daxingtun-village-qiqihar/
 │   │   ├── 2021-07-daxingtun-village-qiqihar.jpg
 │   │   └── 2021-07-daxingtun-village-qiqihar-thumb.jpg
-│   └── apple-store-nanjing-east-road/
-│       ├── 2021-05-25-apple-store-nanjing-east-road.jpg
-│       └── 2021-05-25-apple-store-nanjing-east-road-thumb.jpg
+│   ├── baiyunyuan-tonglu/
+│   │   ├── 2021-06-23-baiyunyuan-tonglu.jpg
+│   │   └── 2021-06-23-baiyunyuan-tonglu-thumb.jpg
+│   ├── apple-store-nanjing-east-road/
+│   │   ├── 2021-05-25-apple-store-nanjing-east-road.jpg
+│   │   └── 2021-05-25-apple-store-nanjing-east-road-thumb.jpg
+│   └── changsha-hunan/
+│       ├── 2021-04-26-changsha-hunan.jpg
+│       └── 2021-04-26-changsha-hunan-thumb.jpg
 └── 2017/
     └── oriental-land-military-training/
         ├── 2017-09-12-oriental-land-military-training.jpg
