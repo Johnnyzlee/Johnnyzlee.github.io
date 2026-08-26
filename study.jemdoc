@@ -28,6 +28,8 @@ Artificial intelligence is advancing at a remarkable pace, with concepts and tec
         --- [https://developers.openai.com/learn OpenAI Learn]
         --- [https://developers.openai.com/cookbook OpenAI Cookbook]
 - AI Agent
+    -- [https://cs329a.stanford.edu/ Stanford CS329A: Self-Improving AI Agents]
+        --- [https://www.youtube.com/playlist?list=PLangBM27OtEA Online Course Video], from [https://online.stanford.edu/courses/cs329a-self-improving-ai-agents Stanford Online].
     -- [https://bojieli.github.io/ai-agent-book/ 深入理解 AI Agent], by Bojie Li
     -- [https://www.youtube.com/watch?v=GE0pFiFJTKo Agent 的概念、原理与构建模式 —— 从零打造一个简化版的 Claude Code], by [https://www.youtube.com/@马克的技术工作坊 马克的技术工作坊].
 == On Theory and Algorithm (Closer to Mathematics)
