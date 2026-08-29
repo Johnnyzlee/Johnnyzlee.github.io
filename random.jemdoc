@@ -61,6 +61,7 @@ At least for the sound, but never just the sound. Beyond it lies something more:
 
 
 == Technical Perspectives
+- [https://ben3d.ca/blog/processing-in-memory Processing in Memory: DRAM Is About to Do Math], ben3d, 2026-08-29.
 - [https://anil.recoil.org/notes/rumour-is-the-exploit Just a rumour of a bug is enough to find a security exploit these days], Anil Madhavapeddy, 2026-08-29.
 - [https://blog.modelcontextprotocol.io/posts/mcp-roadmap/ The New MCP Roadmap], Model Context Protocol, 2026-08-20.
 - [https://www.anthropic.com/research/multiagent-systems Patterns and problems in multiagent systems], Anthropic, 2026-08-15.
