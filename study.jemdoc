@@ -23,6 +23,7 @@ Artificial intelligence is advancing at a remarkable pace, with concepts and tec
     -- [https://pytorch-geometric.readthedocs.io/en/latest/get_started/colabs.html PyTorch Geometric Tutorials]
 - Large Language Models (LLMs)
     -- [https://cs336.stanford.edu/ Stanford CS336: Language Modeling from Scratch]
+    -- [https://github.com/stas00/ml-engineering Machine Learning Engineering Guide], by [https://github.com/stas00 Stas Bekman].
     -- Practical Resources
         --- [https://docs.ollama.com/quickstart Ollama Quickstart]
         --- [https://developers.openai.com/learn OpenAI Learn]
