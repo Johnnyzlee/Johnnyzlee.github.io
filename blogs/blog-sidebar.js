@@ -5,6 +5,44 @@
     return heading.textContent.replace(/\s+/g, " ").trim();
   }
 
+  function decorateQuestionDifficulty(heading) {
+    if (heading.querySelector(".question-difficulty-tag")) {
+      return;
+    }
+
+    var headingText = cleanHeadingText(heading);
+    var tagMatch = headingText.match(
+      /^(Q\d+)\s+\[(Core|Medium|Hard|C|M|H)\]\s+(.+)$/i
+    );
+    if (!tagMatch) {
+      return;
+    }
+
+    var difficultyNames = {
+      c: "Core",
+      core: "Core",
+      h: "Hard",
+      hard: "Hard",
+      m: "Medium",
+      medium: "Medium"
+    };
+    var difficultyName = difficultyNames[tagMatch[2].toLowerCase()];
+    var difficultyCode = difficultyName.charAt(0);
+    var tag = document.createElement("span");
+
+    tag.className =
+      "question-difficulty-tag question-difficulty-tag--" +
+      difficultyCode.toLowerCase();
+    tag.textContent = difficultyCode;
+    tag.title = difficultyName;
+    tag.setAttribute("aria-label", difficultyName);
+
+    heading.textContent = "";
+    heading.appendChild(document.createTextNode(tagMatch[1] + " "));
+    heading.appendChild(tag);
+    heading.appendChild(document.createTextNode(" " + tagMatch[3]));
+  }
+
   function headingAnchor(heading, fallbackId) {
     var anchorId = heading.id;
     var previous = heading.previousElementSibling;
@@ -50,6 +88,11 @@
     if (!content || document.querySelector(".blog-sidebar")) {
       return;
     }
+
+    Array.prototype.forEach.call(
+      content.querySelectorAll("h3"),
+      decorateQuestionDifficulty
+    );
 
     var chapterHeadings = Array.prototype.slice.call(
       content.querySelectorAll("h2")

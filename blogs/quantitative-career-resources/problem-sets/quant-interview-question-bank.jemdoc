@@ -1,6 +1,6 @@
 # jemdoc: nofooter, nodefaultcss, noeqs, addcss{../../blog-note}, addjs{../../math-render}, addjs{../../blog-sidebar}
 = Quantitative Research Interview Mathematics Question Bank
-[../../../blog.html ← Blogs] \M /更新于 2026-07-20/
+[../../../blog.html ← Blogs] \M /更新于 2026-08-30/
 
 ~~~
 {}{raw}
@@ -18,79 +18,92 @@
 <li><a href="#references">I. 参考来源与延伸题库</a></li>
 </ul>
 </div>
+<div class="question-difficulty-legend" role="note" aria-label="Difficulty tag guide">
+<div class="question-difficulty-legend-item"><span class="question-difficulty-tag question-difficulty-tag--c" title="Core" aria-label="Core">C</span><span><strong>Core:</strong> Essential, high-frequency problems to master and explain clearly.</span></div>
+<div class="question-difficulty-legend-item"><span class="question-difficulty-tag question-difficulty-tag--m" title="Medium" aria-label="Medium">M</span><span><strong>Medium:</strong> Multi-step problems that combine several concepts.</span></div>
+<div class="question-difficulty-legend-item"><span class="question-difficulty-tag question-difficulty-tag--h" title="Hard" aria-label="Hard">H</span><span><strong>Hard:</strong> Challenging problems requiring deeper derivations or a key insight.</span></div>
+</div>
 <div class="section-anchor" id="probability-random-processes" aria-hidden="true"></div>
 ~~~
 
 == A. 概率与随机过程
 
-=== Q1 \[Core\] Two dice with information \/ 条件下的两枚骰子
+=== Q1 \[C\] Two dice with information \/ 条件下的两枚骰子
 *中文：* 独立投掷两枚公平六面骰子。已知至少有一枚的点数是 6，两枚点数之和为 8 的概率是多少？
 
 *English:* Two independent fair six-sided dice are rolled. Given that at least one die shows 6, what is the probability that their sum is 8?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Use ordered pairs. Conditional on at least one 6, the possible outcomes are $(6,1),\ldots,(6,6)$ and $(1,6),\ldots,(5,6)$: 11 equally likely pairs. The favorable pairs are $(6,2)$ and $(2,6)$. Therefore the probability is <strong>$\frac{2}{11}$</strong>. The pair $(6,6)$ must not be counted twice.</p>
 </div></details>
 ~~~
 
-=== Q2 \[Core\] Medical test and base rate \/ 检测与基准率
+=== Q2 \[C\] Medical test and base rate \/ 检测与基准率
 *中文：* 某病患病率为 1\%，检测灵敏度为 99\%，特异度为 95\%。一人检测阳性，他真正患病的概率是多少？
 
 *English:* A disease has 1\% prevalence. A test has 99\% sensitivity and 95\% specificity. Given a positive result, what is the probability of actually having the disease?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Bayes' rule gives</p><p class="equation-line">$$P(D\mid +)=\frac{0.99\cdot0.01}{0.99\cdot0.01+0.05\cdot0.99}.$$</p><p>The numerator is $0.0099$ and the denominator is $0.0594$, so the answer is <strong>$1/6\approx0.167$ (16.7%)</strong>. The low base rate makes false positives numerous despite high sensitivity.</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<p>Let $D$ denote actually having the disease, $D^c$ denote not having it, and let $T^+$ and $T^-$ denote positive and negative test results.</p>
+<ul>
+<li><strong>Sensitivity (true-positive rate):</strong> $P(T^+\mid D)$. It is the probability that a person who truly has the disease tests positive.</li>
+<li><strong>Specificity (true-negative rate):</strong> $P(T^-\mid D^c)$. It is the probability that a person who truly does not have the disease tests negative.</li>
+</ul>
+<p>The false-negative rate is $1-\text{sensitivity}=P(T^-\mid D)$, while the false-positive rate is $1-\text{specificity}=P(T^+\mid D^c)$. Neither sensitivity nor specificity equals $P(D\mid T^+)$; that posterior probability also depends on the disease prevalence through Bayes' rule.</p>
 </div></details>
 ~~~
 
-=== Q3 \[Core\] Three cards \/ 三张卡片
+=== Q3 \[C\] Three cards \/ 三张卡片
 *中文：* 有三张卡：两面红、两面白、一红一白。随机抽一张并随机展示一面，看到红色。另一面也是红色的概率是多少？
 
 *English:* There are three cards: red-red, white-white, and red-white. Choose a card and a side uniformly. The visible side is red. What is the probability that the hidden side is also red?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Condition on the visible red face, not merely on the card. There are three equally likely red faces: two belong to the red-red card and one to the red-white card. Hence the red-red card has conditional probability <strong>$\frac23$</strong>, which is also the probability that the hidden face is red.</p>
 </div></details>
 ~~~
 
-=== Q4 \[Core\] Absent-minded passenger \/ 疯狂乘客
+=== Q4 \[C\] Absent-minded passenger \/ 疯狂乘客
 *中文：* 100 名乘客依次登机，各有对应座位。第 1 人随机选座；其他人若自己的座位空着就对号入座，否则随机选剩余座位。第 100 人坐到自己座位的概率是多少？
 
 *English:* One hundred passengers board in order. Passenger 1 chooses a random seat; every later passenger takes their assigned seat if available, otherwise a random free seat. What is the probability that passenger 100 gets seat 100?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Ignore passengers whose own seats remain available. The random displacement chain ends the first time it selects either seat 1 or seat 100. By symmetry these two terminal seats are equally likely to be chosen first. Passenger 100 succeeds exactly when seat 1 is chosen first, so the answer is <strong>$\frac12$</strong>.</p>
 </div></details>
 ~~~
 
-=== Q5 \[Core\] Chain of urn transfers \/ 球袋传递
+=== Q5 \[C\] Chain of urn transfers \/ 球袋传递
 *中文：* n 个袋子最初都有 w 个白球和 b 个黑球。从第 1 袋随机取一球放入第 2 袋，再从第 2 袋随机取一球放入第 3 袋，依次进行。最后从第 n 袋取出白球的概率是多少？
 
 *English:* Each of n urns initially contains w white balls and b black balls. Transfer a uniformly chosen ball from urn 1 to 2, then from 2 to 3, and so on. What is the probability that a final draw from urn n is white?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The color proportion is preserved in expectation at every transfer. If an incoming ball is white with probability $\frac{w}{w+b}$, then the expected white fraction in the next urn after insertion is unchanged. Induction through all urns gives <strong>$\frac{w}{w+b}$</strong>. Equivalently, track a randomly propagated ancestral ball.</p>
 </div></details>
 ~~~
 
-=== Q6 \[Core\] Birthday collision \/ 生日碰撞
+=== Q6 \[C\] Birthday collision \/ 生日碰撞
 *中文：* 忽略闰年，23 人中至少两人同生日的概率是多少？给出精确表达式和近似值。
 
 *English:* Ignoring leap years, what is the probability that at least two of 23 people share a birthday? Give an exact expression and an approximation.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Use the complement. If the first $k$ people have distinct birthdays, person $k+1$ avoids them with probability $(365-k)/365$. Hence</p><p class="equation-line">$$P(\text{no collision})=\prod_{k=0}^{22}\left(1-\frac{k}{365}\right),$$</p><p class="equation-line">$$P(\text{collision})=1-\prod_{k=0}^{22}\left(1-\frac{k}{365}\right)\approx\mathbf{0.507297}.$$</p>
 
 <p><strong>Where does the approximation come from?</strong> Take logarithms so that the product becomes a sum:</p><p class="equation-line">$$\log P(\text{no collision})=\sum_{k=0}^{22}\log\left(1-\frac{k}{365}\right).$$</p><p>Because $k/365$ is small (at most $22/365\approx0.0603$), use the first-order Taylor approximation</p><p class="equation-line">$$\log(1-x)\approx-x.$$</p><p>Therefore</p><p class="equation-line">$$\log P(\text{no collision})\approx-\sum_{k=0}^{22}\frac{k}{365}=-\frac{22\cdot23}{2\cdot365}=-\frac{253}{365}.$$</p><p>Exponentiating gives</p><p class="equation-line">$$P(\text{collision})\approx1-e^{-253/365}\approx1-e^{-0.6931507}\approx\mathbf{0.500002}.$$</p><p>The numerical coincidence $253/365\approx\log 2$ explains why the rough answer is almost exactly $1/2$.</p>
@@ -99,28 +112,43 @@
 
 <p><strong>Why is $0.5000$ below the exact $0.5073$?</strong> The first-order approximation omits the next negative term in</p><p class="equation-line">$$\log(1-x)=-x-\frac{x^2}{2}-\frac{x^3}{3}-\cdots.$$</p><p>Keeping the quadratic term gives</p><p class="equation-line">$$\log P(\text{no collision})\approx-\frac{253}{365}-\frac{1}{2\cdot365^2}\sum_{k=0}^{22}k^2=-\frac{253}{365}-\frac{3795}{2\cdot365^2},$$</p><p>and therefore</p><p class="equation-line">$$P(\text{collision})\approx1-e^{-0.7073935}\approx\mathbf{0.507073},$$</p><p>already very close to the exact value $0.507297$.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<p><strong>Why $\log(1-x)\approx-x$.</strong> The Taylor expansion around $x=0$ is</p>
+<p class="equation-line">$$\log(1-x)=-x-\frac{x^2}{2}-\frac{x^3}{3}-\cdots=-x+O(x^2).$$</p>
+<p>Therefore $\log(1-x)\approx-x$ when $|x|\ll1$. For $0&lt;x&lt;1$, all omitted terms are negative, so $\log(1-x)&lt;-x$; the approximation becomes more accurate as $x$ approaches zero.</p>
+<p><strong>Other common small-quantity approximations.</strong> For $|x|\ll1$,</p>
+<ul>
+<li>$\log(1+x)\approx x$.</li>
+<li>$e^x\approx1+x$.</li>
+<li>$(1+x)^\alpha\approx1+\alpha x$; in particular, $\sqrt{1+x}\approx1+x/2$.</li>
+<li>$\dfrac{1}{1+x}\approx1-x$.</li>
+<li>$\sin x\approx x$, $\tan x\approx x$, and $\cos x\approx1-x^2/2$, with angles measured in radians.</li>
+<li>$(1-x)^n=\exp\!\bigl(n\log(1-x)\bigr)\approx e^{-nx}$. This is especially useful for rare-event and birthday-collision approximations.</li>
+</ul>
+<p>As a practical rule, inspect the first omitted Taylor term. A first-order approximation may be accurate for each individual term but still accumulate noticeable error when many terms are added, as in the birthday problem.</p>
+</div></details>
 ~~~
 
-=== Q7 \[Core\] Waiting for two heads \/ 等待连续两个正面
+=== Q7 \[C\] Waiting for two heads \/ 等待连续两个正面
 *中文：* 重复抛公平硬币，直到首次出现连续两个正面 HH。期望抛掷次数是多少？
 
 *English:* Toss a fair coin until HH first appears. What is the expected number of tosses?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Let $E_0$ be the expected remaining tosses with no trailing H, and $E_1$ with one trailing H.</p><p class="equation-line">$$E_0=1+\frac{E_0+E_1}{2},\qquad E_1=1+\frac{E_0}{2}.$$</p><p>Solving gives <strong>$E_0=6$</strong>. The overlap after HT matters because the state resets, while after H followed by H the process stops.</p>
 </div></details>
 ~~~
 
-=== Q8 \[Medium\] Pattern overlap \/ 模式重叠
+=== Q8 \[M\] Pattern overlap \/ 模式重叠
 *中文：* 公平硬币序列中，等到 HHT 和等到 HTH 的期望时间各是多少？为什么不相同？
 
 *English:* In fair coin tosses, what are the expected waiting times for HHT and HTH? Why are they different?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p><strong>1. State-machine derivation.</strong> The key is to keep only the part of the past that can still help complete the target. After any sequence of tosses, define the state to be the <em>longest suffix of the observed sequence that is also a prefix of the target</em>. Everything before that suffix is irrelevant to the future waiting time.</p>
 
 <p><strong>Target HHT.</strong> The unfinished states are $0$ (no useful suffix), H, and HH. Let $E_0,E_H,E_{HH}$ be the expected additional numbers of tosses from these states.</p>
@@ -166,14 +194,14 @@
 </div></details>
 ~~~
 
-=== Q9 \[Core\] Coupon collector \/ 集齐优惠券
+=== Q9 \[C\] Coupon collector \/ 集齐优惠券
 *中文：* 每次独立均匀抽到 n 种类型之一。集齐所有类型的期望抽取次数是多少？
 
 *English:* Each independent draw returns one of n equally likely coupon types. What is the expected number of draws needed to collect all types?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>After $k$ distinct types have been collected, the probability that the next draw is new is $(n-k)/n$, so the expected waiting time is $n/(n-k)$. Equivalently, when $m$ types remain missing, the expected wait for the next new type is $n/m$. Summing the stages gives the exact answer</p><p class="equation-line">$$\mathbb E[T]=\sum_{m=1}^{n}\frac{n}{m}=nH_n,\qquad H_n=\sum_{m=1}^{n}\frac1m.$$</p>
 
 <p><strong>Why is $H_n$ approximately $\log n$?</strong> The function $1/x$ is positive and decreasing, so the sum of unit-width rectangles can be compared with the area under $1/x$:</p><p class="equation-line">$$\int_1^{n+1}\frac{dx}{x}\le H_n\le1+\int_1^n\frac{dx}{x}.$$</p><p>Thus</p><p class="equation-line">$$\log(n+1)\le H_n\le1+\log n,$$</p><p>which already proves $H_n=\log n+O(1)$ and therefore $\mathbb E[T]\sim n\log n$.</p>
@@ -184,194 +212,425 @@
 </div></details>
 ~~~
 
-=== Q10 \[Core\] Fixed points of a permutation \/ 排列不动点
+=== Q10 \[C\] Fixed points of a permutation \/ 排列不动点
 *中文：* 将 n 个人的帽子随机分给 n 个人。拿到自己帽子的人数的期望是多少？
 
 *English:* A uniformly random permutation assigns n hats to n people. What is the expected number of people who receive their own hat?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Let $I_i$ indicate that person $i$ receives their own hat. Then $\mathbb E[I_i]=1/n$. By linearity, $\mathbb E[\sum_i I_i]=n(1/n)=\mathbf{1}$. The indicators are dependent, but linearity of expectation does not require independence.</p>
 </div></details>
 ~~~
 
-=== Q11 \[Medium\] No fixed points \/ 错排
+=== Q11 \[M\] No fixed points \/ 错排
 *中文：* 随机排列 n 个元素，没有任何不动点的概率是多少？当 n 很大时趋近什么？
 
 *English:* For a uniformly random permutation of n elements, what is the probability of having no fixed points, and what is its large-n limit?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Inclusion-exclusion gives the number of derangements</p><p class="equation-line">$$!n=n!\sum_{k=0}^{n}\frac{(-1)^k}{k!}.$$</p><p>Thus the probability is $\sum_{k=0}^{n}(-1)^k/k!$, which tends to <strong>$e^{-1}$</strong>.</p>
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
+<p>There are $n!$ permutations in total. For each position $i$, define the event</p>
+<p class="equation-line">$$A_i=\{\pi(i)=i\},$$</p>
+<p>so $A_i$ means that position $i$ is a fixed point. A derangement has no fixed points, so we want to count</p>
+<p class="equation-line">$$\left|\bigcap_{i=1}^{n}A_i^c\right|=n!-\left|\bigcup_{i=1}^{n}A_i\right|.$$</p>
+<p>If a specified set of $k$ positions must be fixed, the remaining $n-k$ elements may be permuted freely, giving $(n-k)!$ permutations. There are $\binom nk$ ways to choose those $k$ fixed positions. Inclusion-exclusion therefore gives</p>
+<p class="equation-line">$$\begin{aligned}
+!n
+&amp;=n!-\binom n1(n-1)!+\binom n2(n-2)!-\cdots+(-1)^n\binom nn0!\\
+&amp;=\sum_{k=0}^{n}(-1)^k\binom nk(n-k)!.
+\end{aligned}$$</p>
+<p>Using $\binom nk(n-k)!=n!/k!$, factor out $n!$:</p>
+<p class="equation-line">$$!n=n!\sum_{k=0}^{n}\frac{(-1)^k}{k!}.$$</p>
+<p>Since every permutation is equally likely, divide by the total number $n!$:</p>
+<p class="equation-line">$$P(\text{no fixed points})=\frac{!n}{n!}=\sum_{k=0}^{n}\frac{(-1)^k}{k!}.$$</p>
+<p>The infinite series is the Taylor expansion of $e^{-1}$, so</p>
+<p class="equation-line">$$\boxed{P(\text{no fixed points})\longrightarrow e^{-1}=\frac1e\approx0.367879}.$$</p>
+<p>The events $A_i$ are not independent, which is why inclusion-exclusion is needed rather than simply multiplying their complements.</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>Taylor expansions.</strong> The three standard Maclaurin series are</p>
+<p class="equation-line">$$e^x=\sum_{k=0}^{\infty}\frac{x^k}{k!}=1+x+\frac{x^2}{2!}+\frac{x^3}{3!}+\cdots,$$</p>
+<p class="equation-line">$$\sin x=\sum_{k=0}^{\infty}(-1)^k\frac{x^{2k+1}}{(2k+1)!}=x-\frac{x^3}{3!}+\frac{x^5}{5!}-\cdots,$$</p>
+<p class="equation-line">$$\cos x=\sum_{k=0}^{\infty}(-1)^k\frac{x^{2k}}{(2k)!}=1-\frac{x^2}{2!}+\frac{x^4}{4!}-\cdots.$$</p>
+<p>These three series are connected by Euler's formula: substituting $ix$ into the exponential series and separating its even and odd powers gives</p>
+<p class="equation-line">$$e^{ix}=\cos x+i\sin x,\qquad \cos x=\frac{e^{ix}+e^{-ix}}{2},\qquad \sin x=\frac{e^{ix}-e^{-ix}}{2i}.$$</p>
+<p>Unlike the three functions above, $\log x$ is not defined at $x=0$, so it has no Maclaurin expansion. Its Taylor expansion around $x=1$ is</p>
+<p class="equation-line">$$\log x=(x-1)-\frac{(x-1)^2}{2}+\frac{(x-1)^3}{3}-\frac{(x-1)^4}{4}+\cdots,\qquad |x-1|&lt;1.$$</p>
+<p>Equivalently, for $|u|&lt;1$,</p>
+<p class="equation-line">$$\log(1+u)=\sum_{k=1}^{\infty}(-1)^{k+1}\frac{u^k}{k}=u-\frac{u^2}{2}+\frac{u^3}{3}-\cdots.$$</p>
+<p>Substituting $u=-x$ gives $\log(1-x)=-x-x^2/2-x^3/3-\cdots$. More generally, around any $a&gt;0$,</p>
+<p class="equation-line">$$\log x=\log a+\sum_{k=1}^{\infty}\frac{(-1)^{k+1}}{k}\left(\frac{x-a}{a}\right)^k,\qquad |x-a|&lt;a.$$</p>
+<p>Setting $x=-1$ in the expansion of $e^x$ gives $e^{-1}=\sum_{k=0}^{\infty}(-1)^k/k!$, which explains the large-$n$ limit in the solution.</p></li>
+<li><p><strong>Derangements.</strong> A derangement is a permutation $\pi$ with no fixed point: $\pi(i)\ne i$ for every $i$. Its number is denoted by the subfactorial $!n$, or equivalently by $D_n$. Inclusion-exclusion gives</p>
+<p class="equation-line">$$!n=D_n=n!\sum_{k=0}^{n}\frac{(-1)^k}{k!},$$</p>
+<p>so the probability of a derangement is $!n/n!$. Moreover, $!n$ is the integer nearest to $n!/e$; for example, $!1=0$, $!2=1$, $!3=2$, and $!4=9$.</p></li>
+</ol>
 </div></details>
 ~~~
 
-=== Q12 \[Medium\] Correlation of minimum and maximum \/ 最小值与最大值的相关系数
+=== Q12 \[M\] Correlation of minimum and maximum \/ 最小值与最大值的相关系数
 *中文：* $X_1,\\ldots,X_5$ 独立服从 $\\operatorname{Uniform}(0,1)$。求 $\\min_iX_i$ 和 $\\max_iX_i$ 的相关系数。
 
 *English:* Let $X_1,\\ldots,X_5$ be i.i.d. $\\operatorname{Uniform}(0,1)$. Find $\\operatorname{Corr}(\\min_iX_i,\\max_iX_i)$.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>For $n$ i.i.d. uniforms,</p><p class="equation-line">$$\operatorname{Var}(U_{(1)})=\operatorname{Var}(U_{(n)})=\frac{n}{(n+1)^2(n+2)},\qquad \operatorname{Cov}(U_{(1)},U_{(n)})=\frac{1}{(n+1)^2(n+2)}.$$</p><p>Therefore their correlation is $1/n$. With $n=5$, the answer is <strong>$\frac15$</strong>. These moments follow from the joint density $n(n-1)(v-u)^{n-2}$ on $0&lt;u&lt;v&lt;1$.</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>Correlation and covariance.</strong> For random variables with positive finite variances,</p>
+<p class="equation-line">$$\operatorname{Corr}(X,Y)=\frac{\operatorname{Cov}(X,Y)}{\sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}},\qquad \operatorname{Cov}(X,Y)=\mathbb E[XY]-\mathbb E[X]\mathbb E[Y].$$</p>
+<p>Correlation is the standardized, dimensionless version of covariance. It lies between $-1$ and $1$ and measures linear association.</p></li>
+<li><p><strong>Uniform order statistics.</strong></p>
+<p><strong>Distribution, mean, and variance.</strong> If $U_1,\ldots,U_n$ are i.i.d. $\operatorname{Uniform}(0,1)$ and</p>
+<p class="equation-line">$$U_{(1)}\le U_{(2)}\le\cdots\le U_{(n)},$$</p>
+<p>then $U_{(k)}$ is the $k$th <em>order statistic</em>, with $U_{(1)}=\min_iU_i$ and $U_{(n)}=\max_iU_i$. Each order statistic has the distribution</p>
+<p class="equation-line">$$U_{(k)}\sim\operatorname{Beta}(k,n+1-k),$$</p>
+<p class="equation-line">$$\mathbb E[U_{(k)}]=\frac{k}{n+1},\qquad \operatorname{Var}(U_{(k)})=\frac{k(n+1-k)}{(n+1)^2(n+2)}.$$</p>
+<p><strong>Pairwise covariance.</strong> For $i\le j$, condition on $U_{(j)}=v$. The observations below $v$, after rescaling by $v$, behave like uniform order statistics, so</p>
+<p class="equation-line">$$\mathbb E[U_{(i)}\mid U_{(j)}=v]=\frac{i}{j}v.$$</p>
+<p>Because $\mathbb E[U_{(j)}^2]=j(j+1)/[(n+1)(n+2)]$,</p>
+<p class="equation-line">$$\mathbb E[U_{(i)}U_{(j)}]=\frac{i}{j}\mathbb E[U_{(j)}^2]=\frac{i(j+1)}{(n+1)(n+2)}.$$</p>
+<p>Subtracting the product of the means gives the pairwise covariance</p>
+<p class="equation-line">$$\boxed{\operatorname{Cov}(U_{(i)},U_{(j)})=\frac{i(n+1-j)}{(n+1)^2(n+2)}},\qquad i\le j.$$</p>
+<p>Taking $i=1$ and $j=n$ gives covariance $1/[(n+1)^2(n+2)]$. Since the minimum and maximum both have variance $n/[(n+1)^2(n+2)]$, their correlation is $1/n$.</p></li>
+<li><p><strong>The Beta distribution.</strong> For $\alpha,\beta&gt;0$, a $\operatorname{Beta}(\alpha,\beta)$ random variable has density</p>
+<p class="equation-line">$$f(x)=\frac{x^{\alpha-1}(1-x)^{\beta-1}}{B(\alpha,\beta)},\qquad 0&lt;x&lt;1,$$</p>
+<p class="equation-line">$$B(\alpha,\beta)=\frac{\Gamma(\alpha)\Gamma(\beta)}{\Gamma(\alpha+\beta)},\qquad \mathbb E[X]=\frac{\alpha}{\alpha+\beta},\qquad \operatorname{Var}(X)=\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}.$$</p>
+<p>The Gamma function appearing in $B(\alpha,\beta)$ is</p>
+<p class="equation-line">$$\Gamma(s)=\int_0^{\infty}t^{s-1}e^{-t}\,dt,\qquad s&gt;0.$$</p>
+<p>It satisfies $\Gamma(s+1)=s\Gamma(s)$; therefore, for every positive integer $n$, $\Gamma(n)=(n-1)!$.</p>
+<p>The Beta family models quantities restricted to $(0,1)$, such as probabilities and proportions. The ratio $\alpha/(\alpha+\beta)$ determines the mean, while the total concentration $\alpha+\beta$ controls how tightly the distribution clusters around that mean. In particular, $\operatorname{Beta}(1,1)$ is the uniform distribution.</p></li>
+</ol>
 </div></details>
 ~~~
 
-=== Q13 \[Core\] Broken stick triangle \/ 断棍成三角形
+=== Q13 \[C\] Broken stick triangle \/ 断棍成三角形
 *中文：* 在单位长的棍上独立均匀选两个切点。三段能组成非退化三角形的概率是多少？
 
 *English:* Choose two independent uniform cut points on a unit stick. What is the probability that the three pieces form a non-degenerate triangle?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The three lengths form a uniform point on the simplex $x+y+z=1$. A triangle is possible exactly when every piece is less than $\frac12$. Each event, such as $x\ge\frac12$, occupies $\frac14$ of the simplex, and the three such events are disjoint except on boundaries. Hence the success probability is <strong>$1-\frac34=\frac14$</strong>.</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>The $n$-gon generalization.</strong> Choose $n-1$ independent uniform cut points on a unit stick, producing segment lengths $X_1,\ldots,X_n$. What is the probability that the segments can form a non-degenerate $n$-gon?</p>
+<p>Positive lengths form a non-degenerate polygon if and only if the longest side is shorter than the sum of all the others. Since the total length is $1$, the condition is</p>
+<p class="equation-line">$$\max_{1\le i\le n}X_i&lt;\frac12.$$</p>
+<p>As explained in the next note, the random spacing vector is uniform on the simplex. For a specified segment, the region $X_i\ge1/2$ is a copy of the original $(n-1)$-dimensional simplex scaled by $1/2$, so</p>
+<p class="equation-line">$$P\!\left(X_i\ge\frac12\right)=\left(\frac12\right)^{n-1}.$$</p>
+<p>Two different segments cannot both be strictly longer than $1/2$, and the boundary has probability zero. Therefore the $n$ bad events are disjoint almost surely, giving</p>
+<p class="equation-line">$$\boxed{P(\text{the pieces form a non-degenerate }n\text{-gon})=1-\frac{n}{2^{n-1}}},\qquad n\ge3.$$</p>
+<p>For $n=3$, this reduces to $1-3/4=1/4$, the answer to the original triangle problem. For $n=4$ the probability is $1/2$, and the probability approaches $1$ as $n\to\infty$.</p></li>
+<li><p><strong>The Dirichlet distribution.</strong> The Dirichlet distribution is the multivariate analogue of the Beta distribution and models random nonnegative proportions that sum to $1$. For parameters $\alpha_1,\ldots,\alpha_n&gt;0$, let $\alpha_0=\sum_{r=1}^n\alpha_r$. Its density on the simplex is</p>
+<p class="equation-line">$$f(x_1,\ldots,x_n)=\frac{\Gamma(\alpha_0)}{\prod_{r=1}^n\Gamma(\alpha_r)}\prod_{r=1}^n x_r^{\alpha_r-1},\qquad x_r&gt;0,\quad \sum_{r=1}^n x_r=1.$$</p>
+<p>Its first two moments are</p>
+<p class="equation-line">$$\mathbb E[X_i]=\frac{\alpha_i}{\alpha_0},\qquad \operatorname{Var}(X_i)=\frac{\alpha_i(\alpha_0-\alpha_i)}{\alpha_0^2(\alpha_0+1)},\qquad \operatorname{Cov}(X_i,X_j)=-\frac{\alpha_i\alpha_j}{\alpha_0^2(\alpha_0+1)}.$$</p>
+<p>When all parameters equal $1$, the density is constant, so $\operatorname{Dirichlet}(1,\ldots,1)$ is uniform on the simplex. If $0=V_{(0)}&lt;V_{(1)}&lt;\cdots&lt;V_{(n-1)}&lt;V_{(n)}=1$ are the ordered cut points together with the endpoints, then the spacings</p>
+<p class="equation-line">$$X_i=V_{(i)}-V_{(i-1)},\qquad i=1,\ldots,n,$$</p>
+<p>have a constant joint density on that simplex. Therefore</p>
+<p class="equation-line">$$(X_1,\ldots,X_n)\sim\operatorname{Dirichlet}(1,\ldots,1).$$</p>
+<p>Each marginal is $X_i\sim\operatorname{Beta}(1,n-1)$, so $P(X_i\ge1/2)=(1-1/2)^{n-1}=2^{-(n-1)}$, which is the simplex-volume probability used in the $n$-gon derivation above.</p></li>
+</ol>
 </div></details>
 ~~~
 
-=== Q14 \[Core\] Two people meeting \/ 两人等待
+=== Q14 \[C\] Two people meeting \/ 两人等待
 *中文：* 两人在一小时内独立均匀到达，每人最多等 15 分钟。他们相遇的概率是多少？
 
 *English:* Two people arrive independently and uniformly during one hour. Each waits at most 15 minutes. What is the probability that they meet?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Represent arrival times as a uniform point in a $60\times60$ square. They meet when $|X-Y|\le15$. The failure region is two right triangles of side 45, with total area $45^2$. Thus the probability is <strong>$1-\frac{45^2}{60^2}=\frac7{16}$</strong>.</p>
 </div></details>
 ~~~
 
-=== Q15 \[Medium\] Gambler's ruin \/ 赌徒破产
+=== Q15 \[M\] Gambler's ruin \/ 赌徒破产
 *中文：* 公平随机游走从 i 出发，每步以 1\/2 加 1 或减 1，到 0 或 N 时停止。先到 N 的概率及期望停止时间各是多少？
 
 *English:* A fair random walk starts at i, moves ±1 with equal probability, and stops at 0 or N. Find the probability of hitting N first and the expected stopping time.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The hitting probability and expected stopping time satisfy</p><p class="equation-line">$$h_i=\frac{h_{i-1}+h_{i+1}}2,\quad h_0=0,\ h_N=1;\qquad e_i=1+\frac{e_{i-1}+e_{i+1}}2,\quad e_0=e_N=0.$$</p><p>Therefore <strong>$h_i=i/N$</strong> and <strong>$e_i=i(N-i)$</strong>.</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>Simple random walk and notation.</strong> Write</p>
+<p class="equation-line">$$S_t=i+\sum_{r=1}^{t}\xi_r,\qquad P(\xi_r=1)=p,\quad P(\xi_r=-1)=q=1-p.$$</p>
+<p>One step has mean $p-q$ and variance $4pq$, so for the unrestricted walk</p>
+<p class="equation-line">$$\mathbb E[S_t]=i+t(p-q),\qquad \operatorname{Var}(S_t)=4pqt.$$</p>
+<p>The walk is fair when $p=q=1/2$: it has zero drift, $\mathbb E[S_t]=i$, and $\operatorname{Var}(S_t)=t$. In gambler's ruin, $0$ and $N$ are absorbing boundaries and</p>
+<p class="equation-line">$$\tau=\inf\{t\ge0:S_t\in\{0,N\}\}$$</p>
+<p>is the stopping or absorption time.</p></li>
+<li><p><strong>First-step analysis.</strong> Condition on the first move and then restart the same problem from the new state. If $h_i=P_i(S_\tau=N)$ and $e_i=\mathbb E_i[\tau]$, then</p>
+<p class="equation-line">$$h_i=ph_{i+1}+qh_{i-1},\qquad h_0=0,\quad h_N=1,$$</p>
+<p class="equation-line">$$e_i=1+pe_{i+1}+qe_{i-1},\qquad e_0=e_N=0.$$</p>
+<p>The extra $1$ in the second recurrence counts the step that has just been taken. Hitting probabilities are harmonic in the interior; expected hitting times solve the corresponding Poisson equation.</p></li>
+<li><p><strong>Fair-walk hitting probability.</strong> When $p=q=1/2$,</p>
+<p class="equation-line">$$h_{i+1}-2h_i+h_{i-1}=0.$$</p>
+<p>A zero second difference means that $h_i$ is linear in $i$. Applying $h_0=0$ and $h_N=1$ gives</p>
+<p class="equation-line">$$\boxed{h_i=P_i(\text{hit }N\text{ before }0)=\frac{i}{N}}.$$</p>
+<p>Equivalently, the fair walk has no drift, so the starting fraction $i/N$ is exactly the chance of eventually exiting through the upper boundary.</p></li>
+<li><p><strong>Fair-walk expected stopping time.</strong> The recurrence becomes</p>
+<p class="equation-line">$$e_{i+1}-2e_i+e_{i-1}=-2.$$</p>
+<p>A constant second difference suggests a quadratic solution. Applying $e_0=e_N=0$ gives</p>
+<p class="equation-line">$$\boxed{e_i=\mathbb E_i[\tau]=i(N-i)}.$$</p>
+<p>The expected duration is largest near the midpoint, where it is approximately $N^2/4$, and is small near either absorbing boundary.</p></li>
+<li><p><strong>Biased gambler's ruin.</strong> When $p\ne q$, let $r=q/p$. Solving the same recurrences gives</p>
+<p class="equation-line">$$\boxed{h_i=\frac{1-r^i}{1-r^N}},\qquad r=\frac{q}{p},$$</p>
+<p class="equation-line">$$\boxed{e_i=\frac{Nh_i-i}{p-q}}.$$</p>
+<p>The formulas have removable limits at $p=q=1/2$, which recover $h_i=i/N$ and $e_i=i(N-i)$. A drift toward $N$ raises the success probability; the expected duration depends on both the drift and the starting point.</p></li>
+<li><p><strong>Martingale and optional-stopping shortcuts.</strong> For a fair walk, both $S_t$ and $S_t^2-t$ are martingales. Stopping at $\tau$ gives</p>
+<p class="equation-line">$$\mathbb E_i[S_\tau]=i.$$</p>
+<p>Since $S_\tau$ equals either $0$ or $N$,</p>
+<p class="equation-line">$$i=\mathbb E_i[S_\tau]=N\,P_i(S_\tau=N),$$</p>
+<p>which yields $h_i=i/N$. Similarly,</p>
+<p class="equation-line">$$\mathbb E_i[S_\tau^2-\tau]=i^2.$$</p>
+<p>Because $\mathbb E_i[S_\tau^2]=N^2h_i=Ni$, this gives $\mathbb E_i[\tau]=Ni-i^2=i(N-i)$. For a biased walk, $S_t-(p-q)t$ is a martingale and yields $e_i=(Nh_i-i)/(p-q)$ once $h_i$ is known.</p></li>
+<li><p><strong>Useful one-dimensional random-walk facts.</strong></p>
+<ul>
+<li>If $B_t$ is the number of upward steps by time $t$, then $B_t\sim\operatorname{Binomial}(t,p)$ and $S_t=i+2B_t-t$. For a fair walk, $P(S_t=i+k)=\binom{t}{(t+k)/2}2^{-t}$ when $t+k$ is even, and the probability is $0$ otherwise.</li>
+<li>On a finite interval with absorbing endpoints, absorption occurs with probability $1$ and has finite mean time.</li>
+<li>On the infinite integer line, a fair one-dimensional walk is recurrent: it returns to its starting point with probability $1$, although its expected return time is infinite.</li>
+<li>A biased walk on the infinite line is transient and drifts toward the direction with larger step probability.</li>
+<li>After $t$ fair steps, the typical displacement is of order $\sqrt t$, consistent with variance $t$.</li>
+<li>The recurrences above are discrete analogues of differential equations: harmonic functions govern hitting probabilities, while Poisson equations govern expected hitting times.</li>
+</ul></li>
+</ol>
 </div></details>
 ~~~
 
-=== Q16 \[Core\] Consecutive equal die rolls \/ 相邻骰子相同
+=== Q16 \[C\] Consecutive equal die rolls \/ 相邻骰子相同
 *中文：* 重复投掷公平六面骰子，直到某次结果与紧邻的上一次相同。期望总投掷次数是多少？
 
 *English:* Roll a fair six-sided die until a result equals the immediately preceding result. What is the expected total number of rolls?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The first roll cannot stop the process. After it, every new roll matches the previous roll with probability $\frac16$, regardless of the previous value. The additional waiting time is geometric with mean 6. Total expectation: <strong>$1+6=7$</strong>.</p>
 </div></details>
 ~~~
 
-=== Q17 \[Core\] Exponential race \/ 指数时钟竞赛
+=== Q17 \[C\] Exponential race \/ 指数时钟竞赛
 *中文：* 独立的 $T_i$ 服从速率为 $\\lambda_i$ 的指数分布。求 $\\min_iT_i$ 的分布，以及第 $k$ 个时钟最先到达的概率。
 
 *English:* Independent clocks $T_i$ are exponential with rates $\\lambda_i$. Find the distribution of their minimum and the probability that clock $k$ rings first.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p class="equation-line">$$\Pr\!\left(\min_iT_i&gt;t\right)=\prod_i e^{-\lambda_i t}=\exp\!\left(-t\sum_i\lambda_i\right).$$</p><p>Thus the minimum is exponential with rate $\sum_i\lambda_i$, and <strong>$\Pr(k\text{ first})=\lambda_k/\sum_i\lambda_i$</strong>.</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>Definition and parameterization.</strong> If $T\sim\operatorname{Exp}(\lambda)$ with rate $\lambda&gt;0$, then $T$ takes values on $[0,\infty)$ and</p>
+<p class="equation-line">$$F_T(t)=P(T\le t)=1-e^{-\lambda t},\qquad t\ge0,$$</p>
+<p class="equation-line">$$\overline F_T(t)=P(T&gt;t)=e^{-\lambda t},\qquad f_T(t)=\lambda e^{-\lambda t}.$$</p>
+<p>The rate $\lambda$ has units of inverse time. Some references instead use the scale parameter $\theta=1/\lambda$, so always check which convention is being used.</p></li>
+<li><p><strong>Moments and quantiles.</strong></p>
+<p class="equation-line">$$\mathbb E[T]=\frac1\lambda,\qquad \operatorname{Var}(T)=\frac1{\lambda^2},\qquad \operatorname{SD}(T)=\frac1\lambda.$$</p>
+<p>More generally, $\mathbb E[T^m]=m!/\lambda^m$ for positive integers $m$. The median and the $u$-quantile are</p>
+<p class="equation-line">$$\operatorname{median}(T)=\frac{\log2}{\lambda},\qquad F_T^{-1}(u)=-\frac{\log(1-u)}{\lambda},\quad 0&lt;u&lt;1.$$</p>
+<p>The moment-generating function is</p>
+<p class="equation-line">$$M_T(s)=\mathbb E[e^{sT}]=\frac{\lambda}{\lambda-s},\qquad s&lt;\lambda.$$</p></li>
+<li><p><strong>Memoryless property.</strong> For $s,t\ge0$,</p>
+<p class="equation-line">$$P(T&gt;s+t\mid T&gt;s)=P(T&gt;t)=e^{-\lambda t}.$$</p>
+<p>After waiting for time $s$ without an arrival, the remaining waiting time is still $\operatorname{Exp}(\lambda)$; the clock does not age. The exponential distribution is the only non-degenerate continuous distribution with this property.</p></li>
+<li><p><strong>Constant hazard rate.</strong> The hazard rate is the instantaneous event rate conditional on survival:</p>
+<p class="equation-line">$$h(t)=\frac{f_T(t)}{P(T&gt;t)}=\lambda.$$</p>
+<p>Equivalently, for small $\Delta t$,</p>
+<p class="equation-line">$$P(t&lt;T\le t+\Delta t\mid T&gt;t)=\lambda\,\Delta t+o(\Delta t).$$</p>
+<p>A constant hazard is another way to express the lack of aging.</p></li>
+<li><p><strong>Scaling and sums.</strong> For $c&gt;0$,</p>
+<p class="equation-line">$$T\sim\operatorname{Exp}(\lambda)\quad\Longrightarrow\quad cT\sim\operatorname{Exp}\!\left(\frac{\lambda}{c}\right).$$</p>
+<p>If $T_1,\ldots,T_m$ are i.i.d. $\operatorname{Exp}(\lambda)$, then their sum is Gamma, also called Erlang when $m$ is an integer:</p>
+<p class="equation-line">$$T_1+\cdots+T_m\sim\operatorname{Gamma}(m,\lambda),$$</p>
+<p class="equation-line">$$f(t)=\frac{\lambda^m t^{m-1}e^{-\lambda t}}{(m-1)!},\qquad \mathbb E[T_1+\cdots+T_m]=\frac{m}{\lambda},\quad \operatorname{Var}(T_1+\cdots+T_m)=\frac{m}{\lambda^2}.$$</p></li>
+<li><p><strong>Competing exponential clocks.</strong> For independent $T_i\sim\operatorname{Exp}(\lambda_i)$, define $\Lambda=\sum_i\lambda_i$, $M=\min_iT_i$, and let $J$ be the index of the first clock. Then</p>
+<p class="equation-line">$$M\sim\operatorname{Exp}(\Lambda),\qquad P(J=k)=\frac{\lambda_k}{\Lambda}.$$</p>
+<p>The joint density factorizes:</p>
+<p class="equation-line">$$f_{M,J}(t,k)=\lambda_k e^{-\Lambda t}
+=\left(\Lambda e^{-\Lambda t}\right)\left(\frac{\lambda_k}{\Lambda}\right),$$</p>
+<p>so the winning clock $J$ is independent of the first-ring time $M$. After the first ring, the residual times of all surviving clocks retain their original exponential distributions by memorylessness.</p></li>
+<li><p><strong>Connection with a Poisson process.</strong> In a Poisson process of rate $\lambda$, the interarrival times are i.i.d. $\operatorname{Exp}(\lambda)$, the number of arrivals by time $t$ satisfies</p>
+<p class="equation-line">$$N(t)\sim\operatorname{Poisson}(\lambda t),$$</p>
+<p>and the time of the $m$-th arrival is $\operatorname{Gamma}(m,\lambda)$. In particular,</p>
+<p class="equation-line">$$P(T_1&gt;t)=P(N(t)=0)=e^{-\lambda t}.$$</p>
+<p>Superposing independent Poisson processes adds their rates, which is the process-level version of the exponential-race rule.</p></li>
+<li><p><strong>Simulation by inverse transform.</strong> If $U\sim\operatorname{Uniform}(0,1)$, then</p>
+<p class="equation-line">$$T=-\frac{\log U}{\lambda}\sim\operatorname{Exp}(\lambda).$$</p>
+<p>Using $-\log(1-U)/\lambda$ is equivalent because $1-U$ is also uniform.</p></li>
+</ol>
 </div></details>
 ~~~
 
-=== Q18 \[Core\] Poisson thinning \/ 泊松稀释
+=== Q18 \[C\] Poisson thinning \/ 泊松稀释
 *中文：* 事件按速率 $\\lambda$ 的 Poisson 过程到达，每个事件独立以概率 $p$ 标记为 A，否则标记为 B。A、B 事件流是什么过程，它们是否独立？
 
 *English:* Events arrive as a Poisson process of rate $\\lambda$. Each event is independently labeled A with probability $p$ and B otherwise. What are the two labeled processes, and are they independent?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Poisson thinning gives independent Poisson processes with rates <strong>$\lambda p$</strong> and <strong>$\lambda(1-p)$</strong>. One proof conditions on the total count and uses a binomial split, then verifies that the joint probability-generating function factorizes.</p>
 </div></details>
 ~~~
 
-=== Q19 \[Medium\] Common probability shock \/ 共同概率冲击
+=== Q19 \[M\] Common probability shock \/ 共同概率冲击
 *中文：* 给定随机成功率 $P$，$n$ 次试验条件独立，$K\\mid P\\sim\\operatorname{Binomial}(n,P)$。设 $\\mathbb E(P)=\\mu$、$\\operatorname{Var}(P)=τ^2$。求 $\\operatorname{Var}(K)$，并与 $\\operatorname{Binomial}(n,\\mu)$ 比较。
 
 *English:* Conditional on a random success probability $P$, $n$ trials are independent and $K\\mid P\\sim\\operatorname{Binomial}(n,P)$. If $\\mathbb E(P)=\\mu$ and $\\operatorname{Var}(P)=τ^2$, find $\\operatorname{Var}(K)$ and compare it with $\\operatorname{Binomial}(n,\\mu)$.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>By total variance, $\operatorname{Var}(K)=\mathbb E[nP(1-P)]+\operatorname{Var}(nP)$. Simplifying gives</p><p class="equation-line">$$\operatorname{Var}(K)=n\mu(1-\mu)+n(n-1)\tau^2.$$</p><p>The second term is positive when the common shock is nondegenerate, so the count is overdispersed relative to $\operatorname{Binomial}(n,\mu)$. The shared $P$ induces positive dependence among trials.</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<p><strong>Law of total variance.</strong> For square-integrable random variables $X$ and $Y$,</p>
+<p class="equation-line">$$\operatorname{Var}(X)=\mathbb E\!\left[\operatorname{Var}(X\mid Y)\right]+\operatorname{Var}\!\left(\mathbb E[X\mid Y]\right).$$</p>
+<p><strong>Derivation from the law of total expectation.</strong> Start from $\operatorname{Var}(X)=\mathbb E[X^2]-(\mathbb E[X])^2$. Applying total expectation to $X^2$ and using the conditional variance identity gives</p>
+<p class="equation-line">$$\mathbb E[X^2]=\mathbb E\!\left[\mathbb E[X^2\mid Y]\right]=\mathbb E\!\left[\operatorname{Var}(X\mid Y)+\bigl(\mathbb E[X\mid Y]\bigr)^2\right].$$</p>
+<p>The law of total expectation also gives $\mathbb E[X]=\mathbb E[\mathbb E[X\mid Y]]$. Therefore,</p>
+<p class="equation-line">$$\begin{aligned}
+\operatorname{Var}(X)
+&=\mathbb E[\operatorname{Var}(X\mid Y)]
++\mathbb E\!\left[\bigl(\mathbb E[X\mid Y]\bigr)^2\right]
+-\left(\mathbb E\!\left[\mathbb E[X\mid Y]\right]\right)^2\\
+&=\mathbb E[\operatorname{Var}(X\mid Y)]
++\operatorname{Var}(\mathbb E[X\mid Y]).
+\end{aligned}$$</p>
+<p>The first term is the average variance that remains after conditioning on $Y$; the second is the variance of the conditional mean across different values of $Y$. They are often described as <em>within-condition</em> and <em>between-condition</em> variation.</p>
+<p>For this problem, condition on $P$:</p>
+<p class="equation-line">$$\mathbb E[\operatorname{Var}(K\mid P)]=n\mathbb E[P(1-P)]=n\bigl(\mu(1-\mu)-\tau^2\bigr),$$</p>
+<p class="equation-line">$$\operatorname{Var}(\mathbb E[K\mid P])=\operatorname{Var}(nP)=n^2\tau^2.$$</p>
+<p>Adding the two components gives $n\mu(1-\mu)+n(n-1)\tau^2$. The extra $n(n-1)\tau^2$ is precisely the variance contributed by the shared random environment.</p>
 </div></details>
 ~~~
 
-=== Q20 \[Core\] Uncorrelated but dependent \/ 不相关但不独立
+=== Q20 \[C\] Uncorrelated but dependent \/ 不相关但不独立
 *中文：* 给出两个不相关但不独立的随机变量例子，并证明。
 
 *English:* Give two random variables that are uncorrelated but dependent, and prove both claims.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Let $X\sim\operatorname{Uniform}(-1,1)$ and $Y=X^2$. Symmetry gives $\mathbb E[X]=\mathbb E[X^3]=0$, so</p><p class="equation-line">$$\operatorname{Cov}(X,Y)=\mathbb E[X^3]-\mathbb E[X]\,\mathbb E[X^2]=0.$$</p><p>But $Y$ is a deterministic function of $X$, hence they are strongly dependent; knowing $|X|$ determines $Y$.</p>
 </div></details>
 ~~~
 
-=== Q21 \[Core\] Maximum of uniforms \/ 均匀分布最大值
+=== Q21 \[C\] Maximum of uniforms \/ 均匀分布最大值
 *中文：* U,V 独立服从 Uniform(0,1)。求 max(U,V) 的分布函数和期望。
 
 *English:* U and V are independent Uniform(0,1). Find the CDF and expectation of max(U,V).
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>For $0\le x\le1$,</p><p class="equation-line">$$\Pr(\max(U,V)\le x)=x^2,\qquad f_{\max}(x)=2x.$$</p><p>Thus $\mathbb E[\max(U,V)]=\int_0^1 2x^2\,dx=\frac23$.</p>
 </div></details>
 ~~~
 
-=== Q22 \[Medium\] Random sum and Wald's identity \/ 随机和
+=== Q22 \[M\] Random sum and Wald's identity \/ 随机和
 *中文：* $X_i$ 为 i.i.d. 且 $\\mathbb E(X_i)=\\mu$，$N$ 是与整个序列独立的非负整数随机变量，$\\mathbb E(N)\\lt\\infty$。求 $\\mathbb E(\\sum_{i=1}^{N}X_i)$。哪些条件不能随意删除？
 
 *English:* Let $X_i$ be i.i.d. with mean $\\mu$, and let $N$ be an independent nonnegative integer-valued variable with finite mean. Find $\\mathbb E(\\sum_{i=1}^{N}X_i)$. Which assumptions should not be casually dropped?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Write the sum as $\sum_{i\ge1}X_i\mathbf1_{\{N\ge i\}}$. Independence gives $\mathbb E[X_i\mathbf1_{\{N\ge i\}}]=\mu\Pr(N\ge i)$, so the answer is <strong>$\mu\mathbb E[N]$</strong>. More general Wald identities allow certain stopping times, but require integrability and dependence conditions; an arbitrary data-dependent $N$ can bias the sum.</p>
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
+<p>Let $S_N=\sum_{i=1}^{N}X_i$, with the empty sum defined as zero.</p>
+<p><strong>Method 1 — law of total expectation.</strong> Since $N$ is independent of the entire sequence, conditioning on $N=n$ leaves the first $n$ variables i.i.d. with mean $\mu$. Hence</p>
+<p class="equation-line">$$\mathbb E[S_N\mid N=n]=n\mu,$$</p>
+<p>and therefore</p>
+<p class="equation-line">$$\mathbb E[S_N]=\mathbb E\!\left[\mathbb E[S_N\mid N]\right]=\mathbb E[N\mu]=\boxed{\mu\mathbb E[N]}.$$</p>
+<p><strong>Method 2 — indicator decomposition.</strong> Rewrite the random sum as</p>
+<p class="equation-line">$$S_N=\sum_{i\ge1}X_i\mathbf 1_{\{N\ge i\}}.$$</p>
+<p>Because $N$ is independent of the sequence, $X_i$ is independent of $\mathbf 1_{\{N\ge i\}}$. Thus</p>
+<p class="equation-line">$$\begin{aligned}
+\mathbb E[S_N]
+&=\sum_{i\ge1}\mathbb E\!\left[X_i\mathbf 1_{\{N\ge i\}}\right]\\
+&=\mu\sum_{i\ge1}\Pr(N\ge i)
+=\mu\mathbb E[N],
+\end{aligned}$$</p>
+<p>where the last equality is the tail-sum formula for a nonnegative integer-valued random variable.</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<p><strong>Wald's first identity (Wald's equation).</strong> Let $X_1,X_2,\ldots$ be i.i.d. integrable random variables with $\mathbb E[X_1]=\mu$. If $N$ is a nonnegative integer-valued stopping time for the sequence and $\mathbb E[N]&lt;\infty$, then</p>
+<p class="equation-line">$$\boxed{\mathbb E\!\left[\sum_{i=1}^{N}X_i\right]=\mathbb E[N]\,\mathbb E[X_1]=\mu\mathbb E[N]}.$$</p>
+<p><strong>What is a stopping time?</strong> The decision whether to stop by time $n$ may use only $X_1,\ldots,X_n$; it cannot use any future observation. Thus $N$ may depend on the data already observed and need not be independent of the sequence.</p>
+<p><strong>Why does the identity still work?</strong> In the representation</p>
+<p class="equation-line">$$\sum_{i=1}^{N}X_i=\sum_{i\ge1}X_i\mathbf 1_{\{N\ge i\}},$$</p>
+<p>the event $\{N\ge i\}$ is determined before $X_i$ is observed: it depends only on $X_1,\ldots,X_{i-1}$. Because the observations are i.i.d., $X_i$ is independent of this event. Consequently,</p>
+<p class="equation-line">$$\mathbb E\!\left[X_i\mathbf 1_{\{N\ge i\}}\right]=\mu\Pr(N\ge i),$$</p>
+<p>and summing over $i$ gives Wald's identity. Integrability of $X_1$ and finiteness of $\mathbb E[N]$ justify exchanging the expectation and the infinite sum.</p>
+<p><strong>How does this relate to the present question?</strong> Independence of $N$ from the entire sequence is stronger than the stopping-time condition. Under the assumptions stated in the question, total expectation is the shortest proof. The indicator proof is included because it exposes the mechanism behind the more general Wald identity.</p>
+<p><strong>Why arbitrary data dependence is not enough.</strong> Let $X_i$ be independent random signs with probabilities $1/2$ for $+1$ and $-1$, and define $N=1$ if $X_2=1$ and $N=2$ if $X_2=-1$. This rule looks into the future and is not a stopping time. Here $\mu=0$ and $\mathbb E[N]=3/2$, but</p>
+<p class="equation-line">$$\mathbb E[S_N]=\frac12\mathbb E[X_1]+\frac12\mathbb E[X_1-1]=-\frac12\ne0=\mu\mathbb E[N].$$</p>
+<p>Therefore, independence can be relaxed to a valid stopping-time structure, but it cannot be replaced by unrestricted dependence on the sample path.</p>
 </div></details>
 ~~~
 
-=== Q23 \[Core\] Fair bits from a biased coin \/ 用有偏硬币生成公平比特
+=== Q23 \[C\] Fair bits from a biased coin \/ 用有偏硬币生成公平比特
 *中文：* 一枚硬币正面概率 $p$ 未知且 $0\\lt p\\lt1$。如何仅通过抛这枚硬币生成无偏的 0\/1？期望需要多少次抛掷？
 
 *English:* A coin has unknown head probability $p$ with $0\\lt p\\lt1$. How can you generate an unbiased bit using only this coin, and what is the expected number of tosses?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Toss in pairs. Output 1 on HT, 0 on TH, and repeat on HH or TT. HT and TH each have probability $p(1-p)$, so the output is fair. A pair succeeds with probability $2p(1-p)$, requiring $1/[2p(1-p)]$ pairs on average, or <strong>$1/[p(1-p)]$ tosses</strong>.</p>
 </div></details>
 ~~~
 
-=== Q24 \[Medium\] Estimating the endpoint of a uniform \/ 估计均匀分布端点
+=== Q24 \[M\] Estimating the endpoint of a uniform \/ 估计均匀分布端点
 *中文：* $X_1,\\ldots,X_n$ 独立服从 $\\operatorname{Uniform}(0,θ)$。求 $θ$ 的 MLE，并构造一个基于样本最大值的无偏估计量。
 
 *English:* Let $X_1,\\ldots,X_n$ be i.i.d. $\\operatorname{Uniform}(0,θ)$. Find the MLE of $θ$ and an unbiased estimator based on the sample maximum.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>The likelihood is $\theta^{-n}$ when $\theta\ge M=\max_iX_i$ and zero otherwise, so it is maximized at <strong>$M$</strong>. Since $\mathbb E[M]=n\theta/(n+1)$, the bias-corrected estimator <strong>$\frac{n+1}{n}M$</strong> is unbiased. This is a nonregular model: the support depends on $\theta$.</p>
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
+<p>Let $M=X_{(n)}=\max\{X_1,\ldots,X_n\}$. The joint likelihood is</p>
+<p class="equation-line">$$L(\theta)=\theta^{-n}\mathbf 1_{\{M\le\theta\}}.$$</p>
+<p>It is zero for $\theta&lt;M$. On the admissible region $\theta\ge M$, it equals $\theta^{-n}$ and decreases as $\theta$ increases. Hence the smallest admissible value maximizes the likelihood:</p>
+<p class="equation-line">$$\boxed{\widehat\theta_{\mathrm{MLE}}=M}.$$</p>
+<p>Since $M/\theta\sim\operatorname{Beta}(n,1)$,</p>
+<p class="equation-line">$$\mathbb E[M]=\frac{n}{n+1}\theta,$$</p>
+<p>so $M$ is downward biased. To find a bias-corrected estimator, try $aM$ and choose $a$ so that its expectation equals $\theta$:</p>
+<p class="equation-line">$$a\frac{n}{n+1}\theta=\theta
+\quad\Longrightarrow\quad
+a=\frac{n+1}{n}.$$</p>
+<p>Therefore</p>
+<p class="equation-line">$$\boxed{\widetilde\theta=\frac{n+1}{n}M},$$</p>
+<p>and $\mathbb E[\widetilde\theta]=\theta$. Here <em>bias-corrected</em> means correct on average over repeated samples, not exact for every realized sample.</p>
+<p><strong>Why is the model nonregular?</strong> The support is the range of values an observation can take. For a normal location model, changing the mean does not change the support $\mathbb R$. Here the support is $[0,\theta]$, so it changes with $\theta$. Once $M$ is observed, every $\theta&lt;M$ is impossible. Consequently the MLE occurs at the boundary $\theta=M$, rather than at an interior point obtained by setting a derivative equal to zero. This parameter-dependent support is the relevant nonregular feature.</p>
 </div></details>
 ~~~
 
-=== Q25 \[Hard\] Optional stopping warning \/ 可选停时警告
+=== Q25 \[H\] Optional stopping warning \/ 可选停时警告
 *中文：* 为什么“公平游戏在任意自选停止时刻的期望收益仍为 0”是错误的？给出一个反例思路并说明缺少的条件。
 
 *English:* Why is the statement "a fair game has zero expected gain at any self-chosen stopping time" false? Give a counterexample idea and identify missing conditions.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>A doubling strategy illustrates the failure: bet 1 on a fair coin, double after each loss, and stop at the first win. It appears to guarantee a gain of 1, but the stopping time and maximum loss are unbounded, and the strategy requires unbounded capital. Optional stopping needs conditions such as a bounded stopping time, uniformly integrable stopped process, or suitable bounded increments plus integrability. Without them, exchanging stopping and expectation is invalid.</p>
 </div></details>
 ~~~
@@ -383,230 +642,289 @@
 
 == B. 统计与回归
 
-=== Q26 \[Core\] Why divide by n-1? \/ 为什么样本方差除以 n-1？
+=== Q26 \[C\] Why divide by n-1? \/ 为什么样本方差除以 n-1？
 *中文：* $X_1,\\ldots,X_n$ 为 i.i.d.，方差为 $\\sigma^2$。证明 $\\sum_i(X_i-\\overline{X})^2/(n-1)$ 是 $\\sigma^2$ 的无偏估计。
 
 *English:* For i.i.d. observations with variance $\\sigma^2$, prove that $\\sum_i(X_i-\\overline{X})^2/(n-1)$ is unbiased for $\\sigma^2$.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>Use the identity</p><p class="equation-line">$$\sum_{i=1}^n(X_i-\bar X)^2=\sum_{i=1}^n(X_i-\mu)^2-n(\bar X-\mu)^2.$$</p><p>Taking expectations gives $n\sigma^2-n\operatorname{Var}(\bar X)=(n-1)\sigma^2$. Dividing by $n-1$ therefore yields an unbiased estimator. Estimating the mean consumes one degree of freedom.</p>
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
+<p>First write</p>
+<p class="equation-line">$$X_i-\bar X=(X_i-\mu)-(\bar X-\mu).$$</p>
+<p>Expanding the squared deviations and summing gives</p>
+<p class="equation-line">$$\begin{aligned}
+\sum_{i=1}^n(X_i-\bar X)^2
+&=\sum_{i=1}^n(X_i-\mu)^2
+-2(\bar X-\mu)\sum_{i=1}^n(X_i-\mu)
++n(\bar X-\mu)^2.
+\end{aligned}$$</p>
+<p>Since $\sum_{i=1}^n(X_i-\mu)=n(\bar X-\mu)$, the cross term combines with the last term to give</p>
+<p class="equation-line">$$\sum_{i=1}^n(X_i-\bar X)^2
+=\sum_{i=1}^n(X_i-\mu)^2-n(\bar X-\mu)^2.$$</p>
+<p>Now take expectations. The first term has expectation $n\sigma^2$, while independence gives $\operatorname{Var}(\bar X)=\sigma^2/n$. Therefore</p>
+<p class="equation-line">$$\mathbb E\!\left[\sum_{i=1}^n(X_i-\bar X)^2\right]
+=n\sigma^2-n\frac{\sigma^2}{n}
+=(n-1)\sigma^2.$$</p>
+<p>Dividing by $n-1$ yields $\mathbb E[S^2]=\sigma^2$, so $S^2$ is unbiased. Estimating the mean consumes one degree of freedom.</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<p><strong>How do we prove that an estimator is unbiased?</strong> A parameter such as $\mu$ or $\sigma^2$ is fixed but unknown. An estimator $T=T(X_1,\ldots,X_n)$ is a random variable because it is computed from a random sample. Its bias for a parameter $\theta$ is</p>
+<p class="equation-line">$$\operatorname{Bias}_\theta(T)=\mathbb E_\theta[T]-\theta.$$</p>
+<p>Therefore, to prove that $T$ is unbiased for $\theta$, compute its expectation under the assumed sampling model and show</p>
+<p class="equation-line">$$\boxed{\mathbb E_\theta[T]=\theta}.$$</p>
+<p>For example, if $\mathbb E[X_i]=\mu$, then the sample mean is unbiased because</p>
+<p class="equation-line">$$\mathbb E[\bar X]
+=\mathbb E\!\left[\frac1n\sum_{i=1}^nX_i\right]
+=\frac1n\sum_{i=1}^n\mathbb E[X_i]
+=\mu.$$</p>
+<p>In this question, the proposed estimator is</p>
+<p class="equation-line">$$S^2=\frac1{n-1}\sum_{i=1}^n(X_i-\bar X)^2.$$</p>
+<p>Thus the proof goal is $\mathbb E[S^2]=\sigma^2$, or equivalently</p>
+<p class="equation-line">$$\mathbb E\!\left[\sum_{i=1}^n(X_i-\bar X)^2\right]=(n-1)\sigma^2.$$</p>
+<p>Unbiasedness is a repeated-sampling statement: it means that the long-run average of the estimates equals the target parameter, not that every realized estimate equals it.</p>
 </div></details>
 ~~~
 
-=== Q27 \[Core\] Bernoulli MLE and uncertainty \/ 伯努利参数估计
+=== Q27 \[C\] Bernoulli MLE and uncertainty \/ 伯努利参数估计
 *中文：* n 次独立 Bernoulli(p) 试验中有 k 次成功。求 p 的 MLE 和大样本标准误。
 
 *English:* In n independent Bernoulli(p) trials, k successes are observed. Find the MLE of p and its large-sample standard error.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
-<p>The log-likelihood is $\ell(p)=k\log p+(n-k)\log(1-p)$. Differentiation gives <strong>$\hat p=k/n$</strong>. Since $\operatorname{Var}(\hat p)=p(1-p)/n$, the plug-in standard error is <strong>$\sqrt{\hat p(1-\hat p)/n}$</strong>. Near 0 or 1, Wald intervals can perform poorly; score or exact intervals are safer.</p>
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
+<p><strong>Step 1 — find the MLE.</strong> Let $K$ be the number of successes. Since $K\sim\operatorname{Binomial}(n,p)$, the likelihood based on the observed count $K=k$ is</p>
+<p class="equation-line">$$L(p)=\binom nk p^k(1-p)^{n-k}.$$</p>
+<p>The factor $\binom nk$ counts the possible success/failure sequences containing $k$ successes. It does not depend on $p$, so it is a positive constant when the likelihood is viewed as a function of $p$. Removing it changes the height of the likelihood but not the value of $p$ that maximizes it. Equivalently, if the full ordered sequence is observed rather than only the count, its likelihood is directly $p^k(1-p)^{n-k}$.</p>
+<p>Ignoring terms that are constant in $p$, the log-likelihood is</p>
+<p class="equation-line">$$\ell(p)=k\log p+(n-k)\log(1-p).$$</p>
+<p>For $0&lt;k&lt;n$,</p>
+<p class="equation-line">$$\ell'(p)=\frac{k}{p}-\frac{n-k}{1-p}.$$</p>
+<p>Setting this derivative equal to zero gives</p>
+<p class="equation-line">$$k(1-p)=(n-k)p
+\quad\Longrightarrow\quad
+\boxed{\widehat p=\frac{k}{n}}.$$</p>
+<p>Moreover, $\ell''(p)=-k/p^2-(n-k)/(1-p)^2&lt;0$, so this stationary point is a maximum. At the boundary cases, $k=0$ gives $\widehat p=0$ and $k=n$ gives $\widehat p=1$.</p>
+<p><strong>Step 2 — find the large-sample standard error.</strong> Since $\widehat p=K/n$ and $\operatorname{Var}(K)=np(1-p)$,</p>
+<p class="equation-line">$$\operatorname{Var}(\widehat p)
+=\operatorname{Var}\!\left(\frac Kn\right)
+=\frac{p(1-p)}{n}.$$</p>
+<p>The standard error is the standard deviation of the estimator's sampling distribution:</p>
+<p class="equation-line">$$\operatorname{SE}(\widehat p)=\sqrt{\frac{p(1-p)}{n}}.$$</p>
+<p>Because the true $p$ is unknown, replace it with the MLE $\widehat p$. The resulting plug-in estimate is</p>
+<p class="equation-line">$$\boxed{\widehat{\operatorname{SE}}(\widehat p)
+=\sqrt{\frac{\widehat p(1-\widehat p)}{n}}}.$$</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<p><strong>What does “large-sample standard error” mean?</strong> Imagine repeatedly drawing samples of size $n$ and calculating $\widehat p$ each time. The standard error measures the typical sample-to-sample fluctuation of those estimates. It is not the standard deviation of the individual Bernoulli observations, and it is not the realized error $|\widehat p-p|$ from one sample.</p>
+<p>The central limit theorem gives the large-sample approximation</p>
+<p class="equation-line">$$\widehat p\approx\operatorname{Normal}\!\left(p,\frac{p(1-p)}{n}\right),$$</p>
+<p>or equivalently $\sqrt n(\widehat p-p)$ converges in distribution to $\operatorname{Normal}(0,p(1-p))$. The variance formula itself is exact here; “large-sample” refers to using the normal approximation and replacing the unknown $p$ by $\widehat p$.</p>
+<p>When $p$ is near 0 or 1, or when the numbers of successes and failures are small, this normal approximation can be poor. In particular, the plug-in standard error becomes zero when $k=0$ or $k=n$. Wilson score or exact binomial intervals are safer in such cases.</p>
 </div></details>
 ~~~
 
-=== Q28 \[Core\] Confidence-interval interpretation \/ 置信区间的解释
+=== Q28 \[C\] Confidence-interval interpretation \/ 置信区间的解释
 *中文：* 已得到参数 $θ$ 的一个 95\% 频率学置信区间 $(L,U)$。“$θ$ 以 95\% 概率位于此区间”是否正确？
 
 *English:* A 95\% frequentist confidence interval $(L,U)$ for a parameter $θ$ has been computed. Is it correct to say that $θ$ lies in this realized interval with 95\% probability?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Not in the standard frequentist interpretation. The parameter is fixed and the interval is random before sampling. The procedure has 95% long-run coverage: over repeated samples, 95% of constructed intervals contain $\theta$. A posterior probability statement requires a Bayesian model and prior.</p>
 </div></details>
 ~~~
 
-=== Q29 \[Core\] What a p-value means \/ p 值的含义
+=== Q29 \[C\] What a p-value means \/ p 值的含义
 *中文：* 用一句话准确定义 p 值，并列出两个常见错误解读。
 
 *English:* Define a p-value precisely in one sentence and name two common misinterpretations.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>A p-value is the probability, <em>under the null model</em>, of observing a test statistic at least as incompatible with the null as the realized one. It is not $\Pr(H_0\text{ is true}\mid\text{data})$, and $1-p$ is not the probability that the alternative is true. It also does not measure effect size or economic importance.</p>
 </div></details>
 ~~~
 
-=== Q30 \[Core\] Power and sample size \/ 检验功效与样本量
+=== Q30 \[C\] Power and sample size \/ 检验功效与样本量
 *中文：* 其他条件不变时，增大样本量如何影响标准误、一类错误和功效？要将标准误减半，样本量需要如何变化？
 
 *English:* Holding other choices fixed, how does increasing sample size affect standard error, Type I error, and power? How much must n increase to halve the standard error?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Standard error typically scales as $1/\sqrt n$, so halving it requires about <strong>four times</strong> the sample size. At a fixed significance threshold and valid test, nominal Type I error remains $\alpha$, while power against a fixed nonzero effect increases. Large $n$ can make economically tiny effects statistically significant.</p>
 </div></details>
 ~~~
 
-=== Q31 \[Core\] Multiple testing \/ 多重检验
+=== Q31 \[C\] Multiple testing \/ 多重检验
 *中文：* 对 1000 个完全无效且独立的因子分别做 5\% 水平检验。期望有多少个“显著”？至少一个假阳性的概率约为多少？如何控制 FWER？
 
 *English:* Test 1,000 independent null factors at the 5\% level. How many significant results are expected? Approximately what is the probability of at least one false positive? How can FWER be controlled?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The expected number is $1000\cdot0.05=\mathbf{50}$. Under independence, $\Pr(\text{at least one})=1-0.95^{1000}\approx1$. Bonferroni controls family-wise error by testing each at $\alpha/1000$ (or use Holm's improvement). Benjamini–Hochberg targets FDR rather than FWER.</p>
 </div></details>
 ~~~
 
-=== Q32 \[Core\] LLN versus CLT \/ 大数定律与中心极限定理
+=== Q32 \[C\] LLN versus CLT \/ 大数定律与中心极限定理
 *中文：* 大数定律和中心极限定理分别回答什么问题？为什么它们不是同一件事？
 
 *English:* What different questions do the law of large numbers and central limit theorem answer, and why are they not the same statement?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The LLN says the sample mean converges to the population mean; it is a consistency statement. The CLT describes the scaled fluctuation $\sqrt n(\bar X-\mu)$, often converging in distribution to $\mathcal N(0,\sigma^2)$. The CLT supplies an approximation rate and shape around the limit; the LLN alone does not.</p>
 </div></details>
 ~~~
 
-=== Q33 \[Medium\] Fisher information \/ Fisher 信息
+=== Q33 \[M\] Fisher information \/ Fisher 信息
 *中文：* 对正则参数模型，Fisher 信息如何定义？它与 MLE 的大样本方差有什么关系？
 
 *English:* In a regular parametric model, define Fisher information and state its relationship to the large-sample variance of the MLE.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>For one observation,</p><p class="equation-line">$$I(\theta)=\mathbb E\!\left[\left(\frac{\partial}{\partial\theta}\log f(X;\theta)\right)^2\right]=-\mathbb E\!\left[\frac{\partial^2}{\partial\theta^2}\log f(X;\theta)\right]$$</p><p>under regularity. For $n$ i.i.d. observations, information is $nI(\theta)$, and $\sqrt n(\hat\theta-\theta)\Rightarrow\mathcal N(0,I(\theta)^{-1})$; thus asymptotic variance is approximately <strong>$1/[nI(\theta)]$</strong>.</p>
 </div></details>
 ~~~
 
-=== Q34 \[Core\] Derive OLS \/ 推导最小二乘
+=== Q34 \[C\] Derive OLS \/ 推导最小二乘
 *中文：* 从最小化 $\\lVert y-Xβ\\Vert_2^2$ 出发推导 OLS，并给出几何解释。
 
 *English:* Derive OLS from minimizing $\\lVert y-Xβ\\Vert_2^2$ and give the geometric interpretation.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The gradient is $2X^\top(X\beta-y)$. Setting it to zero yields the normal equations</p><p class="equation-line">$$X^\top X\hat\beta=X^\top y,\qquad \hat\beta=(X^\top X)^{-1}X^\top y$$</p><p>when $X$ has full column rank. Geometrically, $X\hat\beta$ is the orthogonal projection of $y$ onto $\operatorname{Col}(X)$, so the residual is orthogonal to every column of $X$. In computation, solve via QR/SVD rather than forming an inverse.</p>
 </div></details>
 ~~~
 
-=== Q35 \[Core\] Multicollinearity \/ 多重共线性
+=== Q35 \[C\] Multicollinearity \/ 多重共线性
 *中文：* 什么是多重共线性？它如何影响 OLS？如何诊断和处理？
 
 *English:* What is multicollinearity? How does it affect OLS, and how would you diagnose and address it?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Multicollinearity means columns of $X$ are exactly or nearly linearly dependent. Exact dependence destroys uniqueness; near dependence makes coefficient estimates high-variance and unstable while predictions may remain acceptable. Diagnose via domain knowledge, correlations, VIF, small singular values, or a large condition number. Remedies include removing/combining redundant variables, collecting informative data, PCA/SVD, ridge, lasso/elastic net, and reporting uncertainty. The choice depends on interpretation versus prediction.</p>
 </div></details>
 ~~~
 
-=== Q36 \[Core\] L1, L2 and priors \/ L1、L2 与先验
+=== Q36 \[C\] L1, L2 and priors \/ L1、L2 与先验
 *中文：* 比较 ridge 和 lasso 的目标、系数形态、对相关特征的表现和 MAP 先验解释。
 
 *English:* Compare ridge and lasso in objective, coefficient behavior, treatment of correlated features, and MAP-prior interpretation.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Ridge adds $\lambda\lVert\beta\rVert_2^2$, smoothly shrinks coefficients, and tends to share weight among correlated features; under Gaussian noise it corresponds to a zero-mean Gaussian prior. Lasso adds $\lambda\lVert\beta\rVert_1$, can set coefficients exactly to zero, and may select one variable arbitrarily from a correlated group; it corresponds to a Laplace prior. Elastic net combines both. Features should generally be standardized.</p>
 </div></details>
 ~~~
 
-=== Q37 \[Medium\] Omitted-variable bias \/ 遗漏变量偏差
+=== Q37 \[M\] Omitted-variable bias \/ 遗漏变量偏差
 *中文：* 真实模型是 $y=β_1x_1\\mathplus{}β_2x_2\\mathplus{}ε$，但只用 $x_1$ 做带截距回归。大样本中 $x_1$ 系数估计趋近什么？
 
 *English:* The true model is $y=β_1x_1\\mathplus{}β_2x_2\\mathplus{}ε$, but you regress $y$ only on $x_1$ with an intercept. What does the $x_1$ coefficient converge to?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Assuming $\mathbb E[\varepsilon\mid x_1,x_2]=0$, the simple-regression slope converges to</p><p class="equation-line">$$\beta_1+\beta_2\frac{\operatorname{Cov}(x_1,x_2)}{\operatorname{Var}(x_1)}.$$</p><p>Bias requires both a nonzero effect of the omitted variable and correlation with the included regressor.</p>
 </div></details>
 ~~~
 
-=== Q38 \[Core\] Heteroskedasticity \/ 异方差
+=== Q38 \[C\] Heteroskedasticity \/ 异方差
 *中文：* 在 $\\mathbb E(ε\\mid X)=0$ 但 $\\operatorname{Var}(ε\\mid X)$ 非常数时，OLS 系数、经典标准误和有效性分别如何？
 
 *English:* If $\\mathbb E(ε\\mid X)=0$ but $\\operatorname{Var}(ε\\mid X)$ is not constant, what happens to OLS coefficients, classical standard errors, and efficiency?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>OLS remains unbiased/consistent under the stated exogeneity conditions, but the usual homoskedastic variance formula is wrong, so $t/F$ inference is invalid. OLS is generally no longer BLUE. Use heteroskedasticity-robust (sandwich) standard errors for inference, or weighted/generalized least squares if the variance structure is credibly modeled.</p>
 </div></details>
 ~~~
 
-=== Q39 \[Core\] R-squared trap \/ R² 陷阱
+=== Q39 \[C\] R-squared trap \/ R² 陷阱
 *中文：* 为什么在训练集上增加特征不会降低 R²？这是否意味着模型更好？
 
 *English:* Why can training R² not decrease when a regressor is added, and does that imply a better model?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The enlarged model can always assign zero to the new coefficient and reproduce the old residual sum of squares, so the optimized SSE cannot increase and $R^2$ cannot decrease. This does not prove better generalization or inference. Use adjusted $R^2$, out-of-sample validation, information criteria, uncertainty, and domain judgment.</p>
 </div></details>
 ~~~
 
-=== Q40 \[Medium\] Bootstrap with time series \/ 时间序列 Bootstrap
+=== Q40 \[M\] Bootstrap with time series \/ 时间序列 Bootstrap
 *中文：* 为什么对日收益率进行普通 i.i.d. bootstrap 可能错误？可以怎样改进？
 
 *English:* Why can an ordinary i.i.d. bootstrap be invalid for daily returns, and how can it be improved?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Independent resampling destroys serial dependence, volatility clustering, and cross-sectional dependence, understating or distorting uncertainty. Depending on the estimand, use moving/stationary block bootstrap, resample at the cluster level, or fit and bootstrap residuals from an adequate time-series model. Block length is itself a bias-variance choice.</p>
 </div></details>
 ~~~
 
-=== Q41 \[Medium\] Sharpe annualization with autocorrelation \/ 自相关下的夏普年化
+=== Q41 \[M\] Sharpe annualization with autocorrelation \/ 自相关下的夏普年化
 *中文：* 什么时候可以将日度 Sharpe 乘 $\\sqrt{252}$？若收益存在自相关，年度方差应怎样计算？
 
 *English:* When is multiplying daily Sharpe by $\\sqrt{252}$ justified? How should multi-period variance be computed with autocorrelation?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The square-root rule requires stable mean/variance and effectively zero serial covariance at the aggregation horizon. For $m$ periods,</p><p class="equation-line">$$\operatorname{Var}\!\left(\sum_{t=1}^{m}r_t\right)=m\gamma_0+2\sum_{k=1}^{m-1}(m-k)\gamma_k.$$</p><p>Positive autocorrelation raises long-horizon variance relative to $m\gamma_0$; negative autocorrelation lowers it. Use a long-run variance/HAC estimate when appropriate.</p>
 </div></details>
 ~~~
 
-=== Q42 \[Core\] Spurious regression \/ 伪回归
+=== Q42 \[C\] Spurious regression \/ 伪回归
 *中文：* 两个互相独立的随机游走为什么可能回归出很高的 R² 和显著 t 值？怎样处理？
 
 *English:* Why can two independent random walks produce a high R² and significant t-statistics when regressed on each other, and what should be done?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Nonstationary persistent levels violate the assumptions behind standard regression asymptotics; unrelated stochastic trends can appear aligned. Diagnose integration/unit roots and residual behavior. Difference the series when the relationship is about changes, or use a cointegration/error-correction framework when a justified stationary linear combination exists.</p>
 </div></details>
 ~~~
 
-=== Q43 \[Core\] Validation leakage \/ 验证集泄漏
+=== Q43 \[C\] Validation leakage \/ 验证集泄漏
 *中文：* 先用全数据做标准化和 PCA，再分训练\/验证集，有什么问题？正确做法是什么？
 
 *English:* What is wrong with standardizing and fitting PCA on the full dataset before splitting train and validation sets? What is the correct procedure?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The preprocessing parameters use validation information, so reported performance is optimistic. Split first. Within each fold, fit scaling, imputation, PCA, feature selection, and the model using only the training portion, then transform the held-out portion. A pipeline enforces this. For time series, preserve temporal order and account for overlapping labels.</p>
 </div></details>
 ~~~
 
-=== Q44 \[Medium\] Robust location under outliers \/ 离群值下的稳健位置估计
+=== Q44 \[M\] Robust location under outliers \/ 离群值下的稳健位置估计
 *中文：* 均值、中位数、截尾均值和 winsorized 均值面对极端值时有何差别？量化数据中为什么不能无脑删除极端值？
 
 *English:* Compare the mean, median, trimmed mean, and winsorized mean under outliers. Why should extreme financial observations not be removed mechanically?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The mean is efficient under light-tailed symmetric models but has unbounded sensitivity. The median is robust but discards magnitude information. Trimming removes tail observations; winsorization caps them. Financial extremes may be data errors, but they may also be genuine crashes, liquidity events, or the source of risk/return. Apply rules using point-in-time information, document them, and stress-test rather than sanitizing away the phenomenon.</p>
 </div></details>
 ~~~
@@ -618,170 +936,170 @@
 
 == C. 线性代数与矩阵微积分
 
-=== Q45 \[Core\] Rank and solution sets \/ 秩与方程解
+=== Q45 \[C\] Rank and solution sets \/ 秩与方程解
 *中文：* $A$ 是 $m\\mathbin{×} n$ 矩阵，$\\operatorname{rank}(A)=r$。零空间维数是多少？$Ax=b$ 在什么条件下无解、唯一解或无穷多解？
 
 *English:* Let $A$ be $m\\mathbin{×} n$ with rank $r$. What is the nullity? Under what conditions does $Ax=b$ have no solution, a unique solution, or infinitely many solutions?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Rank–nullity gives $\operatorname{nullity}(A)=n-r$. The system is consistent iff $b\in\operatorname{Col}(A)$, equivalently $\operatorname{rank}(A)=\operatorname{rank}([A\ b])$. If consistent, the solution is unique iff $r=n$; otherwise there are infinitely many solutions obtained by adding any null-space vector to a particular solution.</p>
 </div></details>
 ~~~
 
-=== Q46 \[Core\] Projection-matrix properties \/ 投影矩阵性质
+=== Q46 \[C\] Projection-matrix properties \/ 投影矩阵性质
 *中文：* P 是到某子空间的正交投影矩阵。证明 P²=P、P'=P，并求其可能特征值。
 
 *English:* P is an orthogonal projection matrix. Prove P²=P and P'=P, and determine its possible eigenvalues.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Projecting an already projected vector changes nothing, hence $P^2=P$. Orthogonal projection has mutually orthogonal image and residual, which gives $P^\top=P$. If $Pv=\lambda v$, then $P^2v=Pv$ implies $\lambda^2=\lambda$, so <strong>$\lambda\in\{0,1\}$</strong>. Its rank and trace equal the dimension of the projected subspace.</p>
 </div></details>
 ~~~
 
-=== Q47 \[Core\] Covariance matrices are PSD \/ 协方差矩阵半正定
+=== Q47 \[C\] Covariance matrices are PSD \/ 协方差矩阵半正定
 *中文：* 证明任意随机向量的协方差矩阵 $\\Sigma$ 是对称半正定的。什么时候它是奇异的？
 
 *English:* Prove that every covariance matrix $\\Sigma$ is symmetric positive semidefinite. When is it singular?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Symmetry follows from $\operatorname{Cov}(X_i,X_j)=\operatorname{Cov}(X_j,X_i)$. For any vector $a$,</p><p class="equation-line">$$a^\top\Sigma a=\operatorname{Var}(a^\top X)\ge0,$$</p><p>proving PSD. It is singular iff some nonzero $a$ has $\operatorname{Var}(a^\top X)=0$, meaning a linear combination of the centered components is almost surely constant.</p>
 </div></details>
 ~~~
 
-=== Q48 \[Core\] PCA from SVD \/ 从 SVD 得到 PCA
+=== Q48 \[C\] PCA from SVD \/ 从 SVD 得到 PCA
 *中文：* 对已中心化的 $n\\mathbin{×} p$ 数据矩阵 $X=U\\Sigma V^\\mathsf{T}$，说明 PCA 的方向、得分和解释方差如何得到。
 
 *English:* For centered data $X=U\\Sigma V^\\mathsf{T}$, explain how to obtain PCA directions, scores, and explained variances.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>For centered data $X=U\Sigma V^\top$, the sample covariance is</p><p class="equation-line">$$\frac{X^\top X}{n-1}=V\frac{\Sigma^2}{n-1}V^\top.$$</p><p>Therefore columns of <strong>$V$</strong> are loading directions, scores are <strong>$XV=U\Sigma$</strong>, and explained variances are <strong>$\sigma_j^2/(n-1)$</strong>. Centering is essential; scaling is optional but materially changes the question.</p>
 </div></details>
 ~~~
 
-=== Q49 \[Medium\] Best low-rank approximation \/ 最优低秩近似
+=== Q49 \[M\] Best low-rank approximation \/ 最优低秩近似
 *中文：* 如何在 Frobenius 范数下找到矩阵 $A$ 的最优 rank-$k$ 近似？误差是多少？
 
 *English:* How do you find the best rank-$k$ approximation of $A$ in Frobenius norm, and what is the approximation error?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>By the Eckart–Young theorem, keep the top $k$ singular components:</p><p class="equation-line">$$A_k=\sum_{j=1}^{k}\sigma_j u_jv_j^\top.$$</p><p>The minimum Frobenius error is <strong>$\sqrt{\sum_{j&gt;k}\sigma_j^2}$</strong>; in spectral norm it is $\sigma_{k+1}$.</p>
 </div></details>
 ~~~
 
-=== Q50 \[Medium\] Eigenvalues of AB and BA \/ AB 与 BA 的特征值
+=== Q50 \[M\] Eigenvalues of AB and BA \/ AB 与 BA 的特征值
 *中文：* $A$ 是 $m\\mathbin{×} n$，$B$ 是 $n\\mathbin{×} m$。证明 $AB$ 和 $BA$ 具有相同的非零特征值（计重数）。
 
 *English:* Let $A$ be $m\\mathbin{×} n$ and $B$ be $n\\mathbin{×} m$. Show that $AB$ and $BA$ have the same nonzero eigenvalues, including multiplicity.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>If $ABv=\lambda v$ with $\lambda\ne0$, then $Bv\ne0$ and $BA(Bv)=B(ABv)=\lambda(Bv)$, so $\lambda$ is an eigenvalue of $BA$; reverse the roles for the converse. Multiplicity follows from</p><p class="equation-line">$$\det(I_m+tAB)=\det(I_n+tBA),$$</p><p>with extra zeros accounting for unequal dimensions.</p>
 </div></details>
 ~~~
 
-=== Q51 \[Core\] Trace, determinant and eigenvalues \/ 迹、行列式与特征值
+=== Q51 \[C\] Trace, determinant and eigenvalues \/ 迹、行列式与特征值
 *中文：* 对 $n\\mathbin{×} n$ 矩阵 $A$，$\\operatorname{tr}(A)$ 和 $\\det(A)$ 与特征值有什么关系？$A$ 不可对角化时结论还成立吗？
 
 *English:* How are $\\operatorname{tr}(A)$ and $\\det(A)$ related to eigenvalues? Do the relations still hold if $A$ is not diagonalizable?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Over the complex numbers and counting algebraic multiplicity,</p><p class="equation-line">$$\operatorname{tr}(A)=\sum_i\lambda_i,\qquad \det(A)=\prod_i\lambda_i.$$</p><p>These follow from coefficients of the characteristic polynomial and do not require diagonalizability.</p>
 </div></details>
 ~~~
 
-=== Q52 \[Core\] Why normal equations can be unstable \/ 正规方程为何可能不稳定
+=== Q52 \[C\] Why normal equations can be unstable \/ 正规方程为何可能不稳定
 *中文：* 为什么数值计算 OLS 时不建议显式计算 $(X^\\mathsf{T} X)^{-1}X^\\mathsf{T} y$？
 
 *English:* Why is explicitly computing $(X^\\mathsf{T} X)^{-1}X^\\mathsf{T} y$ discouraged in numerical OLS?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Forming $X^\top X$ squares the 2-norm condition number:</p><p class="equation-line">$$\kappa_2(X^\top X)=\kappa_2(X)^2.$$</p><p>This magnifies floating-point error and near-collinearity. Explicit inversion adds unnecessary work and error. Solve least squares using QR, or SVD when rank deficiency/conditioning matters.</p>
 </div></details>
 ~~~
 
-=== Q53 \[Medium\] Pseudoinverse and minimum norm \/ 伪逆与最小范数解
+=== Q53 \[M\] Pseudoinverse and minimum norm \/ 伪逆与最小范数解
 *中文：* 当 $Ax=b$ 有无穷多解时，Moore–Penrose 伪逆 $A^{\\mathplus{}}$ 给出哪个解？用 SVD 怎样构造 $A^{\\mathplus{}}$？
 
 *English:* When $Ax=b$ has infinitely many solutions, which solution does $A^{\\mathplus{}}b$ select? How is the pseudoinverse constructed from the SVD?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>If $A=U\Sigma V^\top$, define $\Sigma^+$ by reciprocating nonzero singular values and transposing the rectangular diagonal shape; then</p><p class="equation-line">$$A^+=V\Sigma^+U^\top.$$</p><p>For a consistent underdetermined system, $A^+b$ is the unique solution with <strong>minimum Euclidean norm</strong>. In general it gives the minimum-norm least-squares solution.</p>
 </div></details>
 ~~~
 
-=== Q54 \[Core\] Simulating correlated Gaussians \/ 模拟相关高斯向量
+=== Q54 \[C\] Simulating correlated Gaussians \/ 模拟相关高斯向量
 *中文：* 已知均值 $\\mu$ 和正定协方差矩阵 $\\Sigma$，如何用独立标准正态向量生成 $\\mathcal N(\\mu,\\Sigma)$ 样本？
 
 *English:* Given mean $\\mu$ and positive-definite covariance $\\Sigma$, how can independent standard normals be transformed into a sample from $\\mathcal N(\\mu,\\Sigma)$?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Compute a Cholesky factor $L$ with $\Sigma=LL^\top$. If $Z\sim\mathcal N(0,I)$, set $X=\mu+LZ$. Then</p><p class="equation-line">$$\mathbb E[X]=\mu,\qquad \operatorname{Cov}(X)=LIL^\top=\Sigma.$$</p><p>For PSD singular $\Sigma$, an eigen/SVD square root works.</p>
 </div></details>
 ~~~
 
-=== Q55 \[Core\] Matrix derivative \/ 矩阵求导
+=== Q55 \[C\] Matrix derivative \/ 矩阵求导
 *中文：* 对 $f(x)=\\lVert Ax-b\\Vert_2^2\\mathplus{}\\lambda\\lVert x\\Vert_2^2$，求梯度、Hessian 和极小点。
 
 *English:* For $f(x)=\\lVert Ax-b\\Vert_2^2\\mathplus{}\\lambda\\lVert x\\Vert_2^2$, find the gradient, Hessian, and minimizer.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The gradient and Hessian are</p><p class="equation-line">$$\nabla f(x)=2A^\top(Ax-b)+2\lambda x,\qquad \nabla^2f(x)=2(A^\top A+\lambda I).$$</p><p>For $\lambda&gt;0$ the Hessian is positive definite, giving the unique minimizer <strong>$x^*=(A^\top A+\lambda I)^{-1}A^\top b$</strong>. Numerically, solve the linear system rather than invert.</p>
 </div></details>
 ~~~
 
-=== Q56 \[Hard\] Rank-one inverse update \/ 秩一逆矩阵更新
+=== Q56 \[H\] Rank-one inverse update \/ 秩一逆矩阵更新
 *中文：* 已知 $A^{-1}$，如何快速计算 $(A\\mathplus{}uv^\\mathsf{T})^{-1}$？哪个分母不能为 0？
 
 *English:* Given $A^{-1}$, how can $(A\\mathplus{}uv^\\mathsf{T})^{-1}$ be updated efficiently, and which denominator must be nonzero?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The Sherman–Morrison formula is</p><p class="equation-line">$$(A+uv^\top)^{-1}=A^{-1}-\frac{A^{-1}uv^\top A^{-1}}{1+v^\top A^{-1}u}.$$</p><p>It requires $1+v^\top A^{-1}u\ne0$. This turns a full inversion into matrix-vector operations.</p>
 </div></details>
 ~~~
 
-=== Q57 \[Medium\] Stationary distribution \/ 马尔可夫链平稳分布
+=== Q57 \[M\] Stationary distribution \/ 马尔可夫链平稳分布
 *中文：* 对行随机转移矩阵 P，平稳分布满足什么方程？什么条件保证长期分布收敛到唯一平稳分布？
 
 *English:* For a row-stochastic transition matrix P, what equation defines a stationary distribution? What conditions give convergence to a unique stationary distribution?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>A row-vector distribution $\pi$ satisfies</p><p class="equation-line">$$\pi=\pi P,\qquad \pi_i\ge0,\qquad \sum_i\pi_i=1.$$</p><p>For a finite irreducible chain, the stationary distribution is unique; adding aperiodicity gives convergence from any initial distribution. Positive recurrence is the corresponding general-state requirement.</p>
 </div></details>
 ~~~
 
-=== Q58 \[Core\] Orthogonal transformations \/ 正交变换
+=== Q58 \[C\] Orthogonal transformations \/ 正交变换
 *中文：* 若 Q'Q=I，证明 Q 保持内积、长度、角度和距离。
 
 *English:* If Q'Q=I, prove that Q preserves inner products, lengths, angles, and distances.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Because $Q^\top Q=I$,</p><p class="equation-line">$$(Qx)^\top(Qy)=x^\top Q^\top Qy=x^\top y.$$</p><p>Thus inner products are preserved. Setting $y=x$ preserves norms; applying the norm result to $x-y$ preserves distances; cosine angles are inner products divided by norms, so angles are preserved as well.</p>
 </div></details>
 ~~~
@@ -793,146 +1111,146 @@
 
 == D. 组合数学与离散推理
 
-=== Q59 \[Core\] Walk on a triangle \/ 三角形上游走
+=== Q59 \[C\] Walk on a triangle \/ 三角形上游走
 *中文：* 一个人从三角形的某个顶点出发，每步必须沿一条边移动到另一个顶点。走 6 步后回到起点的路径有多少条？
 
 *English:* Starting at one vertex of a triangle, each step moves along an edge to one of the other two vertices. How many length-6 walks return to the starting vertex?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Let $a_n$ be the number of $n$-step walks at the start and $b_n$ the total number at the other two vertices. Then</p><p class="equation-line">$$a_{n+1}=b_n,\qquad b_{n+1}=2a_n+b_n,\qquad (a_0,b_0)=(1,0).$$</p><p>Iteration gives $a_6=\mathbf{22}$. Equivalently, the triangle adjacency matrix has eigenvalues $2,-1,-1$, so</p><p class="equation-line">$$a_n=\frac{2^n+2(-1)^n}{3}.$$</p>
 </div></details>
 ~~~
 
-=== Q60 \[Core\] Stars and bars \/ 隔板法
+=== Q60 \[C\] Stars and bars \/ 隔板法
 *中文：* 非负整数解 $x_1\\mathplus{}\\cdots\\mathplus{}x_k=n$ 有多少个？若要求每个 $x_i\\mathrel{≥}1$ 呢？
 
 *English:* How many nonnegative integer solutions does $x_1\\mathplus{}\\cdots\\mathplus{}x_k=n$ have? What if every $x_i\\mathrel{≥}1$?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Represent $n$ identical stars separated into $k$ boxes by $k-1$ bars. The nonnegative count is <strong>$\binom{n+k-1}{k-1}$</strong>. For positive solutions, set $y_i=x_i-1\ge0$, leaving sum $n-k$, so the count is <strong>$\binom{n-1}{k-1}$</strong> when $n\ge k$.</p>
 </div></details>
 ~~~
 
-=== Q61 \[Medium\] Onto functions \/ 满射计数
+=== Q61 \[M\] Onto functions \/ 满射计数
 *中文：* 从 n 个有标号元素到 m 个有标号元素的满射有多少个？
 
 *English:* How many onto functions are there from an n-element labeled set to an m-element labeled set?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>There are $m^n$ total functions. By inclusion-exclusion over missing target values, the onto count is</p><p class="equation-line">$$\sum_{j=0}^{m}(-1)^j\binom{m}{j}(m-j)^n.$$</p><p>It is zero for $n&lt;m$ and also equals $m!S(n,m)$, where $S(n,m)$ is a Stirling number of the second kind.</p>
 </div></details>
 ~~~
 
-=== Q62 \[Medium\] Catalan parentheses \/ Catalan 括号
+=== Q62 \[M\] Catalan parentheses \/ Catalan 括号
 *中文：* n 对括号可以构成多少个合法括号序列？给出公式和一个解释。
 
 *English:* How many valid parenthesis strings can be formed from n pairs? Give the formula and one justification.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The answer is the Catalan number</p><p class="equation-line">$$C_n=\frac{1}{n+1}\binom{2n}{n}.$$</p><p>Among all $\binom{2n}{n}$ strings with equal opens and closes, the reflection principle shows that $\binom{2n}{n-1}$ cross below balance zero. Their difference is $C_n$.</p>
 </div></details>
 ~~~
 
-=== Q63 \[Core\] Pigeonhole socks \/ 抽袜子
+=== Q63 \[C\] Pigeonhole socks \/ 抽袜子
 *中文：* 抽屉里有 10 种颜色的袜子，每种至少 2 只。黑暗中最少抽多少只才能保证有两只同色？保证有三只同色呢？
 
 *English:* A drawer contains socks of 10 colors, with enough socks of each color. How many draws guarantee a matching pair? How many guarantee three of one color?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>In the worst case, the first 10 socks have distinct colors, so <strong>11</strong> guarantee a pair. To avoid three of one color, at most two of each color can be drawn, so <strong>21</strong> guarantee a triple. This assumes at least three socks of each color for the second statement.</p>
 </div></details>
 ~~~
 
-=== Q64 \[Medium\] Circular seating \/ 圆桌排列
+=== Q64 \[M\] Circular seating \/ 圆桌排列
 *中文：* n 个互不相同的人围圆桌就座，只把旋转视为相同，有多少种坐法？若镜像也视为相同呢？
 
 *English:* How many circular seatings of n distinct people are there if rotations are identical? What if mirror images are also identified?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Fix one person to remove rotational symmetry, leaving <strong>$(n-1)!$</strong>. If reflections are also identified and $n&gt;2$, each arrangement pairs with a distinct mirror image, giving <strong>$(n-1)!/2$</strong>.</p>
 </div></details>
 ~~~
 
-=== Q65 \[Core\] Expected inversions \/ 逆序对期望
+=== Q65 \[C\] Expected inversions \/ 逆序对期望
 *中文：* 1,...,n 的均匀随机排列中，逆序对数的期望是多少？
 
 *English:* What is the expected number of inversions in a uniformly random permutation of 1,...,n?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>For every unordered pair of values, define an indicator that the larger appears first. By symmetry its expectation is $1/2$. There are $\binom n2$ pairs, so the expectation is <strong>$n(n-1)/4$</strong>. No independence among indicators is needed.</p>
 </div></details>
 ~~~
 
-=== Q66 \[Core\] Tiling recurrence \/ 铺砖递推
+=== Q66 \[C\] Tiling recurrence \/ 铺砖递推
 *中文：* 用 $1\\mathbin{×}2$ 骨牌完全铺满 $2\\mathbin{×} n$ 矩形有多少种方法？建立递推并给出复杂度。
 
 *English:* How many ways can a $2\\mathbin{×} n$ rectangle be tiled with $1\\mathbin{×}2$ dominoes? Build the recurrence and state the computation complexity.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>At the left edge, either place one vertical domino, leaving $f(n-1)$, or two horizontal dominoes, leaving $f(n-2)$. Thus</p><p class="equation-line">$$f(n)=f(n-1)+f(n-2),\qquad f(0)=f(1)=1.$$</p><p>Iteration takes <strong>$O(n)$ time and $O(1)$ extra space</strong>; matrix exponentiation gives $O(\log n)$.</p>
 </div></details>
 ~~~
 
-=== Q67 \[Medium\] Coin-change DP \/ 零钱兑换动态规划
+=== Q67 \[M\] Coin-change DP \/ 零钱兑换动态规划
 *中文：* 给定正整数面额 coins 和目标 S，每种硬币可无限使用。如何计算不考虑顺序的兑换方案数？循环顺序为什么重要？
 
 *English:* Given positive coin values and target S, with unlimited copies, how do you count unordered combinations? Why does loop order matter?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Initialize $dp[0]=1$. For each coin $c$ in an outer loop, update $dp[s]\mathrel{+}=dp[s-c]$ for $s=c,\ldots,S$. The answer is $dp[S]$, in $O(|\mathcal C|S)$ time and $O(S)$ space. Putting sums outside and coins inside counts ordered sequences instead, because different last-coin orders are distinguished.</p>
 </div></details>
 ~~~
 
-=== Q68 \[Core\] Board-operation invariant \/ 黑板操作不变量
+=== Q68 \[C\] Board-operation invariant \/ 黑板操作不变量
 *中文：* 黑板上写着 1,1\/2,...,1\/n。每次选 a,b，擦去后写上 a\+b\+ab，直到只剩一个数。最后是多少？
 
 *English:* A board contains 1,1\/2,...,1\/n. Repeatedly replace any a,b by a\+b\+ab until one number remains. What is it?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Since $1+(a+b+ab)=(1+a)(1+b)$, the product of one plus every current entry is invariant. If the final entry is $X$, then</p><p class="equation-line">$$1+X=\prod_{k=1}^{n}\left(1+\frac1k\right)=\prod_{k=1}^{n}\frac{k+1}{k}=n+1.$$</p><p>Therefore <strong>$X=n$</strong>, independent of choices.</p>
 </div></details>
 ~~~
 
-=== Q69 \[Core\] Leaves in a tree \/ 树的叶子
+=== Q69 \[C\] Leaves in a tree \/ 树的叶子
 *中文：* 证明任意至少有两个顶点的有限树至少有两个度为 1 的顶点。
 
 *English:* Prove that every finite tree with at least two vertices has at least two vertices of degree 1.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Take a longest simple path in the tree. If either endpoint had degree greater than 1, it would have a neighbor outside the path (a neighbor on the path other than the adjacent vertex would create a cycle), allowing the path to be extended. Therefore both endpoints have degree 1.</p>
 </div></details>
 ~~~
 
-=== Q70 \[Medium\] Inclusion-exclusion count \/ 容斥计数
+=== Q70 \[M\] Inclusion-exclusion count \/ 容斥计数
 *中文：* 1 到 1000 中，有多少个整数不被 2、3 或 5 中的任何一个整除？
 
 *English:* Among 1,...,1000, how many integers are divisible by none of 2, 3, or 5?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Count the union of multiples:</p><p class="equation-line">$$500+333+200-166-100-66+33=734.$$</p><p>The complement has <strong>$1000-734=266$</strong> integers. A block check also works: $\varphi(30)=8$ valid residues per full block, plus the first 10 numbers of the remainder.</p>
 </div></details>
 ~~~
@@ -944,266 +1262,266 @@
 
 == E. 机器学习数学与量化研究
 
-=== Q71 \[Core\] Bias-variance decomposition \/ 偏差-方差分解
+=== Q71 \[C\] Bias-variance decomposition \/ 偏差-方差分解
 *中文：* 在平方损失回归中，预测误差如何分解？增加模型复杂度通常如何改变各部分？
 
 *English:* Under squared-error regression, how does expected prediction error decompose? How does increasing model complexity usually affect the components?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>At a point $x$, expected test MSE decomposes as</p><p class="equation-line">$$\mathbb E[(Y-\hat f(x))^2]=\sigma^2+\left(\mathbb E[\hat f(x)]-f(x)\right)^2+\operatorname{Var}(\hat f(x)).$$</p><p>The terms are irreducible noise, squared bias, and variance. Greater flexibility usually lowers bias and raises variance, though modern overparameterized models can behave more subtly. Validation estimates the combined generalization error, not the components directly.</p>
 </div></details>
 ~~~
 
-=== Q72 \[Core\] Logistic-regression gradient \/ 逻辑回归梯度
+=== Q72 \[C\] Logistic-regression gradient \/ 逻辑回归梯度
 *中文：* 二分类中 $p_i=\\operatorname{sigmoid}(x_i^\\mathsf{T}β)$。写出负对数似然及其梯度。
 
 *English:* In binary logistic regression $p_i=\\operatorname{sigmoid}(x_i^\\mathsf{T}β)$. Write the negative log-likelihood and its gradient.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The negative log-likelihood is</p><p class="equation-line">$$L=-\sum_i\left[y_i\log p_i+(1-y_i)\log(1-p_i)\right].$$</p><p>Using $dp/dz=p(1-p)$, terms cancel to give <strong>$\nabla L=X^\top(p-y)$</strong>. The Hessian is $X^\top WX$ with $W_{ii}=p_i(1-p_i)$, hence the objective is convex.</p>
 </div></details>
 ~~~
 
-=== Q73 \[Core\] Why cross-entropy? \/ 为什么分类用交叉熵？
+=== Q73 \[C\] Why cross-entropy? \/ 为什么分类用交叉熵？
 *中文：* 为什么逻辑回归通常使用交叉熵而不是对 0\/1 标签直接使用 MSE？
 
 *English:* Why is cross-entropy normally used for logistic regression instead of applying MSE directly to 0\/1 labels?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Cross-entropy is the Bernoulli negative log-likelihood, a proper scoring rule aligned with probability estimation. Combined with the logistic link it yields a convex objective and gradient $X^\top(p-y)$. MSE is possible but is not the Bernoulli likelihood and can produce less favorable curvature and saturated gradients.</p>
 </div></details>
 ~~~
 
-=== Q74 \[Core\] Scaling before regularization \/ 正则化前为何要缩放
+=== Q74 \[C\] Scaling before regularization \/ 正则化前为何要缩放
 *中文：* 为什么 ridge、lasso、SVM 和 k-NN 通常需要特征缩放？树模型为什么通常不敏感？
 
 *English:* Why do ridge, lasso, SVM, and k-NN usually require feature scaling, while tree models are usually insensitive to monotone rescaling?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Penalties act on coefficient magnitudes and distances/margins depend on feature units, so large-scale features otherwise dominate. Trees choose threshold orderings; a monotone rescaling preserves all candidate partitions, so the fitted structure is usually unchanged. Fit the scaler only on training data.</p>
 </div></details>
 ~~~
 
-=== Q75 \[Core\] Tree split criteria \/ 决策树分裂准则
+=== Q75 \[C\] Tree split criteria \/ 决策树分裂准则
 *中文：* 分类树中熵和 Gini 不纯度如何定义？一次分裂如何评估？
 
 *English:* Define entropy and Gini impurity for a classification node. How is a candidate split evaluated?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>For class proportions $p_k$,</p><p class="equation-line">$$H=-\sum_k p_k\log p_k,\qquad G=1-\sum_k p_k^2.$$</p><p>A split is scored by parent impurity minus the sample-weighted impurities of its children. Greedy trees choose the largest reduction. Both criteria are zero at pure nodes and typically yield similar trees.</p>
 </div></details>
 ~~~
 
-=== Q76 \[Core\] Random forest versus boosting \/ 随机森林与 Boosting
+=== Q76 \[C\] Random forest versus boosting \/ 随机森林与 Boosting
 *中文：* 从训练方式、偏差\/方差、并行性和对噪声敏感度比较 random forest 与 gradient boosting。
 
 *English:* Compare random forests and gradient boosting in training, bias\/variance, parallelism, and noise sensitivity.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Random forests train many deep randomized bootstrap trees independently and average them, mainly reducing variance; trees parallelize naturally and are robust defaults. Boosting trains weak learners sequentially on residuals/negative gradients, often reducing bias and achieving high accuracy but requiring careful learning rate/depth/round tuning and being more sensitive to noisy labels/outliers. Neither dominates universally.</p>
 </div></details>
 ~~~
 
-=== Q77 \[Medium\] Feature importance with correlation \/ 相关特征的重要性
+=== Q77 \[M\] Feature importance with correlation \/ 相关特征的重要性
 *中文：* 两个特征几乎完全相关且都有预测力。为什么树的 impurity importance 或 permutation importance 可能误导？
 
 *English:* Two features are almost perfectly correlated and jointly predictive. Why can impurity or permutation feature importance be misleading?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>A tree may arbitrarily choose one substitute early, assigning it most impurity gain. Permuting one feature may barely hurt because the correlated partner remains, understating both marginal importances. Grouped/conditional permutation, drop-column retraining, stability analysis, and domain-based grouping provide a fuller picture. Importance is not causality.</p>
 </div></details>
 ~~~
 
-=== Q78 \[Medium\] Soft-margin SVM \/ 软间隔 SVM
+=== Q78 \[M\] Soft-margin SVM \/ 软间隔 SVM
 *中文：* 软间隔 SVM 中参数 C 控制什么？C 非常大或非常小时会怎样？
 
 *English:* What does C control in a soft-margin SVM? What happens when C is very large or very small?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The primal objective balances margin size and hinge-loss violations:</p><p class="equation-line">$$\min_{w,b,\xi}\ \frac12\lVert w\rVert_2^2+C\sum_i\xi_i.$$</p><p>Large $C$ heavily penalizes violations, fitting training points more aggressively with a potentially narrower margin and higher variance. Small $C$ tolerates more violations, giving stronger regularization and a wider margin. Feature scaling and validation are essential.</p>
 </div></details>
 ~~~
 
-=== Q79 \[Core\] k-means failure modes \/ k-means 失效情形
+=== Q79 \[C\] k-means failure modes \/ k-means 失效情形
 *中文：* 写出 k-means 的目标函数，并列出至少三种它表现不好的数据情形。
 
 *English:* State the k-means objective and give at least three data situations where it performs poorly.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>It minimizes within-cluster squared Euclidean distance</p><p class="equation-line">$$\sum_i\lVert x_i-\mu_{c_i}\rVert_2^2.$$</p><p>It struggles with non-spherical/nonconvex clusters, unequal sizes or densities, unscaled features, severe outliers, categorical data, and high-dimensional distance concentration. Lloyd's algorithm finds only a local optimum, so initialization matters.</p>
 </div></details>
 ~~~
 
-=== Q80 \[Medium\] EM for Gaussian mixtures \/ 高斯混合模型 EM
+=== Q80 \[M\] EM for Gaussian mixtures \/ 高斯混合模型 EM
 *中文：* 用语言和公式概括 GMM 的 E 步和 M 步。EM 保证什么，不保证什么？
 
 *English:* Summarize the E- and M-steps for a Gaussian mixture. What does EM guarantee, and what does it not guarantee?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>E-step: compute responsibilities</p><p class="equation-line">$$r_{ik}\propto\pi_k\,\mathcal N(x_i\mid\mu_k,\Sigma_k).$$</p><p>M-step: update component weights, means, and covariances using $r_{ik}$ as fractional counts. Each iteration does not decrease observed-data likelihood, but EM need not find the global optimum and can converge slowly or to singular solutions; initialization/regularization matter.</p>
 </div></details>
 ~~~
 
-=== Q81 \[Core\] PCA and feature scale \/ PCA 与特征量纲
+=== Q81 \[C\] PCA and feature scale \/ PCA 与特征量纲
 *中文：* 对具有不同量纲的特征直接做 PCA 会怎样？应当用协方差矩阵还是相关矩阵？
 
 *English:* What happens when PCA is applied directly to features with very different units? Should covariance or correlation PCA be used?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>PCA maximizes variance, so features with large numerical scale dominate. Standardizing first makes PCA on the covariance of z-scores equivalent to PCA on the correlation matrix. Use correlation PCA when units are incomparable and relative variation matters; use covariance PCA when scales are intrinsically meaningful. This is a modeling choice, not a universal rule.</p>
 </div></details>
 ~~~
 
-=== Q82 \[Core\] Batch normalization at inference \/ BatchNorm 的训练与推理
+=== Q82 \[C\] Batch normalization at inference \/ BatchNorm 的训练与推理
 *中文：* Batch normalization 在训练和推理时分别使用什么均值\/方差？忘记切换模式有什么后果？
 
 *English:* Which mean and variance does batch normalization use during training and inference? What happens if the mode is not switched correctly?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Training uses mini-batch statistics and updates running estimates. Inference uses the stored running mean/variance, followed by learned scale and shift. Leaving the model in training mode makes predictions batch-dependent and updates state; leaving it in evaluation mode during training prevents normal batch behavior. Small/non-i.i.d. batches can make estimates noisy.</p>
 </div></details>
 ~~~
 
-=== Q83 \[Medium\] Dropout interpretation \/ Dropout 的作用
+=== Q83 \[M\] Dropout interpretation \/ Dropout 的作用
 *中文：* Dropout 训练时和推理时如何工作？它为什么可以起到正则化作用？
 
 *English:* How does dropout behave during training and inference, and why can it regularize a network?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>During training, units/activations are independently masked, usually with inverted scaling so the expectation is unchanged. At inference all units are used without random masks. The noise discourages brittle co-adaptation and resembles averaging many shared-parameter subnetworks. It is not always beneficial, especially with some normalization or data-rich regimes.</p>
 </div></details>
 ~~~
 
-=== Q84 \[Medium\] Vanishing and exploding gradients \/ 梯度消失与爆炸
+=== Q84 \[M\] Vanishing and exploding gradients \/ 梯度消失与爆炸
 *中文：* 深层或循环网络中梯度为什么会消失\/爆炸？常见缓解方法有哪些？
 
 *English:* Why do gradients vanish or explode in deep\/recurrent networks, and what are common mitigations?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Backprop multiplies many Jacobians; singular values repeatedly below or above one shrink or amplify gradients exponentially. Use variance-aware/orthogonal initialization, ReLU-like activations, residual connections, normalization, gated recurrent units, gradient clipping for explosion, and shorter effective paths. Clipping does not solve vanishing gradients.</p>
 </div></details>
 ~~~
 
-=== Q85 \[Core\] ROC-AUC versus PR-AUC \/ ROC-AUC 与 PR-AUC
+=== Q85 \[C\] ROC-AUC versus PR-AUC \/ ROC-AUC 与 PR-AUC
 *中文：* 在阳性样本极少的问题中，为什么 PR 曲线往往比 ROC 曲线更有信息？
 
 *English:* Why is a precision-recall curve often more informative than ROC under severe class imbalance?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>ROC uses false-positive rate $\mathrm{FPR}=FP/(FP+TN)$; a huge number of negatives can keep this rate small even when false positives overwhelm true positives. Precision $TP/(TP+FP)$ directly exposes that burden, while recall $TP/(TP+FN)$ measures captured positives. PR's baseline depends on prevalence, so compare within the same population.</p>
 </div></details>
 ~~~
 
-=== Q86 \[Core\] Calibration versus ranking \/ 校准与排序
+=== Q86 \[C\] Calibration versus ranking \/ 校准与排序
 *中文：* 一个模型可以有很高 AUC 但概率校准很差吗？如何分别评估排序和校准？
 
 *English:* Can a model have high AUC but poor probability calibration? How should ranking and calibration be evaluated separately?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Yes. AUC depends only on score ordering and is invariant to monotone score transformations; predicted values can therefore be far from empirical frequencies. Evaluate ranking with ROC/PR-AUC or rank correlation, and calibration with reliability curves, Brier score, log loss, and calibration intercept/slope. Recalibrate only on held-out data.</p>
 </div></details>
 ~~~
 
-=== Q87 \[Core\] Choosing a classification threshold \/ 分类阈值选择
+=== Q87 \[C\] Choosing a classification threshold \/ 分类阈值选择
 *中文：* 为什么 0.5 不是普遍最优的分类阈值？已知假阳性和假阴性成本时如何决策？
 
 *English:* Why is 0.5 not a universally optimal classification threshold? How should costs of false positives and false negatives enter the decision?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>With calibrated $p=\Pr(Y=1\mid x)$, predict positive when expected cost of positive is below negative. If correct decisions cost zero, choose positive when</p><p class="equation-line">$$C_{FP}(1-p)&lt;C_{FN}p\quad\Longleftrightarrow\quad p&gt;\frac{C_{FP}}{C_{FP}+C_{FN}}.$$</p><p>Capacity constraints and trading costs can produce a ranking/top-$k$ decision rather than a fixed probability threshold.</p>
 </div></details>
 ~~~
 
-=== Q88 \[Core\] Time-aware cross-validation \/ 时间感知交叉验证
+=== Q88 \[C\] Time-aware cross-validation \/ 时间感知交叉验证
 *中文：* 金融时间序列为什么通常不能随机 k-fold？描述一个可行的 walk-forward 方案。
 
 *English:* Why is random k-fold usually inappropriate for financial time series? Describe a valid walk-forward scheme.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Random folds train on the future and validate on the past, leak temporal structure, and ignore regime drift. Use expanding or rolling windows: train on $[1,t]$, validate on $(t,t+h]$, advance $t$, and aggregate truly out-of-time predictions. Fit every preprocessing step inside each training window; purge/embargo when labels or features overlap across the boundary.</p>
 </div></details>
 ~~~
 
-=== Q89 \[Core\] Target timing and look-ahead \/ 标签时点与前视偏差
+=== Q89 \[C\] Target timing and look-ahead \/ 标签时点与前视偏差
 *中文：* 用 t 日收盘价构造特征，预测 t 到 t\+1 的收益，并假设在 t 日收盘价成交，存在什么问题？
 
 *English:* Features use the day-t closing price to predict the t-to-t\+1 return, while the backtest assumes execution at that same closing price. What is wrong?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The close is not known early enough to compute the signal and simultaneously execute at that exact close. This is look-ahead/latency leakage. Shift execution to the next feasible price, use features available before the order cutoff, or model a realistic auction/order process. Precisely timestamp every raw field, transformation, prediction, and fill.</p>
 </div></details>
 ~~~
 
-=== Q90 \[Medium\] Better R-squared, worse PnL \/ 更高 R² 但更差 PnL
+=== Q90 \[M\] Better R-squared, worse PnL \/ 更高 R² 但更差 PnL
 *中文：* 为什么预测收益的模型 A 样本外 R² 高于 B，但净 PnL 可能更差？至少给出四个原因。
 
 *English:* Model A has higher out-of-sample return-prediction R² than B but worse net PnL. Give at least four reasons.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Possible reasons include weaker cross-sectional ranking in tradable tails, higher turnover/costs, signals concentrated in illiquid names, worse timing/capacity, unwanted factor exposures, large errors during costly regimes, poor calibration of position sizes, and constraints that prevent monetizing average squared-error gains. Evaluate the full signal-to-portfolio-to-execution chain.</p>
 </div></details>
 ~~~
 
-=== Q91 \[Core\] IC and rank IC \/ IC 与 Rank IC
+=== Q91 \[C\] IC and rank IC \/ IC 与 Rank IC
 *中文：* 量化选股中 IC 和 rank IC 通常是什么？两者对离群值和非线性单调关系的敏感度有何差别？
 
 *English:* In cross-sectional quant research, what are IC and rank IC? How do they differ in sensitivity to outliers and nonlinear monotone relationships?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>IC usually means the cross-sectional Pearson correlation between signal scores and future returns; rank IC is their Spearman correlation, equivalently Pearson correlation of ranks. Pearson captures linear magnitude and is outlier-sensitive. Rank IC captures monotone ordering and is more robust to extreme magnitudes, but discards spacing information. Report their time-series mean, dispersion, stability, and universe definition.</p>
 </div></details>
 ~~~
 
-=== Q92 \[Hard\] Backtest overfitting \/ 回测过拟合
+=== Q92 \[H\] Backtest overfitting \/ 回测过拟合
 *中文：* 你试了 5000 个因子\/参数组合，只报告夏普最高的一个。为什么普通样本外切分仍可能不够？设计一个更可靠的流程。
 
 *English:* You try 5,000 factor\/parameter variants and report only the highest Sharpe. Why can an ordinary train\/test split still be insufficient, and what would a more credible process look like?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>If the test set influences repeated iteration, it becomes another training set; the maximum embeds selection bias. Pre-register families where possible, use nested time-aware validation, account for multiple comparisons, retain an untouched final holdout, and confirm on later/live data. Report all trials, uncertainty, sensitivity, turnover/costs, regimes, and economic rationale. Prefer stable families over one lucky specification.</p>
 </div></details>
 ~~~
@@ -1215,50 +1533,50 @@
 
 == F. 经典面试策略题
 
-=== Q93 \[Core\] Alternating Opponents \/ 交替对手的三局赛
+=== Q93 \[C\] Alternating Opponents \/ 交替对手的三局赛
 *中文：* 你要依次与父亲和网球冠军打三局，并且必须采用“父亲—冠军—父亲”或“冠军—父亲—冠军”的顺序。只要连续赢两局就获胜。设你单局战胜父亲和冠军的概率分别为 $p$ 和 $q$，各局独立，且 $p>q$。应选择哪种顺序？
 
 *English:* You must play three independent matches in either Father–Champion–Father or Champion–Father–Champion order. You win the series if you win two consecutive matches. Your single-match win probabilities are $p$ against your father and $q$ against the champion, with $p>q$. Which order is better?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The middle match must be won. Under Father–Champion–Father, the success probability is</p><p class="equation-line">$$q\left[1-(1-p)^2\right]=pq(2-p).$$</p><p>Under Champion–Father–Champion, it is</p><p class="equation-line">$$p\left[1-(1-q)^2\right]=pq(2-q).$$</p><p>Because $p&gt;q$, we have $2-q&gt;2-p$. Therefore <strong>Champion–Father–Champion</strong> is better: the easier opponent should be placed in the indispensable middle match.</p>
 </div></details>
 ~~~
 
-=== Q94 \[Core\] Pepys' Dice Comparison \/ 六骰、十二骰与十八骰
+=== Q94 \[C\] Pepys' Dice Comparison \/ 六骰、十二骰与十八骰
 *中文：* 比较三个事件的概率：（A）掷 6 枚公平骰子，至少出现 1 个六点；（B）掷 12 枚，至少出现 2 个六点；（C）掷 18 枚，至少出现 3 个六点。哪个事件最可能发生？
 
 *English:* Which event is most likely: (A) at least one six in 6 fair-die rolls, (B) at least two sixes in 12 rolls, or (C) at least three sixes in 18 rolls?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Use binomial tail probabilities:</p><p class="equation-line">$$P_A=1-\left(\frac56\right)^6\approx0.6651,$$</p><p class="equation-line">$$P_B=1-\left[\left(\frac56\right)^{12}+12\left(\frac16\right)\left(\frac56\right)^{11}\right]\approx0.6187,$$</p><p class="equation-line">$$P_C=1-\sum_{k=0}^{2}\binom{18}{k}\left(\frac16\right)^k\left(\frac56\right)^{18-k}\approx0.5973.$$</p><p>Thus <strong>event A</strong> is the most likely. Equal expected numbers of sixes do not imply equal upper-tail probabilities.</p>
 </div></details>
 ~~~
 
-=== Q95 \[Medium\] Ballot Tie Probability \/ 计票过程何时追平
+=== Q95 \[M\] Ballot Tie Probability \/ 计票过程何时追平
 *中文：* 候选人 A 获得 $a$ 票，候选人 B 获得 $b$ 票，其中 $a>b$。所有计票顺序等可能。已知第一张票投给 A，在此后的计票过程中，A 与 B 的累计票数至少追平一次的概率是多少？
 
 *English:* Candidate A receives $a$ votes and B receives $b$ votes, where $a>b$, and all vote orders are equally likely. Conditional on the first vote being for A, what is the probability that the running totals are tied at least once later?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Unconditionally, Bertrand's ballot theorem gives $(a-b)/(a+b)$ for staying strictly ahead. Such a path must start with A, and $\Pr(\text{first vote is A})=a/(a+b)$. Therefore</p><p class="equation-line">$$\Pr(\text{strictly ahead throughout}\mid\text{first is A})=\frac{a-b}{a}.$$</p><p>Taking the complement gives</p><p class="equation-line">$$\Pr(\text{a later tie}\mid\text{first is A})=1-\frac{a-b}{a}=\frac{b}{a}.$$</p>
 </div></details>
 ~~~
 
-=== Q96 \[Medium\] Secretary Stopping Rule \/ 最优停止与秘书问题
+=== Q96 \[M\] Secretary Stopping Rule \/ 最优停止与秘书问题
 *中文：* $n$ 位候选人按随机顺序出现；每人面试后必须立即决定是否录用，且只能判断其相对于已面试者的排名。只能录用一人。给出使录用全局最佳候选人概率最大的策略及其渐近成功率。
 
 *English:* The $n$ candidates arrive in a uniformly random order. After each interview you must accept or reject immediately, observing only relative ranks, and may accept only one candidate. Give the rule that maximizes the probability of selecting the overall best candidate and its asymptotic success probability.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Reject the first $r$ candidates, then accept the first later candidate who is better than everyone observed so far. Its success probability is</p><p class="equation-line">$$P(r)=\frac{r}{n}\sum_{k=r+1}^{n}\frac{1}{k-1}.$$</p><p>For large $n$, write $x=r/n$. Then $P(r)\approx-x\log x$, maximized at $x=e^{-1}$. Hence choose $r\approx n/e$, and the optimal success probability tends to <strong>$1/e\approx0.368$ (36.8%)</strong>.</p>
 </div></details>
 ~~~
@@ -1270,98 +1588,98 @@
 
 == G. 衍生品与金融数学
 
-=== Q97 \[Core\] Put–Call Parity and Arbitrage Bounds \/ 看涨看跌平价与套利界
+=== Q97 \[C\] Put–Call Parity and Arbitrage Bounds \/ 看涨看跌平价与套利界
 *中文：* 对同一无分红股票、相同执行价 $K$ 和到期日 $T$ 的欧式看涨与看跌期权，写出看涨看跌平价，并由无套利给出两者的基本价格上下界。假设无违约、可做空且利率 $r\\mathrel{≥}0$。
 
 *English:* For European call and put options on the same non-dividend-paying stock with strike $K$ and maturity $T$, state put–call parity and derive their basic no-arbitrage bounds. Assume frictionless trading, no default, short selling, and $r\\mathrel{≥}0$.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>A call plus a zero-coupon bond paying $K$ at $T$ has the same terminal payoff as a put plus one share. Therefore</p><p class="equation-line">$$C-P=S_0-Ke^{-rT}.$$</p><p>No arbitrage also implies</p><p class="equation-line">$$\max(0,S_0-Ke^{-rT})\le C\le S_0,$$</p><p class="equation-line">$$\max(0,Ke^{-rT}-S_0)\le P\le Ke^{-rT}.$$</p><p>Any violation supports a long-short portfolio with nonpositive initial cost and nonnegative terminal payoff, positive in at least one state.</p>
 </div></details>
 ~~~
 
-=== Q98 \[Core\] American versus European Calls \/ 美式与欧式看涨
+=== Q98 \[C\] American versus European Calls \/ 美式与欧式看涨
 *中文：* 为什么在无分红股票、非负利率和无摩擦市场中，美式看涨期权通常不应提前行权？什么时候这个结论会失效？
 
 *English:* Why is early exercise of an American call on a non-dividend-paying stock suboptimal under nonnegative rates and frictionless markets? When can this conclusion fail?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Exercising early destroys remaining optionality and pays $K$ sooner. Selling the option, or keeping it while investing the present value of $K$, weakly dominates immediate exercise. Thus, under the stated assumptions,</p><p class="equation-line">$$C_{\mathrm{American}}=C_{\mathrm{European}}.$$</p><p>Dividends can make early call exercise optimal near an ex-dividend date. Negative rates, funding constraints, transaction costs, stock-loan frictions, or other contract features can also change the argument. American puts may be optimally exercised early even without dividends.</p>
 </div></details>
 ~~~
 
-=== Q99 \[Medium\] Delta Hedging and Residual Risk \/ Delta 对冲与剩余风险
+=== Q99 \[M\] Delta Hedging and Residual Risk \/ Delta 对冲与剩余风险
 *中文：* 你做空一份欧式看涨期权并用股票做 Delta 对冲。若股价突然大幅下跌，应如何调整股票头寸？为什么连续重新计算 Delta 仍不能消除全部风险？
 
 *English:* You are short one European call and delta-hedge it with the stock. After a sharp stock-price drop, how should the stock position generally be adjusted? Why does repeatedly recomputing delta still fail to eliminate all risk?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>A short call has delta $-\Delta$, so the hedge initially holds $+\Delta$ shares. For a standard call with positive gamma, a stock-price drop lowers the call delta; the hedge should therefore <strong>sell some shares</strong>. Delta removes only the local first-order exposure. Discrete rebalancing leaves gamma error, and realized volatility, jumps, stochastic volatility, model misspecification, transaction costs, liquidity, rates, and dividends create additional residual risk. A delta hedge is not a risk-free replication in a real market.</p>
 </div></details>
 ~~~
 
-=== Q100 \[Medium\] Gamma–Theta Trade-off \/ Gamma–Theta 权衡
+=== Q100 \[M\] Gamma–Theta Trade-off \/ Gamma–Theta 权衡
 *中文：* 解释香草期权组合中 Gamma 与 Theta 为什么经常符号相反。Delta 中性且多 Gamma 的组合如何从实际价格波动中获利？这一说法有哪些限制？
 
 *English:* Explain why gamma and theta often have opposite signs for vanilla-option positions. How can a delta-neutral, long-gamma book benefit from realized price movement, and what are the limitations of that statement?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The Black–Scholes PDE is</p><p class="equation-line">$$\Theta+\frac12\sigma^2S^2\Gamma+rS\Delta-rV=0.$$</p><p>After delta hedging and abstracting from carry, long gamma earns convexity when the underlying moves but usually pays negative theta while waiting. Over a short interval, the rehedged P&amp;L is approximately driven by</p><p class="equation-line">$$\frac12\Gamma S^2\left(\sigma_{\mathrm{realized}}^2-\sigma_{\mathrm{implied}}^2\right)\Delta t.$$</p><p>This is an approximation: rates, dividends, jumps, volatility dynamics, discrete hedging, costs, and path-dependent or exotic exposures can break the simple sign and P&amp;L interpretation.</p>
 </div></details>
 ~~~
 
-=== Q101 \[Core\] Implied-Volatility Smile \/ 隐含波动率微笑
+=== Q101 \[C\] Implied-Volatility Smile \/ 隐含波动率微笑
 *中文：* 如果 Black–Scholes 假设同一标的、同一期限只有一个波动率，为什么市场报价会呈现隐含波动率微笑或偏斜？它在经济上表达了什么？
 
 *English:* If Black–Scholes assumes a single volatility for one underlying and maturity, why do market quotes display an implied-volatility smile or skew? What does that surface represent economically?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Implied volatility is the value that maps an observed option price back through the Black–Scholes formula; it is a quoting coordinate, not a separate physical volatility for each strike. Strike dependence shows that a constant-lognormal model cannot fit the market's risk-neutral distribution. Skewness, heavy tails, jumps, leverage effects, stochastic volatility, crash insurance demand, and supply-demand pressure all affect prices. Across strikes and maturities, the surface summarizes state-price information subject to no-arbitrage constraints.</p>
 </div></details>
 ~~~
 
-=== Q102 \[Core\] Duration and Convexity \/ 久期与凸性
+=== Q102 \[C\] Duration and Convexity \/ 久期与凸性
 *中文：* 定义债券价格对到期收益率的修正久期与凸性，并写出二阶价格近似。这个近似隐含了哪些限制？
 
 *English:* Define modified duration and convexity with respect to yield to maturity, and give the second-order bond-price approximation. What limitations are implicit in this approximation?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>For price $P(y)$, define</p><p class="equation-line">$$D_{\mathrm{mod}}=-\frac{1}{P}\frac{dP}{dy},\qquad \mathcal C=\frac{1}{P}\frac{d^2P}{dy^2}.$$</p><p>For a small yield change,</p><p class="equation-line">$$\frac{\Delta P}{P}\approx-D_{\mathrm{mod}}\Delta y+\frac12\mathcal C(\Delta y)^2.$$</p><p>Duration is the first-order slope and convexity corrects curvature. The approximation deteriorates for large changes and treats a single yield movement; nonparallel curve shifts, embedded options, spread changes, and changing cash flows require key-rate or option-adjusted measures.</p>
 </div></details>
 ~~~
 
-=== Q103 \[Core\] Minimum-Variance Hedge Ratio \/ 最小方差套保比率
+=== Q103 \[C\] Minimum-Variance Hedge Ratio \/ 最小方差套保比率
 *中文：* 用期货收益 $R_f$ 对冲资产收益 $R_p$。若对冲后收益写为 $R_p-hR_f$，求使方差最小的 $h$，并给出最小剩余方差。
 
 *English:* Futures return $R_f$ is used to hedge asset return $R_p$. If the hedged return is $R_p-hR_f$, derive the variance-minimizing hedge ratio and the minimum residual variance.
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Differentiate</p><p class="equation-line">$$\operatorname{Var}(R_p-hR_f)=\operatorname{Var}(R_p)+h^2\operatorname{Var}(R_f)-2h\operatorname{Cov}(R_p,R_f).$$</p><p>The optimum is the regression slope</p><p class="equation-line">$$h^*=\frac{\operatorname{Cov}(R_p,R_f)}{\operatorname{Var}(R_f)},$$</p><p>with residual variance</p><p class="equation-line">$$\operatorname{Var}(R_p)-\frac{\operatorname{Cov}(R_p,R_f)^2}{\operatorname{Var}(R_f)}.$$</p><p>Contract multipliers and notionals must convert this return ratio into a number of contracts. Estimation error, changing correlation, basis risk, costs, and nonlinear exposure limit the hedge.</p>
 </div></details>
 ~~~
 
-=== Q104 \[Core\] Value at Risk versus Expected Shortfall \/ VaR 与 ES
-*中文：* 从损失变量 $L$ 出发定义置信水平 $\\alpha$ 下的 VaR 与 Expected Shortfall。为什么 ES 通常比 VaR 更能描述尾部风险？两者在实践中各有什么局限？
+=== Q104 \[C\] Value at Risk versus Expected Shortfall \/ VaR 与 ES
+*中文：* 从损失变量 $L$ 出发定义置信水平 $\\\\alpha$ 下的 VaR 与 Expected Shortfall。为什么 ES 通常比 VaR 更能描述尾部风险？两者在实践中各有什么局限？
 
-*English:* For a loss variable $L$, define Value at Risk and Expected Shortfall at confidence level $\\alpha$. Why is ES generally more informative about tail severity, and what practical limitations do both measures have?
+*English:* For a loss variable $L$, define Value at Risk and Expected Shortfall at confidence level $\\\\alpha$. Why is ES generally more informative about tail severity, and what practical limitations do both measures have?
 
 ~~~
 {}{raw}
-<details class="answer"><summary>Solution</summary><div class="answer-content">
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>One standard definition is</p><p class="equation-line">$$\operatorname{VaR}_{\alpha}(L)=\inf\{\ell:\Pr(L\le\ell)\ge\alpha\}.$$</p><p>For a continuous loss distribution,</p><p class="equation-line">$$\operatorname{ES}_{\alpha}(L)=\mathbb E[L\mid L\ge\operatorname{VaR}_{\alpha}(L)].$$</p><p>More generally, ES is the average upper-tail quantile, which handles atoms correctly. VaR reports a cutoff but ignores how severe losses are beyond it and need not be subadditive; ES is tail-sensitive and coherent under standard conditions. Both depend on horizon, data, distribution and liquidity assumptions. ES is harder to estimate precisely, so neither replaces stress tests, scenario analysis, or model validation.</p>
 </div></details>
 ~~~
