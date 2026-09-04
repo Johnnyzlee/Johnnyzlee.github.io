@@ -108,7 +108,7 @@ python2 jemdoc.py *.jemdoc
 
 ### 3. 修改独立 Blog 笔记
 
-Blog 目前包含 Quantitative Career Resources（下分 `study-guides/` 和 `problem-sets/`）、Technical Notes、Arsenal 与 World Models。完整分类、文章模板和相对路径约定见 `blogs/README.md`。
+Blog 目前包含 Quantitative Career Resources（下分 `study-guides/` 和 `problem-sets/`）、Technical Notes 与 Arsenal。完整分类、文章模板和相对路径约定见 `blogs/README.md`。
 
 独立 Blog 使用英文或中文配置生成；命令应从仓库根目录运行：
 
