@@ -1347,6 +1347,160 @@
 <details class="answer"><summary>Solution</summary><div class="answer-content">
 <p>For an unbiased walk on $\{0,\ldots,100\}$, the probability of hitting $100$ before $0$ from $i$ is $i/100$, hence $17/100$. The expected absorption time solves $e_i=1+(e_{i-1}+e_{i+1})/2$ with zero boundary values, yielding $e_i=i(100-i)$. At $i=17$ this is $17\cdot83=1{,}411$ steps.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>先把一维随机游走的记号说清楚。</strong> 令</p>
+<p class="equation-line">$$X_t=i+\sum_{s=1}^t\xi_s,$$</p>
+<p>其中 $X_0=i$，每一步</p>
+<p class="equation-line">$$\Pr(\xi_s=+1)=p,\qquad \Pr(\xi_s=-1)=q=1-p.$$</p>
+<p>$p=q=1/2$ 称为对称或公平随机游走；$p&gt;q$ 表示向右有正漂移，$p&lt;q$ 表示向左有负漂移。首次到达位置 $a$ 的时间记为</p>
+<p class="equation-line">$$T_a=\inf\{t\ge0:X_t=a\}.$$</p>
+<p>在有界区间 $\{0,1,\ldots,N\}$ 上，走到 $0$ 或 $N$ 就停止，吸收时间为 $T=T_0\wedge T_N$。</p></li>
+<li><p><strong>Z102 本身的答案。</strong> 本题 $N=100$、$i=17$ 且 $p=q=1/2$。公平随机游走先到右端点的概率是当前位置占全长的比例：</p>
+<p class="equation-line">$$\Pr_{17}(T_{100}&lt;T_0)=\frac{17}{100}.$$</p>
+<p>到任一端点的期望步数为</p>
+<p class="equation-line">$$\mathbb E_{17}[T]=17(100-17)=\boxed{1{,}411}.$$</p>
+<p>直觉上，离右端越近，先到右端的概率越高；期望停止时间则在桥中央最大，在端点为零。</p></li>
+<li><p><strong>有界区间：先到右端点的概率。</strong> 定义</p>
+<p class="equation-line">$$u_i=\Pr_i(T_N&lt;T_0).$$</p>
+<p>边界条件是 $u_0=0,u_N=1$。从内部位置 $i$ 先走一步：</p>
+<p class="equation-line">$$u_i=pu_{i+1}+qu_{i-1}.$$</p>
+<p>解出后得到</p>
+<p class="equation-line">$$\boxed{
+u_i=
+\begin{cases}
+\dfrac{i}{N},&amp;p=q=\dfrac12,\\[6pt]
+\dfrac{1-(q/p)^i}{1-(q/p)^N},&amp;p\ne q.
+\end{cases}}$$</p>
+<p>先到左端点的概率就是 $1-u_i$。当 $p&gt;q$ 时，向右漂移使 $u_i$ 高于公平情形；当 $p&lt;q$ 时则相反。</p></li>
+<li><p><strong>原题问的吸收时间：到任一端点的期望步数。</strong> 定义</p>
+<p class="equation-line">$$m_i=\mathbb E_i[T_0\wedge T_N].$$</p>
+<p>若已在端点，等待时间为零，所以 $m_0=m_N=0$。从内部位置先花一步，再从新位置继续：</p>
+<p class="equation-line">$$m_i=1+pm_{i+1}+qm_{i-1}.$$</p>
+<p>结果为</p>
+<p class="equation-line">$$\boxed{
+m_i=
+\begin{cases}
+i(N-i),&amp;p=q=\dfrac12,\\[6pt]
+\dfrac{Nu_i-i}{p-q},&amp;p\ne q,
+\end{cases}}$$</p>
+<p>其中 $u_i$ 是上一点的先到右端概率。有限区间且 $0&lt;p&lt;1$ 时最终会被吸收，期望时间也是有限的。</p></li>
+<li><p><strong>你真正关心的量：到达某个指定端点需要多久？</strong> 假设指定目标是右端点 $N$。在桥模型中，若先到 $0$ 就已经停止，以后不可能再到 $N$。因此若约定失败路径上 $T_N=\infty$，只要 $0&lt;i&lt;N$ 且 $0&lt;p&lt;1$，就有</p>
+<p class="equation-line">$$\boxed{\mathbb E_i[T_N]=\infty},$$</p>
+<p>因为事件 $T_0&lt;T_N$ 具有正概率。真正有限并能回答“成功到达指定端点的那些路径平均走多久”的量是</p>
+<p class="equation-line">$$c_i^{(N)}=\mathbb E_i[T_N\mid T_N&lt;T_0].$$</p>
+<p>公平随机游走中，</p>
+<p class="equation-line">$$\boxed{c_i^{(N)}=\frac{N^2-i^2}{3}}.$$</p>
+<p>若指定目标是左端点 $0$，则对称地</p>
+<p class="equation-line">$$\boxed{c_i^{(0)}=\mathbb E_i[T_0\mid T_0&lt;T_N]
+=\frac{N^2-(N-i)^2}{3}
+=\frac{i(2N-i)}{3}}.$$</p>
+<p>本题从 $17$ 出发：</p>
+<p class="equation-line">$$\mathbb E_{17}[T_{100}\mid T_{100}&lt;T_0]
+=\frac{100^2-17^2}{3}=3{,}237,$$</p>
+<p class="equation-line">$$\mathbb E_{17}[T_0\mid T_0&lt;T_{100}]
+=\frac{100^2-83^2}{3}=1{,}037.$$</p>
+<p>它们与原题的吸收时间满足全期望检查：</p>
+<p class="equation-line">$$\frac{17}{100}(3{,}237)+\frac{83}{100}(1{,}037)=1{,}411.$$</p>
+<p>所以“到任一端平均 $1{,}411$ 步”与“给定成功到右端平均 $3{,}237$ 步”是两个不同问题。</p></li>
+<li><p><strong>有偏随机游走到指定端点的条件期望。</strong> 令 $r=q/p$ 且 $p\ne q$。给定先到右端 $N$，</p>
+<p class="equation-line">$$\boxed{
+\mathbb E_i[T_N\mid T_N&lt;T_0]
+=\frac{1}{p-q}\left[
+N\frac{1+r^N}{1-r^N}
+-i\frac{1+r^i}{1-r^i}
+\right]}.$$</p>
+<p>若给定先到左端 $0$，交换左右即可。写成显式公式：</p>
+<p class="equation-line">$$\boxed{
+\mathbb E_i[T_0\mid T_0&lt;T_N]
+=\frac{1}{q-p}\left[
+N\frac{1+(p/q)^N}{1-(p/q)^N}
+-(N-i)\frac{1+(p/q)^{N-i}}{1-(p/q)^{N-i}}
+\right]}.$$</p>
+<p>这两个表达式在 $p\to1/2$ 时分别趋向上一点的 $(N^2-i^2)/3$ 与 $[N^2-(N-i)^2]/3$。即使漂移远离目标，只要条件化在最终先到目标，条件期望仍然有限。</p></li>
+<li><p><strong>为什么公平情形的期望时间是二次函数？</strong> 公平递推式可改写为</p>
+<p class="equation-line">$$m_{i+1}-2m_i+m_{i-1}=-2.$$</p>
+<p>左边是离散二阶差分。连续微积分中“二阶导数是常数”会产生二次函数；离散情形完全类似，所以 $m_i$ 应是关于 $i$ 的二次式。再用 $m_0=m_N=0$ 固定两端，便得到 $m_i=i(N-i)$。</p></li>
+<li><p><strong>无界情形先要澄清“端点”的意思。</strong> 整数直线 $\mathbb Z$ 本身没有端点；通常问题是“是否会首次到达某个固定 level”，或者只保留一个吸收边界，例如在半直线 $\{0,1,2,\ldots\}$ 上问何时到达 $0$。无界以后，“最终会到达”和“平均多久到达”是两件不同的事。</p></li>
+<li><p><strong>半直线 $\{0,1,2,\ldots\}$：到达 $0$ 的结论。</strong> 从 $i&gt;0$ 出发：</p>
+<ul>
+<li>若 $p&lt;q$，漂移指向 $0$：</li>
+</ul>
+<p class="equation-line">$$\Pr_i(T_0&lt;\infty)=1,\qquad \mathbb E_i[T_0]=\frac{i}{q-p}.$$</p>
+<ul>
+<li>若 $p=q=1/2$，公平随机游走：</li>
+</ul>
+<p class="equation-line">$$\Pr_i(T_0&lt;\infty)=1,\qquad \boxed{\mathbb E_i[T_0]=\infty}.$$</p>
+<ul>
+<li>若 $p&gt;q$，漂移远离 $0$：</li>
+</ul>
+<p class="equation-line">$$\Pr_i(T_0&lt;\infty)=\left(\frac qp\right)^i&lt;1,$$</p>
+<p>所以把“永远不到达”记作 $T_0=\infty$ 时，无条件期望必为 $\infty$。若额外条件化在最终确实到达，则</p>
+<p class="equation-line">$$\mathbb E_i[T_0\mid T_0&lt;\infty]=\frac{i}{p-q}.$$</p></li>
+<li><p><strong>无界结论中最反直觉的一点。</strong> 公平一维随机游走是 recurrent：它以概率 $1$ 最终会到达任意固定整数；但首次到达时间有很重的尾部，均值是无穷大。因此</p>
+<p class="equation-line">$$\Pr(T_a&lt;\infty)=1$$</p>
+<p>绝不推出 $\mathbb E[T_a]&lt;\infty$。所谓“几乎必然会发生”只说明永远不发生的概率为零，不说明平均等待时间有限。</p></li>
+<li><p><strong>无限直线上到达右侧目标的统一版本。</strong> 若目标 $a&gt;i$，距离 $d=a-i$，则：</p>
+<ul>
+<li>$p&gt;q$，漂移朝向目标：到达概率为 $1$，且 $\mathbb E_i[T_a]=d/(p-q)$；</li>
+<li>$p=q$：到达概率为 $1$，但 $\mathbb E_i[T_a]=\infty$；</li>
+<li>$p&lt;q$，漂移远离目标：到达概率为 $(p/q)^d&lt;1$，无条件期望为 $\infty$；给定最终到达时，条件期望为 $d/(q-p)$。</li>
+</ul>
+<p>若目标在左侧，只需交换左右，即交换 $p$ 与 $q$。</p></li>
+<li><p><strong>怎样由有界结果推出无界结果？</strong> 先在 $[0,N]$ 上求解，再令 $N\to\infty$，比直接在无穷区间上猜边界条件更安全。例如 $p&gt;q$ 时令 $r=q/p&lt;1$：</p>
+<p class="equation-line">$$\Pr_i(T_0&lt;T_N)=1-u_i
+=\frac{r^i-r^N}{1-r^N}\longrightarrow r^i
+=\left(\frac qp\right)^i.$$</p>
+<p>当 $p&lt;q$ 时，该极限为 $1$，而有界期望时间公式的极限是 $i/(q-p)$。公平情形下</p>
+<p class="equation-line">$$m_i^{(N)}=i(N-i)\longrightarrow\infty,$$</p>
+<p>这直接显示：虽然最终到达 $0$ 的概率趋于 $1$，期望等待时间却发散。</p></li>
+<li><p><strong>鞅可以作为快速交叉检查。</strong> 公平随机游走中，$X_t$ 与 $X_t^2-t$ 都是 martingale。对有界吸收时间 $T=T_0\wedge T_N$ 使用停时思想：</p>
+<p class="equation-line">$$\mathbb E_i[X_T]=i.$$</p>
+<p>而 $X_T$ 只可能是 $0$ 或 $N$，所以</p>
+<p class="equation-line">$$i=N\Pr_i(X_T=N),$$</p>
+<p>立即得到 $u_i=i/N$。再由</p>
+<p class="equation-line">$$\mathbb E_i[X_T^2-T]=i^2$$</p>
+<p>以及 $\mathbb E[X_T^2]=N^2u_i=Ni$，得到</p>
+<p class="equation-line">$$\mathbb E_i[T]=Ni-i^2=i(N-i).$$</p>
+<p>在无界问题中不能不检查条件就机械套 optional stopping；公平首次到达时间的期望正是无穷大，很多简单版本的停时定理并不适用。</p></li>
+<li><p><strong>最后重点：递推方程怎样一步步解成闭式？</strong></p>
+<p><strong>方法 A：公平情形用一阶差分降阶。</strong> 对 hitting probability，</p>
+<p class="equation-line">$$u_{i+1}-2u_i+u_{i-1}=0.$$</p>
+<p>令 $d_i=u_i-u_{i-1}$，则 $d_{i+1}-d_i=0$，所以 $d_i$ 是常数，$u_i=A+Bi$。代入 $u_0=0,u_N=1$ 得 $u_i=i/N$。</p>
+<p>对 expected time，</p>
+<p class="equation-line">$$m_{i+1}-2m_i+m_{i-1}=-2.$$</p>
+<p>仍令 $d_i=m_i-m_{i-1}$，则</p>
+<p class="equation-line">$$d_{i+1}-d_i=-2,$$</p>
+<p>所以 $d_i=d_1-2(i-1)$。累加一阶差分：</p>
+<p class="equation-line">$$m_i=\sum_{k=1}^id_k=id_1-i(i-1).$$</p>
+<p>再用 $m_N=0$ 得 $d_1=N-1$，因此</p>
+<p class="equation-line">$$m_i=i(N-1)-i(i-1)=i(N-i).$$</p>
+<p><strong>方法 B：有偏情形用特征方程。</strong> 齐次递推</p>
+<p class="equation-line">$$pu_{i+1}-u_i+qu_{i-1}=0$$</p>
+<p>尝试 $u_i=r^i$，得到</p>
+<p class="equation-line">$$pr^2-r+q=(r-1)(pr-q)=0.$$</p>
+<p>两个根是 $1$ 和 $q/p$，因此</p>
+<p class="equation-line">$$u_i=A+B\left(\frac qp\right)^i.$$</p>
+<p>代入两个边界条件即可解出 $A,B$。期望时间递推的左边相同、右边为 $-1$；先取一个特解 $i/(q-p)$，再加齐次通解：</p>
+<p class="equation-line">$$m_i=A+B\left(\frac qp\right)^i+\frac{i}{q-p},$$</p>
+<p>最后用 $m_0=m_N=0$ 解常数。</p>
+<p><strong>方法 C：指定端点的条件期望先乘回成功概率。</strong> 直接对条件期望 $c_i^{(N)}$ 做 first-step analysis 时，条件化会改变每一步的转移概率。更方便的是先定义</p>
+<p class="equation-line">$$g_i=\mathbb E_i\!\left[(T_0\wedge T_N)\mathbf 1_{\{T_N&lt;T_0\}}\right].$$</p>
+<p>因为只在最终成功到达 $N$ 的路径上累计时间，</p>
+<p class="equation-line">$$c_i^{(N)}=\frac{g_i}{u_i}.$$</p>
+<p>先走一步后，若最终成功，这一步也要计入；“该路径最终成功”的概率正是 $u_i$，所以</p>
+<p class="equation-line">$$\boxed{g_i=u_i+pg_{i+1}+qg_{i-1}},\qquad g_0=g_N=0.$$</p>
+<p>公平情形 $u_i=i/N$，于是</p>
+<p class="equation-line">$$g_{i+1}-2g_i+g_{i-1}=-\frac{2i}{N}.$$</p>
+<p>右边关于 $i$ 是一次函数，所以尝试三次特解；结合 $g_0=g_N=0$ 得</p>
+<p class="equation-line">$$g_i=\frac{i(N^2-i^2)}{3N}.$$</p>
+<p>再除以 $u_i=i/N$：</p>
+<p class="equation-line">$$c_i^{(N)}=\frac{g_i}{u_i}=\frac{N^2-i^2}{3}.$$</p>
+<p>有偏情形中 $u_i=A+B(q/p)^i$，$g_i$ 的非齐次项正好由齐次解 $1$ 和 $(q/p)^i$ 组成，因此特解要尝试 $Ci+Di(q/p)^i$；加上齐次通解、代入 $g_0=g_N=0$，再除以 $u_i$，就得到前面的条件期望公式。</p>
+<p>记忆成固定流程：<strong>写边界 → 写内部递推 → 齐次解 → 找特解 → 用边界定常数</strong>。若问题带有“给定先到指定端点”，先构造 $g_i=\mathbb E[T\mathbf1_{\text{success}}]$，最后除以成功概率；在无界区间只给一个边界条件通常不够，还要用有界截断取极限、最小非负解或合理增长条件排除伪解。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>“到任一端”的吸收时间与“到指定端点”的时间不同：后者在失败路径上无穷，所以通常问条件期望。公平有界游走给定先到 $N$ 时为 $(N^2-i^2)/3$；无限直线上公平游走虽以概率 $1$ 命中固定点，期望命中时间仍是无穷大。</p>
+</div></details>
 ~~~
 
 === Z103 · Dice game \/ 鞅与骰子游戏 （Page 133）

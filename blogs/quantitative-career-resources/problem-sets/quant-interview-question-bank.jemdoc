@@ -1,6 +1,6 @@
 # jemdoc: nofooter, nodefaultcss, noeqs, addcss{../../blog-note}, addjs{../../math-render}, addjs{../../blog-sidebar}
 = Quantitative Research Interview Mathematics Question Bank
-[../../../blog.html ← Blogs] \M /更新于 2026-08-30/
+[../../../blog.html ← Blogs] \M /更新于 2026-08-31/
 
 ~~~
 {}{raw}
@@ -490,7 +490,65 @@
 </div></details>
 ~~~
 
-=== Q19 \[M\] Common probability shock \/ 共同概率冲击
+=== Q19 \[M\] Galton–Watson extinction \/ Galton–Watson 分枝过程的灭绝
+*中文：* 一个 Galton–Watson 分枝过程从一名祖先开始，即 $Z_0=1$。每个个体独立地产生 $0$、$1$ 或 $2$ 个后代，其概率分别为 $1\/4$、$1\/4$ 和 $1\/2$。（a）求 $\\mathbb E(Z_n)$；（b）求最终灭绝概率；（c）求 $P(Z_2=0)$；（d）如果最初有 $k$ 名相互独立的祖先，求最终灭绝概率。
+
+*English:* A Galton–Watson branching process starts from one ancestor, $Z_0=1$. Each individual independently produces $0$, $1$, or $2$ offspring with probabilities $1\/4$, $1\/4$, and $1\/2$, respectively. (a) Find $\\mathbb E(Z_n)$; (b) find the probability of eventual extinction; (c) find $P(Z_2=0)$; (d) if the process starts from $k$ independent ancestors, find the probability of eventual extinction.
+
+~~~
+{}{raw}
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
+<p>The offspring probability-generating function and mean are</p>
+<p class="equation-line">$$f(s)=\frac14+\frac14s+\frac12s^2,\qquad
+\mu=f'(1)=\frac54.$$</p>
+<p>Conditioning on the current generation gives $\mathbb E[Z_{n+1}\mid Z_n]=\mu Z_n$. Since $Z_0=1$, iteration yields</p>
+<p class="equation-line">$$\boxed{\mathbb E[Z_n]=\left(\frac54\right)^n}.$$</p>
+<p>Let $q$ be the probability of eventual extinction from one ancestor. The descendants of different first-generation individuals evolve independently, so $q$ is the smallest solution in $[0,1]$ of</p>
+<p class="equation-line">$$q=f(q)=\frac14+\frac14q+\frac12q^2.$$</p>
+<p>Equivalently, $2q^2-3q+1=0$, whose roots are $1/2$ and $1$. Therefore</p>
+<p class="equation-line">$$\boxed{q=\frac12}.$$</p>
+<p>If $q_n=P(Z_n=0)$, then $q_0=0$ and $q_{n+1}=f(q_n)$. Hence</p>
+<p class="equation-line">$$P(Z_2=0)=f(f(0))=f\!\left(\frac14\right)
+=\frac14+\frac1{16}+\frac1{32}
+=\boxed{\frac{11}{32}}.$$</p>
+<p>Starting from $k$ independent ancestors produces $k$ independent descendant trees. All of them must die out, so the extinction probability is</p>
+<p class="equation-line">$$\boxed{q^k=2^{-k}}.$$</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<p><strong>Galton–Watson recursion.</strong> If $X_{n,i}$ is the offspring count of individual $i$ in generation $n$, then</p>
+<p class="equation-line">$$Z_{n+1}=\sum_{i=1}^{Z_n}X_{n,i},$$</p>
+<p>where all offspring counts are independent and have the same distribution.</p>
+<p><strong>PGF composition.</strong> If $f(s)=\mathbb E[s^X]$, then the PGF of $Z_n$ starting from one ancestor is the $n$-fold composition $f^{\circ n}(s)$. In particular,</p>
+<p class="equation-line">$$P(Z_n=0)=f^{\circ n}(0).$$</p>
+<p><strong>Ultimate extinction.</strong> The eventual extinction probability is the smallest fixed point of $f$ in $[0,1]$, not automatically the root $1$. For a nondegenerate offspring distribution with mean $\mu$, extinction is certain when $\mu\le1$ and has probability strictly below $1$ when $\mu&gt;1$.</p>
+<p><strong>Expected population is not a survival probability.</strong> The identity $\mathbb E[Z_n]=\mu^n$ describes an average across all paths. It does not by itself give the probability that the population is still alive.</p>
+</div></details>
+~~~
+
+=== Q20 \[C\] Critical branching paradox \/ 临界分枝过程的反直觉现象
+*中文：* 一个 Galton–Watson 分枝过程从 $Z_0=1$ 开始。每个个体以相同概率产生 $0$ 个或 $2$ 个后代。（a）求 $\\mathbb E(Z_n)$；（b）求最终灭绝概率；（c）解释为什么“每一代的期望种群规模始终为 $1$”与“种群几乎必然灭绝”并不矛盾。
+
+*English:* A Galton–Watson branching process starts from $Z_0=1$. Each individual produces either $0$ or $2$ offspring, each with probability $1\/2$. (a) Find $\\mathbb E(Z_n)$; (b) find the probability of eventual extinction; (c) explain why a constant expected population size of $1$ in every generation does not contradict almost-sure extinction.
+
+~~~
+{}{raw}
+<details class="answer solution"><summary>Solution</summary><div class="answer-content">
+<p>The mean offspring count is $\mu=(0+2)/2=1$, so</p>
+<p class="equation-line">$$\boxed{\mathbb E[Z_n]=\mu^n=1}$$</p>
+<p>for every $n$. The offspring PGF is $f(s)=(1+s^2)/2$. The extinction probability is the smallest solution in $[0,1]$ of</p>
+<p class="equation-line">$$q=\frac{1+q^2}{2}
+\quad\Longleftrightarrow\quad
+(q-1)^2=0,$$</p>
+<p>so</p>
+<p class="equation-line">$$\boxed{q=1}.$$</p>
+<p>There is no contradiction. Almost every lineage eventually reaches zero, but the rare lineages that survive to a late generation can be very large. Indeed,</p>
+<p class="equation-line">$$1=\mathbb E[Z_n]
+=P(Z_n&gt;0)\,\mathbb E[Z_n\mid Z_n&gt;0].$$</p>
+<p>As $P(Z_n&gt;0)\to0$, the conditional population size on survival must grow. Thus $Z_n\to0$ almost surely while $\mathbb E[Z_n]=1$ for every finite $n$; one cannot interchange the limit and expectation here.</p>
+</div></details>
+~~~
+
+=== Q21 \[M\] Common probability shock \/ 共同概率冲击
 *中文：* 给定随机成功率 $P$，$n$ 次试验条件独立，$K\\mid P\\sim\\operatorname{Binomial}(n,P)$。设 $\\mathbb E(P)=\\mu$、$\\operatorname{Var}(P)=τ^2$。求 $\\operatorname{Var}(K)$，并与 $\\operatorname{Binomial}(n,\\mu)$ 比较。
 
 *English:* Conditional on a random success probability $P$, $n$ trials are independent and $K\\mid P\\sim\\operatorname{Binomial}(n,P)$. If $\\mathbb E(P)=\\mu$ and $\\operatorname{Var}(P)=τ^2$, find $\\operatorname{Var}(K)$ and compare it with $\\operatorname{Binomial}(n,\\mu)$.
@@ -522,7 +580,7 @@
 </div></details>
 ~~~
 
-=== Q20 \[C\] Uncorrelated but dependent \/ 不相关但不独立
+=== Q22 \[C\] Uncorrelated but dependent \/ 不相关但不独立
 *中文：* 给出两个不相关但不独立的随机变量例子，并证明。
 
 *English:* Give two random variables that are uncorrelated but dependent, and prove both claims.
@@ -534,7 +592,7 @@
 </div></details>
 ~~~
 
-=== Q21 \[C\] Maximum of uniforms \/ 均匀分布最大值
+=== Q23 \[C\] Maximum of uniforms \/ 均匀分布最大值
 *中文：* U,V 独立服从 Uniform(0,1)。求 max(U,V) 的分布函数和期望。
 
 *English:* U and V are independent Uniform(0,1). Find the CDF and expectation of max(U,V).
@@ -546,7 +604,7 @@
 </div></details>
 ~~~
 
-=== Q22 \[M\] Random sum and Wald's identity \/ 随机和
+=== Q24 \[M\] Random sum and Wald's identity \/ 随机和
 *中文：* $X_i$ 为 i.i.d. 且 $\\mathbb E(X_i)=\\mu$，$N$ 是与整个序列独立的非负整数随机变量，$\\mathbb E(N)\\lt\\infty$。求 $\\mathbb E(\\sum_{i=1}^{N}X_i)$。哪些条件不能随意删除？
 
 *English:* Let $X_i$ be i.i.d. with mean $\\mu$, and let $N$ be an independent nonnegative integer-valued variable with finite mean. Find $\\mathbb E(\\sum_{i=1}^{N}X_i)$. Which assumptions should not be casually dropped?
@@ -586,7 +644,7 @@
 </div></details>
 ~~~
 
-=== Q23 \[C\] Fair bits from a biased coin \/ 用有偏硬币生成公平比特
+=== Q25 \[C\] Fair bits from a biased coin \/ 用有偏硬币生成公平比特
 *中文：* 一枚硬币正面概率 $p$ 未知且 $0\\lt p\\lt1$。如何仅通过抛这枚硬币生成无偏的 0\/1？期望需要多少次抛掷？
 
 *English:* A coin has unknown head probability $p$ with $0\\lt p\\lt1$. How can you generate an unbiased bit using only this coin, and what is the expected number of tosses?
@@ -598,7 +656,7 @@
 </div></details>
 ~~~
 
-=== Q24 \[M\] Estimating the endpoint of a uniform \/ 估计均匀分布端点
+=== Q26 \[M\] Estimating the endpoint of a uniform \/ 估计均匀分布端点
 *中文：* $X_1,\\ldots,X_n$ 独立服从 $\\operatorname{Uniform}(0,θ)$。求 $θ$ 的 MLE，并构造一个基于样本最大值的无偏估计量。
 
 *English:* Let $X_1,\\ldots,X_n$ be i.i.d. $\\operatorname{Uniform}(0,θ)$. Find the MLE of $θ$ and an unbiased estimator based on the sample maximum.
@@ -623,7 +681,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q25 \[H\] Optional stopping warning \/ 可选停时警告
+=== Q27 \[H\] Optional stopping warning \/ 可选停时警告
 *中文：* 为什么“公平游戏在任意自选停止时刻的期望收益仍为 0”是错误的？给出一个反例思路并说明缺少的条件。
 
 *English:* Why is the statement "a fair game has zero expected gain at any self-chosen stopping time" false? Give a counterexample idea and identify missing conditions.
@@ -642,7 +700,7 @@ a=\frac{n+1}{n}.$$</p>
 
 == B. 统计与回归
 
-=== Q26 \[C\] Why divide by n-1? \/ 为什么样本方差除以 n-1？
+=== Q28 \[C\] Why divide by n-1? \/ 为什么样本方差除以 n-1？
 *中文：* $X_1,\\ldots,X_n$ 为 i.i.d.，方差为 $\\sigma^2$。证明 $\\sum_i(X_i-\\overline{X})^2/(n-1)$ 是 $\\sigma^2$ 的无偏估计。
 
 *English:* For i.i.d. observations with variance $\\sigma^2$, prove that $\\sum_i(X_i-\\overline{X})^2/(n-1)$ is unbiased for $\\sigma^2$.
@@ -686,7 +744,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q27 \[C\] Bernoulli MLE and uncertainty \/ 伯努利参数估计
+=== Q29 \[C\] Bernoulli MLE and uncertainty \/ 伯努利参数估计
 *中文：* n 次独立 Bernoulli(p) 试验中有 k 次成功。求 p 的 MLE 和大样本标准误。
 
 *English:* In n independent Bernoulli(p) trials, k successes are observed. Find the MLE of p and its large-sample standard error.
@@ -725,7 +783,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q28 \[C\] Confidence-interval interpretation \/ 置信区间的解释
+=== Q30 \[C\] Confidence-interval interpretation \/ 置信区间的解释
 *中文：* 已得到参数 $θ$ 的一个 95\% 频率学置信区间 $(L,U)$。“$θ$ 以 95\% 概率位于此区间”是否正确？
 
 *English:* A 95\% frequentist confidence interval $(L,U)$ for a parameter $θ$ has been computed. Is it correct to say that $θ$ lies in this realized interval with 95\% probability?
@@ -737,7 +795,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q29 \[C\] What a p-value means \/ p 值的含义
+=== Q31 \[C\] What a p-value means \/ p 值的含义
 *中文：* 用一句话准确定义 p 值，并列出两个常见错误解读。
 
 *English:* Define a p-value precisely in one sentence and name two common misinterpretations.
@@ -746,10 +804,34 @@ a=\frac{n+1}{n}.$$</p>
 {}{raw}
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>A p-value is the probability, <em>under the null model</em>, of observing a test statistic at least as incompatible with the null as the realized one. It is not $\Pr(H_0\text{ is true}\mid\text{data})$, and $1-p$ is not the probability that the alternative is true. It also does not measure effect size or economic importance.</p>
+<p><strong>中文：</strong>p 值是在原假设模型成立的前提下，观察到与原假设至少同样不相容（即至少同样极端）的检验统计量的概率。两个常见错误解读是：p 值等于“原假设为真的概率”；以及 $1-p$ 等于“备择假设为真的概率”。此外，p 值也不衡量效应大小或经济重要性。</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>严格定义：p 值是在原假设下计算的尾部概率。</strong> 先提出原假设 $H_0$，选择能够衡量数据与 $H_0$ 不相容程度的检验统计量 $T$，并由实际数据得到 $t_{\mathrm{obs}}$。如果 $T$ 越大表示越不支持 $H_0$，那么</p>
+<p class="equation-line">$$p=P_{H_0}(T\ge t_{\mathrm{obs}}).$$</p>
+<p>这里的概率是在“$H_0$ 成立”这一前提下，对假想重复抽样结果计算的。它包含当前结果以及所有比当前结果更极端的结果，而不只是当前这一个结果。双侧检验中的“更极端”必须由检验方法明确规定；对于非对称或离散分布，双侧 p 值不一定等于单侧 p 值简单乘以 2。</p></li>
+<li><p><strong>为什么 p 值越小，通常越怀疑 $H_0$？</strong> 推理过程是：暂时假定 $H_0$ 成立，再检查实际数据在这个模型下是否反常。如果 p 值很小，数据落入了 $H_0$ 所预测分布的尾部，说明“$H_0$ 与当前数据的组合”难以协调，因此数据提供了反对 $H_0$ 的证据。它是一种反证强度，而不是对 $H_0$ 真假的直接概率判决；很小的 p 值也不能从逻辑上证明 $H_0$ 必然为假。</p></li>
+<li><p><strong>最关键的条件概率方向不能颠倒。</strong> p 值回答的是</p>
+<p class="equation-line">$$P(\text{当前或更极端的数据}\mid H_0),$$</p>
+<p>而不是人们常常真正想问的</p>
+<p class="equation-line">$$P(H_0\mid\text{数据}).$$</p>
+<p>事实上，p 值甚至不等于单独的 $P(\text{当前数据}\mid H_0)$，因为它把所有更极端的结果也累加进来了。如果要计算假设在观察数据之后成立的后验概率，就必须指定先验概率以及备择模型，并使用 Bayes 公式，例如</p>
+<p class="equation-line">$$P(H_0\mid D)=\frac{P(D\mid H_0)P(H_0)}{P(D\mid H_0)P(H_0)+P(D\mid H_1)P(H_1)}.$$</p>
+<p>这些信息并不包含在 p 值本身之中。因此，$p=0.02$ 绝不表示“$H_0$ 只有 2% 的概率为真”，$1-p=0.98$ 也不表示“$H_1$ 有 98% 的概率为真”。</p></li>
+<li><p><strong>例子：检验一枚硬币是否公平。</strong> 设 $H_0$ 为硬币正面概率等于 $1/2$。抛 10 次得到 9 次正面，令 $X$ 表示正面次数，则在 $H_0$ 下 $X\sim\operatorname{Binomial}(10,1/2)$。对称的双侧精确检验把“至少同样极端”定义为 $X\ge9$ 或 $X\le1$，所以</p>
+<p class="equation-line">$$p=P_{H_0}(X\ge9\text{ or }X\le1)=2\frac{\binom{10}{9}+\binom{10}{10}}{2^{10}}=\frac{22}{1024}\approx0.0215.$$</p>
+<p>正确解释是：如果硬币确实公平，10 次投掷中出现当前这么极端或更极端结果的概率约为 2.15%。它不是“硬币为公平硬币的概率只有 2.15%”。</p></li>
+<li><p><strong>显著性水平 $\alpha$ 是事先规定的决策规则。</strong> 常见流程是在看数据之前选定 $\alpha$，例如 0.05；若 $p\le\alpha$，则在该规则下拒绝 $H_0$。当检验正确校准且 $H_0$ 成立时，$\alpha$ 控制长期重复实验中错误拒绝 $H_0$ 的概率，也就是一类错误率。它并不表示本次拒绝决定有 $\alpha$ 的概率是错误的。$p=0.049$ 与 $p=0.051$ 的证据强度几乎相同，不应被解释成结论突然从“真”跳到“假”。</p></li>
+<li><p><strong>“未拒绝”不等于“接受”。</strong> 较大的 p 值只表示当前数据没有提供足够强的反对证据；它可能源于 $H_0$ 确实合理，也可能源于样本太小、噪声太大或检验功效不足。要主张两个对象近似相等，通常需要等效性检验、非劣效性检验或能够量化不确定性的区间，而不能只依赖“$p&gt;0.05$”。</p></li>
+<li><p><strong>p 值不衡量效应大小，也不衡量实际重要性。</strong> p 值同时受到效应大小、样本量、噪声水平和模型假设影响。样本非常大时，实际意义很小的差异也可能产生极小的 p 值；样本很小时，实际效应很大也可能未达到显著。因此应同时报告效应量、置信区间、样本量，并讨论经济或科学意义。</p></li>
+<li><p><strong>p 值只有在分析流程可信时才可信。</strong> 结论依赖于抽样方式、独立性、分布假设、检验统计量、单侧或双侧方向以及停止规则。反复尝试许多变量、模型或子样本后只报告最小 p 值，会显著增加假阳性；多重检验需要 Bonferroni、Holm、Benjamini–Hochberg 等适当校正。在连续且正确校准的 $H_0$ 下，p 值近似服从 $\operatorname{Uniform}(0,1)$，因此即使 $H_0$ 完全正确，长期来看仍约有 5% 的实验得到 $p\le0.05$。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>p 值衡量的是“如果 $H_0$ 成立，眼前数据有多反常”，而不是“看到数据以后，$H_0$ 有多大概率成立”。</p>
 </div></details>
 ~~~
 
-=== Q30 \[C\] Power and sample size \/ 检验功效与样本量
+=== Q32 \[C\] Power and sample size \/ 检验功效与样本量
 *中文：* 其他条件不变时，增大样本量如何影响标准误、一类错误和功效？要将标准误减半，样本量需要如何变化？
 
 *English:* Holding other choices fixed, how does increasing sample size affect standard error, Type I error, and power? How much must n increase to halve the standard error?
@@ -758,10 +840,33 @@ a=\frac{n+1}{n}.$$</p>
 {}{raw}
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Standard error typically scales as $1/\sqrt n$, so halving it requires about <strong>four times</strong> the sample size. At a fixed significance threshold and valid test, nominal Type I error remains $\alpha$, while power against a fixed nonzero effect increases. Large $n$ can make economically tiny effects statistically significant.</p>
+<p><strong>中文解答：</strong>在抽样方式、总体方差、检验方法、显著性水平和真实效应大小都保持不变的前提下，可以从以下四点理解样本量的作用。</p>
+<ol>
+<li><p><strong>标准误随样本量按 $1/\sqrt n$ 的速度下降。</strong> 例如，若 $X_1,\ldots,X_n$ 独立同分布，且总体方差为 $\sigma^2$，那么样本均值的方差和标准误分别为</p>
+<p class="equation-line">$$\operatorname{Var}(\bar X)=\frac{\sigma^2}{n},\qquad \operatorname{SE}(\bar X)=\frac{\sigma}{\sqrt n}.$$</p>
+<p>更一般地，许多正则估计量也具有“根号 $n$ 收敛”性质，因此其标准误近似与 $1/\sqrt n$ 成正比。样本量越大，估计量在重复抽样中的波动越小，参数估计也越精确。</p></li>
+<li><p><strong>要把标准误减半，样本量必须扩大到原来的 4 倍。</strong> 设原样本量为 $n_{\mathrm{old}}$，新样本量为 $n_{\mathrm{new}}$。要求</p>
+<p class="equation-line">$$\frac{\sigma}{\sqrt{n_{\mathrm{new}}}}=\frac12\frac{\sigma}{\sqrt{n_{\mathrm{old}}}},$$</p>
+<p>两边约去 $\sigma$ 并平方，得到</p>
+<p class="equation-line">$$\boxed{n_{\mathrm{new}}=4n_{\mathrm{old}}}.$$</p>
+<p>因此，标准误下降得并不快：样本量翻倍只能使标准误乘以 $1/\sqrt2\approx0.707$，而不是减半。</p></li>
+<li><p><strong>在检验正确校准且显著性水平固定时，一类错误率仍然是 $\alpha$。</strong> 一类错误是 $H_0$ 实际为真时却错误地拒绝 $H_0$。例如，双侧检验在</p>
+<p class="equation-line">$$|Z|&gt;z_{1-\alpha/2}$$</p>
+<p>时拒绝 $H_0$，临界值正是按照 $H_0$ 下拒绝概率为 $\alpha$ 来选取的。因此增加样本量本身不会把名义一类错误率从 5% 自动降到更低；只要仍使用同一个 $\alpha$，长期重复实验中的错误拒绝概率仍受 $\alpha$ 控制。这里说的是检验模型和假设都成立时的名义错误率；模型错设、反复试验或选择性报告可能使实际错误率偏离 $\alpha$。</p></li>
+<li><p><strong>对于固定的非零真实效应，样本量增加会提高功效并降低二类错误率。</strong> 设要检验 $H_0:\theta=\theta_0$，真实参数为 $\theta_0+\delta$，其中 $\delta\ne0$ 固定。典型的标准化统计量为</p>
+<p class="equation-line">$$Z=\frac{\widehat\theta-\theta_0}{\operatorname{SE}(\widehat\theta)}.$$</p>
+<p>由于标准误约为 $\sigma/\sqrt n$，在备择假设下 $Z$ 的中心会以</p>
+<p class="equation-line">$$\frac{\delta}{\sigma/\sqrt n}=\frac{\delta\sqrt n}{\sigma}$$</p>
+<p>的速度远离零。于是统计量越容易越过拒绝临界值，检验功效</p>
+<p class="equation-line">$$1-\beta=P(\text{拒绝 }H_0\mid H_1\text{ 为真})$$</p>
+<p>随之提高，而二类错误率 $\beta$ 降低。</p></li>
+</ol>
+<p><strong>需要同时注意统计显著性与实际意义。</strong> 当 $n$ 很大时，标准误可以变得非常小，即使真实差异 $\delta$ 在经济或科学意义上微不足道，也可能得到很小的 p 值。反过来，小样本可能因为功效不足而无法识别具有实际意义的效应。因此应同时报告效应量、置信区间、样本量和 p 值，而不能把“统计显著”直接等同于“实际重要”。</p>
+<p><strong>结论：</strong>样本量增加时，标准误按 $1/\sqrt n$ 下降；固定 $\alpha$ 下的名义一类错误率保持不变；针对固定非零效应的功效提高；要把标准误减半，需要把样本量扩大到原来的 4 倍。</p>
 </div></details>
 ~~~
 
-=== Q31 \[C\] Multiple testing \/ 多重检验
+=== Q33 \[C\] Multiple testing \/ 多重检验
 *中文：* 对 1000 个完全无效且独立的因子分别做 5\% 水平检验。期望有多少个“显著”？至少一个假阳性的概率约为多少？如何控制 FWER？
 
 *English:* Test 1,000 independent null factors at the 5\% level. How many significant results are expected? Approximately what is the probability of at least one false positive? How can FWER be controlled?
@@ -770,10 +875,47 @@ a=\frac{n+1}{n}.$$</p>
 {}{raw}
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The expected number is $1000\cdot0.05=\mathbf{50}$. Under independence, $\Pr(\text{at least one})=1-0.95^{1000}\approx1$. Bonferroni controls family-wise error by testing each at $\alpha/1000$ (or use Holm's improvement). Benjamini–Hochberg targets FDR rather than FWER.</p>
+<p><strong>中文解答：</strong>先把题目中的术语逐一拆开，再进行计算。</p>
+<ol>
+<li><p><strong>“因子完全无效”是什么意思？</strong> 对第 $i$ 个因子，我们可以写出原假设</p>
+<p class="equation-line">$$H_{0,i}:\text{该因子没有真实预测能力或效应。}$$</p>
+<p>题目说 1000 个因子都完全无效，表示这 1000 个原假设实际上全部为真。换言之，数据中不存在任何真正有效的因子；如果某个因子最终被判为“显著”，它只能是随机噪声造成的误报。</p></li>
+<li><p><strong>“5% 水平检验”是什么意思？</strong> 5% 是事先选定的显著性水平，记为 $\alpha=0.05$。通常采用规则</p>
+<p class="equation-line">$$p_i\le0.05\quad\Longrightarrow\quad\text{拒绝 }H_{0,i}.$$</p>
+<p>如果第 $i$ 个原假设确实为真，并且检验正确校准，那么它仍有 5% 的概率仅仅因为抽样噪声而被错误拒绝。这 5% 是长期重复实验中的一类错误概率，不是“原假设为真的概率”。</p></li>
+<li><p><strong>“统计显著”是什么意思？</strong> 某个结果被称为在 5% 水平下显著，只表示它的 p 值不超过 0.05，因此按照预先规定的规则拒绝了对应的原假设。显著不等于因子一定真实有效，也不等于效应很大、收益可观或具有经济意义。</p></li>
+<li><p><strong>“假阳性”是什么？</strong> 假阳性也叫 false positive 或一类错误：原假设本来为真，却被检验错误地拒绝。令</p>
+<p class="equation-line">$$I_i=\mathbf 1\{\text{第 }i\text{ 个无效因子被判为显著}\},$$</p>
+<p>则在本题条件下 $P(I_i=1)=0.05$。因为所有 1000 个因子都无效，所以本题中每一个“显著发现”都是假阳性。</p></li>
+<li><p><strong>为什么预期会得到 50 个“显著”结果？</strong> 设假阳性总数为</p>
+<p class="equation-line">$$V=\sum_{i=1}^{1000}I_i.$$</p>
+<p>利用期望的线性性，不需要独立性也有</p>
+<p class="equation-line">$$\mathbb E[V]=\sum_{i=1}^{1000}\mathbb E[I_i]=1000\times0.05=\boxed{50}.$$</p>
+<p>“期望为 50”不是说每次实验一定恰好出现 50 个。若各检验独立，则 $V\sim\operatorname{Binomial}(1000,0.05)$，其标准差为</p>
+<p class="equation-line">$$\sqrt{1000\times0.05\times0.95}\approx6.89,$$</p>
+<p>所以实际假阳性数量会围绕 50 上下波动。</p></li>
+<li><p><strong>为什么至少出现一个假阳性的概率几乎为 1？</strong> 在独立条件下，单个无效因子不产生假阳性的概率是 $1-0.05=0.95$。1000 个检验全部不产生假阳性的概率为</p>
+<p class="equation-line">$$P(V=0)=0.95^{1000}\approx5.29\times10^{-23}.$$</p>
+<p>因此至少出现一个假阳性的概率是</p>
+<p class="equation-line">$$P(V\ge1)=1-P(V=0)=1-0.95^{1000}\approx\boxed{1}.$$</p>
+<p>这说明：即使所有因子都完全无效，只要同时尝试足够多的因子，几乎必然能找到一些 p 值小于 0.05 的“显著结果”。这正是多重检验和数据挖掘中假发现大量出现的根源。</p></li>
+<li><p><strong>FWER 是什么？</strong> FWER 是 <em>family-wise error rate</em>，中文通常称为族错误率或家族错误率。它是一整组检验中至少出现一个一类错误的概率：</p>
+<p class="equation-line">$$\operatorname{FWER}=P(V\ge1).$$</p>
+<p>单项检验的 5% 水平只控制每个检验各自的错误率，不会自动控制整组 1000 个检验的 FWER。本题不作校正时，FWER 几乎等于 100%。</p></li>
+<li><p><strong>Bonferroni 如何控制 FWER？</strong> 如果希望整组检验的 FWER 不超过 $\alpha=0.05$，Bonferroni 方法把每个检验的显著性水平降为</p>
+<p class="equation-line">$$\alpha_{\mathrm{per\ test}}=\frac{0.05}{1000}=0.00005.$$</p>
+<p>也就是说，只有 $p_i\le0.00005$ 才把第 $i$ 个因子判为显著。由并集上界，</p>
+<p class="equation-line">$$P(\text{至少一个假阳性})\le\sum_{i=1}^{1000}P(I_i=1)\le1000\times0.00005=0.05.$$</p>
+<p>这个保证不要求各检验相互独立，但可能比较保守、降低发现真实效应的功效。Holm 方法是逐步调整的 Bonferroni 改进，也控制 FWER，并且通常比普通 Bonferroni 更有功效。</p></li>
+<li><p><strong>FWER 与 FDR 有什么区别？</strong> FWER 关心的是“整组结果中是否出现过任何一个假阳性”，标准很严格。FDR 是 <em>false discovery rate</em>，关心的是所有被判为显著的结果中，假发现所占比例的期望。粗略地说：</p>
+<p class="equation-line">$$\operatorname{FDR}=\mathbb E\!\left[\frac{V}{\max(R,1)}\right],$$</p>
+<p>其中 $R$ 是显著发现总数，$V$ 是其中的假阳性数量。Benjamini–Hochberg 方法通常用于控制 FDR；它允许出现少量假阳性，以换取发现更多真实信号，适合因子筛选、基因研究等大规模探索。Bonferroni 和 Holm 控制的是 FWER，不是 FDR。</p></li>
+</ol>
+<p><strong>结论：</strong>每个无效因子在 5% 水平下都有 5% 的机会被误判为显著，因此 1000 个无效因子预计产生 50 个假阳性；若检验独立，至少出现一个假阳性的概率为 $1-0.95^{1000}\approx1$。若要把整组检验的 FWER 控制在 5%，可使用 Bonferroni 阈值 $0.05/1000=0.00005$ 或功效更高的 Holm 方法；若目标是控制显著结果中的假发现比例，则可考虑 Benjamini–Hochberg FDR 控制。</p>
 </div></details>
 ~~~
 
-=== Q32 \[C\] LLN versus CLT \/ 大数定律与中心极限定理
+=== Q34 \[C\] LLN versus CLT \/ 大数定律与中心极限定理
 *中文：* 大数定律和中心极限定理分别回答什么问题？为什么它们不是同一件事？
 
 *English:* What different questions do the law of large numbers and central limit theorem answer, and why are they not the same statement?
@@ -785,7 +927,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q33 \[M\] Fisher information \/ Fisher 信息
+=== Q35 \[M\] Fisher information \/ Fisher 信息
 *中文：* 对正则参数模型，Fisher 信息如何定义？它与 MLE 的大样本方差有什么关系？
 
 *English:* In a regular parametric model, define Fisher information and state its relationship to the large-sample variance of the MLE.
@@ -795,9 +937,61 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>For one observation,</p><p class="equation-line">$$I(\theta)=\mathbb E\!\left[\left(\frac{\partial}{\partial\theta}\log f(X;\theta)\right)^2\right]=-\mathbb E\!\left[\frac{\partial^2}{\partial\theta^2}\log f(X;\theta)\right]$$</p><p>under regularity. For $n$ i.i.d. observations, information is $nI(\theta)$, and $\sqrt n(\hat\theta-\theta)\Rightarrow\mathcal N(0,I(\theta)^{-1})$; thus asymptotic variance is approximately <strong>$1/[nI(\theta)]$</strong>.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>Fisher 信息要回答什么问题？</strong> 假设数据 $X$ 来自带有未知参数 $\theta$ 的分布 $f(x;\theta)$。观察到 $x$ 以后，把</p>
+<p class="equation-line">$$L(\theta;x)=f(x;\theta)$$</p>
+<p>看成 $\theta$ 的函数，就得到似然函数。Fisher 信息衡量的是：一条观测数据能够多敏锐地区分真实参数 $\theta$ 与它附近的参数值。若似然曲线在真实参数附近很尖，稍微改变 $\theta$ 就会令数据的相对可能性明显变化，参数容易估准，信息量大；若似然曲线很平，许多邻近参数都能同样解释数据，参数难以区分，信息量小。</p></li>
+<li><p><strong>先理解 score：它是对数似然的斜率。</strong> 对一条观测定义 score function</p>
+<p class="equation-line">$$S_\theta(X)=\frac{\partial}{\partial\theta}\log f(X;\theta).$$</p>
+<p>虽然中文有时译作“得分函数”，它并不是模型表现分数，而是“对数似然对参数的导数”。它描述当前数据希望把 $\theta$ 往哪个方向推动以及推动得多强：score 为正表示增加 $\theta$ 会提高对数似然，score 为负表示减小 $\theta$ 会提高对数似然。在常见正则条件下，若数据确实由参数 $\theta$ 生成，则</p>
+<p class="equation-line">$$\mathbb E_\theta[S_\theta(X)]=0.$$</p>
+<p>这是因为在真实模型下，score 的随机正负波动长期平均应当相互抵消。</p></li>
+<li><p><strong>Fisher 信息的第一个定义：score 的方差。</strong> 因为正则条件下 score 的均值为零，一条观测包含的 Fisher 信息为</p>
+<p class="equation-line">$$I(\theta)=\mathbb E_\theta[S_\theta(X)^2]=\operatorname{Var}_\theta(S_\theta(X)).$$</p>
+<p>如果不同样本产生的 score 经常远离零，说明数据对参数的微小变化很敏感，因而信息量大。平方保证向上和向下的敏感度都会贡献正的信息。</p></li>
+<li><p><strong>第二个定义：对数似然的负期望曲率。</strong> 在正则条件下，同一个量也可以写成</p>
+<p class="equation-line">$$I(\theta)=-\mathbb E_\theta\!\left[\frac{\partial^2}{\partial\theta^2}\log f(X;\theta)\right].$$</p>
+<p>对数似然在极大值附近通常向下弯，因此二阶导数为负；加上负号后信息量为正。曲率的绝对值越大，峰越尖，参数越容易定位。两个公式相等可以由恒等式</p>
+<p class="equation-line">$$\frac{\partial^2}{\partial\theta^2}\log f=\frac{\partial_\theta^2 f}{f}-\left(\frac{\partial_\theta f}{f}\right)^2$$</p>
+<p>得到：乘以 $f$ 后积分，第一项变成 $\partial_\theta^2\int f(x;\theta)\,dx=\partial_\theta^2 1=0$，第二项正是 $-I(\theta)$。这一步要求能够交换求导与积分，并且分布的支持集不能以破坏该推导的方式依赖 $\theta$。</p></li>
+<li><p><strong>独立样本的信息可以相加。</strong> 对 $n$ 个 i.i.d. 观测，联合对数似然和总 score 分别为</p>
+<p class="equation-line">$$\ell_n(\theta)=\sum_{i=1}^n\log f(X_i;\theta),\qquad S_n(\theta)=\sum_{i=1}^n S_\theta(X_i).$$</p>
+<p>独立性使 score 的方差相加，因此</p>
+<p class="equation-line">$$I_n(\theta)=nI(\theta).$$</p>
+<p>这正是“样本越多，信息越多”的定量表达：样本量扩大 $k$ 倍，总信息扩大 $k$ 倍。</p></li>
+<li><p><strong>信息量为什么决定估计方差？</strong> 对满足正则条件的无偏估计量 $T$，Cramér–Rao 下界给出</p>
+<p class="equation-line">$$\operatorname{Var}_\theta(T)\ge\frac{1}{I_n(\theta)}=\frac{1}{nI(\theta)}.$$</p>
+<p>它表示任何正则无偏估计方法的方差都不能任意小；Fisher 信息越大，理论上允许达到的估计误差越小。在常见正则模型中，最大似然估计量 MLE 具有渐近正态性：</p>
+<p class="equation-line">$$\sqrt n(\widehat\theta_{\mathrm{MLE}}-\theta)\Rightarrow\mathcal N\!\left(0,I(\theta)^{-1}\right),$$</p>
+<p>等价地，在大样本下</p>
+<p class="equation-line">$$\widehat\theta_{\mathrm{MLE}}\approx\mathcal N\!\left(\theta,\frac{1}{nI(\theta)}\right),\qquad \operatorname{SE}(\widehat\theta_{\mathrm{MLE}})\approx\frac{1}{\sqrt{nI(\theta)}}.$$</p>
+<p>因此 MLE 在大样本下通常能够达到 Cramér–Rao 下界，称为渐近有效。</p></li>
+<li><p><strong>例子一：Bernoulli 成功概率。</strong> 若 $X\sim\operatorname{Bernoulli}(p)$，其中 $p\in(0,1)$，则</p>
+<p class="equation-line">$$\log f(X;p)=X\log p+(1-X)\log(1-p),$$</p>
+<p class="equation-line">$$S_p(X)=\frac{X}{p}-\frac{1-X}{1-p}=\frac{X-p}{p(1-p)}.$$</p>
+<p>由于 $\operatorname{Var}(X)=p(1-p)$，一条观测的 Fisher 信息为</p>
+<p class="equation-line">$$I(p)=\mathbb E[S_p(X)^2]=\frac{1}{p(1-p)}.$$</p>
+<p>$n$ 条观测的信息为 $n/[p(1-p)]$，所以方差下界为</p>
+<p class="equation-line">$$\frac{1}{I_n(p)}=\frac{p(1-p)}{n}.$$</p>
+<p>MLE 是样本比例 $\widehat p=\bar X$，而它恰好满足 $\operatorname{Var}(\widehat p)=p(1-p)/n$。这个例子清楚展示了“信息的倒数就是可达到的估计方差”。</p></li>
+<li><p><strong>例子二：已知方差的正态均值。</strong> 若 $X\sim\mathcal N(\mu,\sigma^2)$，且 $\sigma^2$ 已知，则</p>
+<p class="equation-line">$$S_\mu(X)=\frac{X-\mu}{\sigma^2},\qquad I(\mu)=\mathbb E[S_\mu(X)^2]=\frac{1}{\sigma^2}.$$</p>
+<p>$n$ 条观测的总信息为 $n/\sigma^2$，因此 MLE $\widehat\mu=\bar X$ 的方差为</p>
+<p class="equation-line">$$\operatorname{Var}(\bar X)=\frac{\sigma^2}{n}=\frac{1}{I_n(\mu)}.$$</p>
+<p>总体噪声 $\sigma^2$ 越大，每条观测携带的信息越少；样本量 $n$ 越大，总信息越多。</p></li>
+<li><p><strong>期望信息与观测信息。</strong> Fisher 信息 $I_n(\theta)$ 是对所有可能样本取期望后的平均曲率。实际得到一组数据后，还可以计算观测信息</p>
+<p class="equation-line">$$J_n(\theta)=-\frac{\partial^2}{\partial\theta^2}\ell_n(\theta).$$</p>
+<p>在 MLE 处用 $J_n(\widehat\theta)^{-1}$ 近似协方差，是统计软件计算标准误的常见方法。若参数是向量 $\theta\in\mathbb R^d$，Fisher 信息变成矩阵</p>
+<p class="equation-line">$$I(\theta)=\mathbb E[S_\theta(X)S_\theta(X)^\top],$$</p>
+<p>MLE 的大样本协方差矩阵近似为 $I_n(\theta)^{-1}$；对角线给出各参数的方差，非对角线反映参数估计之间的相关性。</p></li>
+<li><p><strong>“正则模型”为什么要特别强调？</strong> 上述等式和渐近结论通常要求模型可识别、真参数位于参数空间内部、对数似然足够光滑、信息有限且非奇异，并且可以交换求导与积分。若分布支持依赖参数，例如 $\operatorname{Uniform}(0,\theta)$，或者参数位于边界、模型不可识别、混合模型出现奇异点，score 均值为零、两个信息公式相等或 MLE 正态极限都可能失效，不能机械套用 $1/[nI(\theta)]$。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>Fisher 信息是对数似然在真实参数附近的平均敏感度或曲率；信息越大，似然峰越尖，参数越容易估准，而正则 MLE 的大样本方差约等于总 Fisher 信息的倒数。</p>
+</div></details>
 ~~~
 
-=== Q34 \[C\] Derive OLS \/ 推导最小二乘
+=== Q36 \[C\] Derive OLS \/ 推导最小二乘
 *中文：* 从最小化 $\\lVert y-Xβ\\Vert_2^2$ 出发推导 OLS，并给出几何解释。
 
 *English:* Derive OLS from minimizing $\\lVert y-Xβ\\Vert_2^2$ and give the geometric interpretation.
@@ -809,7 +1003,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q35 \[C\] Multicollinearity \/ 多重共线性
+=== Q37 \[C\] Multicollinearity \/ 多重共线性
 *中文：* 什么是多重共线性？它如何影响 OLS？如何诊断和处理？
 
 *English:* What is multicollinearity? How does it affect OLS, and how would you diagnose and address it?
@@ -819,9 +1013,47 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Multicollinearity means columns of $X$ are exactly or nearly linearly dependent. Exact dependence destroys uniqueness; near dependence makes coefficient estimates high-variance and unstable while predictions may remain acceptable. Diagnose via domain knowledge, correlations, VIF, small singular values, or a large condition number. Remedies include removing/combining redundant variables, collecting informative data, PCA/SVD, ridge, lasso/elastic net, and reporting uncertainty. The choice depends on interpretation versus prediction.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>定义与核心直觉。</strong> 在线性回归</p>
+<p class="equation-line">$$y=X\beta+\varepsilon$$</p>
+<p>中，设计矩阵 $X$ 的每一列是一项解释变量。若某一列可以由其他列精确或近似地线性组合出来，就存在多重共线性。直觉上，若 $x_1$ 与 $x_2$ 几乎总是一起变化，数据很难判断 $y$ 的变化究竟应归因于 $x_1$ 还是 $x_2$；许多不同的 $(\beta_1,\beta_2)$ 组合都能给出几乎相同的拟合值。</p></li>
+<li><p><strong>完全共线性：参数不能被唯一识别。</strong> 如果存在非零向量 $a$ 使</p>
+<p class="equation-line">$$Xa=0,$$</p>
+<p>那么对任意常数 $c$，$\beta$ 与 $\beta+ca$ 给出的拟合值完全相同：</p>
+<p class="equation-line">$$X(\beta+ca)=X\beta.$$</p>
+<p>此时 $X$ 不满列秩，$X^\top X$ 奇异，普通公式 $(X^\top X)^{-1}X^\top y$ 不存在，而且单个系数没有唯一答案。典型例子是“虚拟变量陷阱”：模型同时包含截距和一个类别变量的全部 $K$ 个虚拟变量，因为每行的 $K$ 个虚拟变量之和恒等于截距列。通常要删去一个基准类别或取消截距。</p></li>
+<li><p><strong>近似共线性：系数可以计算，但非常不稳定。</strong> 当 $X$ 满秩但某些列近似线性依赖时，OLS 仍有唯一解。然而在同方差线性模型下，</p>
+<p class="equation-line">$$\operatorname{Var}(\widehat\beta\mid X)=\sigma^2(X^\top X)^{-1}.$$</p>
+<p>若 $X^\top X$ 有非常小的特征值，其逆矩阵会在对应方向产生非常大的特征值，从而放大 $\widehat\beta$ 的方差。样本稍有变化，就可能导致系数数值大幅波动、符号翻转或某个变量忽然显著又忽然不显著。</p></li>
+<li><p><strong>多重共线性不一定造成偏差，但会降低精度。</strong> 在模型正确、解释变量外生且 $X$ 满秩时，OLS 仍然是条件无偏的；多重共线性本身不会自动产生 omitted-variable bias。它主要造成标准误变大、置信区间变宽、单个系数的 t 检验功效下降。于是模型整体的 F 检验可能显著、预测也不错，但多个单独系数都不显著。真正的问题是难以分离各变量的边际作用，而不一定是模型完全无法预测。</p></li>
+<li><p><strong>为什么预测可能仍然不错？</strong> 假设样本中 $x_2\approx x_1$。将 $\beta_1$ 增加 $c$、同时将 $\beta_2$ 减少 $c$，单个系数变化很大，但</p>
+<p class="equation-line">$$\beta_1x_1+\beta_2x_2$$</p>
+<p>可能几乎不变。因此在与训练数据相似的共线结构内，拟合值和插值预测可以相对稳定；但若未来数据中 $x_1$ 与 $x_2$ 的关系发生变化，外推预测会很脆弱。稳定预测并不能证明单个系数具有可靠的因果解释。</p></li>
+<li><p><strong>诊断一：相关矩阵与 VIF。</strong> 两两相关系数是有用的初筛，但它只能发现两列之间的关系，可能漏掉“一列由多列共同解释”的共线性。对第 $j$ 个解释变量，用其余解释变量回归它并得到 $R_j^2$，定义</p>
+<p class="equation-line">$$\operatorname{VIF}_j=\frac{1}{1-R_j^2},\qquad \operatorname{Tolerance}_j=1-R_j^2.$$</p>
+<p>在含截距的常见设定中，</p>
+<p class="equation-line">$$\operatorname{Var}(\widehat\beta_j\mid X)=\frac{\sigma^2}{\sum_i(x_{ij}-\bar x_j)^2(1-R_j^2)}.$$</p>
+<p>所以 VIF 表示共线性把 $\widehat\beta_j$ 的方差放大了多少倍。VIF 等于 1 表示该变量不能被其他变量线性解释；实践中 5 或 10 常被用作警戒线，但它们只是经验规则，必须结合样本量、研究目标和领域知识判断。</p></li>
+<li><p><strong>诊断二：奇异值与条件数。</strong> 对标准化后的设计矩阵作 SVD：</p>
+<p class="equation-line">$$X=U\Sigma V^\top.$$</p>
+<p>很小的奇异值表示某个特征方向几乎没有独立变化。常用条件数为</p>
+<p class="equation-line">$$\kappa(X)=\frac{\sigma_{\max}(X)}{\sigma_{\min}(X)}.$$</p>
+<p>条件数越大，线性系统越病态，系数对数据扰动和数值误差越敏感。$X^\top X$ 的条件数是 $X$ 条件数的平方，因此直接解正规方程会进一步放大数值问题；QR 或 SVD 通常比显式计算 $(X^\top X)^{-1}$ 更稳定。计算条件数前通常要标准化不同量纲的变量，否则量纲差异也会人为放大数值。</p></li>
+<li><p><strong>常见来源。</strong> 多重共线性常来自高度重叠的经济指标、同时加入总量及其组成项、虚拟变量陷阱、时间趋势与多个相近滞后项、未经中心化的高次多项式和交互项、由其他变量机械计算出的比率，以及样本覆盖范围太窄。诊断时应先从变量定义和数据生成过程出发，而不能只看一张相关系数表。</p></li>
+<li><p><strong>如何处理取决于目标是解释还是预测。</strong></p>
+<ul>
+<li><strong>重视解释或因果识别：</strong>根据理论明确真正需要估计的效应；删除完全冗余的编码；把高度重复且含义相近的变量组合成指数；收集能够让相关变量独立变化的新数据；报告宽置信区间或对一组相关系数做联合检验。不要只为了降低 VIF 就机械删除重要混杂变量，否则可能引入更严重的遗漏变量偏差。</li>
+<li><strong>重视预测：</strong>ridge 通过加入 $\lambda\lVert\beta\rVert_2^2$ 稳定共线方向；elastic net 同时提供收缩和稀疏性；PCA、SVD 或 PLS 可把相关变量转换为较稳定的低维方向。正则化强度和维数应通过交叉验证选择。</li>
+<li><strong>使用 lasso 时要谨慎解释：</strong>面对一组高度相关变量，lasso 可能任意保留其中一个、舍弃其他变量，换一个样本就选择另一列；elastic net 往往能更稳定地处理相关特征组。</li>
+</ul></li>
+<li><p><strong>哪些做法不能真正解决问题？</strong> 异方差稳健标准误修正的是误差方差结构，不会创造解释变量之间缺失的独立信息。标准化只改变量纲，不会消除实质性的线性依赖；中心化可以减轻多项式或交互项产生的非本质共线性，但无法让两项本来高度同步的经济变量变得独立。单纯增加与原样本结构完全相同的数据可能降低总体抽样方差，却未必改善病态方向；更有价值的是增加能够打破原有相关关系的“有信息量的变化”。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>多重共线性意味着数据没有提供足够的独立变化来分开识别多个系数；完全共线性使系数无唯一解，近似共线性使系数高方差且不稳定，而处理方案必须围绕“解释单个效应”还是“获得稳定预测”来选择。</p>
+</div></details>
 ~~~
 
-=== Q36 \[C\] L1, L2 and priors \/ L1、L2 与先验
+=== Q38 \[C\] L1, L2 and priors \/ L1、L2 与先验
 *中文：* 比较 ridge 和 lasso 的目标、系数形态、对相关特征的表现和 MAP 先验解释。
 
 *English:* Compare ridge and lasso in objective, coefficient behavior, treatment of correlated features, and MAP-prior interpretation.
@@ -833,7 +1065,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q37 \[M\] Omitted-variable bias \/ 遗漏变量偏差
+=== Q39 \[M\] Omitted-variable bias \/ 遗漏变量偏差
 *中文：* 真实模型是 $y=β_1x_1\\mathplus{}β_2x_2\\mathplus{}ε$，但只用 $x_1$ 做带截距回归。大样本中 $x_1$ 系数估计趋近什么？
 
 *English:* The true model is $y=β_1x_1\\mathplus{}β_2x_2\\mathplus{}ε$, but you regress $y$ only on $x_1$ with an intercept. What does the $x_1$ coefficient converge to?
@@ -843,9 +1075,70 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Assuming $\mathbb E[\varepsilon\mid x_1,x_2]=0$, the simple-regression slope converges to</p><p class="equation-line">$$\beta_1+\beta_2\frac{\operatorname{Cov}(x_1,x_2)}{\operatorname{Var}(x_1)}.$$</p><p>Bias requires both a nonzero effect of the omitted variable and correlation with the included regressor.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>先把题目中的回归术语拆开。</strong> 考虑总体中的真实关系</p>
+<p class="equation-line">$$y=\beta_0+\beta_1x_1+\beta_2x_2+\varepsilon.$$</p>
+<ul>
+<li>$y$ 是因变量（dependent variable）或结果变量，即我们想解释的对象。</li>
+<li>$x_1$ 和 $x_2$ 是解释变量（explanatory variables）、回归变量（regressors）或特征。</li>
+<li>$\beta_1$ 表示在保持 $x_2$ 不变时，$x_1$ 增加一个单位与 $y$ 平均变化多少相关；$\beta_2$ 同理。</li>
+<li>$\varepsilon$ 是误差项（error term），收集模型中未被 $x_1,x_2$ 明确表示的其他影响。</li>
+</ul>
+<p>题目说“只用 $x_1$ 做带截距回归”，意味着实际估计的是错误缩减模型</p>
+<p class="equation-line">$$y=a+bx_1+u,$$</p>
+<p>其中 $x_2$ 被遗漏了。我们要判断缩减模型中的斜率 $\widehat b$ 最终会靠近真实的 $\beta_1$，还是会把 $x_2$ 的作用也吸收进去。</p></li>
+<li><p><strong>什么是遗漏变量（omitted variable）？</strong> 遗漏变量是没有进入所估计回归、但与结果或已纳入解释变量有关的变量。并非任何没写进模型的变量都会造成问题：真正导致遗漏变量偏差的 $x_2$ 必须同时满足两个条件：</p>
+<ol>
+<li>$x_2$ 确实影响 $y$，也就是 $\beta_2\ne0$；</li>
+<li>$x_2$ 与已纳入的 $x_1$ 相关，也就是 $\operatorname{Cov}(x_1,x_2)\ne0$。</li>
+</ol>
+<p>若任一条件不成立，省略 $x_2$ 都不会使 $x_1$ 的大样本斜率产生这类偏差。</p></li>
+<li><p><strong>这里的“偏差”是什么意思？</strong> $\beta_1$ 是固定但未知的总体参数；$\widehat b$ 是由随机样本算出的估计量（estimator），换一批样本会得到不同数值。有限样本偏差通常定义为</p>
+<p class="equation-line">$$\operatorname{Bias}(\widehat b)=\mathbb E[\widehat b]-\beta_1.$$</p>
+<p>本题问“大样本中趋近什么”，关注的是概率极限（probability limit）：</p>
+<p class="equation-line">$$\operatorname{plim}\widehat b.$$</p>
+<p>若 $\operatorname{plim}\widehat b=\beta_1$，估计量称为一致（consistent）；若它趋近别的数，即使样本无限增大也不会自动纠正，称为不一致。遗漏变量偏差通常正是这种系统性错误，而不是小样本中的随机波动。</p></li>
+<li><p><strong>外生性假设在说什么？</strong> 题目假设</p>
+<p class="equation-line">$$\mathbb E[\varepsilon\mid x_1,x_2]=0.$$</p>
+<p>这称为条件均值为零或外生性（exogeneity）：给定 $x_1,x_2$ 后，剩余误差没有系统性的正负方向。它使完整模型能够把 $x_1$、$x_2$ 的作用和误差区分开。注意，完整模型的 $\varepsilon$ 与缩减模型的 $u$ 不是同一个东西；省略 $x_2$ 后，</p>
+<p class="equation-line">$$u=\beta_2x_2+\varepsilon,$$</p>
+<p>所以只要 $x_1$ 与 $x_2$ 相关，就会有 $\mathbb E[u\mid x_1]\ne0$，缩减回归的外生性被破坏。</p></li>
+<li><p><strong>遗漏变量偏差公式怎样推出来？</strong> 先把遗漏变量 $x_2$ 对 $x_1$ 做总体线性投影：</p>
+<p class="equation-line">$$x_2=\pi_0+\pi_1x_1+v,qquad \pi_1=\frac{\operatorname{Cov}(x_1,x_2)}{\operatorname{Var}(x_1)},$$</p>
+<p>其中投影残差 $v$ 与 $x_1$ 不相关。把它代回真实模型：</p>
+<p class="equation-line">$$\begin{aligned}
+y
+&amp;=\beta_0+\beta_1x_1+\beta_2(\pi_0+\pi_1x_1+v)+\varepsilon\\
+&amp;=(\beta_0+\beta_2\pi_0)+(\beta_1+\beta_2\pi_1)x_1+(\beta_2v+\varepsilon).
+\end{aligned}$$</p>
+<p>因此只回归 $y$ 对 $x_1$ 时，大样本斜率为</p>
+<p class="equation-line">$$\boxed{\operatorname{plim}\widehat b=\beta_1+\beta_2\frac{\operatorname{Cov}(x_1,x_2)}{\operatorname{Var}(x_1)}}.$$</p>
+<p>第二项就是遗漏变量偏差。它等于“$x_2$ 对 $y$ 的作用”乘以“$x_1$ 每变化一个单位时，$x_2$ 平均跟着变化多少”。</p></li>
+<li><p><strong>如何判断偏差方向？</strong> 因为 $\operatorname{Var}(x_1)&gt;0$，偏差符号由 $\beta_2$ 与 $\operatorname{Cov}(x_1,x_2)$ 的乘积决定：</p>
+<ul>
+<li>两者同号：偏差向上，$\widehat b$ 倾向于高估 $\beta_1$；</li>
+<li>两者异号：偏差向下，$\widehat b$ 倾向于低估 $\beta_1$；</li>
+<li>任一为零：没有这项遗漏变量偏差。</li>
+</ul>
+<p>“向下偏差”并不必然表示估计系数为负；它只表示估计值相对于真实 $\beta_1$ 更小。例如真实系数为 $5$、偏差为 $-2$ 时，大样本估计仍是正的 $3$。</p></li>
+<li><p><strong>一个直观例子：教育、能力与工资。</strong> 令 $y$ 为工资，$x_1$ 为受教育年限，$x_2$ 为无法直接观察的能力。若能力会提高工资，即 $\beta_2&gt;0$，而能力较高的人平均接受更多教育，即 $\operatorname{Cov}(x_1,x_2)&gt;0$，那么只回归工资对教育时，教育系数会同时吸收一部分能力效应，因而向上偏。这个结果不说明教育没有作用，只说明该简单回归不能把教育作用与能力差异干净分开。</p></li>
+<li><p><strong>遗漏变量偏差与混杂（confounding）的关系。</strong> 在因果问题中，一个同时影响解释变量和结果的前置变量称为混杂变量（confounder）。遗漏混杂变量是遗漏变量偏差的典型来源。但“控制更多变量”不是无条件正确：若控制的是由处理造成的中介变量（mediator），可能截断我们想估计的一部分总效应；若控制共同结果形成的碰撞变量（collider），反而可能人为制造相关性。应根据时间顺序、领域知识和因果图选择控制变量，而不是把所有可用列机械塞进回归。</p></li>
+<li><p><strong>如何发现与处理？</strong></p>
+<ul>
+<li>先根据领域机制列出可能同时关联 $x_1$ 与 $y$ 的变量，并检查数据采集时点。</li>
+<li>若关键变量可测量，将它加入模型并比较系数稳定性；但测量误差很大的代理变量未必完全消除偏差。</li>
+<li>利用随机实验、自然实验、固定效应、差分设计或有效工具变量等研究设计，寻找与未观测混杂更弱的变化来源。</li>
+<li>做敏感性分析，说明一个未观测变量需要多强的相关性和效应才能改变结论。</li>
+</ul>
+<p>仅看高 $R^2$、漂亮残差图或显著 p 值无法排除遗漏变量偏差；因为被遗漏的作用可能恰好让拟合结果看起来更好。</p></li>
+<li><p><strong>预测与因果解释要分开。</strong> 若目标只是特定环境下的样本外预测，遗漏某个变量不一定导致预测失败，相关的 $x_1$ 甚至可能替它提供代理信息；但数据分布变化后这种代理关系可能崩溃。若目标是解释“改变 $x_1$ 会使 $y$ 改变多少”，遗漏混杂变量会直接破坏因果解释。面试中应先明确 estimand 是预测表现、条件关联还是因果效应。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>遗漏变量只有在“它影响 $y$”且“它与已纳入的 $x_1$ 相关”时才会污染 $x_1$ 的系数；此时简单回归把遗漏变量的一部分作用错误归给 $x_1$，偏差为 $\beta_2\operatorname{Cov}(x_1,x_2)/\operatorname{Var}(x_1)$，增加样本量也不会自动消失。</p>
+</div></details>
 ~~~
 
-=== Q38 \[C\] Heteroskedasticity \/ 异方差
+=== Q40 \[C\] Heteroskedasticity \/ 异方差
 *中文：* 在 $\\mathbb E(ε\\mid X)=0$ 但 $\\operatorname{Var}(ε\\mid X)$ 非常数时，OLS 系数、经典标准误和有效性分别如何？
 
 *English:* If $\\mathbb E(ε\\mid X)=0$ but $\\operatorname{Var}(ε\\mid X)$ is not constant, what happens to OLS coefficients, classical standard errors, and efficiency?
@@ -855,9 +1148,74 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>OLS remains unbiased/consistent under the stated exogeneity conditions, but the usual homoskedastic variance formula is wrong, so $t/F$ inference is invalid. OLS is generally no longer BLUE. Use heteroskedasticity-robust (sandwich) standard errors for inference, or weighted/generalized least squares if the variance structure is credibly modeled.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>先理解回归中的误差项。</strong> 写一个线性模型</p>
+<p class="equation-line">$$y_i=x_i^\top\beta+\varepsilon_i.$$</p>
+<p>$x_i^\top\beta$ 是模型根据第 $i$ 个样本的解释变量给出的系统性部分，$\varepsilon_i=y_i-x_i^\top\beta$ 是真实结果相对该系统性部分的偏离。误差项不是“电脑算错了”，而是模型未明确表示的个体差异、随机冲击、测量噪声和其他影响的总和。样本中的残差（residual）</p>
+<p class="equation-line">$$\widehat\varepsilon_i=y_i-x_i^\top\widehat\beta$$</p>
+<p>是根据估计系数算出的误差近似；理论误差 $\varepsilon_i$ 不可直接观察，残差 $\widehat\varepsilon_i$ 可以计算，两者不能完全混同。</p></li>
+<li><p><strong>条件均值与条件方差分别描述什么？</strong> 给定解释变量 $X$ 后，</p>
+<p class="equation-line">$$\mathbb E[\varepsilon\mid X]=0$$</p>
+<p>表示误差在每类 $X$ 上都没有系统性正负方向，即模型不会持续高估或低估某类样本；这是外生性（exogeneity）的核心条件。另一方面，</p>
+<p class="equation-line">$$\operatorname{Var}(\varepsilon\mid X)$$</p>
+<p>描述同一类 $X$ 下结果围绕回归线散得有多开。均值为零并不意味着方差处处相同：误差可以始终以零为中心，但某些 $X$ 区域很集中、另一些区域很分散。</p></li>
+<li><p><strong>同方差与异方差。</strong></p>
+<ul>
+<li>同方差（homoskedasticity）：$\operatorname{Var}(\varepsilon_i\mid X)=\sigma^2$，所有观测的条件误差方差相同。</li>
+<li>异方差（heteroskedasticity）：$\operatorname{Var}(\varepsilon_i\mid X)=\sigma_i^2$ 随 $X$ 或观测而变化。</li>
+</ul>
+<p>例如用收入预测消费时，高收入家庭的消费金额可能有更大的绝对波动，残差图会随着拟合值增大呈“漏斗形”。在金融数据中，不同公司规模、流动性或市场状态也可能对应不同噪声水平。异方差描述的是条件方差变化，不等同于误差均值不为零、误差非正态或存在离群值。</p></li>
+<li><p><strong>异方差会不会使 OLS 系数有偏？</strong> 单独出现异方差时，只要线性模型与外生性条件成立，OLS 系数仍然无偏：</p>
+<p class="equation-line">$$\mathbb E[\widehat\beta\mid X]=\beta,$$</p>
+<p>并在常见正则条件下保持一致。直觉上，误差虽然在某些区域更宽，但仍以零为中心，所以回归线不会被系统性推向某一边。真正决定系数是否有偏的关键是 $\mathbb E[\varepsilon\mid X]=0$，而不是所有误差是否拥有相同方差。若异方差来自遗漏的非线性、选择偏差或内生性，系数可能同时有偏，但那是额外的模型问题，不是“异方差本身必然导致有偏”。</p></li>
+<li><p><strong>unbiased、consistent 与 efficient 是三件事。</strong></p>
+<ul>
+<li>无偏（unbiased）：重复抽样时估计量的平均值等于真实参数。</li>
+<li>一致（consistent）：样本量趋于无穷时，估计量依概率趋近真实参数。</li>
+<li>有效（efficient）：在某个候选估计量类别中具有更小的方差，估计更稳定。</li>
+</ul>
+<p>异方差下，OLS 在外生性成立时可以仍然无偏且一致，却不再是最有效的线性无偏估计量。不能因为系数中心正确，就断言它的标准误和推断也正确。</p></li>
+<li><p><strong>经典标准误为什么会错？</strong> 令设计矩阵为 $X$。在同方差且误差互不相关时，OLS 的条件方差简化为</p>
+<p class="equation-line">$$\operatorname{Var}(\widehat\beta\mid X)=\sigma^2(X^\top X)^{-1}.$$</p>
+<p>经典 OLS 标准误正是基于这个共同的 $\sigma^2$。异方差时令</p>
+<p class="equation-line">$$\Omega=\operatorname{diag}(\sigma_1^2,\ldots,\sigma_n^2),$$</p>
+<p>真实条件方差变为</p>
+<p class="equation-line">$$\boxed{\operatorname{Var}(\widehat\beta\mid X)=(X^\top X)^{-1}X^\top\Omega X(X^\top X)^{-1}}.$$</p>
+<p>中间不再能缩成一个共同的 $\sigma^2X^\top X$。若仍套用同方差公式，标准误可能被低估或高估；方向取决于误差方差如何与解释变量排列，不能简单说异方差一定低估标准误。</p></li>
+<li><p><strong>标准误错了会影响什么？</strong> t 统计量通常写成</p>
+<p class="equation-line">$$t=\frac{\widehat\beta_j-\beta_{j,0}}{\operatorname{SE}(\widehat\beta_j)}.$$</p>
+<p>若分母使用错误的经典标准误，t 值、p 值、置信区间和 F 检验都失去正确校准：可能把无效变量误判为显著，也可能漏掉真实效应。点估计 $\widehat\beta$ 没有改变，但我们声称“它有多精确”的部分错了。</p></li>
+<li><p><strong>BLUE 是什么，为什么 OLS 不再 BLUE？</strong> Gauss–Markov 定理说，在线性、外生、误差互不相关并且同方差等条件下，OLS 是 BLUE，即 best linear unbiased estimator：在线性无偏估计量中方差最小。这里的 “best” 只指方差，不表示模型预测、因果识别或一切意义上都最好。异方差破坏共同方差条件后，OLS 通常仍是线性无偏的，却可能存在利用不同观测精度、方差更小的加权估计量，因此不再 BLUE。</p></li>
+<li><p><strong>异方差稳健标准误（heteroskedasticity-robust standard errors）。</strong> White 或 sandwich 标准误保留 OLS 系数不变，用残差估计“三明治”方差：</p>
+<p class="equation-line">$$\widehat{\operatorname{Var}}_{\mathrm{robust}}(\widehat\beta)=(X^\top X)^{-1}\left(\sum_{i=1}^n x_ix_i^\top\widehat\varepsilon_i^2\right)(X^\top X)^{-1},$$</p>
+<p>再对对角线开平方得到稳健标准误。HC0、HC1、HC2、HC3 是不同的有限样本修正；小样本或高杠杆点存在时，HC3 往往比最原始的 HC0 更谨慎。稳健标准误主要修复大样本推断，不会改变拟合值、残差或 OLS 系数，也不会解决内生性、遗漏变量、错误函数形式或时间序列自相关。存在序列相关时应考虑 HAC/Newey–West 等与依赖结构匹配的方法。</p></li>
+<li><p><strong>WLS 与 GLS 在做什么？</strong> 若能够可信地建模</p>
+<p class="equation-line">$$\operatorname{Var}(\varepsilon_i\mid X)=\sigma_i^2,$$</p>
+<p>加权最小二乘（weighted least squares, WLS）可最小化</p>
+<p class="equation-line">$$\sum_{i=1}^n\frac{(y_i-x_i^\top\beta)^2}{\sigma_i^2},$$</p>
+<p>即给噪声小、信息更精确的观测更大权重，给噪声大的观测更小权重。广义最小二乘（generalized least squares, GLS）进一步处理一般误差协方差结构。若方差模型正确，WLS/GLS 可提高效率；若权重模型错得严重，结果可能反而更差。因此只关心可靠推断时常先报告稳健标准误，并把 WLS 作为有充分方差机制依据时的效率工具。</p></li>
+<li><p><strong>如何诊断异方差？</strong></p>
+<ul>
+<li>画残差对拟合值或关键解释变量的散点图，寻找漏斗形、分组方差或随水平变化的波动。</li>
+<li>比较不同组别、规模或时期中的残差平方。</li>
+<li>Breusch–Pagan 检验考察残差方差是否随指定解释变量变化；White 检验允许更一般的二次项和交互项。</li>
+</ul>
+<p>检验拒绝同方差只能说明方差结构有证据变化，不会自动告诉你经济机制；不拒绝也不等于已经证明同方差，尤其在小样本中检验功效可能有限。图形、机制和稳健推断应结合使用。</p></li>
+<li><p><strong>常见处理与误区。</strong></p>
+<ul>
+<li>若只需在外生性成立下进行系数推断，使用适当的 robust standard errors。</li>
+<li>若方差随变量尺度增长，取对数或重新设定均值模型有时能稳定方差，但变换会改变系数解释，不能只为让图好看而机械使用。</li>
+<li>若有可信的方差模型，考虑 WLS/GLS，并检查对权重设定是否敏感。</li>
+<li>不要为了“消除异方差”无脑删除极端观测；它们可能是数据错误，也可能是真实风险事件。</li>
+<li>不要把 robust standard errors 当作万能修复：它们不能修正有偏系数或错误的研究设计。</li>
+</ul></li>
+</ol>
+<p><strong>一句话记忆：</strong>异方差表示误差仍可围绕零，但在不同 $X$ 下散布宽度不同；外生性成立时 OLS 系数通常仍无偏且一致，错误的是经典同方差标准误和由此得到的推断，而 OLS 也不再 BLUE。推断可用 sandwich/robust 标准误，只有在方差结构可信时才用 WLS/GLS 提高效率。</p>
+</div></details>
 ~~~
 
-=== Q39 \[C\] R-squared trap \/ R² 陷阱
+=== Q41 \[C\] R-squared trap \/ R² 陷阱
 *中文：* 为什么在训练集上增加特征不会降低 R²？这是否意味着模型更好？
 
 *English:* Why can training R² not decrease when a regressor is added, and does that imply a better model?
@@ -867,9 +1225,69 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The enlarged model can always assign zero to the new coefficient and reproduce the old residual sum of squares, so the optimized SSE cannot increase and $R^2$ cannot decrease. This does not prove better generalization or inference. Use adjusted $R^2$, out-of-sample validation, information criteria, uncertainty, and domain judgment.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>先理解回归在做什么。</strong> 对第 $i$ 个样本，真实结果是 $y_i$，回归模型根据解释变量给出预测值 $\widehat y_i$。两者之差</p>
+<p class="equation-line">$$\widehat\varepsilon_i=y_i-\widehat y_i$$</p>
+<p>称为残差（residual）。普通最小二乘（ordinary least squares, OLS）选择系数，使训练样本中的残差平方和尽可能小：</p>
+<p class="equation-line">$$\operatorname{SSE}=\sum_{i=1}^n(y_i-\widehat y_i)^2.$$</p>
+<p>SSE 是 sum of squared errors 或 sum of squared residuals，衡量模型在这批训练数据上还剩多少没有拟合好的误差。SSE 越小，样本内预测越贴近真实值。</p></li>
+<li><p><strong>如果完全不用特征，最简单的基准是什么？</strong> 对含截距回归，一个自然基准是对所有样本都预测同一个数——训练集均值</p>
+<p class="equation-line">$$\bar y=\frac1n\sum_{i=1}^n y_i.$$</p>
+<p>该基准的平方误差称为总平方和（total sum of squares, SST）：</p>
+<p class="equation-line">$$\operatorname{SST}=\sum_{i=1}^n(y_i-\bar y)^2.$$</p>
+<p>SST 描述结果变量 $y$ 在样本中原本有多少总波动。R² 比较的正是“回归模型的 SSE”与“只预测均值的 SST”。</p></li>
+<li><p><strong>R² 的定义与直觉。</strong> 对含截距的训练集 OLS，决定系数（coefficient of determination）定义为</p>
+<p class="equation-line">$$\boxed{R^2=1-\frac{\operatorname{SSE}}{\operatorname{SST}}=1-\frac{\sum_i(y_i-\widehat y_i)^2}{\sum_i(y_i-\bar y)^2}}.$$</p>
+<ul>
+<li>$R^2=0$：模型的平方误差与“永远预测均值”一样大，没有在该样本内减少误差。</li>
+<li>$R^2=1$：所有训练残差为零，模型在该样本上完全拟合。</li>
+<li>例如 $R^2=0.8$：模型相对于均值基准减少了 80% 的训练集平方误差，通常简称“解释了样本中 80% 的方差”。</li>
+</ul>
+<p>R² 是相对于基准的样本内拟合比例，不是“模型有 80% 概率正确”，也不是单次预测准确率。</p></li>
+<li><p><strong>一个数值例子。</strong> 假设真实值为 $y=(1,2,3)$，均值为 $\bar y=2$，则</p>
+<p class="equation-line">$$\operatorname{SST}=(1-2)^2+(2-2)^2+(3-2)^2=2.$$</p>
+<p>若模型预测 $\widehat y=(1.5,2,2.5)$，则</p>
+<p class="equation-line">$$\operatorname{SSE}=(-0.5)^2+0^2+(0.5)^2=0.5,$$</p>
+<p>所以</p>
+<p class="equation-line">$$R^2=1-\frac{0.5}{2}=0.75.$$</p>
+<p>意思是相对于全部预测为 2，模型在这三个训练样本上减少了 75% 的平方误差。</p></li>
+<li><p><strong>为什么加入特征后训练 R² 不会下降？</strong> 假设旧模型使用 $x_1$：</p>
+<p class="equation-line">$$y=\beta_0+\beta_1x_1+\varepsilon,$$</p>
+<p>新模型再加入 $x_2$：</p>
+<p class="equation-line">$$y=\beta_0+\beta_1x_1+\beta_2x_2+\varepsilon.$$</p>
+<p>新模型的候选范围包含旧模型，因为它随时可以选择 $\beta_2=0$，原样复制旧模型的预测和 SSE。OLS 会在更大的候选范围内寻找最小 SSE，因此</p>
+<p class="equation-line">$$\operatorname{SSE}_{\mathrm{new}}\le\operatorname{SSE}_{\mathrm{old}}.$$</p>
+<p>同一训练集上的 SST 不变，于是</p>
+<p class="equation-line">$$R^2_{\mathrm{new}}=1-\frac{\operatorname{SSE}_{\mathrm{new}}}{\operatorname{SST}}\ge1-\frac{\operatorname{SSE}_{\mathrm{old}}}{\operatorname{SST}}=R^2_{\mathrm{old}}.$$</p>
+<p>即使新特征完全是随机噪声，训练 R² 也通常会略微升高，因为模型可以利用偶然样本模式；这正是题目所说的 trap。</p></li>
+<li><p><strong>训练 R² 上升为什么不等于模型更好？</strong> 训练过程本来就在最小化同一批数据的 SSE，所以增加参数只会让模型更容易贴合训练样本。这种改善可能来自真实可复现的关系，也可能只是把噪声当成规律，即过拟合（overfitting）。真正关心预测时，应看未参与拟合的数据上的表现：一个加入大量噪声特征的模型可能训练 R² 更高，但验证集或测试集误差更大。</p></li>
+<li><p><strong>测试集 R² 可以下降，甚至可以为负。</strong> 在新数据上，常使用训练集拟合出的模型，并相对于测试集均值或预先规定的基准计算</p>
+<p class="equation-line">$$R^2_{\mathrm{test}}=1-\frac{\sum_{i\in\mathrm{test}}(y_i-\widehat y_i)^2}{\sum_{i\in\mathrm{test}}(y_i-\bar y_{\mathrm{test}})^2}.$$</p>
+<p>模型没有在测试集上重新选择系数，因此增加特征不再保证 SSE 下降。若模型比“直接预测测试集均值”还差，分子会大于分母，测试 R² 就是负数。负 R² 不是计算程序必然出错，而是表示模型相对该基准表现很差。比较模型时必须明确 R² 使用哪个数据集和哪个基准。</p></li>
+<li><p><strong>Adjusted R² 为什么会惩罚无用特征？</strong> 设样本量为 $n$，不含截距的解释变量数量为 $p$。调整 R² 定义为</p>
+<p class="equation-line">$$\bar R^2=1-\frac{\operatorname{SSE}/(n-p-1)}{\operatorname{SST}/(n-1)}=1-(1-R^2)\frac{n-1}{n-p-1}.$$</p>
+<p>它不只看 SSE，还对使用更多参数造成的自由度消耗进行惩罚。加入一个变量后，只有拟合改善足以抵消复杂度惩罚时，adjusted R² 才会上升；否则可以下降。但 adjusted R² 仍是样本内准则，不能代替真正的样本外验证，也不会判断因果、数据泄漏或模型稳定性。</p></li>
+<li><p><strong>R² 与相关系数是什么关系？</strong> 在<strong>只有一个解释变量且含截距</strong>的简单线性回归中，</p>
+<p class="equation-line">$$R^2=\operatorname{Corr}(x,y)^2.$$</p>
+<p>因此它只保留线性相关强度，丢掉正负方向；方向要看斜率 $\widehat\beta_1$。多元回归、无截距模型、加权回归或样本外 R² 下，不能机械套用这个等式。</p></li>
+<li><p><strong>高 R² 不能证明什么？</strong></p>
+<ul>
+<li>不能证明因果关系；两个变量可能因为共同趋势、遗漏变量或数据泄漏而一起变化。</li>
+<li>不能证明系数显著；R² 是整体拟合指标，单个系数的不确定性要看标准误和相应检验。</li>
+<li>不能证明模型设定正确；错误的函数形式或伪回归也可能获得高 R²。</li>
+<li>不能证明样本外预测好；训练 R² 对过拟合没有保护。</li>
+<li>不能跨不同因变量随意比较；若 $y$、样本区间或基准不同，R² 的含义也随之改变。</li>
+</ul>
+<p>时间序列水平值尤其危险：两个独立但共同呈趋势的非平稳序列可能产生很高 R²，这正是伪回归问题。</p></li>
+<li><p><strong>实际应该怎样比较模型？</strong> 若目标是预测，使用遵守数据时序的验证集或测试集，比较样本外 MSE、MAE、out-of-sample R²，并检查不同市场状态下的稳定性。若目标是统计推断，结合系数、稳健标准误、置信区间、模型假设和领域机制。若目标是变量选择，可参考 adjusted R²、AIC/BIC、正则化与交叉验证，但不能只追求训练 R² 最大。</p></li>
+<li><p><strong>无截距回归需要特别小心。</strong> 常见的 $0\le R^2\le1$ 及“SST = explained sum of squares + SSE”的解释依赖含截距 OLS。无截距回归的软件可能使用不同的 uncentered R² 定义，数值可以表现异常，甚至不能与含截距模型直接比较。面试中讨论 R² 时，若题目没有说明，通常默认回归包含截距。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>R² 衡量模型相对于“只预测均值”在训练样本中减少了多少平方误差；加入特征扩大了模型选择空间，所以训练 R² 只升不降，但它可能只是在拟合噪声。判断模型是否真的更好，要看 adjusted R²、样本外表现、推断有效性和领域机制，而不是单独追逐训练 R²。</p>
+</div></details>
 ~~~
 
-=== Q40 \[M\] Bootstrap with time series \/ 时间序列 Bootstrap
+=== Q42 \[M\] Bootstrap with time series \/ 时间序列 Bootstrap
 *中文：* 为什么对日收益率进行普通 i.i.d. bootstrap 可能错误？可以怎样改进？
 
 *English:* Why can an ordinary i.i.d. bootstrap be invalid for daily returns, and how can it be improved?
@@ -879,9 +1297,69 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Independent resampling destroys serial dependence, volatility clustering, and cross-sectional dependence, understating or distorting uncertainty. Depending on the estimand, use moving/stationary block bootstrap, resample at the cluster level, or fit and bootstrap residuals from an adequate time-series model. Block length is itself a bias-variance choice.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>Bootstrap 想解决什么问题？</strong> 假设我们从未知总体分布 $F$ 得到样本 $X_1,\ldots,X_n$，并计算某个统计量</p>
+<p class="equation-line">$$\widehat\theta=T(X_1,\ldots,X_n),$$</p>
+<p>例如样本均值、中位数、回归系数、Sharpe ratio 或最大回撤。若想知道 $\widehat\theta$ 在重复抽样中的标准误、偏差或置信区间，理论公式可能很难推导。Bootstrap 的核心思想是：把现有样本当作总体的近似，在电脑中重复制造许多“类似的新样本”，用统计量在这些重抽样样本中的波动近似真实抽样分布。</p></li>
+<li><p><strong>先区分 estimand、estimator、estimate 与 sampling distribution。</strong></p>
+<ul>
+<li>估计目标（estimand）是我们真正想知道的总体量，例如总体均值、真实回归系数、策略真实 Sharpe ratio 或某个预测误差。</li>
+<li>估计量（estimator）或统计量（statistic）是从随机样本映射到答案的计算规则，例如样本均值 $\bar X$。在抽样之前它是随机变量。</li>
+<li>估计值（estimate）是把眼前这批数据代入估计量后得到的具体数字。</li>
+<li>抽样分布（sampling distribution）是在同一总体下反复获得新样本并每次重新计算估计量时，这些估计值形成的分布。</li>
+</ul>
+<p>标准误（standard error）是估计量抽样分布的标准差，描述估计值因抽样而波动多大；置信区间则利用这个抽样分布量化参数不确定性。现实中通常只有一批样本，无法真的从未知总体重复取样，所以 bootstrap 用重抽样近似这场假想的重复实验。</p></li>
+<li><p><strong>普通 i.i.d. bootstrap 的前提。</strong> i.i.d. 表示 independent and identically distributed，即观测彼此独立，并来自同一个分布。在该前提下，用经验分布</p>
+<p class="equation-line">$$\widehat F_n=\frac1n\sum_{i=1}^n\delta_{X_i}$$</p>
+<p>近似未知总体 $F$。$\delta_{X_i}$ 表示把概率质量放在观测值 $X_i$ 上，因此从 $\widehat F_n$ 抽样等价于从原来的 $n$ 个观测中等概率抽取。</p></li>
+<li><p><strong>普通 i.i.d. bootstrap 的完整算法。</strong></p>
+<ol>
+<li>从原样本 $\{X_1,\ldots,X_n\}$ 中<strong>有放回地</strong>抽取 $n$ 次，得到第 $b$ 个 bootstrap 样本 $X_1^{*(b)},\ldots,X_n^{*(b)}$。</li>
+<li>在该样本上重新计算统计量 $\widehat\theta^{*(b)}$。</li>
+<li>重复上述过程 $B$ 次，得到 $\widehat\theta^{*(1)},\ldots,\widehat\theta^{*(B)}$。</li>
+<li>用这些复制值的经验分布近似 $\widehat\theta$ 的抽样分布。</li>
+</ol>
+<p>“有放回”意味着一个观测可以在同一个 bootstrap 样本中出现多次，也可能完全没有出现。若无放回地抽取 $n$ 个观测，每次只会得到原样本的重新排序，统计量通常根本不会变化，因而无法模拟抽样不确定性。</p></li>
+<li><p><strong>如何从 bootstrap 复制值计算标准误、偏差和区间？</strong> 记</p>
+<p class="equation-line">$$\overline\theta^*=\frac1B\sum_{b=1}^B\widehat\theta^{*(b)}.$$</p>
+<p>bootstrap 标准误为</p>
+<p class="equation-line">$$\widehat{\operatorname{SE}}_{\mathrm{boot}}=\sqrt{\frac{1}{B-1}\sum_{b=1}^B\left(\widehat\theta^{*(b)}-\overline\theta^*\right)^2},$$</p>
+<p>偏差估计为 $\overline\theta^*-\widehat\theta$。一个简单的 95% percentile interval 是 bootstrap 复制值的 2.5% 与 97.5% 分位数。实际还可使用 basic、studentized 或 BCa 区间；不同区间在偏斜分布、小样本或非光滑统计量下表现不同，不能认为“重抽很多次”就自动保证区间正确。</p></li>
+<li><p><strong>为什么时间序列不能直接逐点 i.i.d. 重抽？</strong> 时间序列观测通常存在顺序和依赖关系。例如今日收益可能与昨日收益相关，或者收益本身近似不相关但平方收益存在显著相关，即波动率聚集。普通 i.i.d. bootstrap 把每个时点单独抽出并随机打乱，生成的序列不再保留原有自相关、波动持续性、季节性或状态结构。它模拟的是一个“边际分布相同但时间上独立”的错误世界。</p></li>
+<li><p><strong>Solution 中三种 dependence 分别是什么？</strong></p>
+<ul>
+<li><strong>序列依赖（serial dependence）：</strong>同一序列在不同时点的观测不是独立的，例如 $X_t$ 与 $X_{t-1}$ 相关。自相关是线性序列依赖的一种度量，但依赖也可能存在于更高阶或非线性结构中。</li>
+<li><strong>波动率聚集（volatility clustering）：</strong>大幅波动后往往仍跟随大幅波动，小幅波动也倾向成群出现。日收益 $r_t$ 本身的自相关可能接近零，但 $|r_t|$ 或 $r_t^2$ 仍有明显正相关；逐点重抽会破坏这种波动持续性。</li>
+<li><strong>横截面依赖（cross-sectional dependence）：</strong>同一时点的多个资产、公司或个体受到共同冲击，例如市场下跌令许多股票当天一起下跌。若分别重抽每个资产，会破坏同期相关性和组合风险。</li>
+</ul>
+<p>“依赖”意味着联合分布不能简单写成各观测边际分布的乘积。重抽样单位必须覆盖实际依赖发生的范围：时间依赖通常需要连续区块，横截面依赖通常需要把同一日期的向量或同一 cluster 作为整体。</p></li>
+<li><p><strong>均值的长期方差展示了问题所在。</strong> 对平稳序列，令</p>
+<p class="equation-line">$$\gamma_k=\operatorname{Cov}(X_t,X_{t-k}).$$</p>
+<p>在适当弱依赖条件下，样本均值的渐近方差由长期方差决定：</p>
+<p class="equation-line">$$\operatorname{Var}(\sqrt n\,\bar X)\longrightarrow\gamma_0+2\sum_{k=1}^{\infty}\gamma_k.$$</p>
+<p>普通 i.i.d. bootstrap 破坏所有滞后协方差，只能看到 $\gamma_0$。若收益存在正自相关，它往往低估均值的不确定性；若存在负自相关，也可能向另一方向扭曲。对 Sharpe ratio、回归系数、最大回撤等依赖路径的统计量，破坏顺序造成的问题可能更严重。</p></li>
+<li><p><strong>Moving block bootstrap：成块而不是逐点重抽。</strong> 选择区块长度 $\ell$，从原序列构造重叠区块</p>
+<p class="equation-line">$$B_i=(X_i,X_{i+1},\ldots,X_{i+\ell-1}),\qquad i=1,\ldots,n-\ell+1.$$</p>
+<p>然后有放回地抽取若干完整区块并首尾连接，直到得到长度至少为 $n$ 的新序列，再截断到 $n$。区块内部保留了最多约 $\ell$ 个时点范围内的依赖，因此比逐点重抽更接近原时间序列。每个 bootstrap 序列上都要重新计算完整统计量，而不是只重抽已经算好的结果。</p></li>
+<li><p><strong>常见区块方法。</strong></p>
+<ul>
+<li><strong>Non-overlapping block bootstrap：</strong>先把序列切成互不重叠的固定区块再重抽，简单但可用区块较少。</li>
+<li><strong>Moving block bootstrap：</strong>使用所有重叠的固定长度区块，通常比不重叠方法利用数据更充分。</li>
+<li><strong>Circular block bootstrap：</strong>把序列首尾相接，允许跨越样本末端的区块，减少边界不均衡。</li>
+<li><strong>Stationary bootstrap：</strong>区块长度随机且通常服从几何分布，平均长度为 $\ell$；拼接后的 bootstrap 序列保持平稳性并减少固定切点痕迹。</li>
+</ul></li>
+<li><p><strong>区块长度是偏差—方差权衡。</strong> 若 $\ell$ 太短，重要的时间依赖会被切断，结果接近错误的 i.i.d. bootstrap；若 $\ell$ 太长，可供独立重抽的有效区块数太少，bootstrap 分布的 Monte Carlo 波动和有限样本误差增大。理论上常要求样本增大时 $\ell\to\infty$ 但 $\ell/n\to0$。实践中应结合相关性衰减速度、季节周期、目标统计量和数据驱动的 block-length selector，并对多个合理长度做敏感性分析，而不是机械使用一个固定数字。</p></li>
+<li><p><strong>模型残差 bootstrap：先建模依赖，再重抽创新。</strong> 如果能够合理描述数据生成过程，可以先拟合 ARMA、VAR、GARCH 或状态空间模型，提取近似 i.i.d. 的创新或标准化残差，再有放回地重抽这些残差并递归模拟新路径。它能保留模型所描述的动态结构，但有效性依赖模型是否设定正确；若模型漏掉波动聚集、厚尾或结构变化，bootstrap 仍会错误。</p></li>
+<li><p><strong>多资产和面板数据必须保留横截面依赖。</strong> 若同一天观察多个资产，不能分别独立重抽每个资产的日收益，否则会破坏同期相关性和组合风险。应把同一日期的收益向量作为一个整体放入时间区块，或在模型 bootstrap 中按向量重抽同期残差。若数据按公司、用户或日期聚类，也应根据误差依赖结构在适当的 cluster level 重抽。</p></li>
+<li><p><strong>非平稳、结构突变和路径型统计量需要额外谨慎。</strong> 普通 block bootstrap 通常以平稳或局部平稳的弱依赖过程为基础。对价格水平、单位根过程、趋势、制度切换或明显结构突变，直接在水平值上重抽区块可能无效；应先明确是差分、协整、分段模型还是专门的 unit-root bootstrap。对最大回撤、止损策略、重叠标签等强路径依赖对象，区块必须足够保留相关路径结构，重抽方案也必须与实际估计流程完全一致。</p></li>
+<li><p><strong>Bootstrap 与交叉验证不是同一件事。</strong> Bootstrap 主要近似估计量的抽样分布，用于标准误、偏差和置信区间；交叉验证主要估计样本外预测误差和选择超参数。时间序列交叉验证必须保持训练在过去、验证在未来的顺序，而时间序列 bootstrap 则是在明确依赖结构后生成重复样本。两者可以在同一研究中出现，但不能互相替代。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>普通 i.i.d. bootstrap 把每个观测当作可独立交换的单位；时间序列的有效抽样单位通常是一段连续路径或模型创新。若逐点重抽并打乱时间顺序，就会破坏自相关和波动结构，从而得到错误的标准误与置信区间。</p>
+</div></details>
 ~~~
 
-=== Q41 \[M\] Sharpe annualization with autocorrelation \/ 自相关下的夏普年化
+=== Q43 \[M\] Sharpe annualization with autocorrelation \/ 自相关下的夏普年化
 *中文：* 什么时候可以将日度 Sharpe 乘 $\\sqrt{252}$？若收益存在自相关，年度方差应怎样计算？
 
 *English:* When is multiplying daily Sharpe by $\\sqrt{252}$ justified? How should multi-period variance be computed with autocorrelation?
@@ -893,7 +1371,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q42 \[C\] Spurious regression \/ 伪回归
+=== Q44 \[C\] Spurious regression \/ 伪回归
 *中文：* 两个互相独立的随机游走为什么可能回归出很高的 R² 和显著 t 值？怎样处理？
 
 *English:* Why can two independent random walks produce a high R² and significant t-statistics when regressed on each other, and what should be done?
@@ -903,9 +1381,50 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Nonstationary persistent levels violate the assumptions behind standard regression asymptotics; unrelated stochastic trends can appear aligned. Diagnose integration/unit roots and residual behavior. Difference the series when the relationship is about changes, or use a cointegration/error-correction framework when a justified stationary linear combination exists.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>先明确我们做了什么回归。</strong> 假设观察两个时间序列 $X_t$ 和 $Y_t$，直接用它们的水平值做 OLS：</p>
+<p class="equation-line">$$Y_t=\alpha+\beta X_t+\varepsilon_t.$$</p>
+<p>我们想判断 $X_t$ 是否能解释 $Y_t$，通常会查看 $R^2$、$\widehat\beta$ 的 t 值和相应的 p 值。伪回归的危险在于：即使 $X_t$ 与 $Y_t$ 的真实生成过程完全独立，这些常用数字仍可能看起来异常“漂亮”。</p></li>
+<li><p><strong>$R^2$ 是什么？</strong> 记残差为 $\widehat\varepsilon_t=Y_t-\widehat Y_t$。含截距的样本内回归通常定义</p>
+<p class="equation-line">$$R^2=1-\frac{\sum_{t=1}^T(Y_t-\widehat Y_t)^2}{\sum_{t=1}^T(Y_t-\bar Y)^2}=1-\frac{\operatorname{SSE}}{\operatorname{SST}}.$$</p>
+<p>SST 是 $Y_t$ 围绕样本均值的总波动，SSE 是模型没有解释掉的残差波动。因此 $R^2$ 描述模型在这组样本内解释了多少比例的 $Y$ 波动。例如 $R^2=0.8$ 表示相对于只用样本均值预测，模型在样本内解释了约 80% 的波动。它不表示“模型有 80% 的概率正确”，也不证明因果关系、模型设定正确或样本外预测优秀。</p></li>
+<li><p><strong>t 值与“显著”是什么？</strong> 若要检验</p>
+<p class="equation-line">$$H_0:\beta=0,$$</p>
+<p>常用 t 统计量为</p>
+<p class="equation-line">$$t=\frac{\widehat\beta-0}{\operatorname{SE}(\widehat\beta)}.$$</p>
+<p>它衡量估计系数离零有多少个标准误。在经典回归假设及相应大样本条件成立时，$|t|$ 很大意味着在 $H_0$ 下较难出现这样的结果，因而 p 值较小并称为“统计显著”。但显著性结论依赖标准误和 t 分布近似是否有效；如果时间序列的非平稳性破坏了这些前提，一个看起来很大的 t 值可能根本不能按普通 t 分布解释。</p></li>
+<li><p><strong>平稳与非平稳的核心区别。</strong> 粗略地说，平稳序列围绕相对稳定的均值波动，方差有限，两个时点之间的协方差主要取决于时间间隔而不是具体日期。随机游走</p>
+<p class="equation-line">$$X_t=X_{t-1}+u_t$$</p>
+<p>则是典型的非平稳序列：每次冲击 $u_t$ 都会永久累积到未来水平中，序列没有稳定的均值回归中心，其方差随时间增长。这样的序列通常称为含单位根或一阶单整，即 $I(1)$。</p></li>
+<li><p><strong>两个完全独立的随机游走为什么看起来会相关？</strong> 设</p>
+<p class="equation-line">$$X_t=X_{t-1}+u_t,\qquad Y_t=Y_{t-1}+v_t,$$</p>
+<p>其中冲击 $u_t$ 与 $v_t$ 彼此独立。虽然两个过程没有真实关系，但每条实现路径都可能在很长一段时间内缓慢向上、向下或转向。某一次有限样本中，两条独立路径可能碰巧出现相似趋势，OLS 就会把这种共同漂移误认为稳定关系。因为水平值高度持久，相邻观测没有提供像独立样本那样多的新信息，表面样本量 $T$ 会严重夸大实际证据强度。</p></li>
+<li><p><strong>为什么会出现虚假的高 $R^2$ 和显著 t 值？</strong> 非平稳水平序列的总波动会随样本长度快速扩大；一条同样缓慢漂移的独立序列可能在样本内大幅减少残差平方和，从而产生较高 $R^2$。同时，普通 OLS 标准误公式依据的是平稳或弱依赖条件，它没有正确反映随机趋势带来的持久性，于是可能把 $\operatorname{SE}(\widehat\beta)$ 算得过小，使 $|t|$ 看起来很大。此时 t 统计量不再服从通常使用的 t 或标准正态极限，普通临界值和 p 值失去校准。高 $R^2$ 与显著 t 值只是非平稳路径碰巧同行的产物，这就是伪回归。</p></li>
+<li><p><strong>如何诊断？</strong></p>
+<ul>
+<li>先画水平序列、差分序列和滚动统计量，观察趋势、均值回归和结构突变。</li>
+<li>检查自相关函数；水平序列自相关长期接近 1 是强持久性的警讯。</li>
+<li>使用 ADF 或 Phillips–Perron 等单位根检验，并可结合以平稳为原假设的 KPSS 检验。单位根检验在短样本和结构突变下功效有限，不能只看一次 p 值。</li>
+<li>检查回归残差是否平稳。若两个 $I(1)$ 序列的某个线性组合平稳，可能存在协整；若残差仍然非平稳，水平回归通常是伪回归。</li>
+<li>检查不同样本区间、滚动窗口和样本外时期中的系数是否稳定。</li>
+</ul></li>
+<li><p><strong>关系发生在短期变化时：使用差分。</strong> 对随机游走取一阶差分后，</p>
+<p class="equation-line">$$\Delta X_t=X_t-X_{t-1}=u_t,\qquad \Delta Y_t=Y_t-Y_{t-1}=v_t.$$</p>
+<p>若原过程独立，差分之间通常不会再显示虚假关系。金融价格经常转化为价格差或对数收益率后建模。差分的代价是丢失水平信息，因此只有当研究问题确实关注短期变化时才应这样处理。</p></li>
+<li><p><strong>存在合理长期均衡关系时：使用协整与误差修正模型。</strong> 若 $X_t$ 与 $Y_t$ 各自都是 $I(1)$，但存在 $\beta$ 使</p>
+<p class="equation-line">$$Y_t-\alpha-\beta X_t$$</p>
+<p>是平稳序列，则二者协整。此时水平关系不是伪回归，而可能代表一个长期均衡。可以使用 Engle–Granger 或 Johansen 方法检验协整，并用误差修正模型同时刻画短期变化和向长期均衡的调整：</p>
+<p class="equation-line">$$\Delta Y_t=\lambda(Y_{t-1}-\alpha-\beta X_{t-1})+\text{短期动态}+\eta_t.$$</p>
+<p>协整不能仅凭高 $R^2$ 宣称，必须有领域机制并验证残差平稳性。</p></li>
+<li><p><strong>确定性趋势与随机趋势不能混为一谈。</strong> 如果序列只是围绕确定性的线性或季节趋势平稳，可以在模型中显式加入时间趋势、季节项或先去趋势。但对真正的单位根随机趋势，简单加入一条时间直线通常不能解决问题。应根据数据生成机制区分去趋势、差分和协整，而不是机械选择。</p></li>
+<li><p><strong>Newey–West 标准误不是伪回归的万能修复。</strong> HAC/Newey–West 标准误用于在序列平稳但存在一定异方差和弱自相关时修正推断。它不会把两个非平稳且不协整的水平序列变成有效关系，也不会恢复普通 t 检验的标准极限。首先必须正确处理非平稳性和长期关系，然后才讨论适当的标准误。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>$R^2$ 衡量样本内拟合比例，t 值衡量系数离零多少个标准误；只有在回归假设有效时它们才有通常的解释。两个无关的非平稳序列可能因为随机趋势碰巧同行而同时产生高 $R^2$ 和显著 t 值，正确做法是先判断平稳性，再根据问题选择差分、去趋势或协整模型。</p>
+</div></details>
 ~~~
 
-=== Q43 \[C\] Validation leakage \/ 验证集泄漏
+=== Q45 \[C\] Validation leakage \/ 验证集泄漏
 *中文：* 先用全数据做标准化和 PCA，再分训练\/验证集，有什么问题？正确做法是什么？
 
 *English:* What is wrong with standardizing and fitting PCA on the full dataset before splitting train and validation sets? What is the correct procedure?
@@ -917,7 +1436,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q44 \[M\] Robust location under outliers \/ 离群值下的稳健位置估计
+=== Q46 \[M\] Robust location under outliers \/ 离群值下的稳健位置估计
 *中文：* 均值、中位数、截尾均值和 winsorized 均值面对极端值时有何差别？量化数据中为什么不能无脑删除极端值？
 
 *English:* Compare the mean, median, trimmed mean, and winsorized mean under outliers. Why should extreme financial observations not be removed mechanically?
@@ -936,7 +1455,7 @@ a=\frac{n+1}{n}.$$</p>
 
 == C. 线性代数与矩阵微积分
 
-=== Q45 \[C\] Rank and solution sets \/ 秩与方程解
+=== Q47 \[C\] Rank and solution sets \/ 秩与方程解
 *中文：* $A$ 是 $m\\mathbin{×} n$ 矩阵，$\\operatorname{rank}(A)=r$。零空间维数是多少？$Ax=b$ 在什么条件下无解、唯一解或无穷多解？
 
 *English:* Let $A$ be $m\\mathbin{×} n$ with rank $r$. What is the nullity? Under what conditions does $Ax=b$ have no solution, a unique solution, or infinitely many solutions?
@@ -948,7 +1467,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q46 \[C\] Projection-matrix properties \/ 投影矩阵性质
+=== Q48 \[C\] Projection-matrix properties \/ 投影矩阵性质
 *中文：* P 是到某子空间的正交投影矩阵。证明 P²=P、P'=P，并求其可能特征值。
 
 *English:* P is an orthogonal projection matrix. Prove P²=P and P'=P, and determine its possible eigenvalues.
@@ -960,7 +1479,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q47 \[C\] Covariance matrices are PSD \/ 协方差矩阵半正定
+=== Q49 \[C\] Covariance matrices are PSD \/ 协方差矩阵半正定
 *中文：* 证明任意随机向量的协方差矩阵 $\\Sigma$ 是对称半正定的。什么时候它是奇异的？
 
 *English:* Prove that every covariance matrix $\\Sigma$ is symmetric positive semidefinite. When is it singular?
@@ -972,7 +1491,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q48 \[C\] PCA from SVD \/ 从 SVD 得到 PCA
+=== Q50 \[C\] PCA from SVD \/ 从 SVD 得到 PCA
 *中文：* 对已中心化的 $n\\mathbin{×} p$ 数据矩阵 $X=U\\Sigma V^\\mathsf{T}$，说明 PCA 的方向、得分和解释方差如何得到。
 
 *English:* For centered data $X=U\\Sigma V^\\mathsf{T}$, explain how to obtain PCA directions, scores, and explained variances.
@@ -982,9 +1501,87 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>For centered data $X=U\Sigma V^\top$, the sample covariance is</p><p class="equation-line">$$\frac{X^\top X}{n-1}=V\frac{\Sigma^2}{n-1}V^\top.$$</p><p>Therefore columns of <strong>$V$</strong> are loading directions, scores are <strong>$XV=U\Sigma$</strong>, and explained variances are <strong>$\sigma_j^2/(n-1)$</strong>. Centering is essential; scaling is optional but materially changes the question.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>PCA 想解决什么问题？</strong> 主成分分析（principal component analysis, PCA）是一种无监督（unsupervised）的线性降维方法。假设每个样本有 $p$ 个特征，但这些特征之间存在相关性；PCA 希望把原来的坐标轴旋转到一组新的正交方向，使前几个方向尽可能保留数据中的主要变化。这样可以用较少的 $k&lt;p$ 个坐标近似原数据，用于可视化、压缩、去噪或缓解高度相关的特征。</p>
+<p>PCA 不知道标签 $y$，只观察特征矩阵 $X$ 本身。因此它寻找的是“$X$ 变化最大的方向”，不保证这些方向最能预测目标变量。</p></li>
+<li><p><strong>数据矩阵中的行和列代表什么？</strong> 本题令</p>
+<p class="equation-line">$$X\in\mathbb R^{n\times p},$$</p>
+<p>其中 $n$ 是样本数，$p$ 是特征数。第 $i$ 行 $x_i^\top$ 是第 $i$ 个样本，第 $j$ 列是第 $j$ 个特征。例如每行可以是一只股票，每列是该股票的若干特征；也可以每行是一个日期，每列是不同资产的收益。</p></li>
+<li><p><strong>为什么必须先中心化（centering）？</strong> 对每一列减去训练样本均值：</p>
+<p class="equation-line">$$X_{ij}^{\mathrm{centered}}=X_{ij}-\bar X_{\cdot j}.$$</p>
+<p>中心化后，每个特征的样本均值为零，PCA 分析的是数据围绕均值的变化方向。若不中心化，$X^\top X$ 会同时受到“均值离原点多远”和“数据如何波动”影响，第一方向可能只是指向数据整体均值，而不是最大方差方向。本题中的 $X$ 已经中心化，因此</p>
+<p class="equation-line">$$S=\frac{1}{n-1}X^\top X$$</p>
+<p>正是特征的样本协方差矩阵。</p></li>
+<li><p><strong>什么是主成分方向（principal direction）或 loading？</strong> 选择一个单位向量 $v\in\mathbb R^p$，把每个样本投影到该方向：</p>
+<p class="equation-line">$$z=Xv.$$</p>
+<p>$v$ 给出原始特征的线性组合权重，称为主成分方向、loading direction 或 loading vector；$z$ 是所有样本在这个新方向上的坐标。第一主成分方向 $v_1$ 选择为让投影方差最大的单位向量：</p>
+<p class="equation-line">$$v_1=\arg\max_{\lVert v\rVert_2=1}\operatorname{Var}(Xv)=\arg\max_{\lVert v\rVert_2=1}v^\top Sv.$$</p>
+<p>第二方向 $v_2$ 在与 $v_1$ 正交的约束下最大化剩余方差，后续方向依次类推。因此不同主成分方向彼此正交。</p></li>
+<li><p><strong>什么是 score？</strong> 给定第 $j$ 个 loading $v_j$，</p>
+<p class="equation-line">$$z_j=Xv_j$$</p>
+<p>称为第 $j$ 个主成分得分（principal-component scores）。Loading 位于<strong>特征空间</strong>，说明新坐标轴由原特征怎样组合；score 位于<strong>样本空间</strong>，说明每个样本在该主成分轴上的具体坐标。把前 $k$ 个方向组成</p>
+<p class="equation-line">$$V_k=[v_1,\ldots,v_k],$$</p>
+<p>则所有样本的低维表示为</p>
+<p class="equation-line">$$Z_k=XV_k\in\mathbb R^{n\times k}.$$</p></li>
+<li><p><strong>从协方差矩阵看 PCA。</strong> 对称矩阵 $S$ 可以作特征分解</p>
+<p class="equation-line">$$S=V\Lambda V^\top,$$</p>
+<p>其中 $V=[v_1,\ldots,v_p]$ 的列是正交特征向量，$\Lambda=\operatorname{diag}(\lambda_1,\ldots,\lambda_p)$，并按</p>
+<p class="equation-line">$$\lambda_1\ge\lambda_2\ge\cdots\ge0$$</p>
+<p>排序。Rayleigh quotient 的结果告诉我们，最大化 $v^\top Sv$ 的单位向量正是最大特征值对应的特征向量。因此 PCA directions 是协方差矩阵的特征向量，每个方向上的方差就是对应特征值 $\lambda_j$。</p></li>
+<li><p><strong>为什么 SVD 可以直接给出 PCA？</strong> 对已中心化数据做奇异值分解：</p>
+<p class="equation-line">$$X=U\Sigma V^\top.$$</p>
+<p>代入样本协方差矩阵：</p>
+<p class="equation-line">$$\begin{aligned}
+S
+&amp;=\frac{1}{n-1}X^\top X\\
+&amp;=\frac{1}{n-1}(V\Sigma U^\top)(U\Sigma V^\top)\\
+&amp;=V\frac{\Sigma^2}{n-1}V^\top,
+\end{aligned}$$</p>
+<p>因为 $U^\top U=I$。这已经是 $S$ 的特征分解，所以：</p>
+<ul>
+<li>$V$ 的第 $j$ 列 $v_j$ 是第 $j$ 个 PCA loading direction；</li>
+<li>scores 为 $XV=U\Sigma$；</li>
+<li>第 $j$ 个方向的解释方差为 $\lambda_j=\sigma_j^2/(n-1)$。</li>
+</ul>
+<p>因此已经拥有 $X$ 的 SVD 时，不需要再单独构造并分解 $X^\top X$。</p></li>
+<li><p><strong>解释方差（explained variance）是什么意思？</strong> 第 $j$ 个 score 向量的样本方差为</p>
+<p class="equation-line">$$\operatorname{Var}(z_j)=\frac{\lVert z_j\rVert_2^2}{n-1}=\frac{\sigma_j^2}{n-1}=\lambda_j.$$</p>
+<p>总方差等于所有特征方差之和，也等于</p>
+<p class="equation-line">$$\operatorname{tr}(S)=\sum_{j=1}^{r}\lambda_j,$$</p>
+<p>其中 $r=\operatorname{rank}(X)\le\min(n-1,p)$。第 $j$ 个主成分的解释方差比例（explained variance ratio）为</p>
+<p class="equation-line">$$\frac{\lambda_j}{\sum_{m=1}^{r}\lambda_m}=\frac{\sigma_j^2}{\sum_{m=1}^{r}\sigma_m^2}.$$</p>
+<p>前 $k$ 个比例之和称为累计解释方差比例，用来描述保留 $k$ 个主成分后覆盖了原数据多少总体方差。选择 $k$ 时可参考累计比例，但不能机械认为 95% 对所有任务都最佳。</p></li>
+<li><p><strong>PCA 也等价于最佳低秩重构。</strong> 只保留前 $k$ 个奇异分量：</p>
+<p class="equation-line">$$X_k=U_k\Sigma_kV_k^\top=Z_kV_k^\top.$$</p>
+<p>$Z_k=XV_k$ 是低维坐标，乘回 $V_k^\top$ 得到原特征空间中的近似。Eckart–Young 定理说明，在所有秩不超过 $k$ 的矩阵中，$X_k$ 最小化 Frobenius 重构误差：</p>
+<p class="equation-line">$$\lVert X-X_k\rVert_F^2=\sum_{j&gt;k}\sigma_j^2.$$</p>
+<p>所以“最大化保留方差”和“最小化线性低秩重构误差”是 PCA 的两种等价视角。</p></li>
+<li><p><strong>一个二维直觉。</strong> 假设身高和体重高度正相关，二维散点云大致沿一条斜线延伸。第一主成分沿这条最长方向，捕捉“整体体型大小”的主要变化；第二主成分与其垂直，描述相对于典型身高—体重关系的偏离。若第二方向的方差很小，就可以只保留第一 score，把二维数据压缩成一维，同时损失较少信息。</p></li>
+<li><p><strong>中心化与标准化不是一回事。</strong> 中心化只减均值；标准化（standardization）还除以每列标准差。PCA 必须围绕某个中心分析，所以通常必须中心化，但是否标准化取决于问题：</p>
+<ul>
+<li>若各特征量纲相同且绝对方差本身有意义，可在中心化后直接对协方差矩阵做 PCA。</li>
+<li>若特征单位差异很大，例如“价格（元）”与“收益率（%）”，大尺度特征可能单凭单位支配第一主成分；此时标准化后做 PCA 相当于对相关矩阵做 PCA。</li>
+</ul>
+<p>标准化不是无害的格式操作，它改变了“什么方向方差最大”这个问题，因此应根据领域含义选择并报告处理方式。</p></li>
+<li><p><strong>怎样把训练好的 PCA 用到新数据？</strong> 训练阶段保存训练均值 $\mu_{\mathrm{train}}$、可选的训练标准差，以及 loading 矩阵 $V_k$。新样本 $x_{\mathrm{new}}$ 的 score 为</p>
+<p class="equation-line">$$z_{\mathrm{new}}=(x_{\mathrm{new}}-\mu_{\mathrm{train}})^\top V_k.$$</p>
+<p>若使用了标准化，还要除以训练集标准差。不能使用验证集或测试集重新计算均值、标准差或 PCA directions，否则会把未来信息泄漏到训练流程中。交叉验证时，PCA 必须在每个 fold 的训练部分单独拟合。</p></li>
+<li><p><strong>PCA、whitening 与特征选择不要混淆。</strong> PCA 是把原特征旋转成互不相关的主成分，并可截断后面的方向；普通 PCA scores 的方差仍分别为 $\lambda_j$，并不相等。白化（whitening）还会把第 $j$ 个 score 除以 $\sqrt{\lambda_j}$，使保留成分具有单位方差。PCA 也不是从原始列中挑选若干列，而是生成原特征的线性组合，因此可能降低直接可解释性。</p></li>
+<li><p><strong>常见限制与误区。</strong></p>
+<ul>
+<li>Loading 的整体符号任意：$v_j$ 与 $-v_j$ 表示同一条轴，相应 scores 也同时变号，不影响 PCA。</li>
+<li>PCA 只捕捉线性方向和方差；非线性流形可能需要 kernel PCA、autoencoder 等方法，但它们有不同假设。</li>
+<li>高方差不等于高预测价值；与标签最相关的弱方差方向可能被 PCA 丢弃。</li>
+<li>PCA 对异常值敏感，因为均值、协方差和平方重构误差都会被极端点影响。</li>
+<li>主成分是统计方向，不自动具有经济、因果或物理含义；给它命名需要结合 loadings、稳定性和领域知识。</li>
+</ul></li>
+</ol>
+<p><strong>一句话记忆：</strong>PCA 在中心化数据中寻找一组正交方向，使前面的方向依次拥有最大投影方差；对 $X=U\Sigma V^\top$，columns of $V$ 是 loadings，$U\Sigma=XV$ 是 scores，$\sigma_j^2/(n-1)$ 是解释方差，而保留前 $k$ 项同时给出最佳的秩-$k$ 线性重构。</p>
+</div></details>
 ~~~
 
-=== Q49 \[M\] Best low-rank approximation \/ 最优低秩近似
+=== Q51 \[M\] Best low-rank approximation \/ 最优低秩近似
 *中文：* 如何在 Frobenius 范数下找到矩阵 $A$ 的最优 rank-$k$ 近似？误差是多少？
 
 *English:* How do you find the best rank-$k$ approximation of $A$ in Frobenius norm, and what is the approximation error?
@@ -996,7 +1593,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q50 \[M\] Eigenvalues of AB and BA \/ AB 与 BA 的特征值
+=== Q52 \[M\] Eigenvalues of AB and BA \/ AB 与 BA 的特征值
 *中文：* $A$ 是 $m\\mathbin{×} n$，$B$ 是 $n\\mathbin{×} m$。证明 $AB$ 和 $BA$ 具有相同的非零特征值（计重数）。
 
 *English:* Let $A$ be $m\\mathbin{×} n$ and $B$ be $n\\mathbin{×} m$. Show that $AB$ and $BA$ have the same nonzero eigenvalues, including multiplicity.
@@ -1006,9 +1603,48 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>If $ABv=\lambda v$ with $\lambda\ne0$, then $Bv\ne0$ and $BA(Bv)=B(ABv)=\lambda(Bv)$, so $\lambda$ is an eigenvalue of $BA$; reverse the roles for the converse. Multiplicity follows from</p><p class="equation-line">$$\det(I_m+tAB)=\det(I_n+tBA),$$</p><p>with extra zeros accounting for unequal dimensions.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>“计重数”到底是什么意思？</strong> 这里指的是<strong>代数重数（algebraic multiplicity）</strong>：把特征多项式</p>
+<p class="equation-line">$$\chi_M(z)=\det(zI-M)$$</p>
+<p>分解以后，特征值作为根重复出现的次数。例如</p>
+<p class="equation-line">$$\chi_M(z)=(z-2)^3(z+1)$$</p>
+<p>表示特征值 $2$ 的代数重数为 $3$，特征值 $-1$ 的代数重数为 $1$。因此“$AB$ 和 $BA$ 有相同的非零特征值（计重数）”不只是在说两者都有特征值 $2$，还要求 $(z-2)$ 在各自特征多项式中出现同样多次。</p></li>
+<li><p><strong>不要把代数重数和几何重数混在一起。</strong> 几何重数（geometric multiplicity）是对应特征空间的维数：</p>
+<p class="equation-line">$$\dim\ker(M-\lambda I).$$</p>
+<p>例如 $\operatorname{diag}(2,2)$ 中，$2$ 的代数重数和几何重数都是 $2$；但 Jordan 块</p>
+<p class="equation-line">$$J=\begin{pmatrix}2&amp;1\\0&amp;2\end{pmatrix}$$</p>
+<p>的特征多项式仍为 $(z-2)^2$，所以 $2$ 的代数重数是 $2$，而只有一条线性无关的特征向量，几何重数是 $1$。题目中的“计重数”默认指代数重数。</p></li>
+<li><p><strong>为什么原来的特征向量证明还不够？</strong> 若 $ABv=\lambda v$ 且 $\lambda\ne0$，那么 $Bv\ne0$，而且 $Bv$ 是 $BA$ 的 $\lambda$-特征向量。反过来可以用 $A$ 映射回来。事实上，在两个 $\lambda$-特征空间上，$B$ 与 $\lambda^{-1}A$ 互为逆映射，所以它们的<strong>几何重数</strong>相同。</p>
+<p>但是一个特征值即使只有一条特征向量，也可能在特征多项式中重复多次；上面的 Jordan 块正是例子。因此，只追踪特征向量只能说明非零特征值出现，并不能单独证明其<strong>代数重数</strong>相同。为此必须比较特征多项式。</p></li>
+<li><p><strong>关键工具：Sylvester 行列式恒等式。</strong> 对 $A\in\mathbb{F}^{m\times n}$、$B\in\mathbb{F}^{n\times m}$ 和任意标量 $t$，</p>
+<p class="equation-line">$$\boxed{\det(I_m+tAB)=\det(I_n+tBA)}.$$</p>
+<p>可以把它看成同一个分块矩阵的行列式用两种方式计算。令</p>
+<p class="equation-line">$$K=\begin{pmatrix}I_m&amp;tA\\-B&amp;I_n\end{pmatrix}.$$</p>
+<p>用左上角的 $I_m$ 做分块消元得到 $\det K=\det(I_n+tBA)$；用右下角的 $I_n$ 做分块消元则得到 $\det K=\det(I_m+tAB)$。两式都是同一个 $\det K$，所以恒等式成立。</p></li>
+<li><p><strong>怎样从这个恒等式真正得到“计重数”？</strong> 令 $z\ne0$，在恒等式中取 $t=-z^{-1}$：</p>
+<p class="equation-line">$$\det(I_m-z^{-1}AB)=\det(I_n-z^{-1}BA).$$</p>
+<p>再把两边换成特征多项式，可得</p>
+<p class="equation-line">$$\chi_{AB}(z)=z^{m-n}\chi_{BA}(z),$$</p>
+<p>更对称、也不需要担心 $m-n$ 为负的写法是</p>
+<p class="equation-line">$$\boxed{z^n\chi_{AB}(z)=z^m\chi_{BA}(z)}.$$</p>
+<p>这个等式先由 $z\ne0$ 推出，但两边都是多项式，因此它作为多项式恒等式处处成立。</p></li>
+<li><p><strong>最后一步就是“数因子的次数”。</strong> 假设某个非零数 $\mu$ 是 $AB$ 的特征值，且</p>
+<p class="equation-line">$$\chi_{AB}(z)=(z-\mu)^k g(z),\qquad g(\mu)\ne0.$$</p>
+<p>这里的 $k$ 就是 $\mu$ 的代数重数。因为 $\mu\ne0$，额外乘上的 $z^m$ 或 $z^n$ 在 $z=\mu$ 处都不为零，所以它们不可能增加或消去任何 $(z-\mu)$ 因子。由</p>
+<p class="equation-line">$$z^n\chi_{AB}(z)=z^m\chi_{BA}(z)$$</p>
+<p>可知，$(z-\mu)$ 在 $\chi_{AB}$ 和 $\chi_{BA}$ 中必然具有相同的幂次 $k$。这就证明了每个<strong>非零</strong>特征值的代数重数完全相同。</p></li>
+<li><p><strong>为什么必须强调“非零”？</strong> 因子 $z^m$ 和 $z^n$ 只会改变根 $z=0$ 的次数，所以 $AB$ 和 $BA$ 的零特征值重数可以不同。比如</p>
+<p class="equation-line">$$A=\begin{pmatrix}1\\0\end{pmatrix},\qquad B=\begin{pmatrix}2&amp;3\end{pmatrix},$$</p>
+<p>则</p>
+<p class="equation-line">$$AB=\begin{pmatrix}2&amp;3\\0&amp;0\end{pmatrix},\qquad BA=\begin{pmatrix}2\end{pmatrix}.$$</p>
+<p>$AB$ 的特征值是 $2,0$，而 $BA$ 只有特征值 $2$：非零部分连同重数一致，维数较大的矩阵则多出一个零特征值。若 $m=n$，上面的恒等式直接给出 $\chi_{AB}=\chi_{BA}$，此时零特征值的代数重数也一致。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>特征向量映射证明“非零特征值确实出现”，行列式恒等式比较“特征多项式中的因子次数”；乘上的 $z$ 的幂只影响零根，所以 $AB$ 与 $BA$ 的每个非零特征值都具有相同的代数重数。</p>
+</div></details>
 ~~~
 
-=== Q51 \[C\] Trace, determinant and eigenvalues \/ 迹、行列式与特征值
+=== Q53 \[C\] Trace, determinant and eigenvalues \/ 迹、行列式与特征值
 *中文：* 对 $n\\mathbin{×} n$ 矩阵 $A$，$\\operatorname{tr}(A)$ 和 $\\det(A)$ 与特征值有什么关系？$A$ 不可对角化时结论还成立吗？
 
 *English:* How are $\\operatorname{tr}(A)$ and $\\det(A)$ related to eigenvalues? Do the relations still hold if $A$ is not diagonalizable?
@@ -1018,9 +1654,66 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Over the complex numbers and counting algebraic multiplicity,</p><p class="equation-line">$$\operatorname{tr}(A)=\sum_i\lambda_i,\qquad \det(A)=\prod_i\lambda_i.$$</p><p>These follow from coefficients of the characteristic polynomial and do not require diagonalizability.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>什么叫“把矩阵对角化”？</strong> 对一个 $n\times n$ 矩阵 $A$，如果能找到可逆矩阵 $P$ 和对角矩阵 $D$，使得</p>
+<p class="equation-line">$$\boxed{A=PDP^{-1}}$$</p>
+<p>就称 $A$ 可对角化（diagonalizable）。等价地，</p>
+<p class="equation-line">$$AP=PD.$$</p>
+<p>若把 $P$ 的列写成 $P=(v_1,\ldots,v_n)$，把 $D$ 写成</p>
+<p class="equation-line">$$D=\operatorname{diag}(\lambda_1,\ldots,\lambda_n),$$</p>
+<p>那么 $AP=PD$ 逐列展开恰好是</p>
+<p class="equation-line">$$Av_i=\lambda_i v_i,\qquad i=1,\ldots,n.$$</p>
+<p>所以，对角化的本质是：$A$ 拥有 $n$ 个线性无关的特征向量；把它们依次放进 $P$ 的列中，对应的特征值放到 $D$ 的对角线上。</p></li>
+<li><p><strong>它在几何上表示什么？</strong> 普通坐标轴未必顺着 $A$ 最自然的作用方向。若特征向量 $v_1,\ldots,v_n$ 构成一组基，那么向量可以写成 $x=Pc$；此时</p>
+<p class="equation-line">$$Ax=PDP^{-1}Pc=PDc.$$</p>
+<p>在特征向量坐标 $c$ 中，$A$ 的作用就是让第 $i$ 个坐标单独乘以 $\lambda_i$，不同方向之间不再混合。因此，$P^{-1}$ 先把向量换到特征向量坐标系，$D$ 分别缩放各坐标，最后 $P$ 再换回原坐标系。</p></li>
+<li><p><strong>怎样实际完成对角化？</strong></p>
+<ol>
+<li>解特征方程 $\det(A-\lambda I)=0$，找到特征值；</li>
+<li>对每个特征值解 $(A-\lambda I)v=0$，找到特征向量；</li>
+<li>检查能否选出总共 $n$ 个线性无关的特征向量；</li>
+<li>把它们作为 $P$ 的列，并按相同顺序把特征值放到 $D$ 的对角线上。</li>
+</ol>
+<p>例如</p>
+<p class="equation-line">$$A=\begin{pmatrix}2&amp;1\\0&amp;3\end{pmatrix}$$</p>
+<p>分别有特征向量 $v_1=(1,0)^\top$ 和 $v_2=(1,1)^\top$，所以</p>
+<p class="equation-line">$$P=\begin{pmatrix}1&amp;1\\0&amp;1\end{pmatrix},\qquad D=\begin{pmatrix}2&amp;0\\0&amp;3\end{pmatrix},\qquad A=PDP^{-1}.$$</p></li>
+<li><p><strong>什么时候一定能对角化？什么时候不能？</strong></p>
+<ul>
+<li>若 $A$ 有 $n$ 个互不相同的特征值，它一定可对角化，因为不同特征值对应的特征向量线性无关。</li>
+<li>有重复特征值并不代表一定不可对角化。例如 $I_n$ 只有特征值 $1$，但它本身就是对角矩阵。</li>
+<li>准确判据是所有特征空间的维数之和等于 $n$；等价地，每个特征值的几何重数都等于代数重数。</li>
+</ul>
+<p>典型的不可对角化例子是</p>
+<p class="equation-line">$$J=\begin{pmatrix}2&amp;1\\0&amp;2\end{pmatrix}.$$</p>
+<p>特征值 $2$ 的代数重数为 $2$，但 $\ker(J-2I)$ 只有一维，只能找到一条线性无关的特征向量，因此无法组成可逆的 $P$。</p></li>
+<li><p><strong>对角化不是初等行变换。</strong> 高斯消元使用行变换，把矩阵化成阶梯形来解方程；对角化使用的是<strong>相似变换（similarity transformation）</strong> $P^{-1}AP=D$，表示同一个线性变换在不同基下的矩阵。相似矩阵具有相同的特征多项式、特征值、迹和行列式，但行等价矩阵一般不具备这些相同量。</p></li>
+<li><p><strong>为什么大家喜欢对角化？</strong> 因为对角矩阵非常容易计算。例如</p>
+<p class="equation-line">$$A^k=PD^kP^{-1},\qquad D^k=\operatorname{diag}(\lambda_1^k,\ldots,\lambda_n^k),$$</p>
+<p>而且若所有特征值非零，</p>
+<p class="equation-line">$$A^{-1}=PD^{-1}P^{-1}.$$</p>
+<p>矩阵指数也变成 $e^A=Pe^DP^{-1}$。这使递推关系、线性动态系统、马尔可夫链和常微分方程的长期行为都可以按不同特征方向分别分析。</p></li>
+<li><p><strong>如果 $A$ 可对角化，Q53 的公式非常直观。</strong> 由 $A=PDP^{-1}$ 以及迹和行列式在相似变换下不变，</p>
+<p class="equation-line">$$\operatorname{tr}(A)=\operatorname{tr}(D)=\sum_{i=1}^n\lambda_i,$$</p>
+<p class="equation-line">$$\det(A)=\det(D)=\prod_{i=1}^n\lambda_i.$$</p>
+<p>对角矩阵的迹就是对角元素之和，行列式就是对角元素之积，而 $D$ 的对角元素正是 $A$ 的特征值。</p></li>
+<li><p><strong>不可对角化时，为什么这两个公式仍然成立？</strong> 因为它们真正来自特征多项式，而不是来自对角化。无论 $A$ 是否有足够多的特征向量，都有</p>
+<p class="equation-line">$$\chi_A(t)=\det(tI-A)=t^n-\operatorname{tr}(A)t^{n-1}+\cdots+(-1)^n\det(A).$$</p>
+<p>在复数域上，把同一个多项式按特征值分解并按代数重数重复计算，可写成</p>
+<p class="equation-line">$$\chi_A(t)=\prod_{i=1}^n(t-\lambda_i).$$</p>
+<p>比较 $t^{n-1}$ 的系数和常数项，就得到</p>
+<p class="equation-line">$$\boxed{\operatorname{tr}(A)=\sum_{i=1}^n\lambda_i,\qquad \det(A)=\prod_{i=1}^n\lambda_i}.$$</p>
+<p>因此，对角化只提供了一个很直观的解释，并不是公式成立的必要条件。</p></li>
+<li><p><strong>实对称矩阵是最重要的特殊情形。</strong> 若 $A=A^\top$ 且元素为实数，谱定理保证它总能被<strong>正交对角化</strong>：</p>
+<p class="equation-line">$$A=Q\Lambda Q^\top,\qquad Q^\top Q=I.$$</p>
+<p>它的特征值全为实数，并且可以选取一组标准正交的特征向量。这也是协方差矩阵、PCA 和许多二次型问题中特征值分解特别好用的原因。一般实矩阵则可能只能在复数域上对角化，例如二维旋转矩阵的特征值可能是复数。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>可对角化就是“存在一组由特征向量组成的基”，使矩阵在这组基下只做各方向独立缩放；但迹等于特征值之和、行列式等于特征值之积来自特征多项式，所以即使找不到这组完整的特征向量基也仍然成立。</p>
+</div></details>
 ~~~
 
-=== Q52 \[C\] Why normal equations can be unstable \/ 正规方程为何可能不稳定
+=== Q54 \[C\] Why normal equations can be unstable \/ 正规方程为何可能不稳定
 *中文：* 为什么数值计算 OLS 时不建议显式计算 $(X^\\mathsf{T} X)^{-1}X^\\mathsf{T} y$？
 
 *English:* Why is explicitly computing $(X^\\mathsf{T} X)^{-1}X^\\mathsf{T} y$ discouraged in numerical OLS?
@@ -1030,9 +1723,70 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Forming $X^\top X$ squares the 2-norm condition number:</p><p class="equation-line">$$\kappa_2(X^\top X)=\kappa_2(X)^2.$$</p><p>This magnifies floating-point error and near-collinearity. Explicit inversion adds unnecessary work and error. Solve least squares using QR, or SVD when rank deficiency/conditioning matters.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>先回忆 normal equations 从哪里来。</strong> OLS 要寻找</p>
+<p class="equation-line">$$\widehat\beta=\arg\min_\beta\lVert y-X\beta\rVert_2^2.$$</p>
+<p>对 $\beta$ 求导并令梯度为零，得到正规方程（normal equations）</p>
+<p class="equation-line">$$X^\top X\widehat\beta=X^\top y.$$</p>
+<p>若 $X$ 满列秩，则 $X^\top X$ 可逆，在精确算术中可以写成</p>
+<p class="equation-line">$$\widehat\beta=(X^\top X)^{-1}X^\top y.$$</p>
+<p>问题不在于这个数学公式错误，而在于计算机使用有限精度浮点数：显式形成 $X^\top X$，再显式求逆，会把本来已经存在的敏感性进一步放大。</p></li>
+<li><p><strong>condition number（条件数）在衡量什么？</strong> 条件数衡量一个问题对输入扰动的最坏情况敏感程度。对于可逆线性系统 $Az=b$，粗略地说，</p>
+<p class="equation-line">$$\frac{\lVert\delta z\rVert}{\lVert z\rVert}\lesssim \kappa(A)\frac{\lVert\delta b\rVert}{\lVert b\rVert}.$$</p>
+<p>也就是说，若输入产生很小的相对误差，解的相对误差在最坏方向上可能被放大约 $\kappa(A)$ 倍。</p>
+<ul>
+<li>$\kappa(A)$ 接近 $1$：well-conditioned，输入小变动通常只造成解的小变动；</li>
+<li>$\kappa(A)$ 很大：ill-conditioned，舍入误差或数据中的微小噪声都可能使解明显变化；</li>
+<li>$\kappa(A)=\infty$：矩阵秩亏，存在完全无法区分的方向。</li>
+</ul>
+<p>条件数是问题本身的敏感性指标，不是某种算法运行了多少步，也不等于计算结果已经产生的实际误差。</p></li>
+<li><p><strong>你的“最大值除以最小值”记忆，需要把特征值改成奇异值。</strong> 对满列秩矩阵 $X$，2-范数条件数定义为</p>
+<p class="equation-line">$$\boxed{\kappa_2(X)=\frac{\sigma_{\max}(X)}{\sigma_{\min}(X)}}.$$</p>
+<p>这里 $\sigma_{\max}$ 和 $\sigma_{\min}$ 是最大、最小奇异值。一般矩阵应使用奇异值，而不能直接使用特征值：$X$ 甚至可能是非方阵，根本没有通常意义下的一组特征值。</p>
+<p>只有当矩阵本身是对称正定矩阵 $M$ 时，其奇异值才等于正特征值，因此</p>
+<p class="equation-line">$$\kappa_2(M)=\frac{\lambda_{\max}(M)}{\lambda_{\min}(M)}.$$</p>
+<p>$X^\top X$ 在 $X$ 满列秩时正是对称正定矩阵，所以对它使用最大、最小特征值之比是正确的。</p></li>
+<li><p><strong>为什么形成 $X^\top X$ 会把条件数平方？</strong> 若 $X$ 的 SVD 是</p>
+<p class="equation-line">$$X=U\Sigma V^\top,$$</p>
+<p>那么</p>
+<p class="equation-line">$$X^\top X=V\Sigma^2V^\top.$$</p>
+<p>因此，$X^\top X$ 的特征值就是 $X$ 的奇异值的平方：</p>
+<p class="equation-line">$$\lambda_i(X^\top X)=\sigma_i(X)^2.$$</p>
+<p>于是</p>
+<p class="equation-line">$$\boxed{\kappa_2(X^\top X)=\frac{\sigma_{\max}^2}{\sigma_{\min}^2}=\left(\frac{\sigma_{\max}}{\sigma_{\min}}\right)^2=\kappa_2(X)^2}.$$</p>
+<p>严格说是“条件数变成原来的平方”，不是“增加原来的平方倍”。例如 $\kappa_2(X)=10^3$ 时，$\kappa_2(X^\top X)=10^6$。</p></li>
+<li><p><strong>一个最小例子。</strong> 令</p>
+<p class="equation-line">$$X=\begin{pmatrix}1&amp;0\\0&amp;\varepsilon\end{pmatrix},\qquad 0&lt;\varepsilon\ll1.$$</p>
+<p>它的奇异值是 $1$ 和 $\varepsilon$，所以</p>
+<p class="equation-line">$$\kappa_2(X)=\frac{1}{\varepsilon}.$$</p>
+<p>而</p>
+<p class="equation-line">$$X^\top X=\begin{pmatrix}1&amp;0\\0&amp;\varepsilon^2\end{pmatrix},\qquad \kappa_2(X^\top X)=\frac{1}{\varepsilon^2}.$$</p>
+<p>若 $\varepsilon=10^{-4}$，条件数就从 $10^4$ 变为 $10^8$。在十进制直觉下，$\kappa\approx10^p$ 意味着最坏情况下可能损失约 $p$ 位有效数字，所以平方条件数可能大幅消耗浮点精度。</p></li>
+<li><p><strong>这和 multicollinearity（多重共线性）有什么关系？</strong> 若 $X$ 的某一列几乎可以由其他列线性组合出来，就存在一个非零方向 $v$ 使 $Xv$ 非常小。这个方向对应很小的奇异值 $\sigma_{\min}(X)$，从而导致很大的条件数。</p>
+<p>直观上，很多不同的系数组合 $\beta$ 都会产生几乎相同的预测 $X\beta$；数据很难判断究竟该把作用分配给哪一列，因此系数会对样本噪声非常敏感。若列完全线性相关，则 $\sigma_{\min}=0$、$X^\top X$ 奇异，OLS 解不再唯一。</p></li>
+<li><p><strong>为什么“不显式求逆”也是独立的一条建议？</strong> 即使已经决定求解 $X^\top X\widehat\beta=X^\top y$，通常也应调用线性方程求解器，而不是先计算逆矩阵再相乘。显式逆矩阵会做额外工作、存储不必要的中间结果，并引入更多舍入误差。</p>
+<p>不过，仅把 $(X^\top X)^{-1}X^\top y$ 改写成求解正规方程，仍然没有消除“形成 $X^\top X$ 会平方条件数”的核心问题。</p></li>
+<li><p><strong>QR 和 SVD 为什么更稳？</strong></p>
+<ul>
+<li><strong>QR：</strong> 写成 $X=QR$，直接求解 $R\widehat\beta=Q^\top y$，不需要形成 $X^\top X$。它通常是满秩最小二乘的标准稳定方法。</li>
+<li><strong>SVD：</strong> 写成 $X=U\Sigma V^\top$，可以显式看见哪些奇异值很小或为零，并通过伪逆处理秩亏问题；它通常最稳健、诊断信息也最多，但计算成本较高。</li>
+<li><strong>Cholesky on $X^\top X$：</strong> 速度和内存表现可能很好，但仍然继承条件数平方的问题，更适合已知 $X$ 条件良好的场景。</li>
+</ul></li>
+<li><p><strong>数值稳定不等于统计问题消失。</strong> QR 或 SVD 可以避免算法额外损失精度，却无法凭空创造数据中不存在的信息。若 $X$ 真正接近共线，OLS 系数在统计上仍会具有较大方差。常见处理包括：</p>
+<ul>
+<li>检查特征设计，删除确实重复或冗余的列；</li>
+<li>对量纲差异很大的列进行合理缩放或标准化；</li>
+<li>收集能区分相关变量的更多数据；</li>
+<li>使用 ridge 等正则化方法稳定估计，但要清楚它改变了原来的 OLS 目标并引入偏差。</li>
+</ul>
+<p>列缩放可以修复纯粹由单位差异造成的坏条件数，却不能消除变量之间真实的近线性依赖。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>2-范数条件数通常是最大奇异值除以最小奇异值；由于 $X^\top X$ 的特征值是 $X$ 奇异值的平方，正规方程把条件数从 $\kappa_2(X)$ 恶化到 $\kappa_2(X)^2$，所以数值计算优先使用 QR，秩亏或严重病态时使用 SVD。</p>
+</div></details>
 ~~~
 
-=== Q53 \[M\] Pseudoinverse and minimum norm \/ 伪逆与最小范数解
+=== Q55 \[M\] Pseudoinverse and minimum norm \/ 伪逆与最小范数解
 *中文：* 当 $Ax=b$ 有无穷多解时，Moore–Penrose 伪逆 $A^{\\mathplus{}}$ 给出哪个解？用 SVD 怎样构造 $A^{\\mathplus{}}$？
 
 *English:* When $Ax=b$ has infinitely many solutions, which solution does $A^{\\mathplus{}}b$ select? How is the pseudoinverse constructed from the SVD?
@@ -1044,7 +1798,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q54 \[C\] Simulating correlated Gaussians \/ 模拟相关高斯向量
+=== Q56 \[C\] Simulating correlated Gaussians \/ 模拟相关高斯向量
 *中文：* 已知均值 $\\mu$ 和正定协方差矩阵 $\\Sigma$，如何用独立标准正态向量生成 $\\mathcal N(\\mu,\\Sigma)$ 样本？
 
 *English:* Given mean $\\mu$ and positive-definite covariance $\\Sigma$, how can independent standard normals be transformed into a sample from $\\mathcal N(\\mu,\\Sigma)$?
@@ -1056,7 +1810,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q55 \[C\] Matrix derivative \/ 矩阵求导
+=== Q57 \[C\] Matrix derivative \/ 矩阵求导
 *中文：* 对 $f(x)=\\lVert Ax-b\\Vert_2^2\\mathplus{}\\lambda\\lVert x\\Vert_2^2$，求梯度、Hessian 和极小点。
 
 *English:* For $f(x)=\\lVert Ax-b\\Vert_2^2\\mathplus{}\\lambda\\lVert x\\Vert_2^2$, find the gradient, Hessian, and minimizer.
@@ -1068,7 +1822,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q56 \[H\] Rank-one inverse update \/ 秩一逆矩阵更新
+=== Q58 \[H\] Rank-one inverse update \/ 秩一逆矩阵更新
 *中文：* 已知 $A^{-1}$，如何快速计算 $(A\\mathplus{}uv^\\mathsf{T})^{-1}$？哪个分母不能为 0？
 
 *English:* Given $A^{-1}$, how can $(A\\mathplus{}uv^\\mathsf{T})^{-1}$ be updated efficiently, and which denominator must be nonzero?
@@ -1080,7 +1834,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q57 \[M\] Stationary distribution \/ 马尔可夫链平稳分布
+=== Q59 \[M\] Stationary distribution \/ 马尔可夫链平稳分布
 *中文：* 对行随机转移矩阵 P，平稳分布满足什么方程？什么条件保证长期分布收敛到唯一平稳分布？
 
 *English:* For a row-stochastic transition matrix P, what equation defines a stationary distribution? What conditions give convergence to a unique stationary distribution?
@@ -1092,7 +1846,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q58 \[C\] Orthogonal transformations \/ 正交变换
+=== Q60 \[C\] Orthogonal transformations \/ 正交变换
 *中文：* 若 Q'Q=I，证明 Q 保持内积、长度、角度和距离。
 
 *English:* If Q'Q=I, prove that Q preserves inner products, lengths, angles, and distances.
@@ -1111,7 +1865,7 @@ a=\frac{n+1}{n}.$$</p>
 
 == D. 组合数学与离散推理
 
-=== Q59 \[C\] Walk on a triangle \/ 三角形上游走
+=== Q61 \[C\] Walk on a triangle \/ 三角形上游走
 *中文：* 一个人从三角形的某个顶点出发，每步必须沿一条边移动到另一个顶点。走 6 步后回到起点的路径有多少条？
 
 *English:* Starting at one vertex of a triangle, each step moves along an edge to one of the other two vertices. How many length-6 walks return to the starting vertex?
@@ -1123,7 +1877,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q60 \[C\] Stars and bars \/ 隔板法
+=== Q62 \[C\] Stars and bars \/ 隔板法
 *中文：* 非负整数解 $x_1\\mathplus{}\\cdots\\mathplus{}x_k=n$ 有多少个？若要求每个 $x_i\\mathrel{≥}1$ 呢？
 
 *English:* How many nonnegative integer solutions does $x_1\\mathplus{}\\cdots\\mathplus{}x_k=n$ have? What if every $x_i\\mathrel{≥}1$?
@@ -1135,7 +1889,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q61 \[M\] Onto functions \/ 满射计数
+=== Q63 \[M\] Onto functions \/ 满射计数
 *中文：* 从 n 个有标号元素到 m 个有标号元素的满射有多少个？
 
 *English:* How many onto functions are there from an n-element labeled set to an m-element labeled set?
@@ -1147,7 +1901,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q62 \[M\] Catalan parentheses \/ Catalan 括号
+=== Q64 \[M\] Catalan parentheses \/ Catalan 括号
 *中文：* n 对括号可以构成多少个合法括号序列？给出公式和一个解释。
 
 *English:* How many valid parenthesis strings can be formed from n pairs? Give the formula and one justification.
@@ -1155,11 +1909,11 @@ a=\frac{n+1}{n}.$$</p>
 ~~~
 {}{raw}
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
-<p>The answer is the Catalan number</p><p class="equation-line">$$C_n=\frac{1}{n+1}\binom{2n}{n}.$$</p><p>Among all $\binom{2n}{n}$ strings with equal opens and closes, the reflection principle shows that $\binom{2n}{n-1}$ cross below balance zero. Their difference is $C_n$.</p>
+<p>The answer is the Catalan number</p><p class="equation-line">$$C_n=\frac{1}{n+1}\binom{2n}{n}.$$</p><p>Give each opening parenthesis balance $+1$ and each closing parenthesis balance $-1$. A string is valid exactly when every prefix has nonnegative balance and the final balance is zero. There are $\binom{2n}{n}$ strings with $n$ opens and $n$ closes in total.</p><p>For any invalid string, take the prefix ending where its balance first reaches $-1$ and swap opens with closes throughout that prefix. This reflection is a bijection from invalid balanced strings to strings with $n+1$ opens and $n-1$ closes, of which there are $\binom{2n}{n-1}$. Hence</p><p class="equation-line">$$\binom{2n}{n}-\binom{2n}{n-1}=\frac{1}{n+1}\binom{2n}{n}=C_n.$$</p>
 </div></details>
 ~~~
 
-=== Q63 \[C\] Pigeonhole socks \/ 抽袜子
+=== Q65 \[C\] Pigeonhole socks \/ 抽袜子
 *中文：* 抽屉里有 10 种颜色的袜子，每种至少 2 只。黑暗中最少抽多少只才能保证有两只同色？保证有三只同色呢？
 
 *English:* A drawer contains socks of 10 colors, with enough socks of each color. How many draws guarantee a matching pair? How many guarantee three of one color?
@@ -1171,7 +1925,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q64 \[M\] Circular seating \/ 圆桌排列
+=== Q66 \[M\] Circular seating \/ 圆桌排列
 *中文：* n 个互不相同的人围圆桌就座，只把旋转视为相同，有多少种坐法？若镜像也视为相同呢？
 
 *English:* How many circular seatings of n distinct people are there if rotations are identical? What if mirror images are also identified?
@@ -1183,7 +1937,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q65 \[C\] Expected inversions \/ 逆序对期望
+=== Q67 \[C\] Expected inversions \/ 逆序对期望
 *中文：* 1,...,n 的均匀随机排列中，逆序对数的期望是多少？
 
 *English:* What is the expected number of inversions in a uniformly random permutation of 1,...,n?
@@ -1195,7 +1949,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q66 \[C\] Tiling recurrence \/ 铺砖递推
+=== Q68 \[C\] Tiling recurrence \/ 铺砖递推
 *中文：* 用 $1\\mathbin{×}2$ 骨牌完全铺满 $2\\mathbin{×} n$ 矩形有多少种方法？建立递推并给出复杂度。
 
 *English:* How many ways can a $2\\mathbin{×} n$ rectangle be tiled with $1\\mathbin{×}2$ dominoes? Build the recurrence and state the computation complexity.
@@ -1207,7 +1961,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q67 \[M\] Coin-change DP \/ 零钱兑换动态规划
+=== Q69 \[M\] Coin-change DP \/ 零钱兑换动态规划
 *中文：* 给定正整数面额 coins 和目标 S，每种硬币可无限使用。如何计算不考虑顺序的兑换方案数？循环顺序为什么重要？
 
 *English:* Given positive coin values and target S, with unlimited copies, how do you count unordered combinations? Why does loop order matter?
@@ -1219,7 +1973,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q68 \[C\] Board-operation invariant \/ 黑板操作不变量
+=== Q70 \[C\] Board-operation invariant \/ 黑板操作不变量
 *中文：* 黑板上写着 1,1\/2,...,1\/n。每次选 a,b，擦去后写上 a\+b\+ab，直到只剩一个数。最后是多少？
 
 *English:* A board contains 1,1\/2,...,1\/n. Repeatedly replace any a,b by a\+b\+ab until one number remains. What is it?
@@ -1231,7 +1985,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q69 \[C\] Leaves in a tree \/ 树的叶子
+=== Q71 \[C\] Leaves in a tree \/ 树的叶子
 *中文：* 证明任意至少有两个顶点的有限树至少有两个度为 1 的顶点。
 
 *English:* Prove that every finite tree with at least two vertices has at least two vertices of degree 1.
@@ -1243,7 +1997,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q70 \[M\] Inclusion-exclusion count \/ 容斥计数
+=== Q72 \[M\] Inclusion-exclusion count \/ 容斥计数
 *中文：* 1 到 1000 中，有多少个整数不被 2、3 或 5 中的任何一个整除？
 
 *English:* Among 1,...,1000, how many integers are divisible by none of 2, 3, or 5?
@@ -1262,7 +2016,7 @@ a=\frac{n+1}{n}.$$</p>
 
 == E. 机器学习数学与量化研究
 
-=== Q71 \[C\] Bias-variance decomposition \/ 偏差-方差分解
+=== Q73 \[C\] Bias-variance decomposition \/ 偏差-方差分解
 *中文：* 在平方损失回归中，预测误差如何分解？增加模型复杂度通常如何改变各部分？
 
 *English:* Under squared-error regression, how does expected prediction error decompose? How does increasing model complexity usually affect the components?
@@ -1272,9 +2026,46 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>At a point $x$, expected test MSE decomposes as</p><p class="equation-line">$$\mathbb E[(Y-\hat f(x))^2]=\sigma^2+\left(\mathbb E[\hat f(x)]-f(x)\right)^2+\operatorname{Var}(\hat f(x)).$$</p><p>The terms are irreducible noise, squared bias, and variance. Greater flexibility usually lowers bias and raises variance, though modern overparameterized models can behave more subtly. Validation estimates the combined generalization error, not the components directly.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>先明确题目中的随机性来自哪里。</strong> 假设真实数据生成过程为</p>
+<p class="equation-line">$$Y=f(x)+\varepsilon,\qquad \mathbb E[\varepsilon\mid x]=0,\qquad \operatorname{Var}(\varepsilon\mid x)=\sigma^2.$$</p>
+<p>$f(x)=\mathbb E[Y\mid X=x]$ 是理想的条件均值；$\varepsilon$ 是即使知道 $x$ 也无法预测的随机噪声。用一份随机训练集 $D$ 训练出的模型记为 $\widehat f_D$。若重新抽取训练集，学到的函数通常也会变化，因此期望和方差既要对新测试样本的噪声取，也要对训练集 $D$ 的随机性取。</p></li>
+<li><p><strong>三部分分别是什么？</strong> 在固定测试点 $x$ 处，平方预测误差分解为</p>
+<p class="equation-line">$$\mathbb E_{D,Y}\!\left[(Y-\widehat f_D(x))^2\mid x\right]
+=\underbrace{\sigma^2}_{\text{irreducible noise}}
++\underbrace{\left(\mathbb E_D[\widehat f_D(x)]-f(x)\right)^2}_{\text{squared bias}}
++\underbrace{\mathbb E_D\!\left[(\widehat f_D(x)-\mathbb E_D\widehat f_D(x))^2\right]}_{\text{variance}}.$$</p>
+<ul>
+<li><strong>不可约噪声：</strong>同样的 $x$ 仍可能产生不同的 $Y$，任何只使用现有信息的模型都无法消除。</li>
+<li><strong>偏差：</strong>在无数份训练集上训练后，模型的平均预测与真实 $f(x)$ 之间的系统性差距。</li>
+<li><strong>方差：</strong>换一份训练数据，模型预测会变化多少；它描述模型对训练样本波动的敏感性。</li>
+</ul></li>
+<li><p><strong>分解为什么成立？</strong> 在误差中加减平均预测 $\bar f(x)=\mathbb E_D[\widehat f_D(x)]$：</p>
+<p class="equation-line">$$Y-\widehat f_D(x)=\varepsilon+\bigl(f(x)-\bar f(x)\bigr)+\bigl(\bar f(x)-\widehat f_D(x)\bigr).$$</p>
+<p>平方并取期望后，交叉项因噪声均值为零以及 $\mathbb E_D[\widehat f_D-\bar f]=0$ 而消失，留下噪声方差、偏差平方和模型方差。</p></li>
+<li><p><strong>模型复杂度怎样影响它们？</strong> 经典直觉是：</p>
+<ul>
+<li>模型太简单，例如用直线拟合明显弯曲的关系：限制很强，偏差高、方差低，容易欠拟合（underfitting）。</li>
+<li>模型更灵活：能逼近更复杂的 $f$，通常降低偏差，但也更容易跟随训练集噪声，方差上升。</li>
+<li>模型过于灵活且缺乏约束：训练误差很低，测试误差却可能升高，形成过拟合（overfitting）。</li>
+</ul>
+<p>因此经典测试误差曲线常呈 U 形。不过这只是常见趋势，不是定律；现代过参数模型可能出现 double descent，正则化、优化过程和数据规模都会改变曲线。</p></li>
+<li><p><strong>怎样分别控制偏差和方差？</strong></p>
+<ul>
+<li>降低偏差：增加有意义的特征、使用更灵活模型、减弱过强正则化。</li>
+<li>降低方差：增加训练数据、加强正则化、简化模型、bagging/模型平均、稳定特征选择。</li>
+<li>不可约噪声：通常只能通过获取更有信息的特征、改善测量方式或重新定义预测目标来间接减少。</li>
+</ul></li>
+<li><p><strong>验证集实际测到什么？</strong> 一次 train/validation split 只能估计总的泛化误差，不能直接告诉你其中多少来自偏差、多少来自方差。若要经验估计两者，通常需要重复抽取训练集、bootstrap 或学习曲线等额外设计。训练误差很低而验证误差明显更高通常提示高方差，但不是严格的分解估计。</p></li>
+<li><p><strong>公式的适用范围。</strong> 这个整洁的加法分解依赖平方损失和条件均值模型；分类错误率、绝对损失等一般没有完全相同的三项公式。实际报告整体测试 MSE 时还要对测试点 $X$ 的分布取平均：</p>
+<p class="equation-line">$$\mathbb E_X\!\left[\sigma^2(X)+\operatorname{Bias}^2(X)+\operatorname{Variance}(X)\right].$$</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>测试 MSE 等于“数据本身的噪声 + 模型平均预测的系统性错误平方 + 模型随训练集变化的波动”；增加复杂度通常用更低偏差换取更高方差。</p>
+</div></details>
 ~~~
 
-=== Q72 \[C\] Logistic-regression gradient \/ 逻辑回归梯度
+=== Q74 \[C\] Logistic-regression gradient \/ 逻辑回归梯度
 *中文：* 二分类中 $p_i=\\operatorname{sigmoid}(x_i^\\mathsf{T}β)$。写出负对数似然及其梯度。
 
 *English:* In binary logistic regression $p_i=\\operatorname{sigmoid}(x_i^\\mathsf{T}β)$. Write the negative log-likelihood and its gradient.
@@ -1284,9 +2075,52 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The negative log-likelihood is</p><p class="equation-line">$$L=-\sum_i\left[y_i\log p_i+(1-y_i)\log(1-p_i)\right].$$</p><p>Using $dp/dz=p(1-p)$, terms cancel to give <strong>$\nabla L=X^\top(p-y)$</strong>. The Hessian is $X^\top WX$ with $W_{ii}=p_i(1-p_i)$, hence the objective is convex.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>逻辑回归在做什么？</strong> 它用于二分类，标签 $y_i\in\{0,1\}$。先计算线性分数</p>
+<p class="equation-line">$$z_i=x_i^\top\beta,$$</p>
+<p>再用 sigmoid 把任意实数压到 $(0,1)$：</p>
+<p class="equation-line">$$p_i=\sigma(z_i)=\frac{1}{1+e^{-z_i}}.$$</p>
+<p>$p_i$ 被解释为模型给出的 $\Pr(Y_i=1\mid x_i)$。逻辑回归名字中虽有 regression，任务通常是估计分类概率。</p></li>
+<li><p><strong>为什么损失长这样？</strong> 给定 $x_i$ 后，把 $Y_i$ 看成 Bernoulli 随机变量：</p>
+<p class="equation-line">$$\Pr(Y_i=y_i\mid x_i)=p_i^{y_i}(1-p_i)^{1-y_i}.$$</p>
+<p>假设样本条件独立，似然是各项乘积。取负对数把乘积变成求和，就得到 binary cross-entropy，也就是负对数似然：</p>
+<p class="equation-line">$$L(\beta)=-\sum_i\left[y_i\log p_i+(1-y_i)\log(1-p_i)\right].$$</p></li>
+<li><p><strong>先求单个样本对 logit 的导数。</strong> 记</p>
+<p class="equation-line">$$\ell_i=-y_i\log p_i-(1-y_i)\log(1-p_i).$$</p>
+<p>利用</p>
+<p class="equation-line">$$\frac{dp_i}{dz_i}=p_i(1-p_i),$$</p>
+<p>链式法则给出</p>
+<p class="equation-line">$$\frac{d\ell_i}{dz_i}
+=\left(-\frac{y_i}{p_i}+\frac{1-y_i}{1-p_i}\right)p_i(1-p_i)
+=p_i-y_i.$$</p>
+<p>看似复杂的分母和 sigmoid 导数正好抵消，这是逻辑回归最重要的简化。</p></li>
+<li><p><strong>再对参数 $\beta$ 求导。</strong> 因为 $z_i=x_i^\top\beta$，所以 $\nabla_\beta z_i=x_i$。于是</p>
+<p class="equation-line">$$\nabla_\beta\ell_i=(p_i-y_i)x_i.$$</p>
+<p>把所有样本叠起来，若 $X$ 的第 $i$ 行是 $x_i^\top$，则</p>
+<p class="equation-line">$$\boxed{\nabla_\beta L=X^\top(p-y)}.$$</p>
+<p>维度检查：$X$ 是 $n\times d$，$p-y$ 是 $n\times1$，所以梯度是 $d\times1$，与 $\beta$ 相同。</p></li>
+<li><p><strong>梯度的直觉。</strong> $p_i-y_i$ 是概率预测残差：</p>
+<ul>
+<li>若 $y_i=1$ 但 $p_i$ 太小，则 $p_i-y_i&lt;0$，梯度下降会沿着提高 $x_i^\top\beta$ 的方向更新。</li>
+<li>若 $y_i=0$ 但 $p_i$ 太大，则 $p_i-y_i&gt;0$，更新会降低该样本的 logit。</li>
+<li>预测已经接近标签时，残差小，对更新的贡献也小。</li>
+</ul></li>
+<li><p><strong>Hessian 与凸性。</strong> 再求一次导数：</p>
+<p class="equation-line">$$\nabla^2_\beta L=X^\top W X,\qquad W_{ii}=p_i(1-p_i)\ge0.$$</p>
+<p>对任意向量 $v$，</p>
+<p class="equation-line">$$v^\top X^\top W Xv=(Xv)^\top W(Xv)\ge0,$$</p>
+<p>所以 Hessian 半正定，未正则化的逻辑回归目标是凸的：不存在差的局部极小值。但数据完全可分时，有限的无正则 MLE 可能不存在，参数范数会不断增大。</p></li>
+<li><p><strong>正则化和截距怎样进入梯度？</strong> 若加入 ridge 项 $\frac{\lambda}{2}\lVert\beta\rVert_2^2$，梯度变为</p>
+<p class="equation-line">$$X^\top(p-y)+\lambda\beta.$$</p>
+<p>实践中通常不惩罚截距项。若把常数 $1$ 作为 $X$ 的一列，需在正则化向量中单独排除对应系数。</p></li>
+<li><p><strong>数值实现的陷阱。</strong> 当 $|z|$ 很大时，先算 $p$ 再算 $\log p$ 可能上溢或下溢。稳定实现通常直接从 logits 使用 softplus/log-sum-exp 形式；在框架中应优先使用 `BCEWithLogitsLoss` 一类把 sigmoid 与交叉熵合并的函数。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>Bernoulli 负对数似然经过 sigmoid 的链式法则后，单样本导数简化成“预测概率减标签”，叠加全部样本便得到 $\nabla L=X^\top(p-y)$。</p>
+</div></details>
 ~~~
 
-=== Q73 \[C\] Why cross-entropy? \/ 为什么分类用交叉熵？
+=== Q75 \[C\] Why cross-entropy? \/ 为什么分类用交叉熵？
 *中文：* 为什么逻辑回归通常使用交叉熵而不是对 0\/1 标签直接使用 MSE？
 
 *English:* Why is cross-entropy normally used for logistic regression instead of applying MSE directly to 0\/1 labels?
@@ -1296,9 +2130,41 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Cross-entropy is the Bernoulli negative log-likelihood, a proper scoring rule aligned with probability estimation. Combined with the logistic link it yields a convex objective and gradient $X^\top(p-y)$. MSE is possible but is not the Bernoulli likelihood and can produce less favorable curvature and saturated gradients.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>二分类交叉熵是什么？</strong> 对标签 $y\in\{0,1\}$ 和预测概率 $p=\Pr(Y=1\mid x)$，单样本损失是</p>
+<p class="equation-line">$$\ell_{CE}(y,p)=-\left[y\log p+(1-y)\log(1-p)\right].$$</p>
+<p>若 $y=1$，损失就是 $-\log p$；若 $y=0$，损失就是 $-\log(1-p)$。它直接评价模型给真实结果分配了多少概率。</p></li>
+<li><p><strong>它首先来自概率模型，而不是随意选择。</strong> 二分类标签服从 Bernoulli 分布，其似然为</p>
+<p class="equation-line">$$p^y(1-p)^{1-y}.$$</p>
+<p>最大化全部样本的 Bernoulli 似然，等价于最小化其负对数，也就是交叉熵。因此逻辑回归使用交叉熵与它所假设的数据分布完全一致。</p></li>
+<li><p><strong>它怎样惩罚预测？</strong></p>
+<ul>
+<li>正确且自信：$y=1,p=0.99$ 时，损失 $-\log0.99$ 很小。</li>
+<li>正确但不自信：$y=1,p=0.6$ 时，损失更大。</li>
+<li>错误且极度自信：$y=1,p=0.01$ 时，损失 $-\log0.01$ 很大。</li>
+</ul>
+<p>因此它会强烈惩罚“把真实类别说成几乎不可能”的预测。</p></li>
+<li><p><strong>为什么它适合概率估计？</strong> 交叉熵是 proper scoring rule：若真实概率为 $q$，从长期期望损失看，诚实报告 $p=q$ 才能达到最小值。它不只关心最终分到哪一类，也要求概率数值具有正确含义。</p></li>
+<li><p><strong>交叉熵与 sigmoid 配合时梯度更直接。</strong> 令 $p=\sigma(z)$，则</p>
+<p class="equation-line">$$\frac{d\ell_{CE}}{dz}=p-y.$$</p>
+<p>相比之下，若把标签当连续数直接使用</p>
+<p class="equation-line">$$\ell_{MSE}=\frac12(p-y)^2,$$</p>
+<p>则</p>
+<p class="equation-line">$$\frac{d\ell_{MSE}}{dz}=(p-y)p(1-p).$$</p>
+<p>当 sigmoid 已饱和到接近 $0$ 或 $1$ 时，$p(1-p)$ 很小；即使模型非常自信地预测错误，MSE 的 logit 梯度也可能很弱，优化更慢。</p></li>
+<li><p><strong>曲率也不同。</strong> 线性 logit $z=x^\top\beta$ 配合交叉熵得到凸的逻辑回归目标；使用 sigmoid 后再套 MSE，一般不再保证关于 $\beta$ 的目标凸。因此交叉熵既有似然解释，又有更好的优化结构。</p></li>
+<li><p><strong>MSE 并非“数学上禁止”。</strong> 0/1 标签的条件均值本来就是类别概率，所以某些方法用平方损失也能学习概率或分类边界，例如 Brier score 就是概率预测的平方误差。问题是对于标准 logistic 模型，MSE 不是其 Bernoulli 负对数似然，并且与 sigmoid 的组合通常优化性质较差。</p></li>
+<li><p><strong>多分类版本。</strong> 对 one-hot 标签 $y_k$ 和 softmax 概率 $p_k$，交叉熵为</p>
+<p class="equation-line">$$-\sum_k y_k\log p_k,$$</p>
+<p>实际只留下真实类别对应的 $-\log p_k$。softmax 加交叉熵的 logit 梯度同样简化成 $p-y$。</p></li>
+<li><p><strong>类别不平衡时不要误解。</strong> 普通交叉熵对应原始数据分布；若正类漏判代价更高，可以使用类别权重、重采样或 focal loss。但这些操作会改变训练目标，预测概率可能需要在原始分布的独立验证集上重新校准。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>交叉熵就是 Bernoulli 模型的负对数似然，能正确奖励概率预测，并与 sigmoid 配合产生简洁的 $p-y$ 梯度；MSE 可以使用，但不是标准逻辑回归最自然、最好优化的目标。</p>
+</div></details>
 ~~~
 
-=== Q74 \[C\] Scaling before regularization \/ 正则化前为何要缩放
+=== Q76 \[C\] Scaling before regularization \/ 正则化前为何要缩放
 *中文：* 为什么 ridge、lasso、SVM 和 k-NN 通常需要特征缩放？树模型为什么通常不敏感？
 
 *English:* Why do ridge, lasso, SVM, and k-NN usually require feature scaling, while tree models are usually insensitive to monotone rescaling?
@@ -1308,9 +2174,37 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Penalties act on coefficient magnitudes and distances/margins depend on feature units, so large-scale features otherwise dominate. Trees choose threshold orderings; a monotone rescaling preserves all candidate partitions, so the fitted structure is usually unchanged. Fit the scaler only on training data.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>什么叫特征缩放？</strong> 不同特征可能使用完全不同的单位，例如年龄约为几十、年收入约为几十万、收益率约为 $0.01$。常见标准化是</p>
+<p class="equation-line">$$z_j=\frac{x_j-\mu_j}{s_j},$$</p>
+<p>使第 $j$ 个特征在训练集上均值约为 $0$、标准差约为 $1$。缩放不是为了改变信息，而是避免算法把“数值单位大”误当成“更重要”。</p></li>
+<li><p><strong>为什么正则化模型需要缩放？</strong> Ridge 和 lasso 分别惩罚</p>
+<p class="equation-line">$$\lambda\sum_j\beta_j^2,\qquad \lambda\sum_j|\beta_j|.$$</p>
+<p>若把一个特征放大 $100$ 倍，为保持同一预测，它的系数会缩小到约 $1/100$；虽然 $\beta_jx_j$ 没变，系数惩罚却大幅变小。未缩放时，相同的 $\lambda$ 实际上会对不同单位的特征施加不同强度的约束，lasso 还可能仅因量纲而优先删除某些变量。</p></li>
+<li><p><strong>SVM 为什么受影响？</strong> SVM 的间隔和核函数依赖特征空间中的距离或内积。若某一维数值范围远大于其他维，它会主导</p>
+<p class="equation-line">$$\lVert x-x'\rVert_2^2=\sum_j(x_j-x'_j)^2,$$</p>
+<p>从而改变分隔超平面。对 RBF kernel，缩放还会与 $\gamma$ 共同决定相似度衰减速度；不缩放会使统一的 $C$、$\gamma$ 很难解释和调参。</p></li>
+<li><p><strong>k-NN、k-means 和 PCA 为什么受影响？</strong> 它们直接使用欧氏距离或方差：</p>
+<ul>
+<li>k-NN 的邻居可能几乎完全由最大量纲的特征决定；</li>
+<li>k-means 会优先降低大尺度维度的平方距离；</li>
+<li>PCA 会优先解释数值方差最大的维度。</li>
+</ul>
+<p>是否标准化仍应结合业务含义：若原始尺度本身代表真实的重要性，机械标准化也可能不合适。</p></li>
+<li><p><strong>缩放还会改善数值优化。</strong> 当不同方向尺度差异很大时，损失曲面的等高线会非常狭长，梯度下降需要来回震荡并使用很小的步长。把各维放到相近尺度通常能改善 Hessian 的条件数，使梯度法更快、更稳定。</p></li>
+<li><p><strong>树模型为什么通常不敏感？</strong> 单棵决策树寻找类似</p>
+<p class="equation-line">$$x_j\le t$$</p>
+<p>的阈值分裂。若对 $x_j$ 做严格单调变换，其样本排序不变，每个候选切分所分到左右两侧的样本也不变；阈值只需相应变换。因此普通 tree、random forest 和多数 boosting tree 的结构通常不受线性缩放影响。</p>
+<p>“通常”很重要：直方图分箱、数值精度、缺失值处理、某些正则规则和实现细节仍可能造成细微差异。</p></li>
+<li><p><strong>哪些模型不一定必须缩放？</strong> 无正则化 OLS 在精确算术下的预测对可逆线性缩放不变，但缩放仍可改善数值条件和系数可比性。朴素贝叶斯等显式为各维建模的方法视具体分布而定。树模型一般最不敏感，但只要模型含距离、内积、系数惩罚或梯度优化，通常都应认真考虑缩放。</p></li>
+<li><p><strong>最重要的工程规则：只在训练数据上拟合 scaler。</strong> 在 cross-validation 的每个 fold 内，用训练部分估计 $\mu_j,s_j$，再应用到该 fold 的验证部分；最终测试集也只能使用训练阶段保存的参数。若先在全数据上算均值和标准差，就把验证/未来数据的信息泄漏进了训练流程。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>距离、间隔、正则项和优化过程都看数值尺度，所以 ridge、lasso、SVM、k-NN 等通常先缩放；树主要看特征排序，单调缩放通常不改变分裂，但 scaler 必须只在训练数据上拟合。</p>
+</div></details>
 ~~~
 
-=== Q75 \[C\] Tree split criteria \/ 决策树分裂准则
+=== Q77 \[C\] Tree split criteria \/ 决策树分裂准则
 *中文：* 分类树中熵和 Gini 不纯度如何定义？一次分裂如何评估？
 
 *English:* Define entropy and Gini impurity for a classification node. How is a candidate split evaluated?
@@ -1320,9 +2214,35 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>For class proportions $p_k$,</p><p class="equation-line">$$H=-\sum_k p_k\log p_k,\qquad G=1-\sum_k p_k^2.$$</p><p>A split is scored by parent impurity minus the sample-weighted impurities of its children. Greedy trees choose the largest reduction. Both criteria are zero at pure nodes and typically yield similar trees.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>决策树在每个节点做什么？</strong> 一个分类节点包含若干训练样本。树尝试问题，例如“特征 $x_j\le t$ 吗？”，把样本分到左右子节点，并希望分裂后每个子节点的类别更单一。衡量“类别混得有多厉害”的量就叫 impurity（不纯度）。</p></li>
+<li><p><strong>节点中的类别比例。</strong> 若节点共有 $N$ 个样本，第 $k$ 类有 $N_k$ 个，则</p>
+<p class="equation-line">$$p_k=\frac{N_k}{N},\qquad \sum_kp_k=1.$$</p>
+<p>若所有样本属于同一类，节点是 pure；若不同类别比例接近，节点更混杂。</p></li>
+<li><p><strong>Entropy（熵）。</strong></p>
+<p class="equation-line">$$H=-\sum_kp_k\log p_k,$$</p>
+<p>约定 $0\log0=0$。纯节点只有一个 $p_k=1$，所以 $H=0$；类别越均匀，熵越大。对二分类，$p=0.5$ 时最混杂、熵最大。对数底数只改变整体比例，不改变候选分裂的排序。</p></li>
+<li><p><strong>Gini impurity（基尼不纯度）。</strong></p>
+<p class="equation-line">$$G=1-\sum_kp_k^2=\sum_kp_k(1-p_k).$$</p>
+<p>可以理解为按节点类别比例随机给一个样本贴标签时，标签贴错的概率。纯节点 $G=0$；二分类 $p=0.5$ 时 $G=0.5$，达到最大。</p></li>
+<li><p><strong>一次候选分裂怎样评分？</strong> 设父节点有 $N$ 个样本，左右子节点分别有 $N_L,N_R$ 个，使用不纯度 $I$。分裂后的加权不纯度为</p>
+<p class="equation-line">$$I_{\text{children}}=\frac{N_L}{N}I_L+\frac{N_R}{N}I_R.$$</p>
+<p>不纯度下降量是</p>
+<p class="equation-line">$$\boxed{\Delta I=I_{\text{parent}}-I_{\text{children}}}.$$</p>
+<p>树贪心地选择当前 $\Delta I$ 最大的特征和阈值。使用熵时常称为 information gain。</p></li>
+<li><p><strong>为什么必须按样本量加权？</strong> 一个分裂可能产生一个只有一条样本的纯节点和一个几乎没改善的大节点。若简单平均两个子节点的不纯度，会夸大小节点的贡献；按 $N_L/N$、$N_R/N$ 加权才能反映整批样本的总体改善。</p></li>
+<li><p><strong>一个二分类例子。</strong> 父节点有 $10$ 个样本，正负各 $5$ 个，因此</p>
+<p class="equation-line">$$G_{\text{parent}}=1-0.5^2-0.5^2=0.5.$$</p>
+<p>若某分裂使左节点全为 $5$ 个正类、右节点全为 $5$ 个负类，则两个子节点的 Gini 都是 $0$，所以 $\Delta G=0.5$，这是完美分裂。若子节点的类别比例几乎与父节点相同，下降量接近零。</p></li>
+<li><p><strong>Entropy 与 Gini 怎样选？</strong> 两者都在纯节点取零、都偏好提高纯度，实际往往得到相近的树。Gini 不需要计算对数，传统上稍快；entropy 有信息论解释，有时对小概率类别更敏感。通常这不是最关键超参数，树深、叶节点最小样本数和剪枝对泛化影响更大。</p></li>
+<li><p><strong>局限与延伸。</strong> 树的分裂是局部贪心选择，不保证整棵树全局最优；不停分裂会把噪声也切得很纯，因此需要限制深度、最小叶样本或剪枝。回归树不使用类别熵/Gini，而通常使用子节点平方误差或方差下降。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>熵和 Gini 都衡量节点类别混杂程度；候选分裂的分数是“父节点不纯度减去按子节点样本量加权的不纯度”，树选择下降最大的分裂。</p>
+</div></details>
 ~~~
 
-=== Q76 \[C\] Random forest versus boosting \/ 随机森林与 Boosting
+=== Q78 \[C\] Random forest versus boosting \/ 随机森林与 Boosting
 *中文：* 从训练方式、偏差\/方差、并行性和对噪声敏感度比较 random forest 与 gradient boosting。
 
 *English:* Compare random forests and gradient boosting in training, bias\/variance, parallelism, and noise sensitivity.
@@ -1332,9 +2252,44 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Random forests train many deep randomized bootstrap trees independently and average them, mainly reducing variance; trees parallelize naturally and are robust defaults. Boosting trains weak learners sequentially on residuals/negative gradients, often reducing bias and achieving high accuracy but requiring careful learning rate/depth/round tuning and being more sensitive to noisy labels/outliers. Neither dominates universally.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>两者为什么都要用很多棵树？</strong> 单棵深决策树能拟合复杂非线性和交互，但对训练样本很敏感，通常方差较高。Random forest 和 boosting 都组合多棵树，却采用完全不同的思路：</p>
+<ul>
+<li>random forest：许多树<strong>并列地投票/平均</strong>；</li>
+<li>boosting：许多树<strong>依次修正前面模型的错误</strong>。</li>
+</ul></li>
+<li><p><strong>Random forest 的训练方式。</strong> 每棵树通常：</p>
+<ol>
+<li>从训练集 bootstrap 抽样，即有放回地抽取样本；</li>
+<li>每次分裂只从随机选出的部分特征中寻找最佳分裂；</li>
+<li>把树长得相对较深。</li>
+</ol>
+<p>分类时多数投票或平均类别概率，回归时平均预测。bootstrap 制造数据差异，特征子采样降低树之间的相关性。</p></li>
+<li><p><strong>为什么平均能降低方差？</strong> 若各棵树都不稳定但错误并非完全同步，正负波动会在平均中部分抵消。若每棵树方差为 $\sigma_T^2$、两棵树误差的平均相关性约为 $\rho$，大量树平均后的方差下限大致受 $\rho\sigma_T^2$ 控制。因此随机森林不仅需要很多树，也需要通过随机特征让树不要过度相似。</p></li>
+<li><p><strong>Boosting 的训练方式。</strong> 它构造加法模型</p>
+<p class="equation-line">$$F_M(x)=F_0(x)+\eta\sum_{m=1}^M h_m(x),$$</p>
+<p>其中每个 $h_m$ 通常是浅树，$\eta$ 是 learning rate。第 $m$ 棵树根据当前模型的错误训练：平方损失下可拟合残差，更一般地拟合损失对当前预测的负梯度，所以称 gradient boosting。</p></li>
+<li><p><strong>偏差与方差的典型区别。</strong></p>
+<ul>
+<li>Random forest 以深树为基础，每棵树偏差较低但方差较高，平均主要降低方差。</li>
+<li>Boosting 从简单弱学习器开始，逐轮增加模型能力，常能持续降低偏差；轮数过多、树太深或学习率太大时也会提高方差并过拟合。</li>
+</ul>
+<p>这是常见倾向而非绝对定律，最终行为取决于数据和超参数。</p></li>
+<li><p><strong>并行性。</strong> Random forest 中各棵树彼此独立，天然可以并行训练。Boosting 的下一棵树依赖当前 ensemble 的预测，轮次之间必须串行；同一轮内部仍可能对特征、节点或样本并行，但整体并行性较弱。</p></li>
+<li><p><strong>对噪声和离群值的敏感度。</strong> Random forest 的抽样和平均使它通常是稳健的默认模型。Boosting 会集中学习当前残差大的样本；若这些样本来自错误标签或极端离群值，后续树可能反复追逐噪声。使用较小 learning rate、浅树、subsampling、early stopping 以及稳健损失可以缓解。</p></li>
+<li><p><strong>主要超参数。</strong></p>
+<ul>
+<li>Random forest：树的数量、每次分裂考虑的特征数、树深、最小叶样本数；树数增加通常主要增加计算量，不太容易单独导致过拟合。</li>
+<li>Boosting：树数、learning rate、单树深度、subsample、列采样和正则化；learning rate 与树数需要一起调，常用验证集 early stopping。</li>
+</ul></li>
+<li><p><strong>怎样选择？</strong> Random forest 训练和调参简单、并行友好、可用 out-of-bag 样本估计误差，适合作为强健 baseline。Gradient boosting（如 XGBoost、LightGBM、CatBoost）在结构化表格数据上常有更高精度，但需要更认真地处理调参与验证。没有模型在所有数据集上都占优，应按真正的验证指标、推理成本、稳定性和可解释性比较。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>Random forest 让许多随机化深树独立训练后平均，主要降方差；boosting 让浅树按顺序修正当前错误，常能降偏差但更依赖调参，也更容易追逐噪声。</p>
+</div></details>
 ~~~
 
-=== Q77 \[M\] Feature importance with correlation \/ 相关特征的重要性
+=== Q79 \[M\] Feature importance with correlation \/ 相关特征的重要性
 *中文：* 两个特征几乎完全相关且都有预测力。为什么树的 impurity importance 或 permutation importance 可能误导？
 
 *English:* Two features are almost perfectly correlated and jointly predictive. Why can impurity or permutation feature importance be misleading?
@@ -1344,9 +2299,42 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>A tree may arbitrarily choose one substitute early, assigning it most impurity gain. Permuting one feature may barely hurt because the correlated partner remains, understating both marginal importances. Grouped/conditional permutation, drop-column retraining, stability analysis, and domain-based grouping provide a fuller picture. Importance is not causality.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>先问清楚“feature importance”想回答什么。</strong> 它可能指：</p>
+<ul>
+<li>模型在预测时多大程度依赖某个特征；</li>
+<li>该特征相对其他特征提供多少独有信息；</li>
+<li>包含它的一组变量整体提供多少信息；</li>
+<li>现实中改变该变量是否会造成结果变化。</li>
+</ul>
+<p>前三个已经是不同问题，最后一个更是因果问题。普通 importance 主要描述已训练模型和当前数据分布中的预测关联，不能自动解释为因果效应。</p></li>
+<li><p><strong>为什么相关特征像“替补队员”？</strong> 假设 $x_1$ 与 $x_2$ 几乎完全相关，并且都携带同一预测信号。模型只需要其中一个就能完成多数预测；删除或破坏一个后，另一个可以补位。因此“单独拿走一个特征造成多少损失”可能很小，即使这组信息整体非常重要。</p></li>
+<li><p><strong>树的 impurity importance 怎样计算？</strong> 又称 mean decrease in impurity。每当树用特征 $j$ 分裂，就记录该分裂带来的加权不纯度下降，再在整棵树或所有树中求和：</p>
+<p class="equation-line">$$I_j=\sum_{\text{splits using }j}\frac{N_t}{N}\,\Delta I_t.$$</p>
+<p>若 $x_1,x_2$ 可互相替代，树可能因为微小样本波动先选择 $x_1$。之后节点已被分好，$x_2$ 不再提供额外 gain，于是重要性几乎全记到 $x_1$ 名下；换一份样本或随机种子，功劳又可能转给 $x_2$。</p></li>
+<li><p><strong>Impurity importance 还有哪些偏差？</strong> 它基于训练树内部的贪心分裂，可能偏爱候选切分很多的连续变量或高基数类别变量，也可能把训练噪声带来的 gain 当作重要性。相关性会进一步使功劳分配不稳定。因此应至少结合 held-out performance 和重复训练稳定性，而不是只看一张内置 importance 排名。</p></li>
+<li><p><strong>Permutation importance 怎样工作？</strong> 先在验证集上记录模型指标，然后随机打乱某个特征 $x_j$，破坏它与标签及其他变量的对应关系；性能下降量就是 permutation importance：</p>
+<p class="equation-line">$$PI_j=\operatorname{Score}_{\text{original}}-\operatorname{Score}_{\text{permuted }j}.$$</p>
+<p>它可以用于任意模型，并且直接使用关心的验证指标，但测量的是在其他特征保留时破坏 $x_j$ 的边际影响。</p></li>
+<li><p><strong>相关性怎样使 permutation importance 偏小？</strong> 打乱 $x_1$ 后，$x_2$ 仍保存几乎相同的信息，模型性能可能只下降一点，于是 $x_1$ 看起来不重要；反过来打乱 $x_2$ 也是如此。结果可能出现“两个特征单看都不重要，但同时拿掉就严重失效”。</p>
+<p>另外，独立打乱相关特征会产生训练数据中几乎不可能出现的特征组合，即 off-manifold samples，importance 也可能因此难以解释。</p></li>
+<li><p><strong>更可靠的诊断方式。</strong></p>
+<ul>
+<li><strong>Grouped permutation：</strong>把高度相关、业务上同源的一组特征同时打乱，测量整组信息。</li>
+<li><strong>Conditional permutation：</strong>在保持与其他特征条件关系的情况下扰动目标特征，尝试衡量其独有贡献。</li>
+<li><strong>Drop-column retraining：</strong>删除特征或特征组后重新训练，再比较样本外性能；成本高，但允许模型重新适应。</li>
+<li><strong>Stability analysis：</strong>跨 bootstrap、时间窗口和随机种子观察排名是否稳定。</li>
+<li><strong>Feature clustering：</strong>先按相关性或经济含义分组，再从组层面解释。</li>
+</ul></li>
+<li><p><strong>SHAP 也不能神奇解决相关性。</strong> 相关特征之间如何分摊贡献取决于所使用的条件分布假设和解释方法。不同 SHAP 变体可能把共享贡献平均分配、按模型路径分配，或在不现实的独立性假设下分配。解释结果时必须说明 background data 和相关性处理方式。</p></li>
+<li><p><strong>量化研究中的额外警告。</strong> 两个因子可能只是同一风险暴露的不同代理。稳定的预测 importance 不代表它们有独立 alpha，更不代表交易上可实现；还应做中性化、分组消融、换手与成本分析，并检查不同时期和股票池中的稳定性。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>高度相关的特征会“共享或争抢功劳”：树可能把全部 gain 随机记给一个，单特征 permutation 又可能因另一个能替代而低估两者；应按特征组、条件扰动和重训练稳定性综合判断，且 importance 不等于因果性。</p>
+</div></details>
 ~~~
 
-=== Q78 \[M\] Soft-margin SVM \/ 软间隔 SVM
+=== Q80 \[M\] Soft-margin SVM \/ 软间隔 SVM
 *中文：* 软间隔 SVM 中参数 C 控制什么？C 非常大或非常小时会怎样？
 
 *English:* What does C control in a soft-margin SVM? What happens when C is very large or very small?
@@ -1356,9 +2344,50 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The primal objective balances margin size and hinge-loss violations:</p><p class="equation-line">$$\min_{w,b,\xi}\ \frac12\lVert w\rVert_2^2+C\sum_i\xi_i.$$</p><p>Large $C$ heavily penalizes violations, fitting training points more aggressively with a potentially narrower margin and higher variance. Small $C$ tolerates more violations, giving stronger regularization and a wider margin. Feature scaling and validation are essential.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>SVM 的基本任务。</strong> 对二分类标签 $y_i\in\{-1,+1\}$，线性 SVM 使用</p>
+<p class="equation-line">$$f(x)=w^\top x+b$$</p>
+<p>作为分数，并按 $\operatorname{sign}(f(x))$ 分类。$w^\top x+b=0$ 是决策超平面，$w$ 决定其方向，$b$ 决定位置。</p></li>
+<li><p><strong>什么叫 margin（间隔）？</strong> 在规范化约束 $y_i(w^\top x_i+b)\ge1$ 下，两条支持边界是 $w^\top x+b=\pm1$，它们之间的宽度为</p>
+<p class="equation-line">$$\frac{2}{\lVert w\rVert_2}.$$</p>
+<p>因此最小化 $\frac12\lVert w\rVert_2^2$ 等价于最大化间隔。更宽的间隔通常意味着分类边界对小扰动更稳健。</p></li>
+<li><p><strong>为什么需要 soft margin？</strong> Hard-margin SVM 要求每个训练点都被正确分类并处在间隔外，但现实数据往往有类别重叠、噪声或离群点。引入 slack variable $\xi_i\ge0$：</p>
+<p class="equation-line">$$y_i(w^\top x_i+b)\ge1-\xi_i.$$</p>
+<ul>
+<li>$\xi_i=0$：点在正确一侧且达到间隔要求；</li>
+<li>$0&lt;\xi_i\le1$：分类仍正确，但进入了 margin；</li>
+<li>$\xi_i&gt;1$：落到错误分类的一侧。</li>
+</ul></li>
+<li><p><strong>$C$ 到底控制什么？</strong> 软间隔目标是</p>
+<p class="equation-line">$$\boxed{\min_{w,b,\xi}\ \frac12\lVert w\rVert_2^2+C\sum_i\xi_i}.$$</p>
+<p>第一项偏好小 $\lVert w\rVert$、即宽间隔；第二项惩罚 margin violation。$C$ 是“遵守训练样本”与“保持简单宽间隔”之间的权衡参数，也可以把它理解为正则化强度的反方向。</p></li>
+<li><p><strong>$C$ 很大时。</strong> 每个 violation 都很昂贵，模型会努力正确拟合训练点，即使需要弯曲或缩窄边界：</p>
+<ul>
+<li>训练错误通常减少；</li>
+<li>间隔可能变窄；</li>
+<li>对离群点和错误标签更敏感；</li>
+<li>偏差可能下降，方差和过拟合风险可能上升。</li>
+</ul>
+<p>若数据本身不可分，再大的有限 $C$ 也不意味着所有点一定正确。</p></li>
+<li><p><strong>$C$ 很小时。</strong> 模型愿意容忍更多训练点落入间隔甚至被错分，以换取更小的 $\lVert w\rVert$：</p>
+<ul>
+<li>正则化更强、间隔通常更宽；</li>
+<li>模型更平滑，对噪声更不敏感；</li>
+<li>$C$ 过小会造成欠拟合。</li>
+</ul></li>
+<li><p><strong>hinge loss 的等价写法。</strong> 消去 $\xi_i$ 后，可写为</p>
+<p class="equation-line">$$\frac12\lVert w\rVert_2^2+C\sum_i\max\bigl(0,1-y_if(x_i)\bigr).$$</p>
+<p>只有位于 margin 内或分类错误的点产生正 hinge loss；这些点以及恰好在边界上的点决定最优超平面，称为 support vectors。远离边界且分类正确的样本不会直接改变解。</p></li>
+<li><p><strong>为什么必须缩放特征？</strong> SVM 的 $\lVert w\rVert$、距离、内积和 kernel 都依赖单位。若一个特征范围是 $10^6$、另一个是 $10^{-2}$，相同的 $C$ 对不同方向含义不一致，大尺度特征可能主导边界。scaler 应仅在训练 fold 上拟合。</p></li>
+<li><p><strong>Kernel SVM 还要一起考虑什么？</strong> RBF SVM 中 $C$ 控制 violation 惩罚，$\gamma$ 控制单个样本影响范围。大 $C$ 配大 $\gamma$ 往往产生很复杂的边界；小 $C$ 或小 $\gamma$ 更平滑。两者需要在正确的交叉验证内联合调参。</p></li>
+<li><p><strong>类别不平衡与实现差异。</strong> 不平衡任务可以使用 class-specific $C$，让少数类错误承担更高成本。不同库可能对损失使用求和或平均，因此 $C$ 的绝对数值不可脱离实现直接比较；核心方向仍是“大 $C$ 弱正则、小 $C$ 强正则”。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>软间隔 SVM 用 $\frac12\lVert w\rVert^2$ 追求宽间隔，用 $C\sum\xi_i$ 惩罚训练违例；$C$ 越大越强调拟合训练点，$C$ 越小越强调正则化和宽间隔。</p>
+</div></details>
 ~~~
 
-=== Q79 \[C\] k-means failure modes \/ k-means 失效情形
+=== Q81 \[C\] k-means failure modes \/ k-means 失效情形
 *中文：* 写出 k-means 的目标函数，并列出至少三种它表现不好的数据情形。
 
 *English:* State the k-means objective and give at least three data situations where it performs poorly.
@@ -1368,9 +2397,38 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>It minimizes within-cluster squared Euclidean distance</p><p class="equation-line">$$\sum_i\lVert x_i-\mu_{c_i}\rVert_2^2.$$</p><p>It struggles with non-spherical/nonconvex clusters, unequal sizes or densities, unscaled features, severe outliers, categorical data, and high-dimensional distance concentration. Lloyd's algorithm finds only a local optimum, so initialization matters.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>k-means 是什么任务？</strong> 它是无监督聚类：没有标签 $y$，只根据特征 $x_i$ 把 $N$ 个样本分成预先指定的 $K$ 组。$c_i\in\{1,\ldots,K\}$ 表示样本所属组，$\mu_k$ 是第 $k$ 组的中心（centroid）。</p></li>
+<li><p><strong>目标函数。</strong> k-means 最小化 within-cluster sum of squares：</p>
+<p class="equation-line">$$\boxed{J=\sum_{i=1}^N\lVert x_i-\mu_{c_i}\rVert_2^2}.$$</p>
+<p>它希望每个样本到所属中心的平方欧氏距离尽量小。固定分组时，使平方距离最小的中心恰好是该组样本的算术平均，所以叫 k-means。</p></li>
+<li><p><strong>Lloyd 算法怎样运行？</strong></p>
+<ol>
+<li>初始化 $K$ 个中心；</li>
+<li><strong>Assignment step：</strong>把每个样本分给最近中心；</li>
+<li><strong>Update step：</strong>把每个中心更新为所属样本均值；</li>
+<li>重复直到分组或目标函数几乎不再变化。</li>
+</ol>
+<p>每一步都不会增加 $J$，所以算法会收敛，但只保证到达局部最优或稳定点，不保证全局最优。</p></li>
+<li><p><strong>隐含的形状假设。</strong> 使用欧氏距离和均值中心，使 k-means 最适合近似球形、凸、不同方向尺度相近的簇。对于两个月牙形、环形或被其他簇包围的非凸结构，它仍会用 Voronoi 边界切割空间，结果可能违背肉眼看到的群组。</p></li>
+<li><p><strong>大小和密度差异。</strong> 当一个簇很大而另一个很小，或不同簇密度差异明显时，平方距离目标可能把大簇拆开、把多个小簇合并，以降低总距离。它优化的是总平方误差，不是“恢复真实类别”。</p></li>
+<li><p><strong>尺度、离群值和数据类型。</strong></p>
+<ul>
+<li>未缩放特征：大数值单位主导欧氏距离，应根据业务含义考虑标准化。</li>
+<li>离群值：均值和平方距离对极端点敏感，少量 outlier 可把中心拉远；可考虑 k-medoids 或稳健预处理。</li>
+<li>类别变量：普通欧氏均值没有自然含义，不能直接把无序类别编码为整数后使用；可考虑 k-modes 或合适距离。</li>
+</ul></li>
+<li><p><strong>高维问题。</strong> 在高维空间中，最近与最远距离可能变得相对接近，称为 distance concentration；无关维度还会淹没有效结构。可先进行有依据的特征选择或降维，并用稳定性和下游任务检验聚类是否有意义。</p></li>
+<li><p><strong>初始化为什么重要？</strong> 不同初始中心会进入不同局部最优，有时还会产生空簇。k-means++ 会让初始中心彼此较分散，通常优于完全随机选择；实践中仍应运行多个随机起点，选择目标函数较低且结果稳定的解。</p></li>
+<li><p><strong>$K$ 怎样选？</strong> $J$ 会随 $K$ 增大而单调下降，所以不能直接选择使训练目标最小的 $K$。常见辅助方法包括 elbow curve、silhouette score、重采样稳定性和业务可解释性；这些都不是自动发现“真实 $K$”的保证。</p></li>
+<li><p><strong>表现不好时考虑什么替代方法？</strong> 非凸簇可考虑 spectral clustering 或 DBSCAN；不同协方差形状可考虑 GMM；离群值严重可考虑 k-medoids；需要层次结构可考虑 hierarchical clustering。选择方法要对应你对簇形状、噪声和距离的假设。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>k-means 反复“分给最近中心—用组内均值更新中心”，最小化组内平方欧氏距离；它偏好尺度可比、近似球形且大小密度相近的数值型簇，并受离群值、维度和初始化影响。</p>
+</div></details>
 ~~~
 
-=== Q80 \[M\] EM for Gaussian mixtures \/ 高斯混合模型 EM
+=== Q82 \[M\] EM for Gaussian mixtures \/ 高斯混合模型 EM
 *中文：* 用语言和公式概括 GMM 的 E 步和 M 步。EM 保证什么，不保证什么？
 
 *English:* Summarize the E- and M-steps for a Gaussian mixture. What does EM guarantee, and what does it not guarantee?
@@ -1380,9 +2438,44 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>E-step: compute responsibilities</p><p class="equation-line">$$r_{ik}\propto\pi_k\,\mathcal N(x_i\mid\mu_k,\Sigma_k).$$</p><p>M-step: update component weights, means, and covariances using $r_{ik}$ as fractional counts. Each iteration does not decrease observed-data likelihood, but EM need not find the global optimum and can converge slowly or to singular solutions; initialization/regularization matter.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>Gaussian mixture model（GMM）是什么？</strong> 它假设数据由 $K$ 个高斯分布混合生成：</p>
+<p class="equation-line">$$p(x)=\sum_{k=1}^K\pi_k\,\mathcal N(x\mid\mu_k,\Sigma_k),$$</p>
+<p>其中 $\pi_k\ge0$、$\sum_k\pi_k=1$ 是第 $k$ 个成分的比例，$\mu_k$ 是均值，$\Sigma_k$ 是协方差矩阵。每个样本背后还有一个未观测的成分标签 $z_i$。</p></li>
+<li><p><strong>它和 k-means 的关键区别。</strong> k-means 把每个点硬分到一个簇；GMM 给每个点属于各成分的概率，所以是 soft clustering。GMM 还可以通过不同 $\Sigma_k$ 表示椭圆形、方向和尺度不同的簇，而不只比较到中心的欧氏距离。</p></li>
+<li><p><strong>为什么不能直接轻松求 MLE？</strong> 观测数据对数似然为</p>
+<p class="equation-line">$$\ell(\theta)=\sum_i\log\left(\sum_k\pi_k\mathcal N(x_i\mid\mu_k,\Sigma_k)\right).$$</p>
+<p>外层的 log 包住内层求和，不容易把每个成分参数分开优化。如果知道每个样本来自哪个成分，估计均值和协方差会很简单；EM 就在“估计隐藏标签”和“根据估计标签更新参数”之间迭代。</p></li>
+<li><p><strong>E-step：计算 responsibility。</strong> 给定当前参数，用 Bayes 公式计算</p>
+<p class="equation-line">$$\boxed{r_{ik}=\Pr(z_i=k\mid x_i)
+=\frac{\pi_k\mathcal N(x_i\mid\mu_k,\Sigma_k)}
+{\sum_{j=1}^K\pi_j\mathcal N(x_i\mid\mu_j,\Sigma_j)}}.$$</p>
+<p>对每个样本 $i$，有 $\sum_kr_{ik}=1$。$r_{ik}$ 可以看成样本 $i$ 对第 $k$ 个成分贡献的“分数份额”。</p></li>
+<li><p><strong>M-step：把 responsibility 当作软计数。</strong> 定义有效样本数</p>
+<p class="equation-line">$$N_k=\sum_i r_{ik}.$$</p>
+<p>最大化期望完整数据对数似然后得到</p>
+<p class="equation-line">$$\pi_k^{\text{new}}=\frac{N_k}{N},\qquad
+\mu_k^{\text{new}}=\frac{1}{N_k}\sum_i r_{ik}x_i,$$</p>
+<p class="equation-line">$$\Sigma_k^{\text{new}}
+=\frac{1}{N_k}\sum_i r_{ik}(x_i-\mu_k^{\text{new}})(x_i-\mu_k^{\text{new}})^\top.$$</p>
+<p>然后用新参数回到 E-step，直到似然或参数变化很小。</p></li>
+<li><p><strong>EM 保证什么？</strong> 每轮 E/M 更新都不会降低 observed-data log-likelihood。更准确地说，E-step 构造一个在当前参数处贴紧似然的下界，M-step 提高这个下界。因此似然值形成单调不降序列，并通常收敛到一个 stationary point。</p></li>
+<li><p><strong>EM 不保证什么？</strong></p>
+<ul>
+<li>不保证到达全局最大值；不同初始化可能得到不同局部最优。</li>
+<li>不保证快速收敛；成分重叠严重时可能进展很慢。</li>
+<li>不自动选择正确的 $K$；常结合 BIC、AIC、验证似然、稳定性和领域知识。</li>
+<li>成分编号没有固有含义，交换标签得到同一分布，称为 label switching。</li>
+</ul></li>
+<li><p><strong>为什么会出现 singular solution？</strong> 某个高斯成分可以把均值放到单个数据点，并让协方差趋近零，使该点的密度趋于无穷，导致未约束 GMM 的似然没有有限上界。实践中应给协方差加下限或对角 jitter、使用先验/正则化、限制 covariance structure，并避免成分只捕获极少样本。</p></li>
+<li><p><strong>初始化与数值实现。</strong> 常用 k-means 初始化均值、多次随机重启并保留较高似然解。高维小样本下完整协方差参数很多，可使用 diagonal/tied covariance。E-step 应使用 log-sum-exp 计算，避免极小高斯密度下溢。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>GMM 把簇标签当隐藏变量；E-step 用当前参数算每个点属于各成分的概率，M-step 把这些概率当软计数更新权重、均值和协方差。似然保证不下降，但只保证局部收敛，并可能出现协方差坍缩。</p>
+</div></details>
 ~~~
 
-=== Q81 \[C\] PCA and feature scale \/ PCA 与特征量纲
+=== Q83 \[C\] PCA and feature scale \/ PCA 与特征量纲
 *中文：* 对具有不同量纲的特征直接做 PCA 会怎样？应当用协方差矩阵还是相关矩阵？
 
 *English:* What happens when PCA is applied directly to features with very different units? Should covariance or correlation PCA be used?
@@ -1392,9 +2485,36 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>PCA maximizes variance, so features with large numerical scale dominate. Standardizing first makes PCA on the covariance of z-scores equivalent to PCA on the correlation matrix. Use correlation PCA when units are incomparable and relative variation matters; use covariance PCA when scales are intrinsically meaningful. This is a modeling choice, not a universal rule.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>先回忆 PCA 在优化什么。</strong> 对中心化后的数据，第一主成分寻找单位方向 $v$，使投影方差最大：</p>
+<p class="equation-line">$$\max_{\lVert v\rVert=1}\operatorname{Var}(Xv).$$</p>
+<p>它等价于取样本协方差矩阵最大特征值对应的特征向量。后续主成分在与前面方向正交的条件下继续解释剩余方差。</p></li>
+<li><p><strong>为什么单位会影响 PCA？</strong> 方差带有单位的平方。若把“身高（米）”改写成“身高（毫米）”，数值放大 $1000$ 倍，方差放大 $10^6$ 倍；数据的现实信息没有变化，但未经缩放的 PCA 可能几乎完全朝身高方向旋转。PCA 不知道这是单位转换，只知道哪个方向数值方差更大。</p></li>
+<li><p><strong>Covariance PCA 是什么？</strong> 先只中心化每个特征，再对原单位协方差矩阵</p>
+<p class="equation-line">$$S=\frac{1}{n-1}X_c^\top X_c$$</p>
+<p>做特征分解。它保留各特征的绝对方差大小，因此大尺度或天然波动大的变量会获得更多权重。</p></li>
+<li><p><strong>Correlation PCA 是什么？</strong> 先把每个特征标准化：</p>
+<p class="equation-line">$$Z_{ij}=\frac{X_{ij}-\bar X_j}{s_j},$$</p>
+<p>再对 $Z$ 的协方差矩阵做 PCA。因为每个标准化特征方差为 $1$，这个协方差矩阵就是原始特征的相关矩阵。所以“对相关矩阵做 PCA”等价于“先 z-score，再做普通 covariance PCA”。</p></li>
+<li><p><strong>什么时候倾向使用 correlation PCA？</strong></p>
+<ul>
+<li>特征单位不可直接比较，例如年龄、收入、交易量和收益率混在一起；</li>
+<li>关心每个变量的相对波动，而不希望原始单位决定主成分；</li>
+<li>量纲选择具有任意性，换单位不应改变分析结论。</li>
+</ul>
+<p>标准化后每个特征起点方差相同，但不表示它们在业务上同等重要。</p></li>
+<li><p><strong>什么时候保留 covariance PCA？</strong> 当所有变量单位相同、测量精度相近，并且绝对波动本身有意义时，不缩放可能更合理。例如同一收益单位下多个期限的利率变化，较高方差方向可能正是希望 PCA 捕捉的主要风险。若人为标准化，可能放大原本只有微小噪声的特征。</p></li>
+<li><p><strong>Centering 与 scaling 不同。</strong> PCA 几乎总应先中心化，否则第一方向可能主要指向数据均值而非变化结构。是否再除以标准差则是建模选择。方差为零的常数特征无法标准化，也没有 PCA 信息，应先删除或单独处理。</p></li>
+<li><p><strong>缩放不能解决所有问题。</strong> PCA 仍对极端离群值敏感，因为均值、方差和平方距离都可能被少数点主导；可考虑稳健缩放、变换、异常值诊断或 robust PCA。高度偏态变量也可能先做有业务依据的 log 变换。</p></li>
+<li><p><strong>验证和数据泄漏。</strong> 在预测 pipeline 中，均值、标准差和 PCA loadings 都只能在训练 fold 上拟合，然后原样应用到验证和测试数据。先对全数据做 PCA 会把未来样本的协方差结构泄漏进训练过程。</p></li>
+<li><p><strong>Explained variance 也依赖选择。</strong> 主成分解释方差比不是数据的绝对真理；换单位或改为相关矩阵后，它会改变。PCA 又不使用标签，因此“解释方差最多”不等于“对预测目标最有用”。最终应根据用途验证下游表现和可解释性。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>PCA 追逐数值方差，所以原单位差异会决定方向；单位不可比、关心相对变化时先标准化，相同单位且绝对波动本身重要时可保留协方差尺度——这是业务建模选择，不是固定答案。</p>
+</div></details>
 ~~~
 
-=== Q82 \[C\] Batch normalization at inference \/ BatchNorm 的训练与推理
+=== Q84 \[C\] Batch normalization at inference \/ BatchNorm 的训练与推理
 *中文：* Batch normalization 在训练和推理时分别使用什么均值\/方差？忘记切换模式有什么后果？
 
 *English:* Which mean and variance does batch normalization use during training and inference? What happens if the mode is not switched correctly?
@@ -1404,9 +2524,37 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Training uses mini-batch statistics and updates running estimates. Inference uses the stored running mean/variance, followed by learned scale and shift. Leaving the model in training mode makes predictions batch-dependent and updates state; leaving it in evaluation mode during training prevents normal batch behavior. Small/non-i.i.d. batches can make estimates noisy.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>Batch normalization（BatchNorm）在算什么？</strong> 对一个 mini-batch 中某个特征或通道的激活 $x$，先计算 batch mean 和 batch variance：</p>
+<p class="equation-line">$$\mu_B=\frac1m\sum_{i=1}^m x_i,\qquad
+\sigma_B^2=\frac1m\sum_{i=1}^m(x_i-\mu_B)^2.$$</p>
+<p>然后标准化并做可学习的缩放和平移：</p>
+<p class="equation-line">$$\widehat x_i=\frac{x_i-\mu_B}{\sqrt{\sigma_B^2+\varepsilon}},\qquad y_i=\gamma\widehat x_i+\beta.$$</p>
+<p>$\varepsilon$ 防止除零，$\gamma,\beta$ 让网络在有需要时恢复或改变尺度。</p></li>
+<li><p><strong>训练模式使用什么统计量？</strong> 每个 forward pass 使用当前 mini-batch 的 $\mu_B,\sigma_B^2$ 来标准化，因此同一个样本与不同同伴组成 batch 时，输出可能略有不同。同时层会更新 running mean 和 running variance，通常是历史 batch 统计量的指数移动平均。</p></li>
+<li><p><strong>推理模式使用什么统计量？</strong> 预测时使用训练期间累积的 running mean/variance，而不是当前预测 batch 的统计量：</p>
+<p class="equation-line">$$\widehat x=\frac{x-\mu_{\text{run}}}{\sqrt{\sigma_{\text{run}}^2+\varepsilon}}.$$</p>
+<p>随后仍使用学到的 $\gamma,\beta$。这样单个样本的预测不依赖同一批次还有谁，输出也更确定。</p></li>
+<li><p><strong>哪些量是参数，哪些是状态？</strong> $\gamma$ 和 $\beta$ 是通过反向传播学习的参数；running mean/variance 通常不是由梯度优化，而是 forward 时更新的持久状态。切换 `train()` / `eval()` 改变的是统计量和状态更新方式，并不会删除 $\gamma,\beta$。</p></li>
+<li><p><strong>推理时忘记切到 eval mode 会怎样？</strong></p>
+<ul>
+<li>预测依赖当前 batch 组成和顺序；</li>
+<li>batch 很小或只有一个样本时统计量非常不稳定；</li>
+<li>验证/线上数据会继续修改 running statistics，造成状态污染；</li>
+<li>重复预测同一样本可能因同批样本不同而改变。</li>
+</ul>
+<p>因此评估和部署前通常必须调用模型的 evaluation mode。</p></li>
+<li><p><strong>训练时错误使用 eval mode 会怎样？</strong> BatchNorm 会用已有 running statistics，而不是当前 batch 统计量，并停止正常更新它们。若这些统计量尚未学好，激活尺度会错误，训练行为与预期不同。微调时有时会有意冻结 BatchNorm，但这应是明确选择而不是忘记切换。</p></li>
+<li><p><strong>为什么小 batch 或非 i.i.d. batch 麻烦？</strong> 小 batch 的均值/方差噪声大；若一个 batch 全来自同一时间段、同一类别或相邻高度相关样本，batch 统计量也可能不代表总体。训练和推理统计分布的差异会降低表现。</p></li>
+<li><p><strong>常见替代与处理。</strong> 可以增大有效 batch、使用 synchronized BatchNorm、冻结可靠的 running statistics，或改用 LayerNorm、GroupNorm 等不依赖 batch 维度的归一化。Transformer 通常更常使用 LayerNorm；小 batch 视觉任务常考虑 GroupNorm。</p></li>
+<li><p><strong>分布漂移下的注意事项。</strong> 推理数据若与训练分布明显不同，旧 running statistics 可能不再合适。但不能简单让线上 batch 任意更新状态，因为会使预测不可控；应通过明确的再训练、校准或受控自适应方案处理。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>BatchNorm 训练时用当前 mini-batch 均值/方差并更新 running statistics，推理时用冻结的 running statistics；模式错误会让预测依赖 batch、污染状态，或让训练使用陈旧统计量。</p>
+</div></details>
 ~~~
 
-=== Q83 \[M\] Dropout interpretation \/ Dropout 的作用
+=== Q85 \[M\] Dropout interpretation \/ Dropout 的作用
 *中文：* Dropout 训练时和推理时如何工作？它为什么可以起到正则化作用？
 
 *English:* How does dropout behave during training and inference, and why can it regularize a network?
@@ -1416,9 +2564,38 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>During training, units/activations are independently masked, usually with inverted scaling so the expectation is unchanged. At inference all units are used without random masks. The noise discourages brittle co-adaptation and resembles averaging many shared-parameter subnetworks. It is not always beneficial, especially with some normalization or data-rich regimes.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>Dropout 在“丢”什么？</strong> 神经网络某一层输出一组 activation $h=(h_1,\ldots,h_d)$。训练时，dropout 随机把其中一部分激活设为零；每次 mini-batch/forward 使用新的随机 mask，所以网络不能始终依赖固定的神经元组合。</p></li>
+<li><p><strong>Inverted dropout 的公式。</strong> 设丢弃概率为 $r$，保留概率为 $q=1-r$，并独立采样</p>
+<p class="equation-line">$$m_j\sim\operatorname{Bernoulli}(q).$$</p>
+<p>训练时输出</p>
+<p class="equation-line">$$\widetilde h_j=\frac{m_j}{q}h_j.$$</p>
+<p>因为 $\mathbb E[m_j]=q$，所以</p>
+<p class="equation-line">$$\mathbb E[\widetilde h_j]=h_j.$$</p>
+<p>除以 $q$ 就是 inverted scaling，它让训练时激活的期望尺度与推理时一致。</p></li>
+<li><p><strong>一个数字例子。</strong> 若 $h_j=2$、dropout rate $r=0.2$，则 $q=0.8$。训练时该激活有 $20\%$ 概率变成 $0$，有 $80\%$ 概率变成 $2/0.8=2.5$，期望仍为</p>
+<p class="equation-line">$$0.2\times0+0.8\times2.5=2.$$</p></li>
+<li><p><strong>推理时怎样工作？</strong> 标准 inverted dropout 在 inference/eval mode 下关闭随机 mask，使用所有神经元，也不再额外缩放。若训练时没有 inverted scaling，则旧式表述会在推理时乘保留概率；现代框架通常采用前者。</p></li>
+<li><p><strong>为什么能正则化？</strong></p>
+<ul>
+<li>随机噪声迫使模型不能依赖某个特征路径或神经元永远存在，减少脆弱的 co-adaptation。</li>
+<li>同一组共享权重在大量不同 mask 下训练，可粗略理解为许多子网络的参数共享 ensemble；推理时完整网络近似平均这些子网络。</li>
+<li>它让训练目标带有随机扰动，通常提高方差较高模型的泛化能力。</li>
+</ul>
+<p>这只是直觉，dropout 并不等同于真正独立训练并精确平均所有子网络。</p></li>
+<li><p><strong>训练/推理模式弄错会怎样？</strong> 推理时若仍开启 dropout，同一输入每次输出都会随机变化，且预测尺度/性能不符合普通部署预期。训练时若错误关闭 dropout，则失去这项正则化。框架的 `train()` 和 `eval()` 会同时影响 Dropout 与 BatchNorm，但两者改变行为的原因不同。</p></li>
+<li><p><strong>dropout rate 怎样理解？</strong> $r=0$ 表示完全不用 dropout；$r$ 太大则有效信息和梯度路径被大量删除，容易欠拟合或训练缓慢。合适数值依网络位置、数据量和架构而异，应在训练流程内验证；输入层、卷积层和全连接层未必使用同一 rate。</p></li>
+<li><p><strong>为什么不是所有网络都受益？</strong> 大数据、强数据增强、weight decay、residual architecture 和 normalization 已提供其他正则化时，额外 dropout 可能没有收益。Dropout 与 BatchNorm 的组合还会造成训练激活随机稀疏而推理激活完整的统计差异，因此位置和强度需要谨慎设计。现代 CNN 常较少依赖高 dropout，但 Transformer 的 attention/MLP 等位置仍常使用。</p></li>
+<li><p><strong>MC dropout 是另一个用法。</strong> 有时推理阶段故意保持 dropout，多次 forward 并观察预测分布，以近似估计模型不确定性：</p>
+<p class="equation-line">$$\widehat{\operatorname{Var}}(\widehat y)\approx\operatorname{Var}\{\widehat y^{(1)},\ldots,\widehat y^{(M)}\}.$$</p>
+<p>这需要明确设计和多次采样，不能与忘记切换 eval mode 混为一谈，也不是完美的 Bayesian uncertainty。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>Dropout 训练时随机屏蔽激活，并用 $1/q$ 缩放使期望不变；推理时关闭 mask、使用完整网络。随机缺失路径减少神经元共适应，从而起到正则化作用。</p>
+</div></details>
 ~~~
 
-=== Q84 \[M\] Vanishing and exploding gradients \/ 梯度消失与爆炸
+=== Q86 \[M\] Vanishing and exploding gradients \/ 梯度消失与爆炸
 *中文：* 深层或循环网络中梯度为什么会消失\/爆炸？常见缓解方法有哪些？
 
 *English:* Why do gradients vanish or explode in deep\/recurrent networks, and what are common mitigations?
@@ -1428,9 +2605,42 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Backprop multiplies many Jacobians; singular values repeatedly below or above one shrink or amplify gradients exponentially. Use variance-aware/orthogonal initialization, ReLU-like activations, residual connections, normalization, gated recurrent units, gradient clipping for explosion, and shorter effective paths. Clipping does not solve vanishing gradients.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>梯度为什么要从后往前传？</strong> 深度网络把许多函数复合起来：</p>
+<p class="equation-line">$$h^{(l)}=\phi\!\left(W^{(l)}h^{(l-1)}+b^{(l)}\right).$$</p>
+<p>反向传播用链式法则，把输出损失对每层的导数逐层传回早期参数。早期层梯度会包含许多局部 Jacobian 的乘积。</p></li>
+<li><p><strong>核心原因：连续相乘。</strong> 从深层传回浅层的梯度具有类似</p>
+<p class="equation-line">$$\frac{\partial L}{\partial h^{(l)}}
+=\left(\prod_{j=l+1}^{L}J_j^\top\right)\frac{\partial L}{\partial h^{(L)}}$$</p>
+<p>的结构。如果这些 Jacobian 主要把向量缩小，乘很多次后梯度趋近零；若主要放大，梯度会迅速增大。严格分析常看 Jacobian 的奇异值，而不只是单个权重大小。</p></li>
+<li><p><strong>标量直觉。</strong> 若每一层平均乘以 $0.5$，经过 $50$ 层后倍率为</p>
+<p class="equation-line">$$0.5^{50}\approx8.9\times10^{-16},$$</p>
+<p>几乎没有梯度；若每层乘 $1.5$，则</p>
+<p class="equation-line">$$1.5^{50}\approx6.4\times10^8,$$</p>
+<p>梯度会爆炸。真实网络是矩阵乘积，但指数积累的直觉相同。</p></li>
+<li><p><strong>激活函数的作用。</strong> Sigmoid 导数最大只有 $1/4$，在输入很正或很负时接近零；tanh 在饱和区也会使导数很小，所以深层连续使用容易梯度消失。ReLU 在正区导数为 $1$，缓解饱和问题，但负区导数为零，神经元长期落在负区可能形成 dying ReLU。</p></li>
+<li><p><strong>RNN 为什么尤其严重？</strong> 循环网络在不同时间步重复使用同一个 recurrent Jacobian。反向传播穿过很长序列时，相当于反复乘相近矩阵，梯度可能随时间距离指数衰减或增长，导致模型难以学习长期依赖。</p></li>
+<li><p><strong>怎样观察问题？</strong></p>
+<ul>
+<li>梯度消失：早期层 gradient norm 接近零、参数几乎不更新、长期依赖学不到。</li>
+<li>梯度爆炸：loss 突然变成巨大值或 NaN、梯度范数尖峰、参数更新剧烈不稳定。</li>
+</ul>
+<p>应监控分层 gradient norm、activation 分布和 loss，而不只看最终准确率。</p></li>
+<li><p><strong>初始化。</strong> Xavier/Glorot 初始化适合 tanh 等，使前向激活和反向梯度方差在层间尽量稳定；He 初始化针对 ReLU 的门控特性。RNN 中正交 recurrent 初始化有助于让奇异值接近 $1$。初始化只能改善起点，不能保证整个训练过程永远稳定。</p></li>
+<li><p><strong>缩短有效路径。</strong> Residual connection 使用</p>
+<p class="equation-line">$$h^{(l+1)}=h^{(l)}+F(h^{(l)}),$$</p>
+<p>给梯度提供接近恒等映射的捷径，是训练很深网络的关键。LSTM/GRU 通过门控和加性状态更新改善 RNN 的长期梯度流；truncated backpropagation through time 则直接限制反传长度，但也限制可学习的长期依赖。</p></li>
+<li><p><strong>其他常见缓解方法。</strong> 使用 ReLU/GELU 等非饱和激活、LayerNorm/BatchNorm 等归一化、合理学习率与优化器，以及仔细控制网络深度和权重尺度。Normalization 可以改善尺度和优化，但不是对所有梯度问题的单独保证。</p></li>
+<li><p><strong>Gradient clipping 解决哪一半？</strong> 若整体梯度 $g$ 的范数超过阈值 $c$，可替换为</p>
+<p class="equation-line">$$g\leftarrow g\min\left(1,\frac{c}{\lVert g\rVert}ight).$$</p>
+<p>它限制爆炸梯度造成的单次巨幅更新，RNN 中尤其常用。但已经接近零的梯度不会被 clipping 恢复，所以它不解决梯度消失。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>深层/RNN 反向传播要连乘许多 Jacobian，小于一的方向指数衰减、大于一的方向指数放大；初始化、残差、门控和归一化改善梯度流，clipping 只负责限制爆炸。</p>
+</div></details>
 ~~~
 
-=== Q85 \[C\] ROC-AUC versus PR-AUC \/ ROC-AUC 与 PR-AUC
+=== Q87 \[C\] ROC-AUC versus PR-AUC \/ ROC-AUC 与 PR-AUC
 *中文：* 在阳性样本极少的问题中，为什么 PR 曲线往往比 ROC 曲线更有信息？
 
 *English:* Why is a precision-recall curve often more informative than ROC under severe class imbalance?
@@ -1440,9 +2650,43 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>ROC uses false-positive rate $\mathrm{FPR}=FP/(FP+TN)$; a huge number of negatives can keep this rate small even when false positives overwhelm true positives. Precision $TP/(TP+FP)$ directly exposes that burden, while recall $TP/(TP+FN)$ measures captured positives. PR's baseline depends on prevalence, so compare within the same population.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>先认识 confusion matrix 的四个数。</strong></p>
+<ul>
+<li>$TP$：真实为正，模型也预测为正；</li>
+<li>$FP$：真实为负，却误报为正；</li>
+<li>$TN$：真实为负，正确预测为负；</li>
+<li>$FN$：真实为正，却漏判为负。</li>
+</ul>
+<p>模型通常输出连续分数或概率；改变分类阈值，会同时改变这四个数。</p></li>
+<li><p><strong>ROC 曲线画什么？</strong> 横轴是 false-positive rate，纵轴是 true-positive rate：</p>
+<p class="equation-line">$$\mathrm{FPR}=\frac{FP}{FP+TN},\qquad
+\mathrm{TPR}=\mathrm{Recall}=\frac{TP}{TP+FN}.$$</p>
+<p>遍历所有阈值得到 ROC curve。ROC-AUC 也可理解为随机抽一个正样本和一个负样本时，模型把正样本排在负样本前面的概率（适当处理 ties）。</p></li>
+<li><p><strong>PR 曲线画什么？</strong> 横轴通常是 recall，纵轴是 precision：</p>
+<p class="equation-line">$$\mathrm{Precision}=\frac{TP}{TP+FP},\qquad
+\mathrm{Recall}=\frac{TP}{TP+FN}.$$</p>
+<p>Recall 问“真实正类抓到了多少”，precision 问“所有报警中有多少是真的”。PR 曲线直接聚焦正类发现质量。</p></li>
+<li><p><strong>严重不平衡时 ROC 为什么可能显得过于乐观？</strong> 假设有 $10{,}000$ 个负样本和 $100$ 个正样本，模型抓到 $80$ 个正样本，同时误报 $100$ 个负样本：</p>
+<p class="equation-line">$$\mathrm{TPR}=\frac{80}{100}=0.8,\qquad
+\mathrm{FPR}=\frac{100}{10{,}000}=0.01.$$</p>
+<p>ROC 点看起来是“召回 $80\%$、误报率仅 $1\%$”。但 precision 是</p>
+<p class="equation-line">$$\frac{80}{80+100}\approx44.4\%,$$</p>
+<p>即超过一半报警是假阳性。庞大的 $TN$ 分母可以让 FPR 很小，而 PR 会直接暴露误报负担。</p></li>
+<li><p><strong>PR 的 baseline 为什么依赖正类比例？</strong> 随机排序时，期望 precision 等于 prevalence：</p>
+<p class="equation-line">$$\pi=\Pr(Y=1).$$</p>
+<p>若正类只占 $1\%$，随机 baseline 约为 $1\%$；若占 $30\%$，baseline 约为 $30\%$。因此不同数据集、时期或股票池的 PR-AUC 不能在忽略 prevalence 的情况下直接比较。</p></li>
+<li><p><strong>什么时候更看 PR？</strong> 当正类稀少，而且预测正类会触发昂贵行动，例如欺诈调查、疾病筛查、故障报警或稀有交易机会时，precision 与 recall 通常更贴近实际问题。若正负两类都同等重要，或需要整体排序比较，ROC 仍有价值。</p></li>
+<li><p><strong>AUC 不等于选定阈值后的业务表现。</strong> ROC-AUC 和 PR-AUC 汇总所有阈值；部署最终只使用某个阈值或 top-$k$ 区域。两个模型总体 AUC 相近，但在可承受的低 FPR 区域可能差别很大。应报告实际运营区域的 precision、recall、成本和容量。</p></li>
+<li><p><strong>AUC 也不检查概率校准。</strong> 只要排序不变，对分数做严格单调变换，ROC-AUC 不变；PR 曲线的排序路径通常也不变。因此模型可以 AUC 很高，却把 $0.6$ 概率报成 $0.99$。概率用于风险或仓位时还需单独检查 calibration 和 log loss/Brier score。</p></li>
+<li><p><strong>实现细节。</strong> “PR-AUC”有时指梯形积分，有时指 average precision，两者数值可能不同；比较模型时应使用一致定义、相同样本权重和相同评估总体，并给出不确定性或时间稳定性。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>ROC 的 FPR 被大量真负样本稀释时，少数类任务可能看起来很好；PR 用 precision 直接计算报警中有多少真阳性，因此更能暴露严重不平衡下的误报成本。</p>
+</div></details>
 ~~~
 
-=== Q86 \[C\] Calibration versus ranking \/ 校准与排序
+=== Q88 \[C\] Calibration versus ranking \/ 校准与排序
 *中文：* 一个模型可以有很高 AUC 但概率校准很差吗？如何分别评估排序和校准？
 
 *English:* Can a model have high AUC but poor probability calibration? How should ranking and calibration be evaluated separately?
@@ -1452,9 +2696,41 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Yes. AUC depends only on score ordering and is invariant to monotone score transformations; predicted values can therefore be far from empirical frequencies. Evaluate ranking with ROC/PR-AUC or rank correlation, and calibration with reliability curves, Brier score, log loss, and calibration intercept/slope. Recalibrate only on held-out data.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>Ranking（排序能力）问什么？</strong> 它问模型是否倾向于给真正正类更高分。若正样本 A 得分 $0.8$、负样本 B 得分 $0.6$，这对样本的顺序就是正确的；至于 $0.8$ 是否真代表 $80\%$ 概率，排序指标并不关心。</p></li>
+<li><p><strong>Calibration（概率校准）问什么？</strong> 如果模型对一大组样本都预测约 $p=0.7$，那么其中长期约有 $70\%$ 应当真实为正。理想校准满足</p>
+<p class="equation-line">$$\Pr(Y=1\mid \widehat p=p)=p.$$</p>
+<p>它关心概率数值是否可信，而不仅是顺序。</p></li>
+<li><p><strong>为什么高 AUC 可以同时校准很差？</strong> AUC 只依赖排序。把所有分数做严格单调变换，例如</p>
+<p class="equation-line">$$s\longmapsto s^5$$</p>
+<p>不会改变任何两点的先后次序，所以 ROC-AUC 不变；但 $0.8^5\approx0.33$，若仍把变换后数值当概率，概率解释已完全不同。模型也可能把本应为 $0.7$ 的风险统一报成 $0.99$，排序很好却过度自信。</p></li>
+<li><p><strong>反过来也成立。</strong> 永远预测总体正类比例 $\pi$ 的常数模型，在稳定总体上可能校准得很好：预测 $10\%$ 的样本确实约有 $10\%$ 为正；但所有样本得分相同，无法区分谁更可能为正，ROC-AUC 只有约 $0.5$。因此 discrimination 和 calibration 是两个独立维度。</p></li>
+<li><p><strong>怎样评估排序？</strong></p>
+<ul>
+<li>ROC-AUC：正负样本的整体两两排序；</li>
+<li>PR-AUC / average precision：更聚焦少数正类和高分区的 precision-recall；</li>
+<li>Spearman/rank correlation：连续目标或量化截面排序中常用；</li>
+<li>top-$k$ precision、lift：只关心最高分行动区域时更直接。</li>
+</ul></li>
+<li><p><strong>怎样评估校准？</strong></p>
+<ul>
+<li><strong>Reliability diagram：</strong>按预测概率分箱，比较每箱平均预测与真实发生率；理想点落在 $y=x$。</li>
+<li><strong>Brier score：</strong>$N^{-1}\sum_i(\widehat p_i-y_i)^2$，同时受校准和区分能力影响。</li>
+<li><strong>Log loss：</strong>对自信但错误的概率惩罚很重，也是 proper scoring rule。</li>
+<li><strong>Calibration intercept/slope：</strong>检查整体偏高偏低以及概率是否过度/不足极端。</li>
+</ul>
+<p>ECE 等分箱摘要依赖 bin 选择，不应脱离可靠性图和样本量单独使用。</p></li>
+<li><p><strong>怎样重新校准？</strong> 常见方法有 Platt scaling（学习 sigmoid 映射）、isotonic regression（非参数单调映射）和神经网络常用的 temperature scaling。它们通常保持或大体保持排序，却调整概率刻度。</p></li>
+<li><p><strong>校准数据必须独立。</strong> 不能在训练模型使用的同一数据上拟合并评价 calibration map，否则会过拟合。应使用独立 calibration set，或在训练集内部生成 out-of-fold predictions 后拟合，再在 untouched test set 上最终评估。</p></li>
+<li><p><strong>分布变化会破坏校准。</strong> 即使条件排序关系相似，正类 prevalence、市场 regime 或客户群改变，也可能使旧概率失真。校准必须注明总体和时间范围，并在部署后持续监控；重新校准不能自动修复所有 covariate/concept drift。</p></li>
+<li><p><strong>量化中的区别。</strong> 若策略只按信号排序选 top decile，rank IC/排序可能更重要；若信号数值用于预测收益幅度、仓位大小或风险预算，刻度和 calibration 同样关键。高 rank IC 不保证仓位映射合理。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>排序问“谁更高”，校准问“报出的 $70\%$ 是否真的约发生 $70\%$”；AUC 只看顺序，单调变换后不变，所以高 AUC 完全可以伴随很差的概率校准。</p>
+</div></details>
 ~~~
 
-=== Q87 \[C\] Choosing a classification threshold \/ 分类阈值选择
+=== Q89 \[C\] Choosing a classification threshold \/ 分类阈值选择
 *中文：* 为什么 0.5 不是普遍最优的分类阈值？已知假阳性和假阴性成本时如何决策？
 
 *English:* Why is 0.5 not a universally optimal classification threshold? How should costs of false positives and false negatives enter the decision?
@@ -1464,9 +2740,38 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>With calibrated $p=\Pr(Y=1\mid x)$, predict positive when expected cost of positive is below negative. If correct decisions cost zero, choose positive when</p><p class="equation-line">$$C_{FP}(1-p)&lt;C_{FN}p\quad\Longleftrightarrow\quad p&gt;\frac{C_{FP}}{C_{FP}+C_{FN}}.$$</p><p>Capacity constraints and trading costs can produce a ranking/top-$k$ decision rather than a fixed probability threshold.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>分类阈值在做什么？</strong> 模型通常输出连续分数或概率 $p$，阈值 $t$ 才把它变成离散行动：</p>
+<p class="equation-line">$$\widehat y=\mathbf 1\{p&gt;t\}.$$</p>
+<p>降低 $t$ 会预测更多正类，通常提高 recall、同时增加 false positives；提高 $t$ 则相反。阈值不是模型训练完后天然等于 $0.5$ 的常数，而是决策规则的一部分。</p></li>
+<li><p><strong>$0.5$ 隐含了哪些条件？</strong> 它适用于概率已校准、正确决策成本记为零、false positive 与 false negative 成本相同，并且没有容量、收益或监管约束的简化情形。任一条件改变，最优阈值都可能不再是 $0.5$。</p></li>
+<li><p><strong>用期望成本推导阈值。</strong> 给定校准概率</p>
+<p class="equation-line">$$p=\Pr(Y=1\mid x),$$</p>
+<p>若预测为正，只有真实为负时支付 $C_{FP}$，条件期望成本为</p>
+<p class="equation-line">$$\operatorname{Cost}(+)=C_{FP}(1-p).$$</p>
+<p>若预测为负，只有真实为正时支付 $C_{FN}$：</p>
+<p class="equation-line">$$\operatorname{Cost}(-)=C_{FN}p.$$</p>
+<p>选择期望成本较低的行动，因此预测正类当且仅当</p>
+<p class="equation-line">$$C_{FP}(1-p)&lt;C_{FN}p
+\quad\Longleftrightarrow\quad
+\boxed{p&gt;\frac{C_{FP}}{C_{FP}+C_{FN}}}.$$</p></li>
+<li><p><strong>检查公式是否符合直觉。</strong> 若漏判代价很高，例如 $C_{FN}=9,C_{FP}=1$，则</p>
+<p class="equation-line">$$t=\frac{1}{1+9}=0.1.$$</p>
+<p>只要正类概率超过 $10\%$ 就采取正类行动，因为宁可多报也不愿漏掉。反之，若 false positive 很昂贵，阈值会上升。</p></li>
+<li><p><strong>类别不平衡本身不是完整的成本函数。</strong> 正类稀少会影响 calibrated probability 和 precision，但阈值仍应由行动收益、错误代价与约束决定。不能只因为正类占 $1\%$ 就机械地把阈值设成 $0.01$；也不能假设训练时 class weighting 后输出仍天然是原总体概率。</p></li>
+<li><p><strong>若模型输出未校准分数怎么办？</strong> 成本公式直接使用 $p$ 的前提是它真能解释为概率。若只有 ranking score，可以在独立验证集上选择满足目标指标的阈值，或先进行概率校准。阈值调优不能把一个错误概率刻度自动变成校准概率。</p></li>
+<li><p><strong>容量约束可能使问题变成 top-$k$。</strong> 若每天只能调查 $100$ 个告警、只能持有 $50$ 只股票，决策是按分数选择最高的一批，而不是使用跨时期固定的 $0.5$。此时应评价 top-$k$ precision、收益、容量和随时间变化的截面分布。</p></li>
+<li><p><strong>一般效用不只包含两种错误。</strong> 若 true positive 有收益、不同样本成本不同，或存在交易成本和仓位约束，应比较每个可选行动的完整条件期望效用：</p>
+<p class="equation-line">$$a^*(x)=\arg\min_a\mathbb E[C(a,Y,x)\mid x].$$</p>
+<p>简单阈值公式只是成本常数且只有两个行动时的特例。</p></li>
+<li><p><strong>阈值必须怎样验证？</strong> 在训练/验证数据上选择模型和阈值，再用 untouched test set 报告最终表现；不能在测试集上反复挑阈值。还应检查 precision、recall、confusion matrix、成本、不同群体/时期的稳定性，并在 prevalence 或成本改变时重新评估。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>$0.5$ 只对应校准概率与对称错误成本；一般应比较两个行动的条件期望成本，得到阈值 $C_{FP}/(C_{FP}+C_{FN})$，有容量或交易约束时则常转为 top-$k$/效用优化。</p>
+</div></details>
 ~~~
 
-=== Q88 \[C\] Time-aware cross-validation \/ 时间感知交叉验证
+=== Q90 \[C\] Time-aware cross-validation \/ 时间感知交叉验证
 *中文：* 金融时间序列为什么通常不能随机 k-fold？描述一个可行的 walk-forward 方案。
 
 *English:* Why is random k-fold usually inappropriate for financial time series? Describe a valid walk-forward scheme.
@@ -1476,9 +2781,34 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Random folds train on the future and validate on the past, leak temporal structure, and ignore regime drift. Use expanding or rolling windows: train on $[1,t]$, validate on $(t,t+h]$, advance $t$, and aggregate truly out-of-time predictions. Fit every preprocessing step inside each training window; purge/embargo when labels or features overlap across the boundary.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>普通 random k-fold 隐含什么假设？</strong> 它把样本随机分成 $k$ 份，轮流用一份验证、其余训练。这个方法适合样本近似 i.i.d./exchangeable 的情形：交换样本顺序不会改变训练和未来部署问题。但金融时间序列有时间方向、自相关、重叠标签和 regime change，过去与未来不能任意互换。</p></li>
+<li><p><strong>最直接的问题：训练看到了验证期之后的数据。</strong> 若随机 fold 把 2025 年样本放进训练、2023 年样本放进验证，模型是在用未来市场结构预测过去。这不符合真实部署时“只能用决策时点之前的信息”的限制，所得误差可能过于乐观。</p></li>
+<li><p><strong>相关性也会造成近重复泄漏。</strong> 相邻日特征高度相关，收益标签还可能覆盖多个未来时点。随机拆分后，某条验证样本附近或与其标签窗口重叠的样本可能进入训练集；模型相当于看到了非常接近的副本，而不是面对真正的新时间段。</p></li>
+<li><p><strong>Walk-forward 的基本结构。</strong> 保持训练永远早于验证，例如 expanding window：</p>
+<p class="equation-line">$$\text{train }[1,t_j],\qquad \text{validate }(t_j,t_j+h],$$</p>
+<p>然后把 $t_j$ 向前推进：</p>
+<p class="equation-line">$$[1,t_1]\to(t_1,t_1+h],\quad
+[1,t_2]\to(t_2,t_2+h],\quad\ldots$$</p>
+<p>每一折都模拟“在当时重新训练，然后预测紧接着的未来”。最终把各折真正 out-of-time 的预测拼起来统一评价。</p></li>
+<li><p><strong>Expanding 与 rolling window 的区别。</strong></p>
+<ul>
+<li><strong>Expanding：</strong>起点固定、训练集越来越长；利用全部历史，估计更稳定，但旧 regime 可能拖累当前模型。</li>
+<li><strong>Rolling：</strong>只保留最近长度为 $w$ 的训练区间；更适应漂移，但样本更少，结果对窗口长度敏感。</li>
+</ul>
+<p>窗口长度本身也是超参数，应在内层时间验证中选择，而不是查看最终测试期后决定。</p></li>
+<li><p><strong>所有 preprocessing 都必须在 fold 内。</strong> 标准化均值/方差、缺失值填补、winsorization 阈值、PCA、特征选择、target encoding 和模型调参，都只能使用该折训练窗口拟合，再应用到验证窗口。只把模型训练分折，而预先在全数据上处理特征，仍然是泄漏。</p></li>
+<li><p><strong>Purging 与 gap/embargo 为什么需要？</strong> 若时点 $t$ 的标签使用 $[t,t+H]$ 收益，训练样本的标签区间可能跨入验证期。Purging 删除与验证标签窗口重叠的训练观测；在训练与验证边界留 gap，或在特定交叉验证设计中设置 embargo，则进一步避免相邻信息和持仓期重叠。间隔长度应由标签 horizon、特征 lookback 和执行延迟决定。</p></li>
+<li><p><strong>一个可信的模型选择结构。</strong> 外层 walk-forward 用于估计泛化表现；每个外层训练窗口内部再做较早到较晚的时间验证来选择超参数，这就是 nested time-aware validation。最后还应保留一个完全未参与迭代的最近 holdout，防止外层结果也被反复查看后过拟合。</p></li>
+<li><p><strong>怎样汇总结果？</strong> 不只报告各 fold 指标平均值，还应拼接 out-of-time 预测，按实际时间顺序计算成本后 PnL、Sharpe、drawdown，并分 regime 检查稳定性。样本重叠或自相关会使普通独立样本标准误过小，需要 block/HAC 等适当不确定性处理。</p></li>
+<li><p><strong>时间切分也不能修复错误时间戳。</strong> 即使使用 walk-forward，如果特征列在数据库中的时间晚于你假设的可用时点、宏观数据后来被修订、或执行价格早于信号计算完成，仍然存在 look-ahead。验证设计必须建立在 point-in-time data 和明确的信息可用时间上。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>金融验证必须模拟时间箭头：训练永远在前、验证在后，所有预处理在训练窗口内拟合，并按标签重叠设置 purge/gap；随机 k-fold 会让未来和相邻信息进入训练，从而高估真实表现。</p>
+</div></details>
 ~~~
 
-=== Q89 \[C\] Target timing and look-ahead \/ 标签时点与前视偏差
+=== Q91 \[C\] Target timing and look-ahead \/ 标签时点与前视偏差
 *中文：* 用 t 日收盘价构造特征，预测 t 到 t\+1 的收益，并假设在 t 日收盘价成交，存在什么问题？
 
 *English:* Features use the day-t closing price to predict the t-to-t\+1 return, while the backtest assumes execution at that same closing price. What is wrong?
@@ -1488,9 +2818,34 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>The close is not known early enough to compute the signal and simultaneously execute at that exact close. This is look-ahead/latency leakage. Shift execution to the next feasible price, use features available before the order cutoff, or model a realistic auction/order process. Precisely timestamp every raw field, transformation, prediction, and fill.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>先把四个时点分开。</strong> 每个回测信号至少要明确：</p>
+<ul>
+<li><strong>information time：</strong>原始字段何时真正可获得；</li>
+<li><strong>computation time：</strong>特征和预测何时算完；</li>
+<li><strong>decision/order time：</strong>何时提交交易决定；</li>
+<li><strong>fill time：</strong>订单在什么价格、何时成交。</li>
+</ul>
+<p>只有前面的信息能影响后面的行动，不能让成交发生在计算所需信息出现之前。</p></li>
+<li><p><strong>题目中的具体矛盾。</strong> 特征 $x_t$ 使用了第 $t$ 日正式收盘价 $P_t$。只有市场收盘并确定 $P_t$ 后，才能完整计算 $x_t$ 和模型信号；但回测又假设已经以同一个 $P_t$ 成交。它等价于“先知道最终收盘价，再回到该价格交易”，现实中通常无法做到。</p></li>
+<li><p><strong>为什么叫 look-ahead/latency leakage？</strong> Look-ahead 指决策使用了当时尚不可知的信息；latency leakage 强调即使字段在某时刻产生，读取、计算、传输和下单也需要时间。只在数据表中把同一行的 feature、return 和 close 对齐，不代表执行上可实现。</p></li>
+<li><p><strong>标签本身怎样定义？</strong> 若</p>
+<p class="equation-line">$$r_{t,t+1}=\frac{P_{t+1}}{P_t}-1,$$</p>
+<p>它是从 $t$ 日收盘到 $t+1$ 日收盘的收益。用 $P_t$ 后才能产生的信号，可以预测这段未来收益，但不能默认在产生信号前就以 $P_t$ 建仓；真正持有期必须从首个可成交时点开始。</p></li>
+<li><p><strong>可行修正一：延后执行。</strong> 在 $t$ 日收盘后计算信号，于 $t+1$ 日开盘、VWAP 或其他现实可达价格成交，并把目标/持仓收益改为与该成交时点一致。回测中还要加入延迟、滑点、价差和无法成交的情况。</p></li>
+<li><p><strong>可行修正二：提前冻结信息。</strong> 若确实要参与 closing auction，应只使用订单截止前已经可得的特征，例如截止时点之前的价格和量，并按真实 auction 规则、提交时间和成交不确定性模拟。最终 close 不能作为截止前已知输入。</p></li>
+<li><p><strong>简单 `shift(1)` 为什么有时仍不够？</strong> 移位可以修复明显 off-by-one，但必须根据实际信息时间决定移几步。日频字段可能在收盘后数小时发布，基本面数据还可能有报告延迟和后续修订；不同市场、时区和资产的交易日也未必对齐。</p></li>
+<li><p><strong>Point-in-time data。</strong> 数据库应保存“当时看到的版本”，而不是后来回填或修订后的最终值。财报发布时间、指数成分历史、退市证券和宏观数据 vintage 都可能产生隐蔽前视偏差。</p></li>
+<li><p><strong>推荐的数据审计表。</strong> 对每个字段记录 event timestamp、release timestamp、vendor arrival timestamp 和允许进入模型的 as-of timestamp；对每次预测记录 feature cutoff、model timestamp、order timestamp 与 fill timestamp。检查必须满足</p>
+<p class="equation-line">$$t_{\text{available}}\le t_{\text{prediction}}&lt;t_{\text{order}}\le t_{\text{fill}}.$$</p>
+<p>这比只检查 dataframe 行号更可靠。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>如果信号需要 $t$ 日最终收盘价，就只能在该价格确定之后计算，不能同时假设已按同一收盘价成交；必须提前冻结特征，或把执行和收益窗口移到下一个真实可交易时点。</p>
+</div></details>
 ~~~
 
-=== Q90 \[M\] Better R-squared, worse PnL \/ 更高 R² 但更差 PnL
+=== Q92 \[M\] Better R-squared, worse PnL \/ 更高 R² 但更差 PnL
 *中文：* 为什么预测收益的模型 A 样本外 R² 高于 B，但净 PnL 可能更差？至少给出四个原因。
 
 *English:* Model A has higher out-of-sample return-prediction R² than B but worse net PnL. Give at least four reasons.
@@ -1500,9 +2855,38 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>Possible reasons include weaker cross-sectional ranking in tradable tails, higher turnover/costs, signals concentrated in illiquid names, worse timing/capacity, unwanted factor exposures, large errors during costly regimes, poor calibration of position sizes, and constraints that prevent monetizing average squared-error gains. Evaluate the full signal-to-portfolio-to-execution chain.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>样本外 $R^2$ 衡量什么？</strong> 常见定义为</p>
+<p class="equation-line">$$R^2_{OOS}=1-\frac{\sum_i(r_i-\widehat r_i)^2}{\sum_i(r_i-\bar r_{\text{benchmark}})^2}.$$</p>
+<p>它比较模型的平均平方预测误差与基准预测误差。每条观测按平方误差贡献，但它不知道你最终交易哪些资产、仓位多大、何时成交或支付多少成本。样本外 $R^2$ 甚至可以为负，表示不如基准。</p></li>
+<li><p><strong>PnL 是另一条映射链。</strong> 简化地写，</p>
+<p class="equation-line">$$\mathrm{PnL}_{t+1}=w_t^\top r_{t+1}-\mathrm{Cost}(w_t-w_{t-1}).$$</p>
+<p>预测 $\widehat r$ 要先经过排序、风险调整、约束和 position sizing 变成 $w_t$，再经过真实收益和交易成本。$R^2$ 只评价链条最前端，PnL 评价整个可执行系统。</p></li>
+<li><p><strong>原因一：平均误差改善不在可交易区域。</strong> 模型 A 可能把大量接近零、不会建仓的样本预测得稍准，从而降低总体 MSE；模型 B 虽总体误差较大，却更准确地识别 top/bottom tail。若策略只交易极端信号，B 的收益可能更好。</p></li>
+<li><p><strong>原因二：排序与数值误差不是同一目标。</strong> 截面多空策略通常关心谁的未来收益更高。A 的预测数值更接近真实值却可能排序较差；B 的预测尺度有偏，但 rank IC 更高，仍能选出相对赢家和输家。反过来，高排序也不保证收益幅度校准适合定仓。</p></li>
+<li><p><strong>原因三：换手与成本。</strong> A 的预测可能每天小幅剧烈变化，导致高 turnover。即使 gross alpha 更高，bid-ask spread、commission、market impact、borrow fee 和税费也可能使</p>
+<p class="equation-line">$$\mathrm{Net\ PnL}=\mathrm{Gross\ PnL}-\mathrm{Trading\ Costs}$$</p>
+<p>低于更稳定的 B。MSE/R² 本身不惩罚换手。</p></li>
+<li><p><strong>原因四：流动性和容量。</strong> A 的优势可能集中在小盘、停牌风险高或难借券资产；纸面预测无法按模型价格成交，扩大资金后冲击成本也迅速上升。B 的预测稍弱，却集中在流动、可借、容量大的资产，实际 monetization 更好。</p></li>
+<li><p><strong>原因五：时点与延迟。</strong> A 可能预测 close-to-close 很准，但信号在 close 后才计算；改用真实可执行的 next-open price 后优势消失。B 的信号较早可得，能以更小延迟执行。统计指标必须按与实际成交一致的 target horizon 计算。</p></li>
+<li><p><strong>原因六：风险暴露和错误发生时机。</strong> A 的小误差可能来自稳定时期，却在高波动、危机或组合仓位最大时犯大错；也可能无意暴露市场 beta、行业、size、value 或 volatility 因子，导致 drawdown。平方误差的平均改善不会自动转化为更好的 risk-adjusted PnL。</p></li>
+<li><p><strong>原因七：仓位映射和约束。</strong> 若把未校准预测直接按数值放大成仓位，少数过度自信的预测会制造集中风险。leverage、neutrality、position limits 和 turnover constraints 也可能截断模型 A 的优势。优化器对预测协方差和成本估计误差同样敏感。</p></li>
+<li><p><strong>应该怎样比较模型？</strong> 除 OOS MSE/R² 外，还应沿完整链条报告：</p>
+<ul>
+<li>Pearson IC、rank IC、quantile spread 和 tail precision；</li>
+<li>turnover、成本前后收益、流动性与容量；</li>
+<li>因子/行业暴露、波动率、Sharpe、drawdown；</li>
+<li>不同 regime、股票池、持有期和执行假设下的稳定性；</li>
+<li>从预测到仓位的 calibration 与敏感性。</li>
+</ul></li>
+<li><p><strong>建模目标最好贴近决策。</strong> 若最终只关心排序，可训练 ranking objective；若成本主要由换手产生，可在组合层加入 turnover penalty；若关心风险调整后效用，应至少让验证指标反映仓位和成本。但越接近回测 PnL 的目标越容易被反复调参过拟合，仍需严格的时间外验证。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>$R^2$ 只问“每个收益数值平均预测得多准”，PnL 还取决于可交易尾部排序、仓位、风险、换手、流动性、成本和时点；预测指标更高并不保证整条交易链更赚钱。</p>
+</div></details>
 ~~~
 
-=== Q91 \[C\] IC and rank IC \/ IC 与 Rank IC
+=== Q93 \[C\] IC and rank IC \/ IC 与 Rank IC
 *中文：* 量化选股中 IC 和 rank IC 通常是什么？两者对离群值和非线性单调关系的敏感度有何差别？
 
 *English:* In cross-sectional quant research, what are IC and rank IC? How do they differ in sensitivity to outliers and nonlinear monotone relationships?
@@ -1512,9 +2896,36 @@ a=\frac{n+1}{n}.$$</p>
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>IC usually means the cross-sectional Pearson correlation between signal scores and future returns; rank IC is their Spearman correlation, equivalently Pearson correlation of ranks. Pearson captures linear magnitude and is outlier-sensitive. Rank IC captures monotone ordering and is more robust to extreme magnitudes, but discards spacing information. Report their time-series mean, dispersion, stability, and universe definition.</p>
 </div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>IC 的数据横截面是什么？</strong> 在某个日期 $t$，对股票池中的每只资产 $i$，有当时可得的信号分数 $s_{i,t}$，以及之后某个持有期的实现收益 $r_{i,t\to t+h}$。IC 通常是在<strong>同一个日期、跨资产</strong>计算二者相关性，再随日期得到一条 IC 时间序列；它不是把单只股票跨时间直接相关。</p></li>
+<li><p><strong>Pearson IC。</strong></p>
+<p class="equation-line">$$\mathrm{IC}_t
+=\operatorname{Corr}_{i\in\mathcal U_t}(s_{i,t},r_{i,t\to t+h})
+=\frac{\sum_i(s_i-\bar s)(r_i-\bar r)}
+{\sqrt{\sum_i(s_i-\bar s)^2}\sqrt{\sum_i(r_i-\bar r)^2}}.$$</p>
+<p>它衡量信号数值与未来收益之间的线性关系。IC 为正表示高信号倾向对应高收益；为负表示方向相反；接近零表示没有明显线性截面关系。</p></li>
+<li><p><strong>Rank IC。</strong> 先在每个日期分别把信号和未来收益转换为横截面排名，再计算 Pearson correlation：</p>
+<p class="equation-line">$$\mathrm{RankIC}_t
+=\operatorname{Corr}\bigl(\operatorname{rank}(s_{i,t}),\operatorname{rank}(r_{i,t\to t+h})\bigr).$$</p>
+<p>这就是 Spearman correlation。它只看排序是否单调一致，不要求收益随信号呈直线变化。</p></li>
+<li><p><strong>线性关系与单调关系的区别。</strong> 若信号从 $1,2,3$ 增加时，未来收益为 $1,4,9$，排序完全一致，所以 rank IC 为 $1$；但关系是弯曲的，Pearson 未必等于 $1$。只要一个严格单调变换不改变排名，rank IC 就不变，而 Pearson IC 会随数值间距改变。</p></li>
+<li><p><strong>离群值敏感度。</strong> Pearson 使用原始偏差和乘积，某只股票的极端信号/收益可能主导协方差，显著抬高或压低 IC。Rank IC 把极端值只变成最高/最低名次，通常更稳健；但它也丢弃“第一名比第二名高多少”的幅度信息，且大量 ties 时需要明确平均排名等处理。</p></li>
+<li><p><strong>IC 并非直接等于策略收益。</strong> 正 IC 表明截面预测方向有用，但 PnL 还依赖持仓映射、约束、风险中性化、换手、成本和容量。很小但稳定的 IC 可能有价值，较高但集中在不可交易资产或少数日期的 IC 也可能无法实现。</p></li>
+<li><p><strong>必须固定 universe 和预处理定义。</strong> 股票池、存活条件、停牌/涨跌停处理、行业和市值中性化、winsorization、权重以及缺失值规则都会改变 IC。不能在每个模型上悄悄使用不同 universe 后直接比较；还要避免 survivorship 和 look-ahead bias。</p></li>
+<li><p><strong>信号和收益的时点必须严格对齐。</strong> $s_{i,t}$ 只能使用决策时已知数据，未来收益必须从真实可执行时点开始。常同时查看多个 horizon 的 IC decay，判断信号衰减速度和合适持有期，但尝试许多 horizon 后只报告最好一个会产生多重选择偏差。</p></li>
+<li><p><strong>怎样汇总 IC 时间序列？</strong> 常报告</p>
+<p class="equation-line">$$\overline{\mathrm{IC}},\qquad
+\operatorname{Std}(\mathrm{IC}_t),\qquad
+\mathrm{ICIR}=\frac{\overline{\mathrm{IC}}}{\operatorname{Std}(\mathrm{IC}_t)}.$$</p>
+<p>还应报告正 IC 比例、分时期/行业稳定性和置信区间。若 IC 有自相关或标签重叠，简单按独立日计算 t-stat 或年化 IR 会过度乐观，应使用 HAC/block 方法或按非重叠周期评估。</p></li>
+<li><p><strong>与 quantile portfolio 配合。</strong> Rank IC 告诉你整体排序关联，分位数组合则检查收益是否从低信号到高信号大体单调、收益是否只集中在极端组。两者结合能发现“整体相关但尾部不可交易”或“平均 IC 小但 top-minus-bottom spread 有用”等结构。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>IC 是每个日期跨资产的信号与未来收益 Pearson 相关，重视线性幅度但怕离群值；rank IC 是两者排名的 Spearman 相关，重视单调排序、更稳健但丢失间距信息。</p>
+</div></details>
 ~~~
 
-=== Q92 \[H\] Backtest overfitting \/ 回测过拟合
+=== Q94 \[H\] Backtest overfitting \/ 回测过拟合
 *中文：* 你试了 5000 个因子\/参数组合，只报告夏普最高的一个。为什么普通样本外切分仍可能不够？设计一个更可靠的流程。
 
 *English:* You try 5,000 factor\/parameter variants and report only the highest Sharpe. Why can an ordinary train\/test split still be insufficient, and what would a more credible process look like?
@@ -1523,6 +2934,32 @@ a=\frac{n+1}{n}.$$</p>
 {}{raw}
 <details class="answer solution"><summary>Solution</summary><div class="answer-content">
 <p>If the test set influences repeated iteration, it becomes another training set; the maximum embeds selection bias. Pre-register families where possible, use nested time-aware validation, account for multiple comparisons, retain an untouched final holdout, and confirm on later/live data. Report all trials, uncertainty, sensitivity, turnover/costs, regimes, and economic rationale. Prefer stable families over one lucky specification.</p>
+</div></details>
+<details class="answer quick-notes"><summary>Quick Notes</summary><div class="answer-content">
+<ol>
+<li><p><strong>什么叫 backtest overfitting？</strong> 历史收益包含真实信号和大量随机噪声。如果不断尝试因子定义、参数、股票池、起止日期、持有期和成本假设，总能找到一个恰好迎合这段历史噪声的版本。它的回测 Sharpe 很高，却不代表未来仍有 alpha。</p></li>
+<li><p><strong>为什么取 5000 个结果中的最大值必然有偏？</strong> 即使所有候选策略真实期望收益都为零，每个估计 Sharpe 也会因抽样噪声上下波动；只报告最高者，就是有意选择最幸运的正误差。若把标准化误差粗略视为独立正态，$M$ 次尝试的最大噪声量级约为</p>
+<p class="equation-line">$$\sqrt{2\log M}.$$</p>
+<p>$M=5000$ 时约为 $4.1$ 个标准误。策略之间虽相关、有效尝试数小于 5000，但 selection bias 仍然存在。</p></li>
+<li><p><strong>为什么一个普通 train/test split 仍可能不够？</strong> 如果研究者查看 test Sharpe 后修改特征、参数或成本模型，再次查看同一个 test，测试集反馈已经进入研究决策；它实际上变成了训练/验证数据。即使代码从未直接 fit test labels，人通过反复选择也在对它拟合。</p></li>
+<li><p><strong>隐性 trials 也必须计入。</strong> 不只是最终保存的 5000 次程序运行。看过但放弃的图、不同数据清洗、删掉某个危机年份、换 universe、改变 winsorization 和由同一研究团队尝试的相关想法，都是 researcher degrees of freedom。只统计“成功版本”会严重低估数据窥探。</p></li>
+<li><p><strong>第一步：先定义研究假设和搜索空间。</strong> 尽可能在查看最终结果前记录经济机制、特征家族、允许参数、目标 horizon、股票池、成本模型和主要评价指标。预注册并非禁止探索，而是区分 exploratory search 与 confirmatory test，让读者知道结论使用过多少选择自由度。</p></li>
+<li><p><strong>第二步：nested time-aware validation。</strong></p>
+<ul>
+<li>内层时间窗口只负责选择超参数和模型版本；</li>
+<li>外层 walk-forward 窗口评估整个选择流程的 out-of-time 表现；</li>
+<li>标签重叠时使用 purge/gap/embargo；</li>
+<li>scaling、feature selection、neutralization 等全部在各训练窗口内拟合。</li>
+</ul>
+<p>评估的对象应是“研究与选择流程”，而不是事后固定的幸运参数。</p></li>
+<li><p><strong>第三步：处理 multiple comparisons。</strong> 报告所有主要候选和试验数量，并使用适合相关策略与时间序列的校正/诊断，例如 White's Reality Check、Hansen SPA、Deflated Sharpe Ratio、false-discovery 控制或 probability of backtest overfitting。没有一种统计量能替代透明试验记录和独立验证；方法假设与有效 trials 数也应说明。</p></li>
+<li><p><strong>第四步：保留真正 untouched final holdout。</strong> 它应是研究期间从未查看的较晚时期，只在流程冻结后使用一次。若看到结果后继续修改模型，必须承认该 holdout 已被消耗，并等待新的未来数据；不能把它重新命名为 test 后继续使用。</p></li>
+<li><p><strong>第五步：做邻域和机制稳定性检查。</strong> 可信信号通常不会只在一个精确参数点成立。应检查相邻 lookback/holding period、不同子时期、市场 regime、国家/股票池和合理成本假设。若稍改一个阈值 Sharpe 就崩溃，往往说明选中了噪声尖峰。经济逻辑不能证明策略有效，但能减少无意义搜索并帮助判断失效方式。</p></li>
+<li><p><strong>第六步：使用真实交易约束。</strong> 在所有候选上统一加入 point-in-time data、延迟、bid-ask spread、market impact、borrow fee、turnover、容量、退市和持仓约束。若只在最终赢家上补成本，研究过程仍可能偏向那些靠不可实现交易产生高 Sharpe 的版本。</p></li>
+<li><p><strong>第七步：报告不确定性，而不只报一个 Sharpe。</strong> 给出收益路径、drawdown、subperiod、因子暴露、交易数量、block/bootstrap 或 HAC 置信区间，以及不同合理设定下的敏感性。选择后的 Sharpe 不能使用“策略预先固定”的普通标准误直接解释。</p></li>
+<li><p><strong>最后仍需要未来/实盘确认。</strong> 金融分布非平稳，单个历史 holdout 可能只覆盖一种 regime。paper trading、小规模 live deployment 和持续监控提供真正向前的新数据。应事先定义停止、扩容和重新训练规则，避免实盘后继续无止境地事后解释。</p></li>
+</ol>
+<p><strong>一句话记忆：</strong>尝试越多，最高 Sharpe 越可能只是最大噪声；反复查看 test 会把 test 也训练化。可信流程应记录搜索、做嵌套时间验证和多重比较校正，保留一次性最终 holdout，并在真实成本与后续数据上确认稳定性。</p>
 </div></details>
 ~~~
 
@@ -1533,7 +2970,7 @@ a=\frac{n+1}{n}.$$</p>
 
 == F. 经典面试策略题
 
-=== Q93 \[C\] Alternating Opponents \/ 交替对手的三局赛
+=== Q95 \[C\] Alternating Opponents \/ 交替对手的三局赛
 *中文：* 你要依次与父亲和网球冠军打三局，并且必须采用“父亲—冠军—父亲”或“冠军—父亲—冠军”的顺序。只要连续赢两局就获胜。设你单局战胜父亲和冠军的概率分别为 $p$ 和 $q$，各局独立，且 $p>q$。应选择哪种顺序？
 
 *English:* You must play three independent matches in either Father–Champion–Father or Champion–Father–Champion order. You win the series if you win two consecutive matches. Your single-match win probabilities are $p$ against your father and $q$ against the champion, with $p>q$. Which order is better?
@@ -1545,7 +2982,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q94 \[C\] Pepys' Dice Comparison \/ 六骰、十二骰与十八骰
+=== Q96 \[C\] Pepys' Dice Comparison \/ 六骰、十二骰与十八骰
 *中文：* 比较三个事件的概率：（A）掷 6 枚公平骰子，至少出现 1 个六点；（B）掷 12 枚，至少出现 2 个六点；（C）掷 18 枚，至少出现 3 个六点。哪个事件最可能发生？
 
 *English:* Which event is most likely: (A) at least one six in 6 fair-die rolls, (B) at least two sixes in 12 rolls, or (C) at least three sixes in 18 rolls?
@@ -1557,7 +2994,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q95 \[M\] Ballot Tie Probability \/ 计票过程何时追平
+=== Q97 \[M\] Ballot Tie Probability \/ 计票过程何时追平
 *中文：* 候选人 A 获得 $a$ 票，候选人 B 获得 $b$ 票，其中 $a>b$。所有计票顺序等可能。已知第一张票投给 A，在此后的计票过程中，A 与 B 的累计票数至少追平一次的概率是多少？
 
 *English:* Candidate A receives $a$ votes and B receives $b$ votes, where $a>b$, and all vote orders are equally likely. Conditional on the first vote being for A, what is the probability that the running totals are tied at least once later?
@@ -1569,7 +3006,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q96 \[M\] Secretary Stopping Rule \/ 最优停止与秘书问题
+=== Q98 \[M\] Secretary Stopping Rule \/ 最优停止与秘书问题
 *中文：* $n$ 位候选人按随机顺序出现；每人面试后必须立即决定是否录用，且只能判断其相对于已面试者的排名。只能录用一人。给出使录用全局最佳候选人概率最大的策略及其渐近成功率。
 
 *English:* The $n$ candidates arrive in a uniformly random order. After each interview you must accept or reject immediately, observing only relative ranks, and may accept only one candidate. Give the rule that maximizes the probability of selecting the overall best candidate and its asymptotic success probability.
@@ -1588,7 +3025,7 @@ a=\frac{n+1}{n}.$$</p>
 
 == G. 衍生品与金融数学
 
-=== Q97 \[C\] Put–Call Parity and Arbitrage Bounds \/ 看涨看跌平价与套利界
+=== Q99 \[C\] Put–Call Parity and Arbitrage Bounds \/ 看涨看跌平价与套利界
 *中文：* 对同一无分红股票、相同执行价 $K$ 和到期日 $T$ 的欧式看涨与看跌期权，写出看涨看跌平价，并由无套利给出两者的基本价格上下界。假设无违约、可做空且利率 $r\\mathrel{≥}0$。
 
 *English:* For European call and put options on the same non-dividend-paying stock with strike $K$ and maturity $T$, state put–call parity and derive their basic no-arbitrage bounds. Assume frictionless trading, no default, short selling, and $r\\mathrel{≥}0$.
@@ -1600,7 +3037,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q98 \[C\] American versus European Calls \/ 美式与欧式看涨
+=== Q100 \[C\] American versus European Calls \/ 美式与欧式看涨
 *中文：* 为什么在无分红股票、非负利率和无摩擦市场中，美式看涨期权通常不应提前行权？什么时候这个结论会失效？
 
 *English:* Why is early exercise of an American call on a non-dividend-paying stock suboptimal under nonnegative rates and frictionless markets? When can this conclusion fail?
@@ -1612,7 +3049,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q99 \[M\] Delta Hedging and Residual Risk \/ Delta 对冲与剩余风险
+=== Q101 \[M\] Delta Hedging and Residual Risk \/ Delta 对冲与剩余风险
 *中文：* 你做空一份欧式看涨期权并用股票做 Delta 对冲。若股价突然大幅下跌，应如何调整股票头寸？为什么连续重新计算 Delta 仍不能消除全部风险？
 
 *English:* You are short one European call and delta-hedge it with the stock. After a sharp stock-price drop, how should the stock position generally be adjusted? Why does repeatedly recomputing delta still fail to eliminate all risk?
@@ -1624,7 +3061,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q100 \[M\] Gamma–Theta Trade-off \/ Gamma–Theta 权衡
+=== Q102 \[M\] Gamma–Theta Trade-off \/ Gamma–Theta 权衡
 *中文：* 解释香草期权组合中 Gamma 与 Theta 为什么经常符号相反。Delta 中性且多 Gamma 的组合如何从实际价格波动中获利？这一说法有哪些限制？
 
 *English:* Explain why gamma and theta often have opposite signs for vanilla-option positions. How can a delta-neutral, long-gamma book benefit from realized price movement, and what are the limitations of that statement?
@@ -1636,7 +3073,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q101 \[C\] Implied-Volatility Smile \/ 隐含波动率微笑
+=== Q103 \[C\] Implied-Volatility Smile \/ 隐含波动率微笑
 *中文：* 如果 Black–Scholes 假设同一标的、同一期限只有一个波动率，为什么市场报价会呈现隐含波动率微笑或偏斜？它在经济上表达了什么？
 
 *English:* If Black–Scholes assumes a single volatility for one underlying and maturity, why do market quotes display an implied-volatility smile or skew? What does that surface represent economically?
@@ -1648,7 +3085,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q102 \[C\] Duration and Convexity \/ 久期与凸性
+=== Q104 \[C\] Duration and Convexity \/ 久期与凸性
 *中文：* 定义债券价格对到期收益率的修正久期与凸性，并写出二阶价格近似。这个近似隐含了哪些限制？
 
 *English:* Define modified duration and convexity with respect to yield to maturity, and give the second-order bond-price approximation. What limitations are implicit in this approximation?
@@ -1660,7 +3097,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q103 \[C\] Minimum-Variance Hedge Ratio \/ 最小方差套保比率
+=== Q105 \[C\] Minimum-Variance Hedge Ratio \/ 最小方差套保比率
 *中文：* 用期货收益 $R_f$ 对冲资产收益 $R_p$。若对冲后收益写为 $R_p-hR_f$，求使方差最小的 $h$，并给出最小剩余方差。
 
 *English:* Futures return $R_f$ is used to hedge asset return $R_p$. If the hedged return is $R_p-hR_f$, derive the variance-minimizing hedge ratio and the minimum residual variance.
@@ -1672,7 +3109,7 @@ a=\frac{n+1}{n}.$$</p>
 </div></details>
 ~~~
 
-=== Q104 \[C\] Value at Risk versus Expected Shortfall \/ VaR 与 ES
+=== Q106 \[C\] Value at Risk versus Expected Shortfall \/ VaR 与 ES
 *中文：* 从损失变量 $L$ 出发定义置信水平 $\\\\alpha$ 下的 VaR 与 Expected Shortfall。为什么 ES 通常比 VaR 更能描述尾部风险？两者在实践中各有什么局限？
 
 *English:* For a loss variable $L$, define Value at Risk and Expected Shortfall at confidence level $\\\\alpha$. Why is ES generally more informative about tail severity, and what practical limitations do both measures have?
