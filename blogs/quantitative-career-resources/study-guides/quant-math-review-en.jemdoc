@@ -5,22 +5,33 @@
 ~~~
 {}{raw}
 <div class="language-switch" role="navigation" aria-label="Language"><a href="quant-math-review.html" hreflang="zh-CN">中文</a><span class="active" aria-current="page">English</span></div>
+<div class="question-difficulty-legend study-priority-legend" role="note" aria-label="Review priorities">
+<div class="question-difficulty-legend-item"><span class="question-difficulty-tag question-difficulty-tag--c">P0</span><span><strong>Core:</strong> Derive and apply confidently without notes.</span></div>
+<div class="question-difficulty-legend-item"><span class="question-difficulty-tag question-difficulty-tag--m">P1</span><span><strong>Frequently Tested:</strong> Know common questions and solution methods.</span></div>
+<div class="question-difficulty-legend-item"><span class="question-difficulty-tag question-difficulty-tag--h">P2</span><span><strong>Role-Specific:</strong> Build specialized knowledge to match the role.</span></div>
+</div>
 ~~~
 
-This is a high-coverage mathematics checklist for quantitative research written tests and interviews. It is designed for rapid recall, not as a first textbook. Standard terms are kept explicit because interviews often expect them directly. Topics marked “Expand” include detailed notes and remain collapsed by default so that the checklist stays easy to scan.
+== Outline
 
-*Priority:* P0 = must be able to derive and use without notes; P1 = commonly tested; P2 = role-dependent bonus. For every checkbox, require yourself to: define it, state the assumptions, derive the key formula, solve one small example, and explain one failure mode.
+~~~
+{}{raw}
+<div class="study-outline">
+~~~
 
-== 0. High-priority review order
+. *[\#blog-section-2 Probability]:* events and counting, conditional probability and Bayes, random variables and distributions, expectation and variance, order statistics, limit theorems and stochastic processes.
+. *[\#blog-section-3 Statistics]:* sampling distributions, estimation, confidence intervals and hypothesis tests, linear regression, regularization and model selection, time series.
+. *[\#blog-section-4 Linear algebra]:* rank and linear systems, orthogonality and projections, eigenvalues and PSD matrices, matrix decompositions, matrix calculus and numerical linear algebra.
+. *[\#blog-section-5 Combinatorics and discrete problem solving]:* counting, recurrences and generating functions, dynamic programming, graphs, invariants and constructive reasoning.
+. *[\#blog-section-6 Machine-learning mathematics]:* generalization, linear models, trees and ensembles, kernel methods, unsupervised learning, neural networks, metrics and validation, quant-research model judgment.
+. *[\#blog-section-7 One-page formula recall]:* Bayes, variance decomposition, OLS and ridge, projections and SVD, logistic models and gradients, classification metrics.
+. *[\#blog-section-8 Sources and next reading]:* probability and linear algebra courses, machine-learning textbooks, quant-interview guides and practice problems.
 
-Review in this order:
-
-. *P0 regression:* derive OLS; diagnose multicollinearity; compare deletion, PCA\/SVD, ridge and lasso; explain heteroskedasticity and leakage.
-. *P0 probability\/statistics:* conditional probability, expectation, variance\/covariance, common distributions, estimation, confidence intervals and hypothesis tests.
-. *P0 ML:* bias-variance, regularization, validation, linear\/logistic models, trees and ensembles, PCA, evaluation metrics.
-. *P0 counting:* permutations\/combinations, recurrence, state design and dynamic programming.
-. *P0 linear algebra:* rank, projections, eigenvalues, SVD, positive semidefinite covariance matrices and conditioning.
-. *P1 time series and quant research:* returns, stationarity, autocorrelation, rolling features, time-aware validation, transaction costs and multiple testing.
+~~~
+{}{raw}
+</div>
+<div class="section-anchor" id="blog-section-2" aria-hidden="true"></div>
+~~~
 
 == 1. Probability
 
@@ -1743,6 +1754,11 @@ $$</div>
 </ul>
 ~~~
 
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-section-3" aria-hidden="true"></div>
+~~~
+
 == 2. Statistics
 
 === 2.1 Samples, estimators and sampling distributions \[P0\]
@@ -2133,6 +2149,11 @@ $$</div>
 </ul>
 ~~~
 
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-question-11" aria-hidden="true"></div>
+~~~
+
 === 2.4 Linear regression \[P0\]
 
 ~~~
@@ -2305,6 +2326,11 @@ $$</div>
 - □ Choose λ using validation within a leakage-safe pipeline.
 - □ AIC\/BIC, likelihood penalties and cross-validation; know their different goals and assumptions.
 
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-question-13" aria-hidden="true"></div>
+~~~
+
 === 2.6 Time series and financial data \[P0\/P1\]
 
 - □ Simple return $r_t=\\frac{P_t}{P_{t-1}}-1$; log return $g_t=\\log P_t-\\log P_{t-1}$; log returns add across time.
@@ -2317,6 +2343,11 @@ $$</div>
 - □ Cross-sectional versus time-series dependence; panel\/fixed-effects intuition.
 - □ Sharpe ratio and annualization assumptions; serial correlation invalidates naive sqrt(time) scaling.
 - □ Drawdown, turnover, capacity, slippage, transaction cost and look-ahead\/survivorship bias.
+
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-section-4" aria-hidden="true"></div>
+~~~
 
 == 3. Linear algebra
 
@@ -2975,6 +3006,11 @@ $$</div>
 - □ Sherman-Morrison and Woodbury identities for low-rank updates \[P2\].
 - □ Sparse matrices and iterative methods; power iteration\/conjugate gradient intuition \[P2\].
 
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-section-5" aria-hidden="true"></div>
+~~~
+
 == 4. Combinatorics and discrete problem solving
 
 === 4.1 Counting toolkit \[P0\]
@@ -3044,6 +3080,11 @@ $$</div>
 - □ Probabilistic method: prove existence by showing positive probability \[P2\].
 
 *Triangle-walk pattern:* encode the current vertex\/direction or use adjacency-matrix powers. Ask whether the walk is on three vertices, a triangular lattice, or a continuous geometric triangle—the wording changes the state space completely.
+
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-section-6" aria-hidden="true"></div>
+~~~
 
 == 5. Machine-learning mathematics
 
@@ -3919,6 +3960,11 @@ $$</div>
 </ul>
 ~~~
 
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-question-30" aria-hidden="true"></div>
+~~~
+
 === 5.8 Quant-research-specific model judgment \[P0\]
 
 - □ Define the target at prediction time and prove every feature is available then.
@@ -3929,6 +3975,11 @@ $$</div>
 - □ Multiple factors\/hyperparameters create multiple-testing and selection bias; keep a true holdout and report uncertainty.
 - □ Regime stability, rolling diagnostics and stress tests matter more than one aggregate score.
 - □ A model with higher offline R² can have worse PnL because ranking, tails, capacity and costs differ.
+
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-section-7" aria-hidden="true"></div>
+~~~
 
 == 6. One-page formula recall
 
@@ -3987,16 +4038,12 @@ F_1=\frac{2PR}{P+R}.
 $$</div>
 ~~~
 
-== 7. How to perform the knowledge check
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-section-8" aria-hidden="true"></div>
+~~~
 
-. *Closed-book pass:* mark every checkbox Green (derive\/explain), Yellow (recognize only), or Red (cannot recall).
-. *Derivation pass:* without notes, derive Bayes, total variance, OLS, ridge, logistic gradient, PCA\/SVD connection and one DP recurrence.
-. *Oral pass:* explain each P0 item in 60–90 seconds with assumptions and one counterexample.
-. *Problem pass:* solve 10 probability, 5 statistics, 5 linear algebra, 5 combinatorics and 5 ML questions under time pressure.
-. *Coding pass:* simulate one probability result, implement OLS\/logistic loss, merge intervals and one DP problem in plain Python.
-. *Error log:* record the trigger you missed, the wrong assumption, the correct pattern and a re-test date.
-
-== 8. Sources and next reading
+== 7. Sources and next reading
 
 This checklist synthesizes recurring interview themes rather than reproducing proprietary tests. Start with these sources:
 
@@ -4006,5 +4053,3 @@ This checklist synthesizes recurring interview themes rather than reproducing pr
 - [https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/ MIT 18.06 Linear Algebra] — systems, subspaces, least squares, eigenvalues, PSD matrices and SVD.
 - [https://cs229.stanford.edu/2023_index.html Stanford CS229] and [https://www.statlearning.com/ An Introduction to Statistical Learning] — ML theory, models, validation and freely available official materials.
 - Xinfeng Zhou, /A Practical Guide to Quantitative Finance Interviews/ (the Green Book); Timothy Crack, /Heard on the Street/; Frederick Mosteller, /Fifty Challenging Problems in Probability/ — use legitimate copies and solve actively rather than memorizing wording.
-
-*Scope note:* derivatives pricing, stochastic calculus, C\+\+ systems and market microstructure can dominate some specialized roles, but the requested focus here is quantitative research probability\/statistics, linear algebra, combinatorics and ML. Add those modules when a job description explicitly requires them.

@@ -381,6 +381,19 @@ details.concept-detail[open] .concept-action .when-open {
   margin-top: 0.08em;
 }
 
+.study-priority-legend {
+  clear: both;
+  margin-top: 0;
+}
+
+.study-outline a {
+  color: inherit;
+}
+
+.study-outline a:focus-visible {
+  text-decoration: underline;
+}
+
 details.answer {
   --answer-background: #f6f8fa;
   --answer-border: #d0d7de;

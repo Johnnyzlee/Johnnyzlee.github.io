@@ -44,7 +44,8 @@ CSS / JavaScript / photos/ / gallery/ / files/ ──> 由 HTML 直接引用
 | `teaching.jemdoc` / `teaching.html` | 教学经历 | 修改 jemdoc，再生成 HTML |
 | `study.jemdoc` / `study.html` | 学习笔记与参考书目 | 修改 jemdoc，再生成 HTML |
 | `blog.jemdoc` / `blog.html` | 按栏目组织的博客入口 | 修改 jemdoc，再生成 HTML |
-| `blogs/` | 独立 Blog 笔记；目录层级与 Blog 页面公开栏目及子栏目保持一致 | 按 `blogs/README.md` 维护，并从仓库根目录生成 |
+| `blogs/` | Blog 学科入口页和独立笔记；按栏目与子栏目分目录存放 | 按 `blogs/README.md` 维护，并从仓库根目录生成 |
+| `blogs/quantitative-career-resources/study-guides/` | `mathematics`、`algorithms`、`programming` 三个入口页及其收录的中英文笔记；均为同目录 jemdoc/HTML 配对文件 | 新增或移除笔记时同步更新对应学科入口 |
 | `scribbles.jemdoc` / `scribbles.html` | Scribbles 公开入口页 | 修改 jemdoc，再生成 HTML |
 | `scribbles/` | 独立随笔及其同目录 jemdoc/HTML 配对文件 | 以 `S1-empty-note.jemdoc` 为模板维护 |
 | `gallery.jemdoc` / `gallery.html` | Gallery 公开入口页 | 修改 jemdoc，再生成 HTML |
@@ -106,24 +107,39 @@ python2 jemdoc.py *.jemdoc
 
 这条命令不会递归处理子目录。`blogs/`、`research-watchlist/` 和 `scribbles/` 中的独立文章不加载根目录菜单，因此不需要仅因 `MENU` 改动而重建。
 
-### 3. 修改独立 Blog 笔记
+### 3. 修改 Blog 入口页与独立笔记
 
 Blog 目前包含 Quantitative Career Resources（下分 `study-guides/` 和 `problem-sets/`）、Technical Notes 与 Arsenal。完整分类、文章模板和相对路径约定见 `blogs/README.md`。
 
-独立 Blog 使用英文或中文配置生成；命令应从仓库根目录运行：
+Study Guides 的访问顺序为 **Blog → 学科入口 → 具体笔记的中文或英文版**：
+
+| Blog 入口 | 学科入口文件（位于 `blogs/quantitative-career-resources/study-guides/`） | 当前收录 |
+| --- | --- | --- |
+| Mathematics | `mathematics.jemdoc` / `mathematics.html` | 数学复习笔记的中英文版 |
+| Algorithms | `algorithms.jemdoc` / `algorithms.html` | 算法面试笔记的中英文版 |
+| Programming | `programming.jemdoc` / `programming.html` | Python、NumPy、pandas、scikit-learn 笔记的中英文版 |
+
+学科入口和笔记文件并排存放在 `study-guides/`，现有笔记地址保持不变。入口页只列出现有资料及语言链接。新增、删除或改名 Study Guides 笔记时，更新对应学科入口；Problem Sets、Technical Notes 和 Arsenal 的笔记仍由 `blog.jemdoc` 直接收录。只需重新生成实际改动的笔记及索引。
+
+三个学科入口均使用英文配置 `blogs/blog.conf`；中英文笔记分别使用对应语言配置。命令应从仓库根目录运行：
 
 ```bash
 # 英文页面
 python2 jemdoc.py -c blogs/blog.conf blogs/technical-notes/hkust-hpc4-personal-playbook.jemdoc
 
 # 中文或中文优先页面
-python2 jemdoc.py -c blogs/blog-zh.conf blogs/technical-notes/optimal-quota-allocation-under-random-resets.jemdoc
+python2 jemdoc.py -c blogs/blog-zh.conf blogs/quantitative-career-resources/study-guides/quant-math-review.jemdoc
 
-# 新增、删除或改名文章后同步重建公开索引
+# 数学入口有改动时，单独生成该入口；算法和编程入口使用同一配置
+python2 jemdoc.py -c blogs/blog.conf blogs/quantitative-career-resources/study-guides/mathematics.jemdoc
+
+# Blog 根索引有改动时生成
 python2 jemdoc.py blog.jemdoc
 ```
 
 每篇独立 Blog 都加载 `blog-sidebar.js`。需要公式时还应在 jemdoc 头部使用 `noeqs` 并加载 `math-render.js`，由浏览器端 MathJax 渲染公式。
+
+数学复习页的“提纲 / Outline”按正文章节的顺序、标题和范围组织，并链接到对应章节；中英文页同步维护。
 
 ### 4. 修改 Research Watchlist 详情页
 
@@ -172,6 +188,8 @@ python2 --version
 普通页面生成不需要本地 LaTeX。现有数学 Blog 使用 `noeqs` 禁用 jemdoc 的旧式公式图片生成，再由 `blogs/math-render.js` 在浏览器端加载 MathJax。只有未来重新启用 jemdoc 自带的公式图片生成时，才需要本地安装 `latex` 和 `dvipng`。
 
 ## 添加新页面
+
+以下步骤适用于需要出现在根侧边栏 `MENU` 的顶层页面。Blog 学科入口和独立笔记按上面的 Blog 流程维护，不加入 `MENU`。
 
 1. 新建 `example.jemdoc`，首行使用共享菜单并指定当前页面：
 

@@ -1,0 +1,10 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../../blog-note}, addjs{../../blog-sidebar}
+= Programming
+[../../../blog.html ← Blogs]
+
+Study guides for programming in quantitative research, from language fundamentals to numerical computing, data analysis, and modeling. Each guide is available in Chinese and English.
+
+- *Python Fundamentals* — objects, data structures, functions, and the standard library. [python-for-quant-interviews.html 中文] \M [python-for-quant-interviews-en.html English]
+- *Numerical Computing* — arrays and vectorized computation with NumPy. [numpy-for-quant-interviews.html 中文] \M [numpy-for-quant-interviews-en.html English]
+- *Data Analysis* — tabular data and time series with pandas. [pandas-for-quant-interviews.html 中文] \M [pandas-for-quant-interviews-en.html English]
+- *Machine Learning* — model fitting and evaluation with scikit-learn. [scikit-learn-for-quant-interviews.html 中文] \M [scikit-learn-for-quant-interviews-en.html English]

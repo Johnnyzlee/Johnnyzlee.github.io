@@ -1,0 +1,5 @@
+# jemdoc: nofooter, nodefaultcss, addcss{../../blog-note}, addjs{../../blog-sidebar}
+= Algorithms
+[../../../blog.html ← Blogs]
+
+- *Algorithms for Quantitative Research Interviews* — [algorithms-for-quant-interviews.html 中文] \M [algorithms-for-quant-interviews-en.html English]

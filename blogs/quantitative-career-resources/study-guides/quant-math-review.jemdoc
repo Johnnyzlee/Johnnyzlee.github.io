@@ -5,21 +5,33 @@
 ~~~
 {}{raw}
 <div class="language-switch" role="navigation" aria-label="语言"><span class="active" aria-current="page">中文</span><a href="quant-math-review-en.html" hreflang="en">English</a></div>
-<div class="page-lead"><p>这是一份面向量化研究笔试与面试的高覆盖复习清单。它用于快速检查知识缺口，不替代系统教材。每个知识点至少要做到：能定义、能写假设、能推导核心公式、能算一个小例子、能指出一个失效场景。带有“点击展开”的知识点附有详细讲解，默认收起以保持提纲清晰。</p></div>
+<div class="question-difficulty-legend study-priority-legend" role="note" aria-label="复习优先级">
+<div class="question-difficulty-legend-item"><span class="question-difficulty-tag question-difficulty-tag--c">P0</span><span><strong>核心必会：</strong>能脱稿推导，并熟练应用。</span></div>
+<div class="question-difficulty-legend-item"><span class="question-difficulty-tag question-difficulty-tag--m">P1</span><span><strong>高频考点：</strong>熟悉常见问题及解题方法。</span></div>
+<div class="question-difficulty-legend-item"><span class="question-difficulty-tag question-difficulty-tag--h">P2</span><span><strong>岗位拓展：</strong>按岗位要求补充专项知识。</span></div>
+</div>
 ~~~
 
-*优先级：* P0 = 必须脱稿推导并使用；P1 = 高频考点；P2 = 岗位相关加分项。标准英文术语保留在括号中，便于直接应对英文面试。
+== 提纲
 
-== 0. 高频复习顺序
+~~~
+{}{raw}
+<div class="study-outline">
+~~~
 
-建议按以下顺序复习：
+. *[\#blog-section-2 概率论]：* 事件与计数、条件概率与 Bayes、随机变量与分布、期望与方差、次序统计量、极限定理、随机过程。
+. *[\#blog-section-3 统计学与计量基础]：* 抽样分布、参数估计、置信区间与假设检验、线性回归、正则化与模型选择、时间序列。
+. *[\#blog-section-4 线性代数]：* 秩与线性方程组、正交与投影、特征值与半正定矩阵、矩阵分解、矩阵微积分、数值线性代数。
+. *[\#blog-section-5 组合数学与离散推理]：* 计数、递推与生成函数、动态规划、图、概率方法、不变量。
+. *[\#blog-section-6 机器学习数学]：* 泛化、线性模型、树与集成学习、核方法、无监督学习、神经网络、指标与验证、量化研究判断。
+. *[\#blog-section-7 一页公式速查]：* Bayes、方差分解、OLS 与 Ridge、投影与 SVD、Logistic 梯度、Sharpe 比率。
+. *[\#blog-section-8 主要资料来源]：* 概率与线性代数课程、机器学习教材、量化面试指南与练习。
 
-. *P0 回归：* 推导 OLS；诊断多重共线性；比较删变量、PCA、SVD、Ridge、Lasso；解释异方差与数据泄漏。
-. *P0 概率统计：* 条件概率、期望、方差与协方差、常见分布、估计、置信区间、假设检验。
-. *P0 机器学习：* 偏差—方差、正则化、验证、线性与逻辑回归、树模型、集成学习、PCA、评估指标。
-. *P0 组合与算法：* 排列组合、递推、状态设计、动态规划、图上的游走。
-. *P0 线性代数：* 秩、投影、特征值、SVD、半正定协方差矩阵、条件数。
-. *P1 时间序列与量化研究：* 收益率、平稳性、自相关、滚动特征、时间感知验证、交易成本、多重检验。
+~~~
+{}{raw}
+</div>
+<div class="section-anchor" id="blog-section-2" aria-hidden="true"></div>
+~~~
 
 == 1. 概率论
 
@@ -1760,6 +1772,11 @@ $$</div>
 </ul>
 ~~~
 
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-section-3" aria-hidden="true"></div>
+~~~
+
 == 2. 统计学与计量基础
 
 === 2.1 样本、估计量与抽样分布 \[P0\]
@@ -2158,6 +2175,11 @@ $$</div>
 </ul>
 ~~~
 
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-question-11" aria-hidden="true"></div>
+~~~
+
 === 2.4 线性回归 \[P0\]
 
 ~~~
@@ -2339,6 +2361,11 @@ $$</div>
 - □ 训练误差、验证误差、测试误差；交叉验证、nested CV、one-standard-error rule。
 - □ AIC、BIC、交叉验证目标不同，不能混为一谈。
 
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-question-13" aria-hidden="true"></div>
+~~~
+
 === 2.6 时间序列与金融数据 \[P0／P1\]
 
 - □ 简单收益 $r_t=\\frac{P_t}{P_{t-1}}-1$；对数收益 $g_t=\\log(P_t)-\\log(P_{t-1})$，可跨期相加。
@@ -2348,6 +2375,11 @@ $$</div>
 - □ Volatility clustering、ARCH、GARCH 直觉。
 - □ 年化 Sharpe 的平方根法则依赖稳定方差与弱相关假设。
 - □ Look-ahead bias、survivorship bias、data snooping、transaction cost、turnover、capacity。
+
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-section-4" aria-hidden="true"></div>
+~~~
 
 == 3. 线性代数
 
@@ -3019,6 +3051,11 @@ $$</div>
 - □ 浮点精度、cancellation、overflow、underflow、log-sum-exp。
 - □ 稀疏矩阵、power iteration、conjugate gradient 直觉 \[P2\]。
 
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-section-5" aria-hidden="true"></div>
+~~~
+
 == 4. 组合数学与离散推理
 
 === 4.1 计数工具箱 \[P0\]
@@ -3093,6 +3130,11 @@ $$</div>
 - □ Handshaking lemma、树有 $n-1$ 条边、生成树。
 - □ 期望存在性证明：若随机对象的期望小于阈值，则至少存在一个对象达到该阈值。
 - □ Invariant、monovariant、extremal principle、symmetry。
+
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-section-6" aria-hidden="true"></div>
+~~~
 
 == 5. 机器学习数学
 
@@ -4032,6 +4074,11 @@ $$</div>
 </ul>
 ~~~
 
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-question-30" aria-hidden="true"></div>
+~~~
+
 === 5.8 量化研究判断 \[P0\]
 
 - □ Cross-sectional IC、Rank IC、time-series predictive metric 的差异。
@@ -4040,6 +4087,11 @@ $$</div>
 - □ Neutralization、exposure control、universe selection、missing-data semantics。
 - □ 多因子与多超参数产生 selection bias；保留真正 untouched holdout。
 - □ 报告 uncertainty、regime stability、economic rationale，而不只报告最高 Sharpe。
+
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-section-7" aria-hidden="true"></div>
+~~~
 
 == 6. 一页公式速查
 
@@ -4087,15 +4139,12 @@ $$</div>
 $$</div>
 ~~~
 
-== 7. 如何完成知识检查
+~~~
+{}{raw}
+<div class="section-anchor" id="blog-section-8" aria-hidden="true"></div>
+~~~
 
-. *第一遍：* 每个方框标为绿（能推导与解释）、黄（只认得）、红（不会）。
-. *第二遍：* 脱稿推导 Bayes、全方差、OLS、Ridge、Logistic gradient、PCA 与 SVD、一个 DP recurrence。
-. *第三遍：* 每个 P0 点口头回答“定义—假设—推导—例子—失效模式”。
-. *第四遍：* 用 Python 模拟一个概率结果，实现 OLS 或 logistic loss、区间合并和一个 DP。
-. *第五遍：* 计时刷题；错题按知识点归档，一周后重新独立完成。
-
-== 8. 主要资料来源
+== 7. 主要资料来源
 
 - [https://www.janestreet.com/static/pdfs/trading-interview.pdf Jane Street Probability & Markets Guide] — 计数、概率、独立性、期望、条件概率与面试思考方式。
 - [https://www.janestreet.com/probability-playing-cards/ Jane Street Probability Playing Cards] — 分级概率练习。
@@ -4103,5 +4152,3 @@ $$</div>
 - [https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/ MIT 18.06 Linear Algebra] — 线性方程组、子空间、最小二乘、特征值、PSD 与 SVD。
 - [https://cs229.stanford.edu/2023_index.html Stanford CS229] 与 [https://www.statlearning.com/ An Introduction to Statistical Learning] — 机器学习模型、验证与理论材料。
 - Xinfeng Zhou, /A Practical Guide to Quantitative Finance Interviews/；Timothy Crack, /Heard on the Street/；Frederick Mosteller, /Fifty Challenging Problems in Probability/。请使用合法版本并坚持先做后看。
-
-*范围说明：* 衍生品定价、随机微积分、C++ 系统与市场微观结构可能在特定岗位中占主导；本笔记按你的目标重点覆盖概率统计、线性代数、组合数学、机器学习和量化研究判断。岗位描述明确要求时再加专项模块。

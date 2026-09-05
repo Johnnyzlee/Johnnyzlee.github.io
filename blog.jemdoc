@@ -11,12 +11,9 @@ Together, the two kinds make the Blog both a precise record of what I understand
 == Quantitative Career Resources
 
 === Study Guides
-- [blogs/quantitative-career-resources/study-guides/quant-math-review.html Quantitative Research Interview Mathematics Review]
-- [blogs/quantitative-career-resources/study-guides/python-for-quant-interviews.html Python for Quantitative Research Interviews]
-- [blogs/quantitative-career-resources/study-guides/numpy-for-quant-interviews.html NumPy for Quantitative Research Interviews]
-- [blogs/quantitative-career-resources/study-guides/pandas-for-quant-interviews.html pandas for Quantitative Research Interviews]
-- [blogs/quantitative-career-resources/study-guides/scikit-learn-for-quant-interviews.html scikit-learn for Quantitative Research Interviews]
-- [blogs/quantitative-career-resources/study-guides/algorithms-for-quant-interviews.html Algorithms for Quantitative Research Interviews]
+- [blogs/quantitative-career-resources/study-guides/mathematics.html Mathematics]
+- [blogs/quantitative-career-resources/study-guides/algorithms.html Algorithms]
+- [blogs/quantitative-career-resources/study-guides/programming.html Programming]
 
 === Problem Sets
 - [blogs/quantitative-career-resources/problem-sets/brainteasers.html Assorted Brainteasers]
